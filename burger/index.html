@@ -97,6 +97,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:non
 #knob{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--mustard);box-shadow:0 4px 0 #b88a10}
 #push{width:112px;height:112px;border-radius:50%;padding:0;font-size:16px;line-height:1.1;display:grid;place-items:center;touch-action:none}
 #push.cd{opacity:.5}
+.botsel{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}.botsel span{font-weight:700;margin-inline-end:4px}.botsel .bn{width:44px;height:44px;padding:0;border-radius:50%;background:transparent;color:var(--fg);box-shadow:none;border:2px solid #ffffff40;font-weight:900}.botsel .bn.on{background:#ffc531;color:#2b1b30;border-color:#ffc531}.botsel .bn:disabled{opacity:.3}
 #low{width:84px;height:84px;border-radius:50%;padding:0;font-size:13px;line-height:1.1;display:grid;place-items:center;touch-action:none;background:#7b3fe4;box-shadow:0 5px 0 #4b1fa0;margin-inline-start:auto;margin-inline-end:14px}#low.cd{opacity:.45}#game.land #low{pointer-events:auto;opacity:.82;width:80px;height:80px}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
 .lang{position:fixed;top:max(10px,env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));z-index:60;padding:8px 14px;font-size:14px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
@@ -148,7 +149,7 @@ const params=new URLSearchParams(location.search);
 let FIXED=LOCS[params.get('loc')]?params.get('loc'):'diner';setLoc(FIXED);
 const DIRS={diner:'/burger/',school:'/school/',soccer:'/soccer/',snow:'/snow/',box:'/box/'};
 const L={
- en:{shopHintBox:'Each game has its own medals and shorts. Shorts work from the first fight.',shareBox:(n,s)=>`In «Boxing» 🥊 ${n} was the last one standing with ${s} HP! Who can beat that?`,tipBox:'🥊 Tap 💥 to punch. 🥚 «Low blow» hurts more, but only when the referee is looking away: caught twice — disqualified! Last one standing wins',pushBox:'Punch!',lowB:'Low blow',warn:'Warning!',dq:'Disqualified!',ko:'KNOCKOUT!',shopBox:'Shorts shop',noShorts:'No shorts',pickShorts:'Wear shorts next round?',shorts:{cap:'Lightning shorts',ushanka:'Padded shorts',top:'Ninja shorts',crown:'Golden shorts'},title:'Burger Rush',tag:'Up to 4 players. Grab, push, win!',join:'Join game',create:'Create game',name:'Your name',
+ en:{botsN:'Bots:',shopHintBox:'Each game has its own medals and shorts. Shorts work from the first fight.',shareBox:(n,s)=>`In «Boxing» 🥊 ${n} was the last one standing with ${s} HP! Who can beat that?`,tipBox:'🥊 Tap 💥 to punch. 🥚 «Low blow» hurts more, but only when the referee is looking away: caught twice — disqualified! Last one standing wins',pushBox:'Punch!',lowB:'Low blow',warn:'Warning!',dq:'Disqualified!',ko:'KNOCKOUT!',shopBox:'Shorts shop',noShorts:'No shorts',pickShorts:'Wear shorts next round?',shorts:{cap:'Lightning shorts',ushanka:'Padded shorts',top:'Ninja shorts',crown:'Golden shorts'},title:'Burger Rush',tag:'Up to 4 players. Grab, push, win!',join:'Join game',create:'Create game',name:'Your name',
   needName:'Type your name so everyone knows who you are.',connecting:'Connecting…',errLib:'The connection library failed to load. Check your internet and refresh.',errConn:"Couldn't connect. Try again in a minute.",
   reload:'Refresh',room:'Room',hostHint:'Invite your friends. Everyone picks a hero.',invite:'Invite on WhatsApp',copy:'Copy link',copied:'Copied',
   waitHost:'Waiting for the host to tap «Start»…',pick:'Pick your hero',free:'free',bot:'bot',you:'you',bots:'Bots on free heroes',start:'Start!',full:'The room is full (4 players).',
@@ -160,7 +161,7 @@ const L={
   other:'EN',
   names:{girl:'Girl',fat:'Chubby',tall:'Lanky',nerd:'Nerd'},
   perks:{girl:'Fast and nimble',fat:'Slow, but pushes the hardest',tall:'The fastest, weak push',nerd:'Grabs things from afar'}},
- ru:{shopHintBox:'В каждой игре свои медали и шорты. Шорты работают с первого боя.',shareBox:(n,s)=>`В «Боксе» 🥊 ${n} остался последним на ногах, жизни ${s}! Кто сильнее?`,tipBox:'🥊 Жми 💥 — удар. 🥚 «По яйцам» бьёт сильнее, но только пока судья отвернулся: заметит 2 раза — дисквалификация! Побеждает последний на ногах',pushBox:'Удар!',lowB:'По яйцам',warn:'Предупреждение!',dq:'Дисквалификация!',ko:'НОКАУТ!',shopBox:'Магазин шорт',noShorts:'Без шорт',pickShorts:'Надеть шорты на следующий раунд?',shorts:{cap:'Шорты-молнии',ushanka:'Шорты с защитой',top:'Шорты ниндзя',crown:'Золотые шорты'},title:'Бургер-гонка',tag:'До 4 игроков. На поле 7 бургеров. Хватай, толкайся! Кто собрал меньше лидера — вылетает, ничья — переигровка, пока не останется один чемпион.',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
+ ru:{botsN:'Ботов:',shopHintBox:'В каждой игре свои медали и шорты. Шорты работают с первого боя.',shareBox:(n,s)=>`В «Боксе» 🥊 ${n} остался последним на ногах, жизни ${s}! Кто сильнее?`,tipBox:'🥊 Жми 💥 — удар. 🥚 «По яйцам» бьёт сильнее, но только пока судья отвернулся: заметит 2 раза — дисквалификация! Побеждает последний на ногах',pushBox:'Удар!',lowB:'По яйцам',warn:'Предупреждение!',dq:'Дисквалификация!',ko:'НОКАУТ!',shopBox:'Магазин шорт',noShorts:'Без шорт',pickShorts:'Надеть шорты на следующий раунд?',shorts:{cap:'Шорты-молнии',ushanka:'Шорты с защитой',top:'Шорты ниндзя',crown:'Золотые шорты'},title:'Бургер-гонка',tag:'До 4 игроков. На поле 7 бургеров. Хватай, толкайся! Кто собрал меньше лидера — вылетает, ничья — переигровка, пока не останется один чемпион.',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
   needName:'Напиши имя, чтобы все видели, кто ты.',connecting:'Подключаюсь…',errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться. Попробуй ещё раз через минуту.',
   reload:'Обновить',room:'Комната',hostHint:'Позови друзей. Каждый выбирает своего героя.',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
@@ -172,7 +173,7 @@ const L={
   other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
- he:{shopHintBox:'לכל משחק מדליות ומכנסונים משלו. המכנסונים עובדים מהקרב הראשון.',shareBox:(n,s)=>`ב«אגרוף» 🥊 ${n} נשאר/ה אחרון/ה על הרגליים עם ${s} חיים! מי חזק יותר?`,tipBox:'🥊 לחצו 💥 — מכה. 🥚 «מכה נמוכה» חזקה יותר, אבל רק כשהשופט לא מסתכל: נתפסתם פעמיים — פסילה! האחרון שעומד מנצח',pushBox:'מכה!',lowB:'מכה נמוכה',warn:'אזהרה!',dq:'פסילה!',ko:'נוקאאוט!',shopBox:'חנות המכנסונים',noShorts:'בלי מכנסונים',pickShorts:'ללבוש מכנסונים לסיבוב הבא?',shorts:{cap:'מכנסוני ברק',ushanka:'מכנסונים מרופדים',top:'מכנסוני נינג׳ה',crown:'מכנסוני זהב'},title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
+ he:{botsN:'בוטים:',shopHintBox:'לכל משחק מדליות ומכנסונים משלו. המכנסונים עובדים מהקרב הראשון.',shareBox:(n,s)=>`ב«אגרוף» 🥊 ${n} נשאר/ה אחרון/ה על הרגליים עם ${s} חיים! מי חזק יותר?`,tipBox:'🥊 לחצו 💥 — מכה. 🥚 «מכה נמוכה» חזקה יותר, אבל רק כשהשופט לא מסתכל: נתפסתם פעמיים — פסילה! האחרון שעומד מנצח',pushBox:'מכה!',lowB:'מכה נמוכה',warn:'אזהרה!',dq:'פסילה!',ko:'נוקאאוט!',shopBox:'חנות המכנסונים',noShorts:'בלי מכנסונים',pickShorts:'ללבוש מכנסונים לסיבוב הבא?',shorts:{cap:'מכנסוני ברק',ushanka:'מכנסונים מרופדים',top:'מכנסוני נינג׳ה',crown:'מכנסוני זהב'},title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
   needName:'כתבו שם, כדי שכולם יידעו מי אתם.',connecting:'מתחבר…',errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו.',errConn:'לא הצלחנו להתחבר. נסו שוב בעוד דקה.',
   reload:'רענון',room:'חדר',hostHint:'הזמינו חברים. כל אחד בוחר דמות.',invite:'הזמנה בוואטסאפ',copy:'העתקת קישור',copied:'הועתק',
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
@@ -574,7 +575,7 @@ function tColl(){return isHost&&G&&G.TC?G.TC:tview}
 /* ================= network ================= */
 let client,room,isHost=false,phase='lobby';
 let lobbyPlayers=new Map(); // id -> {name,c,bot}
-let useBots=true;
+let useBots=3;function botSlots(){const free=ORDER.filter(c=>![...lobbyPlayers.values()].some(p=>p.c===c));return free.slice(0,Math.max(0,Math.min(+useBots||0,4-lobbyPlayers.size)))}
 function topic(){return NS+room}
 function send(m,qos=0){m.from=me.id;try{client&&client.publish(topic(),JSON.stringify(m),{qos})}catch(e){}}
 function connect(code,cb){room=code;if(!window.mqtt){fail(T('errLib'));return}
@@ -636,16 +637,16 @@ function lobby(){redraw=lobby;phase='lobby';show('app');const myC=lobbyPlayers.g
   app.innerHTML=`<h2>${T('room')} <span class="code" style="font-size:28px">${esc(room)}</span></h2>
     ${isHost?`<p>${T('hostHint')}</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">${T('invite')}</a><button class="ghost" id="cp">${T('copy')}</button></div>`:`<p>${T('waitHost')}</p>`}
     <button class="ghost" id="shopB">${FIXED==='box'?'🩳 '+T('shopBox'):'🎩 '+T('shop')} · 🏅 ${medals()}</button><h2 style="font-size:18px">${T('pick')}</h2><div class="chars" id="chars"></div>
-    ${isHost?`<label class="toggle"><input type="checkbox" id="bt" ${useBots?'checked':''}>${T('bots')}</label><button id="st">${T('start')} ${LOCS[FIXED].icon}</button>${picker(FIXED)}`:`<p class="status">🎮 ${GN[lang].now}: ${GI[FIXED]} ${GN[lang][FIXED]}</p><p class="status">${useBots?'🤖 '+T('bots'):''}</p>`}`;
+    ${isHost?`<div class="botsel"><span>🤖 ${T('botsN')}</span>${[0,1,2,3].map(n=>`<button type="button" class="bn${(+useBots===n)?' on':''}" data-n="${n}" ${n>4-lobbyPlayers.size?'disabled':''}>${n}</button>`).join('')}</div><button id="st">${T('start')} ${LOCS[FIXED].icon}</button>${picker(FIXED)}`:`<p class="status">🎮 ${GN[lang].now}: ${GI[FIXED]} ${GN[lang][FIXED]}</p><p class="status">🤖 ${T('botsN')} ${botSlots().length}</p>`}`;
   document.getElementById('shopB').onclick=()=>{audio();shop()};
 const box=document.getElementById('chars');
   ORDER.forEach(c=>{const owner=[...lobbyPlayers].find(([id,p])=>p.c===c);const b=document.createElement('button');b.type='button';
     b.className='char'+(myC===c?' mine':owner?' taken':'');b.appendChild(charThumb(c,owner?owner[1].hat:null));
-    b.insertAdjacentHTML('beforeend',`<b>${T('names')[c]}</b><small>${T('perks')[c]}</small><span class="who">${owner?esc(owner[1].name)+(owner[0]===me.id?' ('+T('you')+')':''):(useBots?'🤖 '+T('bot'):T('free'))}</span>`);
+    b.insertAdjacentHTML('beforeend',`<b>${T('names')[c]}</b><small>${T('perks')[c]}</small><span class="who">${owner?esc(owner[1].name)+(owner[0]===me.id?' ('+T('you')+')':''):(botSlots().includes(c)?'🤖 '+T('bot'):T('free'))}</span>`);
     b.onclick=()=>{if(owner&&owner[0]!==me.id)return;audio();tone(660,.08,'square',.1);if(isHost){lobbyPlayers.get(me.id).c=c;broadcastLobby()}else send({t:'pick',c},1)};box.appendChild(b)});
   if(isHost)bindPicker(switchTo);
   if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent=T('copied'),()=>e.target.textContent=link())};
-    document.getElementById('bt').onchange=e=>{useBots=e.target.checked;broadcastLobby()};
+    document.querySelectorAll('.bn').forEach(b=>b.onclick=()=>{audio();tone(660,.08,'square',.1);useBots=+b.dataset.n;broadcastLobby()});
     document.getElementById('st').onclick=()=>{audio();goFull();hostStart()}}}
 
 /* ================= no zoom ================= */
@@ -798,7 +799,7 @@ let evq=[],stAcc=0,botBrain={};
 let T0=null; // tournament
 function hostStart(){phase='play';const r=[];const used=new Set();
   for(const [id,p] of lobbyPlayers){r.push([id,p.c,p.name,0]);used.add(p.c)}
-  if(useBots)ORDER.forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
+  botSlots().forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   T0={all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{},hats:{}};for(const [id,p] of lobbyPlayers)T0.hats[id]=p.hat||null;startRound()}
 function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],(T0.round>1||LOC==='box')?(T0.hats[x[0]]||null):null]);
   G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,hits:0,TC:null,ball:null,keeper:null,SB:null,star:null,starT:6};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat;if(LOC==='box'){G.P[id].score=HP0;G.P[id].fouls=0;G.P[id].lcd=0}});

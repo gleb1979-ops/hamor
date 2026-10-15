@@ -3,283 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Кто осёл? · מי חמור? 🫏</title>
-<meta property="og:title" content="Кто осёл? · מי חמור? 🫏">
-<meta property="og:description" content="Жми на морковку быстрее всех! · לחצו על הגזר הכי מהר!">
+<title>BYD Shorties · Play anywhere</title>
+<meta name="description" content="Короткие онлайн-игры для друзей. Без скачивания: открыл ссылку и играешь. משחקים קצרים אונליין עם חברים.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://who-is-donky.netlify.app/">
-<meta property="og:image" content="https://who-is-donky.netlify.app/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Ослик, у которого выпала какашка: Кто осёл? מי חמור?">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://who-is-donky.netlify.app/og.png">
+<meta property="og:title" content="BYD Shorties · Play anywhere">
+<meta property="og:description" content="Играй где хочешь, с друзьями, быстро · שחקו בכל מקום, עם חברים, מהר">
+<meta property="og:image" content="https://who-is-donky.netlify.app/og-hub.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://who-is-donky.netlify.app/og-hub.png">
+<meta name="theme-color" content="#170f1c">
+<script>if(/[?&]room=/.test(location.search))location.replace('donkey/'+location.search)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Rubik:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap">
 <style>
-:root{--bg:#14101f;--panel:#221a35;--fg:#f6f1ff;--muted:#a99cc4;--hot:#ff3d7f;--sun:#ffc93c;--line:#3a2e55;--ok:#25d366;--brown:#9a6232;
-  --display:"Unbounded","Rubik","Arial Black",system-ui,sans-serif;--body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+/* Layout: one column storefront — wordmark hero, promise chips, two game cards, three steps, share band. */
+:root{--bg:#170f1c;--panel:#241830;--panel2:#2e2040;--fg:#fff6ec;--muted:#c2b2c9;--mustard:#ffc531;--ketchup:#e8412c;--grass:#4caf50;--line:#3f2d4c;
+  --font:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;overflow:hidden;-webkit-tap-highlight-color:transparent;
-  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
-#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
-#app{position:relative;height:100%;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:18px;text-align:center;padding-block:16px}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,8vw,48px);line-height:1.05;margin:0;text-wrap:balance}
-h2{font-family:var(--display);font-weight:600;font-size:clamp(18px,5vw,24px);margin:0;text-wrap:balance}
-p{margin:0;color:var(--muted);max-width:34ch;line-height:1.45}
-.big{font-size:72px;line-height:1}
-button,.btn{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:14px 26px;font-weight:700;font-size:17px;background:var(--hot);color:#fff;box-shadow:0 6px 0 #a3194b;text-decoration:none;display:inline-block}
-button:active{transform:translateY(3px);box-shadow:0 3px 0 #a3194b}
-button:disabled{opacity:.4}
-button:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
-.ghost{background:transparent;color:var(--fg);box-shadow:none;border:2px solid var(--line)}
-.wa{background:var(--ok);color:#0b2a17;box-shadow:0 6px 0 #128c4a}
-input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--fg);width:min(100%,320px);text-align:center}
-.col{display:grid;gap:10px;width:min(100%,320px)}
-.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.code{font-family:var(--display);font-size:40px;letter-spacing:.2em;color:var(--sun)}
-.list{list-style:none;margin:0;padding:0;display:grid;gap:8px;width:min(100%,380px)}
-.list li{display:flex;justify-content:space-between;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-variant-numeric:tabular-nums}
-.list li.me{border-color:var(--sun)}
-.list li.loser{border-color:var(--hot);background:#ff3d7f22;font-weight:700}
-.hud{position:absolute;top:12px;left:0;right:0;z-index:5;pointer-events:none;display:grid;gap:6px;justify-items:center}
-#pad{position:fixed;inset:0;z-index:4}
-.tgt{position:absolute;touch-action:none;will-change:left,top,transform;width:88px;height:88px;padding:0;font-size:54px;line-height:88px;background:var(--sun);box-shadow:0 6px 0 #b8860b;animation:none}
-@keyframes pop{from{transform:scale(.2)}}
-.status{font-size:13px;color:var(--muted)}
-.err{color:var(--hot)}
-.word{font-family:"Rubik",sans-serif;font-weight:700;font-size:20px;letter-spacing:2px;white-space:nowrap}.word i{font-style:normal;opacity:.18}.word b{color:var(--hot)}
-.donkey{display:block;overflow:visible}
-.list .donkey{display:inline-block;vertical-align:middle}
-.dk-wrap{position:relative;display:grid;place-items:center}
-.bray{animation:bray .75s ease-in-out 4}
-@keyframes bray{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg) scale(1.06)}45%{transform:rotate(6deg)}70%{transform:rotate(-4deg) scale(1.04)}}
-.hh{position:absolute;font-family:var(--display);font-weight:800;font-size:clamp(20px,6vw,30px);color:var(--sun);text-shadow:0 3px 0 var(--hot);opacity:0;animation:hh .75s ease-out both;white-space:nowrap}
-@keyframes hh{0%{opacity:0;transform:translateY(10px) scale(.6)}30%{opacity:1;transform:translateY(-10px) scale(1.1)}100%{opacity:0;transform:translateY(-40px) scale(1)}}
-@media (prefers-reduced-motion:reduce){.bray,.hh{animation-duration:.01s}}
-.modes{display:grid;gap:10px;width:min(100%,340px)}
-.lang{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));z-index:60;padding:8px 14px;font-size:14px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
-@media (prefers-reduced-motion:reduce){.tgt{animation:none}}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 45% at 50% 0%,#3a2552 0%,transparent 70%),radial-gradient(40% 30% at 90% 60%,#3a1f2a 0%,transparent 70%)}
+.wrap{max-width:960px;margin:0 auto;padding-block:max(18px,env(safe-area-inset-top,0px)) 40px;display:grid;gap:44px}
+a{color:inherit}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mini{font-weight:900;letter-spacing:.06em;font-size:15px}.mini b{color:var(--mustard)}
+.lang{font:inherit;font-size:14px;font-weight:700;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.hero{text-align:center;display:grid;justify-items:center;gap:14px;padding-top:10px}
+.word{font-weight:900;line-height:.86;margin:0;letter-spacing:-.01em;direction:ltr}
+.word .a{display:block;font-size:clamp(64px,19vw,150px);color:var(--mustard);text-shadow:0 7px 0 var(--ketchup)}
+.word .b{display:block;font-size:clamp(50px,15vw,124px);color:#fff;text-shadow:0 6px 0 #2b1b30}
+.pill{direction:ltr;display:inline-block;background:var(--ketchup);color:#fff;font-weight:900;letter-spacing:.08em;border-radius:999px;padding:9px 22px;font-size:clamp(15px,4vw,20px);box-shadow:0 5px 0 #9c2213;transform:rotate(-2deg)}
+.slogan{font-size:clamp(18px,4.6vw,24px);font-weight:700;margin:6px 0 0;text-wrap:balance}
+.slogan span{color:var(--mustard)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:640px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px;color:var(--fg)}
+h2{font-size:clamp(24px,6vw,34px);font-weight:900;margin:0 0 14px;text-wrap:balance}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:18px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:26px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-3px);border-color:var(--mustard)}
+.card>a{display:block}.card img{width:100%;max-width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;display:block}
+.cb{padding:16px 18px 20px;display:grid;gap:10px;align-content:start;min-width:0}
+.cb h3{margin:0;font-size:26px;font-weight:900;color:var(--mustard)}
+.cb p{margin:0;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:13px;font-weight:700;background:var(--panel2);border-radius:8px;padding:3px 9px}
+.locs{display:flex;gap:6px;flex-wrap:wrap}.locs span{font-size:13px;background:#ffc53122;color:var(--mustard);border-radius:8px;padding:3px 9px;font-weight:700}
+.play{display:inline-flex;justify-content:center;align-items:center;gap:8px;text-decoration:none;background:var(--ketchup);color:#fff;font-weight:900;font-size:19px;border-radius:999px;padding:14px 22px;box-shadow:0 6px 0 #9c2213;margin-top:4px}
+.play:active{transform:translateY(3px);box-shadow:0 3px 0 #9c2213}
+.play:focus-visible,.lang:focus-visible,.share:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px 18px;display:grid;gap:4px;counter-increment:s}
+.steps li::before{content:counter(s);width:34px;height:34px;border-radius:50%;background:var(--mustard);color:#2b1b30;font-weight:900;display:grid;place-items:center;margin-bottom:4px}
+.steps b{font-size:18px}.steps span{color:var(--muted);font-size:15px}
+.band{background:linear-gradient(135deg,#2e2040,#3a1f2a);border:2px solid var(--line);border-radius:26px;padding:24px 20px;text-align:center;display:grid;gap:12px;justify-items:center}
+.band p{margin:0;color:var(--muted);max-width:44ch}
+.share{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:#25d366;color:#0b2a17;font-weight:900;border-radius:999px;padding:13px 22px;box-shadow:0 6px 0 #128c4a}
+.link{font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--mustard);user-select:all;direction:ltr}
+footer{text-align:center;color:var(--muted);font-size:13px;display:grid;gap:4px}
+footer b{color:var(--fg);direction:ltr;display:inline-block}
+@media (prefers-reduced-motion:reduce){.card,.card:hover{transition:none;transform:none}}
 </style>
 </head>
 <body>
-<div id="app"></div>
-<canvas id="fx"></canvas>
-<script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
+<div class="wrap" id="root"></div>
 <script>
 (()=>{
-const ROUNDS=3, BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-hamor/v1/';
-const app=document.getElementById('app');
-const params=new URLSearchParams(location.search);
+const SITE='https://who-is-donky.netlify.app/';
 const L={
- ru:{title:'Кто осёл?',homeJoin:'Тебя позвали в игру. Морковка появляется у всех одновременно. Самый медленный станет ослом.',homeNew:'Онлайн-игра для группы: каждый со своего телефона жмёт на морковку. Самый медленный станет ослом.',
-  name:'Твоё имя',join:'Войти в игру',create:'Создать игру',needName:'Напиши имя, чтобы другие видели, кто осёл.',connecting:'Подключаюсь…',
-  errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться к игре. Попробуй ещё раз через минуту.',reload:'Обновить',
-  room:'Комната',hostHint:'Кинь ссылку в группу. Когда все зайдут, жми «Старт».',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
-  waitHost:'Ждём, пока организатор нажмёт «Старт»…',you:'(ты)',inGame:'В игре: ',start:'Старт · 3 раунда',
-  inviteText:'Го играть в «Кто осёл?» 🫏 Кто последний нажмёт — тот осёл! ',round:'Раунд',waitCarrot:'Жди морковку… не жми раньше!',carrot:'Морковка',
-  ms:'мс',early:'Рано! +1500 мс',waitOthers:'ждём остальных',slept:'Не попал! +3000 мс',youHamor:'Ты — осёл! 😂',isHamor:' — осёл!',
-  share:'Похвастаться в группе',shareText:(n,ms)=>`В «Кто осёл?» 🫏 осёл сегодня — ${n} (${ms} мс)! 😂`,rematch:'Реванш',rematchHost:'Реванш запускает организатор',heehaw:'И-а!',short:'Короткая · 3 раунда',long:'Длинная · до ОСЁЛ',longHint:'Длинная: каждый раунд самый медленный получает букву О → С → Ё → Л. Кто первым соберёт ОСЁЛ, тот проиграл.',gotLetter:(n,l)=>`${n} получает букву ${l}`,youGot:l=>`Тебе досталась буква ${l} 😬`,next:'Следующий раунд…',lettersShare:(n)=>`Мы играли в «Кто осёл?» до последней буквы 🫏 ${n} собрал(а) ОСЁЛ! 😂`,createOwn:'Создать свою игру',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית'},
- he:{title:'מי חמור?',homeJoin:'הזמינו אותך למשחק. הגזר מופיע אצל כולם באותו רגע. האיטי ביותר הוא החמור.',homeNew:'משחק אונליין לקבוצה: כל אחד לוחץ על הגזר מהטלפון שלו. האיטי ביותר הוא החמור.',
-  name:'השם שלך',join:'כניסה למשחק',create:'יצירת משחק',needName:'כתבו שם, כדי שכולם יידעו מי החמור.',connecting:'מתחבר…',
-  errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו את הדף.',errConn:'לא הצלחנו להתחבר למשחק. נסו שוב בעוד דקה.',reload:'רענון',
-  room:'חדר',hostHint:'שלחו את הקישור לקבוצה. כשכולם בפנים, לחצו «התחלה».',invite:'הזמנה בוואטסאפ',copy:'העתקת קישור',copied:'הועתק',
-  waitHost:'מחכים שהמארגן ילחץ «התחלה»…',you:'(אני)',inGame:'במשחק: ',start:'התחלה · 3 סיבובים',
-  inviteText:'בואו לשחק ב«מי חמור?» 🫏 מי שלוחץ אחרון — הוא החמור! ',round:'סיבוב',waitCarrot:'חכו לגזר… לא ללחוץ לפני הזמן!',carrot:'גזר',
-  ms:'ms',early:'מוקדם מדי! 1500+ ms',waitOthers:'מחכים לשאר',slept:'פספסת! 3000+ ms',youHamor:'החמור — זה אתה! 😂',isHamor:' — החמור!',
-  share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',heehaw:'אִי־אָה!',short:'קצר · 3 סיבובים',long:'ארוך · עד חמור',longHint:'ארוך: בכל סיבוב האיטי ביותר מקבל אות ח ← מ ← ו ← ר. מי שמשלים ראשון חמור — הפסיד.',gotLetter:(n,l)=>`${n} מקבל/ת את האות ${l}`,youGot:l=>`קיבלת את האות ${l} 😬`,next:'הסיבוב הבא…',lettersShare:(n)=>`שיחקנו «מי חמור?» עד האות האחרונה 🫏 ${n} השלים/ה חמור! 😂`,createOwn:'ליצור משחק משלי',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский'}};
-let lang=params.get('lang')==='he'||params.get('lang')==='ru'?params.get('lang'):null;
-if(!lang){try{lang=localStorage.getItem('hamor-lang')}catch(e){}}
+ ru:{other:'עברית',slogan:'Играй <span>где хочешь</span>. Играй <span>с друзьями</span>. Играй <span>быстро</span>.',
+  chips:['📱 Без скачивания','👫 До 4 друзей онлайн','⏱ Раунды по 30 секунд','💬 Зови через WhatsApp','🌍 Русский и иврит'],
+  games:'Игры',play:'Играть ▶',
+  donkey:{t:'Кто осёл?',d:'Лови морковку быстрее всех. Самый медленный собирает буквы О-С-Ё-Л, и его ослик какает на весь экран.',tags:['👥 2–10 игроков','⏱ 1–3 минуты','🥕 На реакцию']},
+  burger:{t:'Бургер-гонка',d:'Четыре героя, толкотня и шапки с суперсилами. Раунды на выбывание, пока не останется один чемпион с медалью.',tags:['👥 1–4 игрока + боты','⏱ 30 секунд раунд','🏅 Медали и шапки'],
+   locs:['🍔 Бургерная','🏫 Класс','⚽ Футбол','❄️ Снежки']},
+  how:'Как начать',steps:[['Выбери игру','Нажми «Играть» на любой карточке.'],['Создай комнату','Напиши имя и нажми «Создать игру».'],['Позови друзей','Кнопка WhatsApp отправит ссылку в группу. Готово!']],
+  bandT:'Поделись с друзьями',bandP:'Одна ссылка на все игры. Работает на любом телефоне, планшете и компьютере.',share:'Отправить в WhatsApp',
+  shareText:'🎮 BYD Shorties — короткие игры с друзьями прямо в телефоне. Без скачивания! ',made:'Сделано в B.Y.D'},
+ he:{other:'Русский',slogan:'שחקו <span>איפה שבא לכם</span>. שחקו <span>עם חברים</span>. שחקו <span>מהר</span>.',
+  chips:['📱 בלי להוריד','👫 עד 4 חברים אונליין','⏱ סיבובים של 30 שניות','💬 מזמינים בוואטסאפ','🌍 עברית ורוסית'],
+  games:'המשחקים',play:'לשחק ▶',
+  donkey:{t:'מי חמור?',d:'תופסים את הגזר הכי מהר. האיטי ביותר אוסף את האותיות ח-מ-ו-ר, והחמור שלו עושה קקי על כל המסך.',tags:['👥 2–10 שחקנים','⏱ 1–3 דקות','🥕 משחק תגובה']},
+  burger:{t:'מרוץ ההמבורגרים',d:'ארבע דמויות, דחיפות וכובעים עם כוחות־על. סיבובי הדחה עד שנשאר אלוף אחד עם מדליה.',tags:['👥 1–4 שחקנים + בוטים','⏱ סיבוב של 30 שניות','🏅 מדליות וכובעים'],
+   locs:['🍔 המבורגרייה','🏫 כיתה','⚽ כדורגל','❄️ כדורי שלג']},
+  how:'איך מתחילים',steps:[['בוחרים משחק','לוחצים «לשחק» על כל כרטיס.'],['יוצרים חדר','כותבים שם ולוחצים «יצירת משחק».'],['מזמינים חברים','כפתור הוואטסאפ שולח קישור לקבוצה. זהו!']],
+  bandT:'שתפו עם חברים',bandP:'קישור אחד לכל המשחקים. עובד בכל טלפון, טאבלט ומחשב.',share:'לשלוח בוואטסאפ',
+  shareText:'🎮 BYD Shorties — משחקים קצרים עם חברים ישר בטלפון. בלי להוריד! ',made:'נוצר ב־B.Y.D'}};
+const params=new URLSearchParams(location.search);
+let lang=['ru','he'].includes(params.get('lang'))?params.get('lang'):null;
+if(!lang){try{lang=localStorage.getItem('byd-lang')}catch(e){}}
 if(lang!=='he'&&lang!=='ru')lang=/^(he|iw)/i.test(navigator.language||'')?'he':'ru';
-const T=k=>L[lang][k];
-function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('title')+' 🫏';
-  lb.textContent=T('other');try{localStorage.setItem('hamor-lang',lang)}catch(e){}}
-const lb=document.createElement('button');lb.className='lang';document.body.appendChild(lb);
-let redraw=()=>{};lb.onclick=()=>{const n=document.getElementById('nm');if(n)me.name=n.value;lang=lang==='he'?'ru':'he';applyLang();redraw()};applyLang();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const rid=()=>Math.random().toString(36).slice(2,10);
-const me={id:rid(),name:''};
-try{me.name=localStorage.getItem('hamor-name')||''}catch(e){}
-
-/* ---------- particles ---------- */
-const fx=document.getElementById('fx'),ctx=fx.getContext('2d');let W,H,DPR=Math.min(2,devicePixelRatio||1),parts=[],running=false;
-function size(){W=innerWidth;H=innerHeight;fx.width=W*DPR;fx.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0)}size();addEventListener('resize',size);
-const cache={};function sprite(e){if(cache[e])return cache[e];const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');if(e==='POOP'){drawPoop(g);return cache[e]=c}
-  g.font='72px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(e,48,54);return cache[e]=c}
-function burst(x,y,set,n,pw=1){for(let i=0;i<n;i++){const a=Math.random()*6.28,s=(4+Math.random()*12)*pw;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-6*pw,r:(Math.random()-.5)*.3,a:0,sz:24+Math.random()*34,e:set[i%set.length],life:1,g:.32})}loop()}
-function rain(set,n){for(let i=0;i<n;i++)parts.push({x:Math.random()*W,y:-60-Math.random()*H,vx:(Math.random()-.5)*2,vy:2+Math.random()*4,r:(Math.random()-.5)*.1,a:0,sz:30+Math.random()*30,e:set[i%set.length],life:1,g:.12,pile:1});loop()}
-function loop(){if(!running){running=true;requestAnimationFrame(step)}}
-function step(){const now=performance.now();ctx.clearRect(0,0,W,H);for(const p of parts){p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a+=p.r;
-  if(p.ty!=null){if(p.y>=p.ty){p.y=p.ty;p.vy=p.vx=p.r=p.g=0;if(now>p.until)p.life-=.035}}
-  else if(p.y>H-p.sz/2&&p.vy>0){p.y=H-p.sz/2;if(p.pile){p.vy=0;p.vx=0;p.r=0;p.life-=.004}else{p.vy*=-.45;p.vx*=.7;p.life-=.18}}
-  ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,p.life*2));ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.drawImage(sprite(p.e),-p.sz/2,-p.sz/2,p.sz,p.sz);ctx.restore()}
-  parts=parts.filter(p=>p.life>0&&p.y<H+200);if(parts.length)requestAnimationFrame(step);else{running=false;ctx.clearRect(0,0,W,H)}}
-let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}}
-function blip(f){if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.8,t+.08);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.13)}catch(e){}}
-function boom(){try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(40,t+.5);g.gain.setValueAtTime(.6,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.6)}catch(e){}}
-function rank(ms){return ms<450?'🐆':ms<650?'🐎':ms<900?'🐢':'🫏'}
-/* donkey that fills up letter by letter */
-const SHAPE='<ellipse cx="55" cy="55" rx="32" ry="18"/><path d="M76 46 L91 26 L103 33 L88 60 Z"/><ellipse cx="101" cy="33" rx="15" ry="9" transform="rotate(25 101 33)"/><ellipse cx="91" cy="14" rx="3.8" ry="12.5" transform="rotate(-14 91 14)"/><ellipse cx="99" cy="15" rx="3.8" ry="12.5" transform="rotate(12 99 15)"/><rect x="30" y="64" width="7" height="28" rx="3"/><rect x="41" y="66" width="7" height="26" rx="3"/><rect x="64" y="66" width="7" height="26" rx="3"/><rect x="75" y="64" width="7" height="28" rx="3"/><path d="M24 50 Q13 58 14 73 L19 73 Q19 61 27 54 Z"/><path d="M83 41 L90 25 L94 27 L87 44 Z"/>';
-let dkN=0;const lvlO=n=>n<=0?0:(8+90*Math.min(1,n/4))/100;
-function donkey(n,px,from,cls){const id='dk'+(++dkN),o=lvlO(from??n);
-  return `<svg class="donkey ${cls||''}" data-to="${lvlO(n)}" data-from="${o}" width="${px}" height="${Math.round(px*.82)}" viewBox="0 0 120 100" aria-hidden="true"><defs><linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="93" x2="0" y2="1">
-  <stop offset="0" style="stop-color:var(--brown)"/><stop class="m" offset="${o}" style="stop-color:var(--brown)"/><stop class="m" offset="${o}" style="stop-color:var(--line)"/><stop offset="1" style="stop-color:var(--line)"/></linearGradient></defs>
-  <g fill="url(#${id})">${SHAPE}</g><circle cx="105" cy="30" r="2.2" fill="var(--bg)"/></svg>`}
-function fillDonkeys(){const list=[...document.querySelectorAll('svg.donkey')].filter(d=>d.dataset.to!==d.dataset.from);if(!list.length)return;
-  const t0=performance.now(),dur=reducedMotion?1:1300;(function tick(now){const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);
-    list.forEach(d=>{const v=+d.dataset.from+(+d.dataset.to-+d.dataset.from)*e;d.querySelectorAll('stop.m').forEach(st=>st.setAttribute('offset',v))});
-    if(k<1)requestAnimationFrame(tick)})(t0)}
-const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* poop: rounded three-tier pyramid */
-function drawPoop(g){const tier=(x,y,w,h,c)=>{g.fillStyle=c;g.beginPath();g.roundRect?g.roundRect(x,y,w,h,h/2):g.rect(x,y,w,h);g.fill()};
-  tier(10,62,76,26,'#6b3f1d');tier(13,60,70,22,'#8a5528');
-  tier(20,42,56,24,'#6b3f1d');tier(23,40,50,20,'#94602e');
-  tier(30,24,36,22,'#6b3f1d');tier(33,22,30,18,'#a06a34');
-  g.fillStyle='#a06a34';g.beginPath();g.ellipse(50,18,9,8,-.5,0,7);g.fill();
-  g.fillStyle='#ffffff55';g.beginPath();g.ellipse(36,66,8,3.5,0,0,7);g.fill();g.beginPath();g.ellipse(41,45,6,2.8,0,0,7);g.fill();g.beginPath();g.ellipse(44,27,4,2,0,0,7);g.fill()}
-function plop(){if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(160+Math.random()*60,t);o.frequency.exponentialRampToValueAtTime(60,t+.12);
-  g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.16)}catch(e){}}
-function poopShow(){const d=document.querySelector('svg.bray');if(!d)return;const r=d.getBoundingClientRect();
-  const rx=r.left+r.width*.16,ry=r.top+r.height*.55;let shots=0;
-  const shoot=setInterval(()=>{for(let i=0;i<3;i++)parts.push({x:rx,y:ry,vx:-(2+Math.random()*9),vy:-(3+Math.random()*9),r:(Math.random()-.5)*.2,a:0,sz:30+Math.random()*26,e:'POOP',life:1,g:.35,pile:1});
-    if(shots%2===0)plop();loop();if(++shots>=26)clearInterval(shoot)},110);
-  setTimeout(()=>{const sz=Math.max(46,Math.min(70,W/7)),gap=sz*.62,rows=Math.ceil(H/gap)+1,cols=Math.ceil(W/gap)+1,until=performance.now()+rows*70+2600;
-    for(let rI=0;rI<rows;rI++)setTimeout(()=>{for(let c=0;c<cols;c++){const ty=H-sz*.4-rI*gap+(Math.random()-.5)*8;
-        parts.push({x:c*gap+(rI%2?gap/2:0)+(Math.random()-.5)*10,y:ty-140-Math.random()*80,vx:0,vy:7,r:0,a:(Math.random()-.5)*.25,sz:sz*(.9+Math.random()*.25),e:'POOP',life:1,g:.5,ty,until})}
-      if(rI%2===0)plop();try{navigator.vibrate&&navigator.vibrate(25)}catch(e){};loop()},rI*70)},2900)}
-function seg(t,d,f1,f2,form){const o=ac.createOscillator(),lfo=ac.createOscillator(),lg=ac.createGain(),bp=ac.createBiquadFilter(),g=ac.createGain();
-  o.type='sawtooth';o.frequency.setValueAtTime(f1,t);o.frequency.linearRampToValueAtTime(f2,t+d);lfo.frequency.value=26;lg.gain.value=f1*.05;lfo.connect(lg).connect(o.frequency);
-  bp.type='bandpass';bp.frequency.value=form;bp.Q.value=2.2;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.55,t+.03);g.gain.setValueAtTime(.55,t+d-.05);g.gain.linearRampToValueAtTime(0,t+d);
-  o.connect(bp).connect(g).connect(ac.destination);o.start(t);lfo.start(t);o.stop(t+d+.02);lfo.stop(t+d+.02)}
-function bray(times,iAmLoser){try{navigator.vibrate&&navigator.vibrate(iAmLoser?[220,40,380,110,220,40,380,110,220,40,380,110,220,40,380]:[200,550,200,550,200,550,200])}catch(e){}
-  if(!ac)return;try{let t=ac.currentTime+.05;for(let i=0;i<times;i++){seg(t,.22,720,840,2400);seg(t+.22,.4,330,230,850);t+=.75}}catch(e){}}
-
-/* ---------- network ---------- */
-let client,room,isHost=false,players=new Map(),results={},round=0,phase='lobby',hostTimer;
-function topic(){return NS+room}
-function send(m){m.from=me.id;client&&client.publish(topic(),JSON.stringify(m),{qos:1})}
-function connect(code,cb){room=code;
-  if(!window.mqtt){fail(T('errLib'));return}
-  client=mqtt.connect(BROKER,{clientId:'hamor_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000});
-  let first=true;
-  client.on('connect',()=>{client.subscribe(topic(),{qos:1},()=>{if(first){first=false;cb()}else hello()})});
-  client.on('message',(t,buf)=>{let m;try{m=JSON.parse(buf.toString())}catch(e){return}onMsg(m)});
-  client.on('error',()=>{});
-  setTimeout(()=>{if(first)fail(T('errConn'))},10000)}
-function fail(t){redraw=()=>fail(t);app.innerHTML=`<div class="big">😵</div><h2>${esc(t)}</h2><button onclick="location.reload()">${T('reload')}</button>`}
-function hello(){send({t:'hi',name:me.name,host:isHost})}
-
-function onMsg(m){
-  if(['lobby','round','rres','end','hb','st','start','kb'].includes(m.t))markHost(m);
-  if(m.t==='bye'&&!isHost&&hostId&&m.from===hostId&&phase!=='end'){hostGone();return}
-  if(m.t==='hi'){if(!players.has(m.from)||players.get(m.from).name!==m.name){players.set(m.from,{name:m.name,host:!!m.host})}
-    if(isHost)broadcastLobby();else if(phase==='lobby')lobby()}
-  else if(m.t==='lobby'&&!isHost){players=new Map(m.players.map(p=>[p.id,{name:p.name,host:p.host}]));if(phase==='lobby')lobby()}
-  else if(m.t==='round'){phase='play';playRound(m)}
-  else if(m.t==='res'&&isHost){(results[m.round]=results[m.round]||{})[m.from]=m.ms;checkRound()}
-  else if(m.t==='rres'){roundResult(m)}
-  else if(m.t==='end'){phase='end';final({rows:m.board,mode:m.mode})}
-  else if(m.t==='bye'){players.delete(m.from);if(isHost)broadcastLobby()}}
-function broadcastLobby(){send({t:'lobby',players:[...players].map(([id,p])=>({id,name:p.name,host:p.host}))});if(phase==='lobby')lobby()}
-addEventListener('pagehide',()=>{try{send({t:'bye'})}catch(e){}});
-
-/* ---------- screens ---------- */
-let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
-function home(){redraw=home;lb.hidden=false;app.innerHTML=`<div class="big">🫏</div><h1>${T('title')}</h1>
-  <p>${joinCode?T('homeJoin'):T('homeNew')}</p>
-  ${joinCode?`<div class="code">${esc(joinCode)}</div>`:''}
-  <input id="nm" maxlength="16" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
-  <div class="col"><button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}</div><p class="status err" id="msg"></p>`;
-  const nm=document.getElementById('nm');
-  const ob=document.getElementById('own');if(ob)ob.onclick=()=>{joinCode='';history.replaceState(null,'',location.pathname+'?lang='+lang);home()};
-  if(params.get('create')==='1'&&!autoCreated&&me.name){autoCreated=true;history.replaceState(null,'',location.pathname+'?lang='+lang);setTimeout(()=>document.getElementById('go')?.click(),60)}
-  document.getElementById('go').onclick=()=>{const v=nm.value.trim();if(!v){document.getElementById('msg').textContent=T('needName');nm.focus();return}
-    audio();me.name=v;try{localStorage.setItem('hamor-name',v)}catch(e){}
-    redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
-    if(joinCode){connect(joinCode,()=>{players.set(me.id,{name:me.name});hello();lobby();startWatch()})}
-    else{isHost=true;const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
-      connect(code,()=>{players.set(me.id,{name:me.name,host:true});broadcastLobby()})}}}
-
-function link(){const u=new URL(location.href);u.search='?room='+room+'&lang='+lang;u.hash='';return u.toString()}
-function lobby(){redraw=lobby;const list=[...players].map(([id,p])=>`<li class="${id===me.id?'me':''}"><span>${esc(p.name)}${id===me.id?' '+T('you'):''}</span><span>${p.host?'👑':'✅'}</span></li>`).join('');
-  const inv=T('inviteText')+link();
-  app.innerHTML=`<h2>${T('room')}</h2><div class="code">${esc(room)}</div>
-    ${isHost?`<p>${T('hostHint')}</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">${T('invite')}</a><button class="ghost" id="cp">${T('copy')}</button></div>`:`<p>${T('waitHost')}</p>`}
-    <ul class="list">${list}</ul><p class="status">${T('inGame')}${players.size}</p>
-    ${isHost?`<div class="modes"><button id="st" ${players.size<2?'disabled':''}>${T('short')}</button><button id="stl" class="ghost" ${players.size<2?'disabled':''}>${T('long')} 🫏</button></div><p class="status">${T('longHint')}</p>`:''}`;
-  if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent=T('copied'),()=>e.target.textContent=link())};
-    document.getElementById('st').onclick=()=>{if(players.size>=2)startGame('short')};document.getElementById('stl').onclick=()=>{if(players.size>=2)startGame('long')}}}
-
-/* host logic */
-const WORDS={he:['ח','מ','ו','ר'],ru:['О','С','Ё','Л']};let WORD=WORDS[lang];
-function word(n){WORD=WORDS[lang];return `<span class="word" dir="${lang==='he'?'rtl':'ltr'}">${WORD.map((c,i)=>i<n?`<b>${c}</b>`:`<i>${c}</i>`).join('')}</span>`}
-let total={},letters={},mode='short',closed=0;
-function startGame(md){mode=md||mode;results={};total={};letters={};round=0;closed=0;for(const id of players.keys())letters[id]=0;nextRound()}
-function nextRound(){round++;if(mode==='short'&&round>ROUNDS)return endGame();if(round>40)return endGame();
-  send({t:'round',round,mode,letters,delay:1200+Math.random()*2200,x:Math.random(),y:Math.random(),a:Math.random()*6.283});
-  clearTimeout(hostTimer);hostTimer=setTimeout(closeRound,8000)}
-function checkRound(){const r=results[round]||{};if([...players.keys()].every(id=>id in r)){clearTimeout(hostTimer);setTimeout(closeRound,600)}}
-function closeRound(){if(closed===round)return;closed=round;const r=results[round]||{},ms={};
-  for(const id of players.keys()){ms[id]=id in r?r[id]:3000;total[id]=(total[id]||0)+ms[id];if(!(id in letters))letters[id]=0}
-  if(mode==='short'){setTimeout(nextRound,1500);return}
-  const worst=Math.max(...Object.values(ms)),losers=Object.keys(ms).filter(id=>ms[id]===worst);
-  losers.forEach(id=>letters[id]=Math.min(4,letters[id]+1));
-  const over=losers.some(id=>letters[id]>=4);
-  send({t:'rres',round,losers,ms,letters,names:Object.fromEntries([...players].map(([id,p])=>[id,p.name]))});
-  setTimeout(over?endGame:nextRound,over?3500:4000)}
-function endGame(){const board=[...players].map(([id,p])=>({id,name:p.name,ms:Math.round(total[id]/Math.max(1,round-(mode==='short'?1:0))),l:letters[id]||0}));
-  if(mode==='long')board.sort((a,b)=>a.l-b.l||a.ms-b.ms);else board.sort((a,b)=>a.ms-b.ms);
-  send({t:'end',board,mode})}
-
-/* every player */
-function playRound(m){redraw=()=>{};lb.hidden=true;const my=m.mode==='long'?(m.letters[me.id]||0):-1;
-  app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}${m.mode==='long'?'':'/'+ROUNDS}</h2>${my>=0?donkey(my,56)+word(my):''}<p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
-  const pad=document.getElementById('pad'),hm=document.getElementById('hm');let state='wait',t0,done=false;
-  const report=ms=>{if(done)return;done=true;send({t:'res',round:m.round,ms})};
-  pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML=`<span class="err">${T('early')}</span>`;try{navigator.vibrate(150)}catch(e){};report(1500)});
-  const tm=setTimeout(()=>{if(state!=='wait')return;state='go';const t=document.createElement('button');t.className='tgt';t.textContent='🥕';t.setAttribute('aria-label',T('carrot'));
-    let px=10+m.x*(W-150),py=130+m.y*Math.max(40,H-300);const sp=Math.min(W,H)*.42,ang=m.a??Math.random()*6.28;let vx=Math.cos(ang)*sp,vy=Math.sin(ang)*sp,last=performance.now();
-    const place=()=>{t.style.left=px+'px';t.style.top=py+'px'};place();pad.appendChild(t);t0=performance.now();
-    (function mv(now){if(state!=='go')return;const dt=Math.min(.05,(now-last)/1000);last=now;px+=vx*dt;py+=vy*dt;
-      if(px<8){px=8;vx=Math.abs(vx)}if(px>W-96){px=W-96;vx=-Math.abs(vx)}if(py<120){py=120;vy=Math.abs(vy)}if(py>H-100){py=H-100;vy=-Math.abs(vy)}
-      t.style.transform=`rotate(${Math.sin(now/180)*14}deg)`;place();requestAnimationFrame(mv)})(last);
-    t.addEventListener('pointerdown',e=>{e.stopPropagation();if(state!=='go')return;state='x';const dt=Math.round(performance.now()-t0);blip(500+Math.max(0,900-dt));
-      const b=t.getBoundingClientRect();burst(b.left+44,b.top+44,['🥕','✨'],12,.5);t.remove();hm.textContent=`${dt} ${T('ms')} · ${T('waitOthers')}`;report(dt)});
-    setTimeout(()=>{if(state==='go'){state='x';t.remove();hm.textContent=T('slept');report(3000)}},3000)},m.delay)}
-
-function roundResult(m){redraw=()=>roundResult(m,1);lb.hidden=false;const mine=m.losers.includes(me.id);
-  const names=m.losers.map(id=>m.names[id]||'?');const L1=WORDS[lang][(m.letters[m.losers[0]]||1)-1];
-  const again=arguments[1];if(!again){if(mine){blip(300);try{navigator.vibrate&&navigator.vibrate([150,60,150])}catch(e){}}else blip(700)}
-  const myN=m.letters[me.id]||0,myFrom=again?myN:(mine?myN-1:myN);
-  const rows=Object.keys(m.letters).sort((a,b)=>m.letters[a]-m.letters[b]||(m.ms[a]-m.ms[b])).map(id=>
-    `<li class="${m.losers.includes(id)?'loser':id===me.id?'me':''}"><span>${esc(m.names[id]||'?')}</span><span>${m.ms[id]} ${T('ms')} &nbsp;${donkey(m.letters[id],30,again?m.letters[id]:(m.losers.includes(id)?m.letters[id]-1:m.letters[id]))}</span></li>`).join('');
-  app.innerHTML=`<div class="dk-wrap">${donkey(myN,mine?150:110,myFrom)}</div>${word(myN)}<h1 style="font-size:clamp(24px,7vw,38px)">${mine?T('youGot')(L1):esc(names.join(', '))+' · '+L1}</h1>
-    ${mine?'':`<p>${esc(T('gotLetter')(names.join(', '),L1))}</p>`}<ol class="list">${rows}</ol><p class="status">${T('next')}</p>`;fillDonkeys()}
-
-function final(board,again){const mode=arguments[2]||board.mode||'short';board=board.rows||board;lb.hidden=false;redraw=()=>final({rows:board,mode},1);
-  const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!again){boom();bray(4,iAm);rain(['🫏'],iAm?140:70);setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
-  const hh=again?'':[0,1,2,3].map(i=>`<span class="hh" style="animation-delay:${i*.75}s;top:${-8-i%2*18}px;${i%2?'left':'right'}:${-10+i*4}px">${T('heehaw')}</span>`).join('');
-  const txt=(mode==='long'?T('lettersShare')(last.name):T('shareText')(last.name,last.ms))+' '+baseLink();
-  app.innerHTML=`<div class="dk-wrap">${hh}${donkey(4,170,again?4:(mode==='long'?3:0),again?'':'bray')}</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>
-    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${mode==='long'?donkey(r.l,30)+' '+word(r.l):r.ms+' '+T('ms')+' '+rank(r.ms)}</span></li>`).join('')}</ol>
-    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${T('share')}</a>
-    ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?'':`<p class="status">${T('rematchHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
-  fillDonkeys();if(!again)setTimeout(poopShow,500);const o2=document.getElementById('own2');if(o2)o2.onclick=createOwn;
-  if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame(mode)}}
-
-/* ---------- room watch: host gone / create own room ---------- */
-let hostId=null,lastHost=0,watchT=null,autoCreated=false;
-function markHost(m){if(!isHost&&m.from!==me.id){hostId=m.from;lastHost=performance.now()}}
-function startWatch(){clearInterval(watchT);lastHost=performance.now();watchT=setInterval(()=>{if(isHost||phase==='end'||phase==='gone')return;if(performance.now()-lastHost>9000)hostGone()},1500)}
-function baseLink(){return location.origin+location.pathname+'?lang='+lang}
-function createOwn(){location.href=location.pathname+'?lang='+lang+'&create=1'}
-function hostGone(){clearInterval(watchT);try{client&&client.end(true)}catch(e){}client=null;phase='gone';redraw=hostGone;lb.hidden=false;
-  app.innerHTML=`<div style="font-size:64px;line-height:1">👋</div><h2>${T(hostId?'hostGone':'noRoom')}</h2><p>${T('ownHint')}</p><button id="own">${T('createOwn')}</button>`;
-  document.getElementById('own').onclick=createOwn}
-setInterval(()=>{if(isHost&&client)send({t:'hb'})},3000);
-
-home();
+function card(k,img,href){const g=L[lang][k];return `<article class="card"><a href="${href}" aria-label="${esc(g.t)}"><img src="${img}" alt="" loading="lazy" width="1200" height="630"></a>
+  <div class="cb"><h3>${esc(g.t)}</h3><p>${esc(g.d)}</p><div class="tags">${g.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+  ${g.locs?`<div class="locs">${g.locs.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}<a class="play" href="${href}">${L[lang].play}</a></div></article>`}
+function render(){const t=L[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';try{localStorage.setItem('byd-lang',lang)}catch(e){}
+  document.getElementById('root').innerHTML=`
+  <div class="top"><span class="mini"><b>BYD</b> SHORTIES</span><button class="lang" id="lg" type="button">${t.other}</button></div>
+  <header class="hero"><h1 class="word"><span class="a">BYD</span><span class="b">SHORTIES</span></h1><span class="pill">PLAY ANYWHERE</span>
+    <p class="slogan">${t.slogan}</p><div class="chips">${t.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div></header>
+  <section><h2>${t.games}</h2><div class="games">${card('burger','burger/og.png','burger/?lang='+lang)}${card('donkey','og.png','donkey/?lang='+lang)}</div></section>
+  <section><h2>${t.how}</h2><ol class="steps">${t.steps.map(([b,s])=>`<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('')}</ol></section>
+  <section class="band"><h2 style="margin:0">${t.bandT}</h2><p>${t.bandP}</p><a class="share" href="https://wa.me/?text=${encodeURIComponent(t.shareText+SITE+'?lang='+lang)}" target="_blank" rel="noopener">💬 ${t.share}</a><span class="link">${SITE.replace('https://','')}</span></section>
+  <footer><span><b>BYD Shorties</b> · Play anywhere</span><span>${t.made} · <b>Build Your Dream</b> · 2026</span></footer>`;
+  document.getElementById('lg').onclick=()=>{lang=lang==='he'?'ru':'he';render()}}
+render();
 })();
 </script>
 </body>

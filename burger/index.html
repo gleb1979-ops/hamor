@@ -119,11 +119,12 @@ const BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-burger/v1/', GAME_SECS=30
 const AW=1500,AH=860,TOP=150;
 const DINER_T=[{x:440,y:370,r:70},{x:1060,y:370,r:70},{x:440,y:680,r:70},{x:1060,y:680,r:70}];
 const SCHOOL_R=[...[380,750,1120].flatMap(cx=>[400,650].map(cy=>({x:cx-85,y:cy-38,w:170,h:76}))),{x:620,y:168,w:260,h:68}];
-const LOCS={diner:{icon:'🍔',goal:7,secs:30},school:{icon:'🦶',goal:7,secs:30},soccer:{icon:'⚽',goal:5,secs:45}};
+const LOCS={diner:{icon:'🍔',goal:7,secs:30},school:{icon:'🦶',goal:7,secs:30},soccer:{icon:'⚽',goal:5,secs:45},snow:{icon:'❄️',goal:10,secs:40}};
+const SNOW_T=[{x:470,y:440,r:44},{x:1030,y:440,r:44},{x:750,y:690,r:46},{x:300,y:740,r:36},{x:1200,y:740,r:36},{x:750,y:300,r:34}];
 const RS=()=>LOCS[LOC].secs;
 const SPAWN_SOC={girl:[260,300],fat:[260,710],tall:[520,330],nerd:[520,680]};
 let LOC='diner',TABLES=DINER_T,RECTS=[];
-function setLoc(l){LOC=LOCS[l]?l:'diner';TABLES=LOC==='diner'?DINER_T:[];RECTS=LOC==='school'?SCHOOL_R:[]}
+function setLoc(l){LOC=LOCS[l]?l:'diner';TABLES=LOC==='diner'?DINER_T:LOC==='snow'?SNOW_T:[];RECTS=LOC==='school'?SCHOOL_R:[]}
 const ORDER=['girl','fat','tall','nerd'];
 const CH={girl:{col:'#ff6fae',sp:345,mass:1,pw:1,r:30,pick:0},fat:{col:'#4f8cff',sp:265,mass:2,pw:1.7,r:40,pick:0},
   tall:{col:'#3fbf6f',sp:375,mass:1.05,pw:.85,r:29,pick:0},nerd:{col:'#ff9f2e',sp:315,mass:1,pw:1,r:31,pick:28}};
@@ -138,7 +139,7 @@ const L={
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
   inviteText:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров за 30 секунд? ',push:'Толкнуть',winner:n=>`${n} — чемпион!`,youWin:'Ты чемпион!',
   again:'Ещё раз',lobbyBtn:'В комнату',againHost:'Новую игру запускает организатор',go:'ВПЕРЁД!',share:'Похвастаться',
-  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,loc:'Локация',locs:{diner:'🍔 Бургерная',school:'🏫 Класс',soccer:'⚽ Футбол'},tipSoccer:'⚽ Подбеги к мячу и жми «Удар!». Забей мимо вратаря! Соперников можно толкать',pushSoccer:'Удар!',goalTxt:'ГОООЛ!',saveTxt:'Сейв!',shareSoccer:(n,s)=>`В «Бургер-гонке» на футболе ⚽ ${n} забил(а) ${s} голов! Кто сможет больше?`,tipSchool:'🦶 Подкрадись к учителю СЗАДИ и жми 💥 — поджопник! Учитель видит всё в своём конусе: заметит — в угол!',corner:'В угол!',ouch:'Ай!',pushSchool:'Пинок!',shareSchool:(n,s)=>`В «Бургер-гонке» в классе 🏫 ${n} отвесил(а) учителям ${s} поджопников! 😂 А ты сможешь?`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
+  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,loc:'Локация',locs:{diner:'🍔 Бургерная',school:'🏫 Класс',soccer:'⚽ Футбол',snow:'❄️ Снежки'},tipSnow:'❄️ Жми «Снежок!» — летит туда, куда бежишь. Попал — +1! Прячься за снеговиками. 🌟 Золотой мега-снежок даёт +2. До 10 попаданий',pushSnow:'Снежок!',mega:'МЕГА-СНЕЖОК!',shareSnow:(n,s)=>`В «Бургер-гонке» в снежки ❄️ ${n} попал(а) ${s} раз! Кто метче?`,tipSoccer:'⚽ Подбеги к мячу и жми «Удар!». Забей мимо вратаря! Соперников можно толкать',pushSoccer:'Удар!',goalTxt:'ГОООЛ!',saveTxt:'Сейв!',shareSoccer:(n,s)=>`В «Бургер-гонке» на футболе ⚽ ${n} забил(а) ${s} голов! Кто сможет больше?`,tipSchool:'🦶 Подкрадись к учителю СЗАДИ и жми 💥 — поджопник! Учитель видит всё в своём конусе: заметит — в угол!',corner:'В угол!',ouch:'Ай!',pushSchool:'Пинок!',shareSchool:(n,s)=>`В «Бургер-гонке» в классе 🏫 ${n} отвесил(а) учителям ${s} поджопников! 😂 А ты сможешь?`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
  he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
@@ -147,7 +148,7 @@ const L={
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
   inviteText:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה המבורגרים ב־30 שניות? ',push:'דחיפה',winner:n=>`${n} — האלוף!`,youWin:'אתה האלוף!',
   again:'עוד פעם',lobbyBtn:'לחדר',againHost:'משחק חדש מפעיל המארגן',go:'!קדימה',share:'להשוויץ',
-  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,loc:'מקום',locs:{diner:'🍔 ההמבורגרייה',school:'🏫 הכיתה',soccer:'⚽ כדורגל'},tipSoccer:'⚽ רוצו לכדור ולחצו «בעיטה!». תבקיעו ליד השוער! אפשר לדחוף יריבים',pushSoccer:'בעיטה!',goalTxt:'!גוללל',saveTxt:'!הצלה',shareSoccer:(n,s)=>`ב«מרוץ ההמבורגרים» בכדורגל ⚽ ${n} הבקיע/ה ${s} גולים! מי יבקיע יותר?`,tipSchool:'🦶 התגנבו למורה מאחור ולחצו 💥 — בעיטה בטוסיק! המורה רואה כל מה שבתוך המשולש שלו: יראה אתכם — לפינה!',corner:'לפינה!',ouch:'אוי!',pushSchool:'בעיטה!',shareSchool:(n,s)=>`ב«מרוץ ההמבורגרים» בכיתה 🏫 ${n} נתן/ה למורים ${s} בעיטות בטוסיק! 😂 תוכלו יותר?`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
+  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,loc:'מקום',locs:{diner:'🍔 ההמבורגרייה',school:'🏫 הכיתה',soccer:'⚽ כדורגל',snow:'❄️ כדורי שלג'},tipSnow:'❄️ לחצו «כדור שלג!» — הוא עף לכיוון הריצה. פגעתם — 1+! תתחבאו מאחורי אנשי השלג. 🌟 כדור הזהב נותן 2+',pushSnow:'כדור שלג!',mega:'!מגה־כדור',shareSnow:(n,s)=>`ב«מרוץ ההמבורגרים» בכדורי שלג ❄️ ${n} פגע/ה ${s} פעמים! מי יותר מדויק?`,tipSoccer:'⚽ רוצו לכדור ולחצו «בעיטה!». תבקיעו ליד השוער! אפשר לדחוף יריבים',pushSoccer:'בעיטה!',goalTxt:'!גוללל',saveTxt:'!הצלה',shareSoccer:(n,s)=>`ב«מרוץ ההמבורגרים» בכדורגל ⚽ ${n} הבקיע/ה ${s} גולים! מי יבקיע יותר?`,tipSchool:'🦶 התגנבו למורה מאחור ולחצו 💥 — בעיטה בטוסיק! המורה רואה כל מה שבתוך המשולש שלו: יראה אתכם — לפינה!',corner:'לפינה!',ouch:'אוי!',pushSchool:'בעיטה!',shareSchool:(n,s)=>`ב«מרוץ ההמבורגרים» בכיתה 🏫 ${n} נתן/ה למורים ${s} בעיטות בטוסיק! 😂 תוכלו יותר?`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
   names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
   perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
 let lang=['he','ru'].includes(params.get('lang'))?params.get('lang'):null;
@@ -430,8 +431,34 @@ function drawBall(g,b){g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(b.x
   for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g.beginPath();g.arc(Math.cos(a)*15,Math.sin(a)*15,4.2,0,7);g.fill();g.beginPath();g.moveTo(Math.cos(a)*6.5,Math.sin(a)*6.5);g.lineTo(Math.cos(a)*12,Math.sin(a)*12);g.lineWidth=1.8;g.stroke()}
   g.fillStyle='rgba(255,255,255,.55)';g.beginPath();g.ellipse(-6,-7,5,3,-.6,0,7);g.fill();g.restore()}
 
+/* ================= snow yard art ================= */
+function paintSnow(f){
+  const gr=f.createLinearGradient(0,TOP,0,AH);gr.addColorStop(0,'#e3f0fb');gr.addColorStop(1,'#f7fbff');f.fillStyle=gr;f.fillRect(0,0,AW,AH);
+  let seed=11;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
+  f.fillStyle='rgba(160,195,230,.25)';for(let i=0;i<60;i++){f.beginPath();f.ellipse(rnd()*AW,TOP+rnd()*(AH-TOP),40+rnd()*90,10+rnd()*20,0,0,7);f.fill()}
+  f.fillStyle='rgba(140,170,210,.35)';for(let i=0;i<70;i++){const x=rnd()*AW,y=TOP+30+rnd()*(AH-TOP-40);f.beginPath();f.ellipse(x,y,5,3,.4,0,7);f.ellipse(x+12,y+9,5,3,.4,0,7);f.fill()}
+  // sky + trees + fence at top
+  const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#7fb2e6');sk.addColorStop(1,'#bcd8f2');f.fillStyle=sk;f.fillRect(0,0,AW,TOP-18);
+  for(let x=-20;x<AW+40;x+=74){const h=70+((x*7)%40),y=TOP-16;f.fillStyle='#2e6b4a';f.beginPath();f.moveTo(x,y);f.lineTo(x+32,y-h);f.lineTo(x+64,y);f.fill();
+    f.fillStyle='#fff';f.beginPath();f.moveTo(x+32,y-h);f.lineTo(x+22,y-h+26);f.lineTo(x+32,y-h+20);f.lineTo(x+42,y-h+26);f.fill();f.fillStyle='#5a3a22';f.fillRect(x+28,y-6,8,8)}
+  f.fillStyle='#8a5a32';f.fillRect(0,TOP-30,AW,7);f.fillRect(0,TOP-14,AW,7);for(let x=6;x<AW;x+=46){f.fillStyle='#9c6a3e';f.fillRect(x,TOP-44,12,40);f.fillStyle='#fff';f.beginPath();f.ellipse(x+6,TOP-44,9,5,0,0,7);f.fill()}
+  f.fillStyle='#fff';f.fillRect(0,TOP-6,AW,8);
+  f.fillStyle='#c9dcef';f.fillRect(0,TOP-2,14,AH);f.fillRect(AW-14,TOP-2,14,AH);f.fillRect(0,AH-14,AW,14);
+  // snowmen (obstacles)
+  for(const t of TABLES){const x=t.x,y=t.y,r=t.r;f.fillStyle='rgba(90,120,170,.25)';f.beginPath();f.ellipse(x+6,y+r*.55,r*1.05,r*.45,0,0,7);f.fill();
+    f.lineWidth=3;f.strokeStyle='#9fb7d4';f.fillStyle='#ffffff';f.beginPath();f.arc(x,y,r,0,7);f.fill();f.stroke();
+    f.beginPath();f.arc(x,y-r*1.05,r*.68,0,7);f.fill();f.stroke();
+    f.fillStyle='#e8412c';f.fillRect(x-r*.6,y-r*.55,r*1.2,r*.22);f.fillRect(x+r*.25,y-r*.55,r*.22,r*.6);
+    f.fillStyle='#2b1b30';[[-.22,-1.18],[.22,-1.18]].forEach(([a,b])=>{f.beginPath();f.arc(x+a*r,y+b*r,r*.08,0,7);f.fill()});
+    for(const b of [-.25,.05,.35]){f.beginPath();f.arc(x,y+b*r,r*.08,0,7);f.fill()}
+    f.fillStyle='#ff8a1f';f.beginPath();f.moveTo(x,y-r*1.02);f.lineTo(x+r*.55,y-r*.95);f.lineTo(x,y-r*.9);f.fill();
+    f.fillStyle='#262626';f.fillRect(x-r*.5,y-r*1.62,r,r*.12);f.fillRect(x-r*.34,y-r*2.05,r*.68,r*.45);
+    f.strokeStyle='#6b3f1d';f.lineWidth=4;f.beginPath();f.moveTo(x-r*.9,y-r*.1);f.lineTo(x-r*1.5,y-r*.6);f.moveTo(x+r*.9,y-r*.1);f.lineTo(x+r*1.5,y-r*.55);f.stroke()}}
+function drawSnowball(g,b,h=38){g.fillStyle='rgba(80,110,160,.25)';g.beginPath();g.ellipse(b.x,b.y+2,11,5,0,0,7);g.fill();
+  g.fillStyle='#fff';g.strokeStyle='#9fb7d4';g.lineWidth=2.5;g.beginPath();g.arc(b.x,b.y-h,11,0,7);g.fill();g.stroke();g.fillStyle='#dbe8f6';g.beginPath();g.arc(b.x+3,b.y-h+3,5,0,7);g.fill()}
+
 const floorCaches={};
-function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else{
+function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else if(LOC==='snow')paintSnow(f);else{
   const tile=75;for(let y=0;y<AH;y+=tile)for(let x=0;x<AW;x+=tile){f.fillStyle=((x+y)/tile)%2?'#efe6d6':'#d9cbb3';f.fillRect(x,y,tile,tile)}
   // counter
   f.fillStyle='#7a3b1d';f.fillRect(0,0,AW,TOP-24);f.fillStyle='#a8582c';f.fillRect(0,TOP-44,AW,20);f.fillStyle='#5e2c14';f.fillRect(0,TOP-24,AW,10);
@@ -490,7 +517,7 @@ function onMsg(m){
     else if(m.t==='hat'){const q=lobbyPlayers.get(m.from);if(q)q.hat=HATS[m.h]?m.h:null;if(T0)T0.hats[m.from]=HATS[m.h]?m.h:null;if(phase==='lobby')broadcastLobby()}
     else if(m.t==='pick'){const p=lobbyPlayers.get(m.from);if(p&&phase==='lobby'&&![...lobbyPlayers].some(([id,q])=>id!==m.from&&q.c===m.c)){p.c=m.c;broadcastLobby()}}
     else if(m.t==='pos'&&G&&G.P[m.from]&&m.from!==me.id){const b=G.P[m.from];b.x=m.x;b.y=m.y;b.moving=!!m.m;b.face=m.f||1;b.seen=performance.now()}
-    else if(m.t==='push'&&G&&m.from!==me.id)hostPush(m.from);
+    else if(m.t==='push'&&G&&m.from!==me.id){const b=G.P[m.from];if(b&&m.ax!=null){b.ax=m.ax;b.ay=m.ay}hostPush(m.from)}
     else if(m.t==='sync'&&G&&T0){const rr=Object.values(G.P).map(b=>{const x=T0.all.find(y=>y[0]===b.id);return [b.id,b.c,b.name,b.bot?1:0,b.hat||null]});send({t:'start',roster:rr,round:T0.round,to:m.from,loc:LOC},1)}
     else if(m.t==='grab'&&G&&matchPhase==='play'){const b=G.P[m.from],i=G.B.findIndex(g=>g.id===m.id);
       if(b&&i>=0&&b.stun<=0){const g=G.B[i],reach=CH[b.c].r+30+CH[b.c].pick+(b.hat==='top'?32:0)+110;
@@ -569,16 +596,17 @@ function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearH
   document.getElementById('bk').onclick=()=>lobby()}
 
 /* ================= match: shared client side ================= */
-let ballV=null,keeperV=null,netT=0,tview=[],curRound=0,syncAsked=false,claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=RS(),matchPhase='count',pops=[],rings=[];
+let sbV={},starV=null,myMega=false,aim={x:1,y:0},flakes=null,ballV=null,keeperV=null,netT=0,splats=[],tview=[],curRound=0,syncAsked=false,claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=RS(),matchPhase='count',pops=[],rings=[];
 const input={dx:0,dy:0};
-function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.getElementById('pushL').textContent=LOC==='school'?T('pushSchool'):LOC==='soccer'?T('pushSoccer'):T('push');ballV=null;keeperV=null;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
+function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.getElementById('pushL').textContent=LOC==='school'?T('pushSchool'):LOC==='soccer'?T('pushSoccer'):LOC==='snow'?T('pushSnow'):T('push');ballV=null;keeperV=null;sbV={};starV=null;myMega=false;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
   const SP=LOC==='soccer'?SPAWN_SOC:SPAWN;r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[c][0],y:SP[c][1],tx:SP[c][0],ty:SP[c][1],score:0,stun:0,moving:false,face:1});
   const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine)mine.hat=mineR[4]||null;
   const w=document.getElementById('watch');w.hidden=!!mine;w.textContent=T('watching');document.getElementById('ctrl').style.visibility=mine?'':'hidden';
-  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,9000)}else tp.hidden=true;claimed=new Set()}
+  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):LOC==='snow'?T('tipSnow'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,9000)}else tp.hidden=true;claimed=new Set()}
 function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filter(g=>!claimed.has(g[0]));m.ev=(m.ev||[]).filter(e=>!(e[0]==='e'&&e[1]===me.id));if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}matchPhase=m.ph}
   if(m.ph==='count'){const n=Math.ceil(m.tl);if(n!==lastCount){lastCount=n;sndBeep(0);flashBig(n,900)}}
   burgers=m.B;
+  if(m.SB){const nv={};for(const [id,x,y,vx,vy,mg] of m.SB){const o=sbV[id];nv[id]=o?Object.assign(o,{tx:x,ty:y,vx,vy}):{x,y,tx:x,ty:y,vx,vy,mega:!!mg}}sbV=nv;starV=m.ST?{x:m.ST[0],y:m.ST[1]}:null;myMega=(m.MG||[]).includes(me.id)}
   if(m.BL){const [x,y,vx,vy,ky,sv,fr]=m.BL;if(!ballV)ballV={x,y,rot:0};ballV.tx=x;ballV.ty=y;ballV.vx=fr?0:vx;ballV.vy=fr?0:vy;if(!keeperV)keeperV={y:ky};keeperV.ty=ky;keeperV.save=!!sv}
   if(m.TC){m.TC.forEach(([x,y,a,st,k],i)=>{let tv=tview[i];if(!tv)tv=tview[i]={x,y};tv.tx=x;tv.ty=y;tv.a=a;tv.st=st;tv.k=TKINDS[k]});tview.length=m.TC.length}else tview=[];
   for(const [id,x,y,score,stun,mv,f] of m.P){const v=view[id];if(!v)continue;if(id!==me.id){v.tx=x;v.ty=y;v.moving=!!mv;v.face=f||1}v.score=score;v.stun=stun;if(id===me.id&&mine)mine.score=score}
@@ -588,6 +616,11 @@ function handleEv(e){
   if(e[0]==='k'){pops.push({x:e[2],y:e[3]-60,t:0,txt:'+1'});tone(170,.12,'square',.25,90);setTimeout(()=>tone(950,.18,'sine',.18,1500),70);if(e[1]===me.id)vib([40,30,60]);return}
   if(e[0]==='c'){pops.push({x:e[2],y:e[3],t:-.2,txt:T('corner'),big:1});tone(2300,.14,'square',.07);setTimeout(()=>tone(2100,.3,'square',.07),150);if(e[1]===me.id)vib([200,100,200]);return}
   if(e[0]==='l'){tone(520,.06,'triangle',.06,700);return}
+  if(e[0]==='t'){tone(e[2]?420:700,.1,'sine',.08,e[2]?200:350);return}
+  if(e[0]==='h'){splats.push({x:e[3],y:e[4],t:0,big:e[5]});pops.push({x:e[3],y:e[4],t:0,txt:e[5]?'+2':'+1'});tone(180,.12,'triangle',.22,90);if(e[2]===me.id)vib([60,30,60]);if(e[1]===me.id)vib(25);return}
+  if(e[0]==='x'){splats.push({x:e[1],y:e[2],t:0,big:e[3]});tone(240,.06,'triangle',.1,120);return}
+  if(e[0]==='m'){tone(1320,.12,'sine',.08);setTimeout(()=>tone(1760,.15,'sine',.08),120);return}
+  if(e[0]==='M'){if(e[1]===me.id){flashBig(T('mega'),1000);vib([40,30,40])}[880,1175,1568].forEach((f,i)=>setTimeout(()=>tone(f,.12,'square',.08),i*90));return}
   if(e[0]==='b'){tone(150,.09,'square',.22,70);if(e[1]===me.id)vib(25);return}
   if(e[0]==='s'){tone(320,.12,'triangle',.18,160);crowd(.7,.12);flashBig(T('saveTxt'),700);return}
   if(e[0]==='g'){netT=performance.now();flashBig(T('goalTxt'),1500);crowd(1.8,.3);[523,659,784,1046,1318].forEach((f,i)=>setTimeout(()=>tone(f,.18,'square',.1),i*110));confetti();if(e[1]===me.id)vib([100,50,100,50,200]);return}
@@ -609,9 +642,9 @@ function doPushLocal(){if(!mine||matchPhase!=='play'||mine.stun>0||performance.n
   let best=null,bd=1e9;for(const id in view){if(id===me.id)continue;const v=view[id],d=Math.hypot(v.x-mine.x,v.y-mine.y);if(d<bd){bd=d;best=v}}
   for(const tv of tColl()){const d=Math.hypot(tv.x-mine.x,tv.y-mine.y);if(d<bd){bd=d;best=tv}}
   if(LOC==='soccer'&&ballV){const d=Math.hypot(ballV.x-mine.x,ballV.y-mine.y);if(d<bd+60){bd=d;best=ballV}}
-  if(best&&bd<200){mine.kx+=(best.x-mine.x)/bd*380;mine.ky+=(best.y-mine.y)/bd*380}
+  if(LOC!=='snow'&&best&&bd<200){mine.kx+=(best.x-mine.x)/bd*380;mine.ky+=(best.y-mine.y)/bd*380}
   rings.push({x:mine.x,y:mine.y,t:0});tone(240,.08,'square',.12,120);
-  if(isHost)hostPush(me.id);else send({t:'push'})}
+  if(isHost){if(G&&G.P[me.id]){G.P[me.id].ax=aim.x;G.P[me.id].ay=aim.y}hostPush(me.id)}else send({t:'push',ax:+aim.x.toFixed(2),ay:+aim.y.toFixed(2)})}
 pushB.addEventListener('pointerdown',e=>{e.preventDefault();doPushLocal()});
 const keys={};addEventListener('keydown',e=>{keys[e.key]=1;if(e.key===' '&&phase==='play'){e.preventDefault();doPushLocal()}});addEventListener('keyup',e=>{keys[e.key]=0});
 function keyInput(){let dx=(keys.ArrowRight||keys.d||keys.D?1:0)-(keys.ArrowLeft||keys.a||keys.A?1:0),dy=(keys.ArrowDown||keys.s||keys.S?1:0)-(keys.ArrowUp||keys.w||keys.W?1:0);return dx||dy?[dx,dy]:null}
@@ -627,7 +660,7 @@ let rafOn=false,lastT=0,lastSend=0;
 function loopStart(){if(rafOn)return;rafOn=true;lastT=performance.now();requestAnimationFrame(frame)}
 function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=now/1000;
   // my movement (client-authoritative)
-  if(mine){const k=keyInput();const dx=k?k[0]:input.dx,dy=k?k[1]:input.dy;const others=Object.values(view).filter(v=>v.id!==me.id);
+  if(mine){const k=keyInput();const dx=k?k[0]:input.dx,dy=k?k[1]:input.dy;{const l=Math.hypot(dx,dy);if(l>.3){aim.x=dx/l;aim.y=dy/l}}const others=Object.values(view).filter(v=>v.id!==me.id);
     move(mine,matchPhase==='play'?dx:0,matchPhase==='play'?dy:0,dt,others);
     if(isHost&&G&&G.P[me.id]){const b=G.P[me.id];b.x=mine.x;b.y=mine.y;b.moving=mine.moving;b.face=mine.face}
     else if(now-lastSend>80){lastSend=now;send({t:'pos',x:Math.round(mine.x),y:Math.round(mine.y),m:mine.moving?1:0,f:mine.face})}
@@ -638,6 +671,7 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
   for(const id in view){if(id===me.id)continue;const v=view[id],k=Math.min(1,dt*14);v.x+=(v.tx-v.x)*k;v.y+=(v.ty-v.y)*k}
   if(!isHost&&ballV&&ballV.tx!=null){ballV.x+=(ballV.vx||0)*dt;ballV.y+=(ballV.vy||0)*dt;const k=Math.min(1,dt*9);ballV.x+=(ballV.tx-ballV.x)*k;ballV.y+=(ballV.ty-ballV.y)*k;ballV.rot=(ballV.rot||0)+(ballV.vx||0)*dt/BALL_R;
     if(keeperV){const dk=(keeperV.ty-keeperV.y);keeperV.moving=Math.abs(dk)>2;keeperV.y+=dk*Math.min(1,dt*10)}}
+  if(!isHost)for(const id in sbV){const b=sbV[id];b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.tx!=null){const k=Math.min(1,dt*6);b.tx+=b.vx*dt;b.ty+=b.vy*dt;b.x+=(b.tx-b.x)*k;b.y+=(b.ty-b.y)*k}}
   if(!isHost)for(const tv of tview){const k=Math.min(1,dt*12);tv.x+=(tv.tx-tv.x)*k;tv.y+=(tv.ty-tv.y)*k}
   // draw
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#120c16';ctx.fillRect(0,0,innerWidth,innerHeight);
@@ -647,13 +681,21 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
   rings=rings.filter(r=>r.t<.35);
   for(const tv of tview)drawCone(ctx,tv);
   if(LOC==='soccer'){const nb=performance.now()-netT<700?Math.sin((performance.now()-netT)/700*Math.PI)*22:0;drawGoal(ctx,nb)}
-  const list=[...Object.values(view),...tview.map(tv=>({tch:tv,y:tv.y}))];if(LOC==='soccer'&&ballV)list.push({ball:ballV,y:ballV.y});if(LOC==='soccer'&&keeperV)list.push({kp:keeperV,y:keeperV.y});list.sort((a,b)=>a.y-b.y);
-  for(const v of list){if(v.tch){drawTeacher(ctx,v.tch,t);continue}if(v.ball){drawBall(ctx,v.ball);continue}if(v.kp){drawTeacher(ctx,{x:KX,y:v.kp.y,a:Math.PI,st:v.kp.save?1:0,k:'pe',moving:v.kp.moving},v.kp.moving?t:0);continue}if(v.id===me.id){ctx.strokeStyle='rgba(255,197,49,.9)';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(v.x,v.y,(v.c==='fat'?50:40)+Math.sin(t*6)*3,13,0,0,7);ctx.stroke()}drawHero(ctx,v,t+v.x*.01);
+  if(LOC==='snow'){if(starV){const sy=starV.y-30+Math.sin(t*5)*6;ctx.fillStyle='rgba(255,197,49,.25)';ctx.beginPath();ctx.arc(starV.x,starV.y-30,34+Math.sin(t*8)*4,0,7);ctx.fill();
+      ctx.fillStyle='#ffc531';ctx.strokeStyle='#b88a10';ctx.lineWidth=3;ctx.beginPath();ctx.arc(starV.x,sy,16,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';star(ctx,starV.x,sy,9)}
+    if(mine&&matchPhase==='play'){ctx.strokeStyle=myMega?'rgba(255,197,49,.95)':'rgba(43,27,48,.55)';ctx.lineWidth=myMega?7:5;ctx.lineCap='round';const ax=mine.x+aim.x*55,ay=mine.y+aim.y*55;
+      ctx.beginPath();ctx.moveTo(mine.x+aim.x*22,mine.y+aim.y*22);ctx.lineTo(ax,ay);ctx.stroke();ctx.beginPath();ctx.moveTo(ax+aim.x*10,ay+aim.y*10);ctx.lineTo(ax-aim.y*9,ay+aim.x*9);ctx.lineTo(ax+aim.y*9,ay-aim.x*9);ctx.closePath();ctx.fillStyle=ctx.strokeStyle;ctx.fill()}}
+  const list=[...Object.values(view),...tview.map(tv=>({tch:tv,y:tv.y}))];if(LOC==='snow')for(const id in sbV)list.push({sb:sbV[id],y:sbV[id].y});if(LOC==='soccer'&&ballV)list.push({ball:ballV,y:ballV.y});if(LOC==='soccer'&&keeperV)list.push({kp:keeperV,y:keeperV.y});list.sort((a,b)=>a.y-b.y);
+  for(const v of list){if(v.sb){if(v.sb.mega){ctx.save();ctx.translate(v.sb.x,v.sb.y);ctx.scale(1.8,1.8);ctx.translate(-v.sb.x,-v.sb.y);drawSnowball(ctx,v.sb,24);ctx.restore()}else drawSnowball(ctx,v.sb);continue}if(v.tch){drawTeacher(ctx,v.tch,t);continue}if(v.ball){drawBall(ctx,v.ball);continue}if(v.kp){drawTeacher(ctx,{x:KX,y:v.kp.y,a:Math.PI,st:v.kp.save?1:0,k:'pe',moving:v.kp.moving},v.kp.moving?t:0);continue}if(v.id===me.id){ctx.strokeStyle='rgba(255,197,49,.9)';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(v.x,v.y,(v.c==='fat'?50:40)+Math.sin(t*6)*3,13,0,0,7);ctx.stroke()}drawHero(ctx,v,t+v.x*.01);
     const ny=v.y+headTop(v.c,v.hat)-14;ctx.font='700 22px Rubik, sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000a';
     const label=(v.id===me.id?'▼ ':'')+v.name;ctx.strokeText(label,v.x,ny);ctx.fillStyle=v.id===me.id?'#ffc531':'#fff';ctx.fillText(label,v.x,ny)}
   for(const p of pops){p.t+=dt;if(p.t<0)continue;ctx.globalAlpha=Math.max(0,1-p.t*(p.big?.9:1.4));ctx.direction=/[\u0590-\u05FF]/.test(p.txt)?'rtl':'ltr';ctx.font=p.big?'900 44px Rubik, sans-serif':'900 34px Rubik, sans-serif';ctx.fillStyle='#ffc531';ctx.strokeStyle='#e8412c';ctx.lineWidth=5;
     ctx.strokeText(p.txt,p.x,p.y-40-p.t*70);ctx.fillText(p.txt,p.x,p.y-40-p.t*70);ctx.globalAlpha=1}
   pops=pops.filter(p=>p.t<(p.big?1.2:.8));
+  for(const sp of splats){sp.t+=dt;const k=sp.t/.45,R=(sp.big?60:26)*(0.4+k);ctx.fillStyle=`rgba(255,255,255,${Math.max(0,1-k)})`;for(let i=0;i<9;i++){const a=i/9*6.28;ctx.beginPath();ctx.arc(sp.x+Math.cos(a)*R,sp.y-30+Math.sin(a)*R*.6,(sp.big?9:5)*(1-k*.6),0,7);ctx.fill()}}
+  splats=splats.filter(sp=>sp.t<.45);
+  if(LOC==='snow'){if(!flakes){flakes=[];for(let i=0;i<90;i++)flakes.push({x:Math.random()*AW,y:Math.random()*AH,s:1.5+Math.random()*3.5,v:30+Math.random()*50})}
+    ctx.fillStyle='rgba(255,255,255,.85)';for(const fl of flakes){fl.y+=fl.v*dt;fl.x+=Math.sin(t+fl.s)*12*dt;if(fl.y>AH){fl.y=-5;fl.x=Math.random()*AW}ctx.beginPath();ctx.arc(fl.x,fl.y,fl.s,0,7);ctx.fill()}}
   // hud
   const tm=document.getElementById('timer');const shown=matchPhase==='count'?RS():Math.max(0,Math.ceil(timeLeft));if(tm.textContent!=String(shown))tm.textContent=shown;tm.classList.toggle('low',matchPhase==='play'&&timeLeft<=5);
   const sc=document.getElementById('scores'),html=Object.values(view).sort((a,b)=>b.score-a.score).map(v=>`<span><i style="background:${CH[v.c].col}"></i>${esc(v.name)} ${v.score}</span>`).join('');if(sc._h!==html){sc.innerHTML=html;sc._h=html}
@@ -668,8 +710,8 @@ function hostStart(){phase='play';const r=[];const used=new Set();
   if(useBots)ORDER.forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   T0={all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{},hats:{}};for(const [id,p] of lobbyPlayers)T0.hats[id]=p.hat||null;startRound()}
 function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],T0.round>1?(T0.hats[x[0]]||null):null]);
-  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,TC:null,ball:null,keeper:null};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
-  if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
+  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,hits:0,TC:null,ball:null,keeper:null,SB:null,star:null,starT:6};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
+  if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else if(LOC==='snow')G.SB=[];else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
   send({t:'start',roster:rr,round:T0.round,loc:LOC},1);const rnd=T0.round;setTimeout(()=>{if(T0&&T0.round===rnd&&G)send({t:'start',roster:rr,round:rnd,again:1,loc:LOC},1)},700);startLocal(rr,T0.round,LOC);matchPhase='count';lastCount=0;evq=[];stAcc=0}
 function endRound(){const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]=(T0.total[id]||0)+P[id].score;T0.last[id]=P[id].score});
   const max=Math.max(...ids.map(id=>P[id].score)),leaders=ids.filter(id=>P[id].score===max),out=ids.filter(id=>!leaders.includes(id));
@@ -711,6 +753,19 @@ function ballTick(dt){const B=G.ball,K=G.keeper,P=G.P;
   // keeper movement: follows ball with lag, sometimes guesses wrong
   K.lag-=dt;if(K.lag<=0){K.lag=.35+Math.random()*.35;K.aim=B.y+(Math.random()-.5)*(B.x>GX-500?170:240)}
   const want=clamp(K.aim??MIDY,MOUTH[0]+28,MOUTH[1]-28),dy=want-K.y,ms=150*dt;K.y+=clamp(dy,-ms,ms);K.moving=Math.abs(dy)>3;if(K.save>0)K.save-=dt}
+function freeSnowPoint(){for(let i=0;i<40;i++){const x=120+Math.random()*(AW-240),y=TOP+80+Math.random()*(AH-TOP-160);if(TABLES.some(t=>Math.hypot(x-t.x,y-t.y)<t.r+50))continue;return [x,y]}return [AW/2,AH/2]}
+function snowHit(o,id,mega,x,y){const A=G.P[o],B=G.P[id];if(!B)return;if(A){A.score+=mega?2:1}G.hits+=mega?2:1;let st=(mega?1.5:.95)*(B.hat==='ushanka'?.6:1);
+  evq.push(['h',o,id,Math.round(x),Math.round(y),mega?1:0]);
+  if(id===me.id&&mine){mine.stun=st;mine.kx*=.2;mine.ky*=.2}else if(B.bot){B.stun=st}else{send({t:'kb',to:id,vx:0,vy:0,s:st},1);B.stun=st}}
+function snowTick(dt){const now=performance.now();
+  for(let i=G.SB.length-1;i>=0;i--){const b=G.SB[i];b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;let dead=b.life<=0||b.x<20||b.x>AW-20||b.y<TOP||b.y>AH-20;
+    if(!dead)for(const t of TABLES){if(Math.hypot(b.x-t.x,b.y-t.y)<t.r+8){dead=true;break}}
+    if(!dead)for(const id in G.P){if(id===b.o)continue;const k=G.P[id];if(k.stun>0)continue;if(Math.hypot(k.x-b.x,k.y-b.y)<CH[k.c].r+(b.mega?26:14)){
+        if(b.mega){for(const j in G.P){if(j===b.o)continue;const q=G.P[j];if(q.stun<=0&&Math.hypot(q.x-b.x,q.y-b.y)<110)snowHit(b.o,j,true,q.x,q.y)}}else snowHit(b.o,id,false,b.x,b.y);dead=true;break}}
+    if(dead){if(b.life>0)evq.push(['x',Math.round(b.x),Math.round(b.y),b.mega?1:0]);G.SB.splice(i,1)}}
+  // golden mega snowball pickup
+  if(!G.star){G.starT-=dt;if(G.starT<=0){const [x,y]=freeSnowPoint();G.star={x,y};evq.push(['m',0])}}
+  else for(const id in G.P){const k=G.P[id];if(k.stun<=0&&Math.hypot(k.x-G.star.x,k.y-G.star.y)<CH[k.c].r+26){k.mega=true;G.star=null;G.starT=7+Math.random()*4;evq.push(['M',id]);break}}}
 const TSPEED={teach:120,pe:145,dir:100};
 function spawnTeachers(){const st=[[750,300],[290,525],[1210,525]];G.TC=TKINDS.map((k,i)=>({k,x:st[i][0],y:st[i][1],fx:i===1?1:-1,fy:0,st:0,tt:2.2+Math.random()*2,tx:null,ty:null}))}
 function freePoint(){for(let i=0;i<40;i++){const x=90+Math.random()*(AW-180),y=TOP+50+Math.random()*(AH-TOP-110);if(RECTS.some(q=>x>q.x-55&&x<q.x+q.w+55&&y>q.y-55&&y<q.y+q.h+55))continue;return [x,y]}return [AW/2,AH-120]}
@@ -727,6 +782,8 @@ function teacherTick(dt){const now=performance.now();for(const T of G.TC){
   const R=T.st===1?380:290;for(const id in G.P){const b=G.P[id];if(b.stun>0||(b.caught||0)>now)continue;const vx=b.x-T.x,vy=b.y-T.y,d=Math.hypot(vx,vy);
     if(d<R&&d>1&&(vx*T.fx+vy*T.fy)/d>.64)catchKid(id)}}}
 function hostPush(aid){const A=G&&G.P[aid];if(!A||matchPhase!=='play')return;const now=performance.now();if(A.cd>now||A.stun>0)return;A.cd=now+(A.hat==='crown'?600:850);
+  if(LOC==='snow'&&G.SB){let ax=A.ax,ay=A.ay;if(ax==null){ax=A.face||1;ay=0}const l=Math.hypot(ax,ay)||1;ax/=l;ay/=l;const mega=!!A.mega;A.mega=false;
+    G.SB.push({id:G.nextId++,x:A.x+ax*(CH[A.c].r+16),y:A.y+ay*(CH[A.c].r+16),vx:ax*(mega?760:860),vy:ay*(mega?760:860),o:aid,life:.85,mega});evq.push(['t',aid,mega?1:0]);return}
   if(LOC==='soccer'&&G.ball&&G.ball.frozen<=0){const B=G.ball,dx=B.x-A.x,dy=B.y-A.y,d=Math.hypot(dx,dy)||1;
     if(d<CH[A.c].r+BALL_R+48){const pw=980*(A.hat==='crown'?1.2:1)*(.92+CH[A.c].pw*.08);let ux=dx/d,uy=dy/d;
       const gx=GX+30-B.x,gy=MIDY-B.y,gl=Math.hypot(gx,gy)||1;if(ux>.15){ux=ux*.55+gx/gl*.45;uy=uy*.55+gy/gl*.45;const l=Math.hypot(ux,uy);ux/=l;uy/=l}
@@ -742,6 +799,14 @@ function hostPush(aid){const A=G&&G.P[aid];if(!A||matchPhase!=='play')return;con
     else if(B.bot){B.kx=ux*force;B.ky=uy*force;B.stun=stun}
     else{send({t:'kb',to:best,vx:Math.round(ux*force),vy:Math.round(uy*force),s:stun},1);B.stun=stun}}}
 function botThink(b,dt){const brain=botBrain[b.id]||(botBrain[b.id]={target:null,wob:Math.random()*6,react:0,idle:0});brain.react-=dt;if(brain.idle>0){brain.idle-=dt;return [0,0]}
+  if(LOC==='snow'&&G.SB){if(brain.react<=0){brain.react=.5+Math.random()*.7;if(Math.random()<.15){brain.idle=.3+Math.random()*.5;return [0,0]}
+      let best=null,bd=1e9;for(const id in G.P){if(id===b.id)continue;const o=G.P[id],d=Math.hypot(o.x-b.x,o.y-b.y);if(d<bd){bd=d;best=o}}brain.tgt=best;brain.strafe=Math.random()<.5?1:-1}
+    let dx=0,dy=0;const o=brain.tgt;
+    if(G.star&&!b.mega&&Math.hypot(G.star.x-b.x,G.star.y-b.y)<500){dx=G.star.x-b.x;dy=G.star.y-b.y}
+    else if(o){const vx=o.x-b.x,vy=o.y-b.y,d=Math.hypot(vx,vy)||1;const want=d>420?1:d<260?-1:0;dx=vx/d*want-vy/d*.8*brain.strafe;dy=vy/d*want+vx/d*.8*brain.strafe;
+      if(d<620&&Math.random()<dt*.75){const ang=Math.atan2(o.y-b.y,o.x-b.x)+(Math.random()-.5)*.55;b.ax=Math.cos(ang);b.ay=Math.sin(ang);hostPush(b.id)}}
+    for(const t of TABLES){const ox=b.x-t.x,oy=b.y-t.y,d=Math.hypot(ox,oy);if(d<t.r+60&&d>0){dx+=ox/d*.9;dy+=oy/d*.9}}
+    const l=Math.hypot(dx,dy)||1;return [dx/l*.6,dy/l*.6]}
   if(LOC==='soccer'&&G.ball){const B=G.ball;if(brain.react<=0){brain.react=.4+Math.random()*.6;if(Math.random()<.15){brain.idle=.3+Math.random()*.5;return [0,0]}}
     const gx=GX+30-B.x,gy=MIDY-B.y,gl=Math.hypot(gx,gy)||1,bx=B.x-gx/gl*58,by=B.y-gy/gl*58;let dx=bx-b.x,dy=by-b.y;const d=Math.hypot(dx,dy)||1;
     const db=Math.hypot(B.x-b.x,B.y-b.y),behind=((B.x-b.x)*gx+(B.y-b.y)*gy)/(db*gl||1);
@@ -765,19 +830,20 @@ function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
   if(matchPhase==='count'){G.count-=dt;timeLeft=G.count;const n=Math.ceil(G.count);if(n!==lastCount&&n>0){lastCount=n;sndBeep(0);flashBig(n,900)}
     if(G.count<=0){matchPhase='play';G.t=RS();sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}}
   else if(matchPhase==='play'){G.t-=dt;timeLeft=G.t;
-    if(G.TC)teacherTick(dt);if(G.ball)ballTick(dt);
+    if(G.TC)teacherTick(dt);if(G.ball)ballTick(dt);if(G.SB)snowTick(dt);
     for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id!==me.id&&b.stun>0)b.stun-=dt}
     for(const id in P){const b=P[id];if(b.stun>0)continue;const reach=CH[b.c].r+26+CH[b.c].pick+(b.hat==='top'?32:0);
       for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<reach){G.B.splice(i,1);b.score++;evq.push(['e',id,Math.round(g.x),Math.round(g.y)])}}}
-    if(G.t<=0||(LOC==='school'?G.kicks>=LOCS.school.goal:LOC==='soccer'?G.goals>=LOCS.soccer.goal:G.B.length===0)){matchPhase='end'}}
+    if(G.t<=0||(LOC==='school'?G.kicks>=LOCS.school.goal:LOC==='soccer'?G.goals>=LOCS.soccer.goal:LOC==='snow'?G.hits>=LOCS.snow.goal:G.B.length===0)){matchPhase='end'}}
   // views for host render
   for(const id in P){const b=P[id],v=view[id];if(!v)continue;if(id!==me.id){v.tx=b.x;v.ty=b.y;v.moving=b.moving;v.face=b.face;v.stun=b.stun>0?1:0}v.score=b.score}
   burgers=G.B.map(g=>[g.id,Math.round(g.x),Math.round(g.y)]);
+  if(G.SB){const nv={};for(const b of G.SB)nv[b.id]={x:b.x,y:b.y,vx:0,vy:0,mega:b.mega};sbV=nv;starV=G.star?{x:G.star.x,y:G.star.y}:null;myMega=!!(G.P[me.id]&&G.P[me.id].mega)}
   if(G.ball){ballV={x:G.ball.x,y:G.ball.y,rot:G.ball.rot};keeperV={y:G.keeper.y,save:G.keeper.save>0,moving:G.keeper.moving}}
   tview=G.TC?G.TC.map(T=>({x:T.x,y:T.y,tx:T.x,ty:T.y,a:Math.atan2(T.fy,T.fx),st:T.st,k:T.k})):[];
   if(evq.length){for(const e of evq)handleEvHost(e)}
   stAcc+=dt;if(stAcc>=.09||matchPhase==='end'){stAcc=0;
-    send({t:'st',ph:matchPhase==='end'?'play':matchPhase,tl:Math.max(0,+timeLeft.toFixed(2)),B:burgers,ev:evq,TC:G.TC?G.TC.map(T=>[Math.round(T.x),Math.round(T.y),+Math.atan2(T.fy,T.fx).toFixed(2),T.st,TKINDS.indexOf(T.k)]):undefined,BL:G.ball?[Math.round(G.ball.x),Math.round(G.ball.y),Math.round(G.ball.vx),Math.round(G.ball.vy),Math.round(G.keeper.y),G.keeper.save>0?1:0,G.ball.frozen>0?1:0]:undefined,
+    send({t:'st',ph:matchPhase==='end'?'play':matchPhase,tl:Math.max(0,+timeLeft.toFixed(2)),B:burgers,ev:evq,TC:G.TC?G.TC.map(T=>[Math.round(T.x),Math.round(T.y),+Math.atan2(T.fy,T.fx).toFixed(2),T.st,TKINDS.indexOf(T.k)]):undefined,SB:G.SB?G.SB.map(b=>[b.id,Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),b.mega?1:0]):undefined,ST:G.star?[Math.round(G.star.x),Math.round(G.star.y)]:undefined,MG:G.SB?Object.keys(G.P).filter(id=>G.P[id].mega):undefined,BL:G.ball?[Math.round(G.ball.x),Math.round(G.ball.y),Math.round(G.ball.vx),Math.round(G.ball.vy),Math.round(G.keeper.y),G.keeper.save>0?1:0,G.ball.frozen>0?1:0]:undefined,
       P:Object.values(P).map(b=>[b.id,Math.round(b.x),Math.round(b.y),b.score,b.stun>0?1:0,b.moving?1:0,b.face])});evq=[]}
   if(matchPhase==='end')endRound()}
 const handledHost=new WeakSet();
@@ -795,7 +861,7 @@ function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('
   if(!again){confetti();[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12),i*140));if(iWin)vib([100,50,100,50,300])}
   const medalIcons=['🥇','🥈','🥉','🍟'];let rank=0;
   app.innerHTML=`<div style="font-size:64px;line-height:1">🏆</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1>${medalLine?`<p style="color:var(--mustard);font-weight:700;font-size:18px">${medalLine}</p>`:''}<ol class="podium" id="pod"></ol>
-    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='school'?T('shareSchool'):LOC==='soccer'?T('shareSoccer'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
+    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='school'?T('shareSchool'):LOC==='soccer'?T('shareSoccer'):LOC==='snow'?T('shareSnow'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button id="ag">${T('again')} 🍔</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?'':`<p class="status">${T('againHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
   const pod=document.getElementById('pod');
   board.forEach((b,i)=>{rank=i;const li=document.createElement('li');li.className=rank===0?'win':'';

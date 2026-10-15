@@ -42,6 +42,14 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 .status{font-size:13px;color:var(--muted)}
 .err{color:var(--hot)}
 .word{font-family:"Rubik",sans-serif;font-weight:700;font-size:20px;letter-spacing:2px;white-space:nowrap}.word i{font-style:normal;opacity:.18}.word b{color:var(--hot)}
+.donkey{display:block;overflow:visible}
+.list .donkey{display:inline-block;vertical-align:middle}
+.dk-wrap{position:relative;display:grid;place-items:center}
+.bray{animation:bray .75s ease-in-out 4}
+@keyframes bray{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg) scale(1.06)}45%{transform:rotate(6deg)}70%{transform:rotate(-4deg) scale(1.04)}}
+.hh{position:absolute;font-family:var(--display);font-weight:800;font-size:clamp(20px,6vw,30px);color:var(--sun);text-shadow:0 3px 0 var(--hot);opacity:0;animation:hh .75s ease-out both;white-space:nowrap}
+@keyframes hh{0%{opacity:0;transform:translateY(10px) scale(.6)}30%{opacity:1;transform:translateY(-10px) scale(1.1)}100%{opacity:0;transform:translateY(-40px) scale(1)}}
+@media (prefers-reduced-motion:reduce){.bray,.hh{animation-duration:.01s}}
 .modes{display:grid;gap:10px;width:min(100%,340px)}
 .lang{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));z-index:60;padding:8px 14px;font-size:14px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){.tgt{animation:none}}
@@ -64,7 +72,7 @@ const L={
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',you:'(ты)',inGame:'В игре: ',start:'Старт · 3 раунда',
   inviteText:'Го играть в «Кто осёл?» 🫏 Кто последний нажмёт — тот осёл! ',round:'Раунд',waitCarrot:'Жди морковку… не жми раньше!',carrot:'Морковка',
   ms:'мс',early:'Рано! +1500 мс',waitOthers:'ждём остальных',slept:'Проспал! +2000 мс',youHamor:'Ты — осёл! 😂',isHamor:' — осёл!',
-  share:'Похвастаться в группе',shareText:(n,ms)=>`В «Кто осёл?» 🫏 осёл сегодня — ${n} (${ms} мс)! 😂`,rematch:'Реванш',rematchHost:'Реванш запускает организатор',short:'Короткая · 3 раунда',long:'Длинная · до ОСЁЛ',longHint:'Длинная: каждый раунд самый медленный получает букву О → С → Ё → Л. Кто первым соберёт ОСЁЛ, тот проиграл.',gotLetter:(n,l)=>`${n} получает букву ${l}`,youGot:l=>`Тебе досталась буква ${l} 😬`,next:'Следующий раунд…',lettersShare:(n)=>`Мы играли в «Кто осёл?» до последней буквы 🫏 ${n} собрал(а) ОСЁЛ! 😂`,other:'עברית'},
+  share:'Похвастаться в группе',shareText:(n,ms)=>`В «Кто осёл?» 🫏 осёл сегодня — ${n} (${ms} мс)! 😂`,rematch:'Реванш',rematchHost:'Реванш запускает организатор',heehaw:'И-а!',short:'Короткая · 3 раунда',long:'Длинная · до ОСЁЛ',longHint:'Длинная: каждый раунд самый медленный получает букву О → С → Ё → Л. Кто первым соберёт ОСЁЛ, тот проиграл.',gotLetter:(n,l)=>`${n} получает букву ${l}`,youGot:l=>`Тебе досталась буква ${l} 😬`,next:'Следующий раунд…',lettersShare:(n)=>`Мы играли в «Кто осёл?» до последней буквы 🫏 ${n} собрал(а) ОСЁЛ! 😂`,other:'עברית'},
  he:{title:'מי חמור?',homeJoin:'הזמינו אותך למשחק. הגזר מופיע אצל כולם באותו רגע. האיטי ביותר הוא החמור.',homeNew:'משחק אונליין לקבוצה: כל אחד לוחץ על הגזר מהטלפון שלו. האיטי ביותר הוא החמור.',
   name:'השם שלך',join:'כניסה למשחק',create:'יצירת משחק',needName:'כתבו שם, כדי שכולם יידעו מי החמור.',connecting:'מתחבר…',
   errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו את הדף.',errConn:'לא הצלחנו להתחבר למשחק. נסו שוב בעוד דקה.',reload:'רענון',
@@ -72,7 +80,7 @@ const L={
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',you:'(אני)',inGame:'במשחק: ',start:'התחלה · 3 סיבובים',
   inviteText:'בואו לשחק ב«מי חמור?» 🫏 מי שלוחץ אחרון — הוא החמור! ',round:'סיבוב',waitCarrot:'חכו לגזר… לא ללחוץ לפני הזמן!',carrot:'גזר',
   ms:'ms',early:'מוקדם מדי! 1500+ ms',waitOthers:'מחכים לשאר',slept:'פספסת! 2000+ ms',youHamor:'החמור — זה אתה! 😂',isHamor:' — החמור!',
-  share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',short:'קצר · 3 סיבובים',long:'ארוך · עד חמור',longHint:'ארוך: בכל סיבוב האיטי ביותר מקבל אות ח ← מ ← ו ← ר. מי שמשלים ראשון חמור — הפסיד.',gotLetter:(n,l)=>`${n} מקבל/ת את האות ${l}`,youGot:l=>`קיבלת את האות ${l} 😬`,next:'הסיבוב הבא…',lettersShare:(n)=>`שיחקנו «מי חמור?» עד האות האחרונה 🫏 ${n} השלים/ה חמור! 😂`,other:'Русский'}};
+  share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',heehaw:'אִי־אָה!',short:'קצר · 3 סיבובים',long:'ארוך · עד חמור',longHint:'ארוך: בכל סיבוב האיטי ביותר מקבל אות ח ← מ ← ו ← ר. מי שמשלים ראשון חמור — הפסיד.',gotLetter:(n,l)=>`${n} מקבל/ת את האות ${l}`,youGot:l=>`קיבלת את האות ${l} 😬`,next:'הסיבוב הבא…',lettersShare:(n)=>`שיחקנו «מי חמור?» עד האות האחרונה 🫏 ${n} השלים/ה חמור! 😂`,other:'Русский'}};
 let lang=params.get('lang')==='he'||params.get('lang')==='ru'?params.get('lang'):null;
 if(!lang){try{lang=localStorage.getItem('hamor-lang')}catch(e){}}
 if(lang!=='he'&&lang!=='ru')lang=/^(he|iw)/i.test(navigator.language||'')?'he':'ru';
@@ -102,6 +110,24 @@ let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioC
 function blip(f){if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.8,t+.08);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.13)}catch(e){}}
 function boom(){try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(40,t+.5);g.gain.setValueAtTime(.6,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.6)}catch(e){}}
 function rank(ms){return ms<330?'🐆':ms<450?'🐎':ms<600?'🐢':'🫏'}
+/* donkey that fills up letter by letter */
+const SHAPE='<ellipse cx="55" cy="55" rx="32" ry="18"/><path d="M76 46 L91 26 L103 33 L88 60 Z"/><ellipse cx="101" cy="33" rx="15" ry="9" transform="rotate(25 101 33)"/><ellipse cx="91" cy="14" rx="3.8" ry="12.5" transform="rotate(-14 91 14)"/><ellipse cx="99" cy="15" rx="3.8" ry="12.5" transform="rotate(12 99 15)"/><rect x="30" y="64" width="7" height="28" rx="3"/><rect x="41" y="66" width="7" height="26" rx="3"/><rect x="64" y="66" width="7" height="26" rx="3"/><rect x="75" y="64" width="7" height="28" rx="3"/><path d="M24 50 Q13 58 14 73 L19 73 Q19 61 27 54 Z"/><path d="M83 41 L90 25 L94 27 L87 44 Z"/>';
+let dkN=0;const lvlO=n=>n<=0?0:(8+90*Math.min(1,n/4))/100;
+function donkey(n,px,from,cls){const id='dk'+(++dkN),o=lvlO(from??n);
+  return `<svg class="donkey ${cls||''}" data-to="${lvlO(n)}" data-from="${o}" width="${px}" height="${Math.round(px*.82)}" viewBox="0 0 120 100" aria-hidden="true"><defs><linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="93" x2="0" y2="1">
+  <stop offset="0" style="stop-color:var(--hot)"/><stop class="m" offset="${o}" style="stop-color:var(--hot)"/><stop class="m" offset="${o}" style="stop-color:var(--line)"/><stop offset="1" style="stop-color:var(--line)"/></linearGradient></defs>
+  <g fill="url(#${id})">${SHAPE}</g><circle cx="105" cy="30" r="2.2" fill="var(--bg)"/></svg>`}
+function fillDonkeys(){const list=[...document.querySelectorAll('svg.donkey')].filter(d=>d.dataset.to!==d.dataset.from);if(!list.length)return;
+  const t0=performance.now(),dur=reducedMotion?1:1300;(function tick(now){const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);
+    list.forEach(d=>{const v=+d.dataset.from+(+d.dataset.to-+d.dataset.from)*e;d.querySelectorAll('stop.m').forEach(st=>st.setAttribute('offset',v))});
+    if(k<1)requestAnimationFrame(tick)})(t0)}
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function seg(t,d,f1,f2,form){const o=ac.createOscillator(),lfo=ac.createOscillator(),lg=ac.createGain(),bp=ac.createBiquadFilter(),g=ac.createGain();
+  o.type='sawtooth';o.frequency.setValueAtTime(f1,t);o.frequency.linearRampToValueAtTime(f2,t+d);lfo.frequency.value=26;lg.gain.value=f1*.05;lfo.connect(lg).connect(o.frequency);
+  bp.type='bandpass';bp.frequency.value=form;bp.Q.value=2.2;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.55,t+.03);g.gain.setValueAtTime(.55,t+d-.05);g.gain.linearRampToValueAtTime(0,t+d);
+  o.connect(bp).connect(g).connect(ac.destination);o.start(t);lfo.start(t);o.stop(t+d+.02);lfo.stop(t+d+.02)}
+function bray(times,iAmLoser){try{navigator.vibrate&&navigator.vibrate(iAmLoser?[220,40,380,110,220,40,380,110,220,40,380,110,220,40,380]:[200,550,200,550,200,550,200])}catch(e){}
+  if(!ac)return;try{let t=ac.currentTime+.05;for(let i=0;i<times;i++){seg(t,.22,720,840,2400);seg(t+.22,.4,330,230,850);t+=.75}}catch(e){}}
 
 /* ---------- network ---------- */
 let client,room,isHost=false,players=new Map(),results={},round=0,phase='lobby',hostTimer;
@@ -178,7 +204,7 @@ function endGame(){const board=[...players].map(([id,p])=>({id,name:p.name,ms:Ma
 
 /* every player */
 function playRound(m){redraw=()=>{};lb.hidden=true;const my=m.mode==='long'?(m.letters[me.id]||0):-1;
-  app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}${m.mode==='long'?'':'/'+ROUNDS}</h2>${my>=0?word(my):''}<p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
+  app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}${m.mode==='long'?'':'/'+ROUNDS}</h2>${my>=0?donkey(my,56)+word(my):''}<p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
   const pad=document.getElementById('pad'),hm=document.getElementById('hm');let state='wait',t0,done=false;
   const report=ms=>{if(done)return;done=true;send({t:'res',round:m.round,ms})};
   pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML=`<span class="err">${T('early')}</span>`;try{navigator.vibrate(150)}catch(e){};report(1500)});
@@ -190,19 +216,22 @@ function playRound(m){redraw=()=>{};lb.hidden=true;const my=m.mode==='long'?(m.l
 
 function roundResult(m){redraw=()=>roundResult(m,1);lb.hidden=false;const mine=m.losers.includes(me.id);
   const names=m.losers.map(id=>m.names[id]||'?');const L1=WORDS[lang][(m.letters[m.losers[0]]||1)-1];
-  if(!arguments[1]){if(mine){boom();rain(['🫏'],25)}else blip(700)}
+  const again=arguments[1];if(!again){if(mine){blip(300);try{navigator.vibrate&&navigator.vibrate([150,60,150])}catch(e){}}else blip(700)}
+  const myN=m.letters[me.id]||0,myFrom=again?myN:(mine?myN-1:myN);
   const rows=Object.keys(m.letters).sort((a,b)=>m.letters[a]-m.letters[b]||(m.ms[a]-m.ms[b])).map(id=>
-    `<li class="${m.losers.includes(id)?'loser':id===me.id?'me':''}"><span>${esc(m.names[id]||'?')}</span><span>${m.ms[id]} ${T('ms')} &nbsp;${word(m.letters[id])}</span></li>`).join('');
-  app.innerHTML=`<div class="big">${mine?'😬':'🥕'}</div><h1 style="font-size:clamp(24px,7vw,38px)">${mine?T('youGot')(L1):esc(names.join(', '))+' · '+L1}</h1>
-    ${mine?'':`<p>${esc(T('gotLetter')(names.join(', '),L1))}</p>`}<ol class="list">${rows}</ol><p class="status">${T('next')}</p>`}
+    `<li class="${m.losers.includes(id)?'loser':id===me.id?'me':''}"><span>${esc(m.names[id]||'?')}</span><span>${m.ms[id]} ${T('ms')} &nbsp;${donkey(m.letters[id],30,again?m.letters[id]:(m.losers.includes(id)?m.letters[id]-1:m.letters[id]))}</span></li>`).join('');
+  app.innerHTML=`<div class="dk-wrap">${donkey(myN,mine?150:110,myFrom)}</div>${word(myN)}<h1 style="font-size:clamp(24px,7vw,38px)">${mine?T('youGot')(L1):esc(names.join(', '))+' · '+L1}</h1>
+    ${mine?'':`<p>${esc(T('gotLetter')(names.join(', '),L1))}</p>`}<ol class="list">${rows}</ol><p class="status">${T('next')}</p>`;fillDonkeys()}
 
 function final(board,again){const mode=arguments[2]||board.mode||'short';board=board.rows||board;lb.hidden=false;redraw=()=>final({rows:board,mode},1);
-  const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!again){boom();rain(['🫏'],iAm?140:70);setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
+  const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!again){boom();bray(4,iAm);rain(['🫏'],iAm?140:70);setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
+  const hh=again?'':[0,1,2,3].map(i=>`<span class="hh" style="animation-delay:${i*.75}s;top:${-8-i%2*18}px;${i%2?'left':'right'}:${-10+i*4}px">${T('heehaw')}</span>`).join('');
   const txt=mode==='long'?T('lettersShare')(last.name):T('shareText')(last.name,last.ms);
-  app.innerHTML=`<div class="big">🫏</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>
-    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${mode==='long'?word(r.l):r.ms+' '+T('ms')+' '+rank(r.ms)}</span></li>`).join('')}</ol>
+  app.innerHTML=`<div class="dk-wrap">${hh}${donkey(4,170,again?4:(mode==='long'?3:0),again?'':'bray')}</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>
+    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${mode==='long'?donkey(r.l,30)+' '+word(r.l):r.ms+' '+T('ms')+' '+rank(r.ms)}</span></li>`).join('')}</ol>
     <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?'':`<p class="status">${T('rematchHost')}</p>`}`;
+  fillDonkeys();
   if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame(mode)}}
 
 home();

@@ -97,6 +97,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:non
 #knob{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--mustard);box-shadow:0 4px 0 #b88a10}
 #push{width:112px;height:112px;border-radius:50%;padding:0;font-size:16px;line-height:1.1;display:grid;place-items:center;touch-action:none}
 #push.cd{opacity:.5}
+#low{width:84px;height:84px;border-radius:50%;padding:0;font-size:13px;line-height:1.1;display:grid;place-items:center;touch-action:none;background:#7b3fe4;box-shadow:0 5px 0 #4b1fa0;margin-inline-start:auto;margin-inline-end:14px}#low.cd{opacity:.45}#game.land #low{pointer-events:auto;opacity:.82;width:80px;height:80px}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
 .lang{position:fixed;top:max(10px,env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));z-index:60;padding:8px 14px;font-size:14px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
 .podium{display:grid;gap:8px;width:min(100%,400px);list-style:none;margin:0;padding:0}
@@ -118,7 +119,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:non
   <canvas id="cv"></canvas>
   <div id="hud"><div id="timer">30</div><div id="scores"></div></div>
   <div id="big"></div><div id="rot" hidden><span></span></div><button id="fsb" type="button" hidden></button><div id="tip" hidden></div><div id="watch" hidden></div><div id="inter" hidden></div>
-  <div id="ctrl"><div id="stick"><div id="knob"></div></div><button id="push">💥<br><span id="pushL"></span></button></div>
+  <div id="ctrl"><div id="stick"><div id="knob"></div></div><button id="low" hidden>🥚<br><span id="lowL"></span></button><button id="push">💥<br><span id="pushL"></span></button></div>
 </div>
 <canvas id="fx"></canvas>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
@@ -129,7 +130,9 @@ const BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-burger/v1/', GAME_SECS=30
 const AW=1500,AH=860,TOP=150;
 const DINER_T=[{x:440,y:370,r:70},{x:1060,y:370,r:70},{x:440,y:680,r:70},{x:1060,y:680,r:70}];
 const SCHOOL_R=[...[380,750,1120].flatMap(cx=>[400,650].map(cy=>({x:cx-85,y:cy-38,w:170,h:76}))),{x:620,y:168,w:260,h:68}];
-const LOCS={diner:{icon:'🍔',goal:7,secs:30},school:{icon:'🦶',goal:7,secs:30},soccer:{icon:'⚽',goal:5,secs:45},snow:{icon:'❄️',goal:10,secs:40}};
+const LOCS={diner:{icon:'🍔',goal:7,secs:30},school:{icon:'🦶',goal:7,secs:30},soccer:{icon:'⚽',goal:5,secs:45},snow:{icon:'❄️',goal:10,secs:40},box:{icon:'🥊',goal:0,secs:45}};
+const RX0=190,RX1=1310,RY0=200,RY1=812,HP0=100,SPAWN_BOX={girl:[330,330],fat:[1170,330],tall:[330,700],nerd:[1170,700]};
+function spawnMap(){return LOC==='soccer'?SPAWN_SOC:LOC==='box'?SPAWN_BOX:SPAWN}
 const SNOW_T=[{x:470,y:440,r:44},{x:1030,y:440,r:44},{x:750,y:690,r:46},{x:300,y:740,r:36},{x:1200,y:740,r:36},{x:750,y:300,r:34}];
 const RS=()=>LOCS[LOC].secs;
 const SPAWN_SOC={girl:[260,300],fat:[260,710],tall:[520,330],nerd:[520,680]};
@@ -143,41 +146,41 @@ const SPAWN={girl:[120,250],fat:[1380,250],tall:[120,790],nerd:[1380,790]};
 /* ================= i18n ================= */
 const params=new URLSearchParams(location.search);
 let FIXED=LOCS[params.get('loc')]?params.get('loc'):'diner';setLoc(FIXED);
-const DIRS={diner:'/burger/',school:'/school/',soccer:'/soccer/',snow:'/snow/'};
+const DIRS={diner:'/burger/',school:'/school/',soccer:'/soccer/',snow:'/snow/',box:'/box/'};
 const L={
- en:{title:'Burger Rush',tag:'Up to 4 players. Grab, push, win!',join:'Join game',create:'Create game',name:'Your name',
+ en:{shopHintBox:'Each game has its own medals and shorts. Shorts work from the first fight.',shareBox:(n,s)=>`In «Boxing» 🥊 ${n} was the last one standing with ${s} HP! Who can beat that?`,tipBox:'🥊 Tap 💥 to punch. 🥚 «Low blow» hurts more, but only when the referee is looking away: caught twice — disqualified! Last one standing wins',pushBox:'Punch!',lowB:'Low blow',warn:'Warning!',dq:'Disqualified!',ko:'KNOCKOUT!',shopBox:'Shorts shop',noShorts:'No shorts',pickShorts:'Wear shorts next round?',shorts:{cap:'Lightning shorts',ushanka:'Padded shorts',top:'Ninja shorts',crown:'Golden shorts'},title:'Burger Rush',tag:'Up to 4 players. Grab, push, win!',join:'Join game',create:'Create game',name:'Your name',
   needName:'Type your name so everyone knows who you are.',connecting:'Connecting…',errLib:'The connection library failed to load. Check your internet and refresh.',errConn:"Couldn't connect. Try again in a minute.",
   reload:'Refresh',room:'Room',hostHint:'Invite your friends. Everyone picks a hero.',invite:'Invite on WhatsApp',copy:'Copy link',copied:'Copied',
   waitHost:'Waiting for the host to tap «Start»…',pick:'Pick your hero',free:'free',bot:'bot',you:'you',bots:'Bots on free heroes',start:'Start!',full:'The room is full (4 players).',
   inviteText:"Let's play «Burger Rush» 🍔 ",push:'Push',winner:n=>`${n} is the champion!`,youWin:"You're the champion!",
   again:'Play again',lobbyBtn:'Back to room',againHost:'The host starts a new game',go:'GO!',share:'Brag',
-  shareText:(n,s)=>`In «Burger Rush» 🍔 ${n} won with ${s} burgers! Can you beat that?`,burgers:'burg.',createOwn:'Create your own game',roundN:n=>`Round ${n}`,loc:'Location',locs:{diner:'🍔 Diner',school:'🏫 Classroom',soccer:'⚽ Football',snow:'❄️ Snow'},tipSnow:'❄️ Tap «Snowball!» — it flies where you run. Hit someone — +1! Hide behind the snowmen. 🌟 The golden mega snowball gives +2. First to 10 hits',pushSnow:'Snowball!',mega:'MEGA SNOWBALL!',shareSnow:(n,s)=>`In «Snow Battle» ❄️ ${n} landed ${s} hits! Who's the best shot?`,tipSoccer:'⚽ Run to the ball and tap «Kick!». Score past the goalkeeper! You can push your rivals',pushSoccer:'Kick!',goalTxt:'GOOOAL!',saveTxt:'Save!',shareSoccer:(n,s)=>`In «Bombardier» ⚽ ${n} scored ${s} goals! Who can score more?`,tipSchool:'🦶 Sneak up on a teacher from BEHIND and tap 💥 — kick! Teachers see everything in their cone: get spotted — go to the corner!',corner:'Corner!',ouch:'Ouch!',pushSchool:'Kick!',shareSchool:(n,s)=>`In «Teacher Kick» 🏫 ${n} kicked the teachers ${s} times! 😂 Can you beat that?`,rotate:'🔄 Turn your phone sideways — it plays better',full:'⛶ Full screen',tip:'🍔 Just run into a burger to eat it! 💥 pushes a rival',shop:'Hat shop',shopHint:'Each game has its own medals and hats. Hats work from round 2. In round 1 everyone is equal.',buy:n=>`Buy · ${n} 🏅`,wear:'Wear',wearing:'Wearing ✓',off:'Take off',noHat:'No hat',back:'Back',pickHat:'Wear a hat next round?',need:n=>`Need ${n} 🏅`,bought:'Bought!',hats:{cap:'Cap',ushanka:'Ushanka',top:'Top hat',crown:'Crown'},hatPerk:{cap:'Run 12% faster',ushanka:'Pushes and hits hurt you less',top:'Grab things from further away',crown:'Push harder, 💥 recharges faster'},hp:{diner:{cap:'Run 12% faster',ushanka:'Pushes hurt you less',top:'Burgers pull toward you: grab from afar',crown:'Push harder, 💥 recharges faster'},school:{cap:'Quick escape: half the time in the corner',ushanka:'Long kick: reach teachers from further away',top:'Ninja: teachers notice you only up close',crown:'Royal kick: every 3rd kick counts double'},soccer:{cap:'Cannon: your shots are 25% stronger',ushanka:'Wall: rivals can barely push you',top:'Long leg: kick the ball from further away',crown:'The goalkeeper misses your shots more often'},snow:{cap:'Quick hand: snowballs reload faster',ushanka:'Warm ears: you recover from hits faster',top:'Sniper: your snowballs fly faster and further',crown:'Every 4th snowball is a mega snowball'}},tie:'Tie! Replay',out:'Out',stay:'Still in',nextR:'Next round in a few seconds…',medalWin:n=>`🏅 +1 medal! You have ${n}`,medalHave:n=>`Your medals: 🏅 ${n}`,watching:"👀 You're out. Watch who wins!",hostGone:'The host left the game',noRoom:"The room isn't answering. The host probably closed the game.",ownHint:"Create your own room and invite friends. It's free.",allGames:'🎮 All games',leaveHost:'Leave? The game will end for everyone.',mt:{diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle'},
-  mtag:{diner:'Up to 4 players. 7 burgers per round: grab and push! Fewer than the leader — you are out, until one champion is left.',school:'Up to 4 players. Sneak up behind a teacher and kick! Get spotted — go to the corner. Most kicks wins.',soccer:'Up to 4 players. One ball, a big goal and the PE teacher in goal. Score the most and become champion!',snow:'Up to 4 players. Snowballs, snowmen to hide behind and a golden mega snowball. Best shot wins!'},
-  inviteM:{diner:"Let's play «Burger Rush» 🍔 Who grabs the most burgers? ",school:"Let's play «Teacher Kick» 🏫 Who kicks the teachers the most? ",soccer:"Let's play «Bombardier» ⚽ Who scores the most? ",snow:"Let's play «Snow Battle» ❄️ Who's the best shot? "},
+  shareText:(n,s)=>`In «Burger Rush» 🍔 ${n} won with ${s} burgers! Can you beat that?`,burgers:'burg.',createOwn:'Create your own game',roundN:n=>`Round ${n}`,loc:'Location',locs:{diner:'🍔 Diner',school:'🏫 Classroom',soccer:'⚽ Football',snow:'❄️ Snow'},tipSnow:'❄️ Tap «Snowball!» — it flies where you run. Hit someone — +1! Hide behind the snowmen. 🌟 The golden mega snowball gives +2. First to 10 hits',pushSnow:'Snowball!',mega:'MEGA SNOWBALL!',shareSnow:(n,s)=>`In «Snow Battle» ❄️ ${n} landed ${s} hits! Who's the best shot?`,tipSoccer:'⚽ Run to the ball and tap «Kick!». Score past the goalkeeper! You can push your rivals',pushSoccer:'Kick!',goalTxt:'GOOOAL!',saveTxt:'Save!',shareSoccer:(n,s)=>`In «Bombardier» ⚽ ${n} scored ${s} goals! Who can score more?`,tipSchool:'🦶 Sneak up on a teacher from BEHIND and tap 💥 — kick! Teachers see everything in their cone: get spotted — go to the corner!',corner:'Corner!',ouch:'Ouch!',pushSchool:'Kick!',shareSchool:(n,s)=>`In «Teacher Kick» 🏫 ${n} kicked the teachers ${s} times! 😂 Can you beat that?`,rotate:'🔄 Turn your phone sideways — it plays better',full:'⛶ Full screen',tip:'🍔 Just run into a burger to eat it! 💥 pushes a rival',shop:'Hat shop',shopHint:'Each game has its own medals and hats. Hats work from round 2. In round 1 everyone is equal.',buy:n=>`Buy · ${n} 🏅`,wear:'Wear',wearing:'Wearing ✓',off:'Take off',noHat:'No hat',back:'Back',pickHat:'Wear a hat next round?',need:n=>`Need ${n} 🏅`,bought:'Bought!',hats:{cap:'Cap',ushanka:'Ushanka',top:'Top hat',crown:'Crown'},hatPerk:{cap:'Run 12% faster',ushanka:'Pushes and hits hurt you less',top:'Grab things from further away',crown:'Push harder, 💥 recharges faster'},hp:{diner:{cap:'Run 12% faster',ushanka:'Pushes hurt you less',top:'Burgers pull toward you: grab from afar',crown:'Push harder, 💥 recharges faster'},school:{cap:'Quick escape: half the time in the corner',ushanka:'Long kick: reach teachers from further away',top:'Ninja: teachers notice you only up close',crown:'Royal kick: every 3rd kick counts double'},soccer:{cap:'Cannon: your shots are 25% stronger',ushanka:'Wall: rivals can barely push you',top:'Long leg: kick the ball from further away',crown:'The goalkeeper misses your shots more often'},snow:{cap:'Quick hand: snowballs reload faster',ushanka:'Warm ears: you recover from hits faster',top:'Sniper: your snowballs fly faster and further',crown:'Every 4th snowball is a mega snowball'},box:{cap:'Move 12% faster',ushanka:'Low blows hurt you half as much',top:'The referee spots your low blows only up close',crown:'Your punches are 25% stronger'}},tie:'Tie! Replay',out:'Out',stay:'Still in',nextR:'Next round in a few seconds…',medalWin:n=>`🏅 +1 medal! You have ${n}`,medalHave:n=>`Your medals: 🏅 ${n}`,watching:"👀 You're out. Watch who wins!",hostGone:'The host left the game',noRoom:"The room isn't answering. The host probably closed the game.",ownHint:"Create your own room and invite friends. It's free.",allGames:'🎮 All games',leaveHost:'Leave? The game will end for everyone.',mt:{diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle',box:'Boxing'},
+  mtag:{diner:'Up to 4 players. 7 burgers per round: grab and push! Fewer than the leader — you are out, until one champion is left.',school:'Up to 4 players. Sneak up behind a teacher and kick! Get spotted — go to the corner. Most kicks wins.',soccer:'Up to 4 players. One ball, a big goal and the PE teacher in goal. Score the most and become champion!',snow:'Up to 4 players. Snowballs, snowmen to hide behind and a golden mega snowball. Best shot wins!',box:'Up to 4 players, all against all. Punch, dodge, and land a low blow when the referee is not looking. Caught twice — disqualified! Last one standing wins.'},
+  inviteM:{diner:"Let's play «Burger Rush» 🍔 Who grabs the most burgers? ",school:"Let's play «Teacher Kick» 🏫 Who kicks the teachers the most? ",soccer:"Let's play «Bombardier» ⚽ Who scores the most? ",snow:"Let's play «Snow Battle» ❄️ Who's the best shot? ",box:"Let's box! 🥊 Last one standing wins: "},
   other:'EN',
   names:{girl:'Girl',fat:'Chubby',tall:'Lanky',nerd:'Nerd'},
   perks:{girl:'Fast and nimble',fat:'Slow, but pushes the hardest',tall:'The fastest, weak push',nerd:'Grabs things from afar'}},
- ru:{title:'Бургер-гонка',tag:'До 4 игроков. На поле 7 бургеров. Хватай, толкайся! Кто собрал меньше лидера — вылетает, ничья — переигровка, пока не останется один чемпион.',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
+ ru:{shopHintBox:'В каждой игре свои медали и шорты. Шорты работают с первого боя.',shareBox:(n,s)=>`В «Боксе» 🥊 ${n} остался последним на ногах, жизни ${s}! Кто сильнее?`,tipBox:'🥊 Жми 💥 — удар. 🥚 «По яйцам» бьёт сильнее, но только пока судья отвернулся: заметит 2 раза — дисквалификация! Побеждает последний на ногах',pushBox:'Удар!',lowB:'По яйцам',warn:'Предупреждение!',dq:'Дисквалификация!',ko:'НОКАУТ!',shopBox:'Магазин шорт',noShorts:'Без шорт',pickShorts:'Надеть шорты на следующий раунд?',shorts:{cap:'Шорты-молнии',ushanka:'Шорты с защитой',top:'Шорты ниндзя',crown:'Золотые шорты'},title:'Бургер-гонка',tag:'До 4 игроков. На поле 7 бургеров. Хватай, толкайся! Кто собрал меньше лидера — вылетает, ничья — переигровка, пока не останется один чемпион.',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
   needName:'Напиши имя, чтобы все видели, кто ты.',connecting:'Подключаюсь…',errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться. Попробуй ещё раз через минуту.',
   reload:'Обновить',room:'Комната',hostHint:'Позови друзей. Каждый выбирает своего героя.',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
   inviteText:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров за 30 секунд? ',push:'Толкнуть',winner:n=>`${n} — чемпион!`,youWin:'Ты чемпион!',
   again:'Ещё раз',lobbyBtn:'В комнату',againHost:'Новую игру запускает организатор',go:'ВПЕРЁД!',share:'Похвастаться',
-  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,loc:'Локация',locs:{diner:'🍔 Бургерная',school:'🏫 Класс',soccer:'⚽ Футбол',snow:'❄️ Снежки'},tipSnow:'❄️ Жми «Снежок!» — летит туда, куда бежишь. Попал — +1! Прячься за снеговиками. 🌟 Золотой мега-снежок даёт +2. До 10 попаданий',pushSnow:'Снежок!',mega:'МЕГА-СНЕЖОК!',shareSnow:(n,s)=>`В «Снежной битве» ❄️ ${n} попал(а) ${s} раз! Кто метче?`,tipSoccer:'⚽ Подбеги к мячу и жми «Удар!». Забей мимо вратаря! Соперников можно толкать',pushSoccer:'Удар!',goalTxt:'ГОООЛ!',saveTxt:'Сейв!',shareSoccer:(n,s)=>`В «Бомбардире» ⚽ ${n} забил(а) ${s} голов! Кто сможет больше?`,tipSchool:'🦶 Подкрадись к учителю СЗАДИ и жми 💥 — поджопник! Учитель видит всё в своём конусе: заметит — в угол!',corner:'В угол!',ouch:'Ай!',pushSchool:'Пинок!',shareSchool:(n,s)=>`В «Teacher Kick» 🏫 ${n} отвесил(а) учителям ${s} поджопников! 😂 А ты сможешь?`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'В каждой игре свои медали и шапки. Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},hp:{diner:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},school:{cap:'Шустрик: в углу стоишь вдвое меньше',ushanka:'Длинный пинок: достаёшь учителя издалека',top:'Невидимка: учителя замечают тебя только вблизи',crown:'Королевский пинок: каждый 3-й пинок считается за два'},soccer:{cap:'Пушка: удар на 25% сильнее',ushanka:'Стенка: тебя почти не сдвинуть',top:'Длинная нога: бьёшь по мячу издалека',crown:'Вратарь чаще пропускает твои удары'},snow:{cap:'Быстрая рука: снежки перезаряжаются быстрее',ushanka:'Тёплые уши: после попадания приходишь в себя быстрее',top:'Снайпер: твои снежки летят быстрее и дальше',crown:'Каждый 4-й снежок — мега-снежок'}},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',allGames:'🎮 Все игры',leaveHost:'Выйти? Игра закончится у всех.',mt:{diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва'},
-  mtag:{diner:'До 4 игроков. 7 бургеров на раунд: хватай и толкайся! Кто меньше лидера — вылетает, пока не останется один чемпион.',school:'До 4 игроков. Подкрадись к учителю сзади и отвесь поджопник! Попадёшься ему на глаза — в угол. Кто больше всех — чемпион.',soccer:'До 4 игроков. Один мяч, большие ворота и вратарь-физрук. Забей больше всех и стань чемпионом!',snow:'До 4 игроков. Снежки, снеговики-укрытия и золотой мега-снежок. Самый меткий — чемпион!'},
-  inviteM:{diner:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров? ',school:'Го в «Teacher Kick» 🏫 Кто отвесит учителям больше поджопников? ',soccer:'Го в «Бомбардир» ⚽ Кто забьёт больше голов? ',snow:'Го в «Снежную битву» ❄️ Кто самый меткий? '},
+  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,loc:'Локация',locs:{diner:'🍔 Бургерная',school:'🏫 Класс',soccer:'⚽ Футбол',snow:'❄️ Снежки'},tipSnow:'❄️ Жми «Снежок!» — летит туда, куда бежишь. Попал — +1! Прячься за снеговиками. 🌟 Золотой мега-снежок даёт +2. До 10 попаданий',pushSnow:'Снежок!',mega:'МЕГА-СНЕЖОК!',shareSnow:(n,s)=>`В «Снежной битве» ❄️ ${n} попал(а) ${s} раз! Кто метче?`,tipSoccer:'⚽ Подбеги к мячу и жми «Удар!». Забей мимо вратаря! Соперников можно толкать',pushSoccer:'Удар!',goalTxt:'ГОООЛ!',saveTxt:'Сейв!',shareSoccer:(n,s)=>`В «Бомбардире» ⚽ ${n} забил(а) ${s} голов! Кто сможет больше?`,tipSchool:'🦶 Подкрадись к учителю СЗАДИ и жми 💥 — поджопник! Учитель видит всё в своём конусе: заметит — в угол!',corner:'В угол!',ouch:'Ай!',pushSchool:'Пинок!',shareSchool:(n,s)=>`В «Teacher Kick» 🏫 ${n} отвесил(а) учителям ${s} поджопников! 😂 А ты сможешь?`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'В каждой игре свои медали и шапки. Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},hp:{diner:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},school:{cap:'Шустрик: в углу стоишь вдвое меньше',ushanka:'Длинный пинок: достаёшь учителя издалека',top:'Невидимка: учителя замечают тебя только вблизи',crown:'Королевский пинок: каждый 3-й пинок считается за два'},soccer:{cap:'Пушка: удар на 25% сильнее',ushanka:'Стенка: тебя почти не сдвинуть',top:'Длинная нога: бьёшь по мячу издалека',crown:'Вратарь чаще пропускает твои удары'},snow:{cap:'Быстрая рука: снежки перезаряжаются быстрее',ushanka:'Тёплые уши: после попадания приходишь в себя быстрее',top:'Снайпер: твои снежки летят быстрее и дальше',crown:'Каждый 4-й снежок — мега-снежок'},box:{cap:'Двигаешься на 12% быстрее',ushanka:'Удары по яйцам тебе вдвое слабее',top:'Судья замечает твой подлый удар только вблизи',crown:'Твои удары на 25% сильнее'}},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',allGames:'🎮 Все игры',leaveHost:'Выйти? Игра закончится у всех.',mt:{diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва',box:'Бокс'},
+  mtag:{diner:'До 4 игроков. 7 бургеров на раунд: хватай и толкайся! Кто меньше лидера — вылетает, пока не останется один чемпион.',school:'До 4 игроков. Подкрадись к учителю сзади и отвесь поджопник! Попадёшься ему на глаза — в угол. Кто больше всех — чемпион.',soccer:'До 4 игроков. Один мяч, большие ворота и вратарь-физрук. Забей больше всех и стань чемпионом!',snow:'До 4 игроков. Снежки, снеговики-укрытия и золотой мега-снежок. Самый меткий — чемпион!',box:'До 4 игроков, все против всех. Бей, уворачивайся и бей по яйцам, когда судья отвернулся. Заметит 2 раза — дисквалификация! Побеждает последний на ногах.'},
+  inviteM:{diner:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров? ',school:'Го в «Teacher Kick» 🏫 Кто отвесит учителям больше поджопников? ',soccer:'Го в «Бомбардир» ⚽ Кто забьёт больше голов? ',snow:'Го в «Снежную битву» ❄️ Кто самый меткий? ',box:'Го боксировать! 🥊 Побеждает последний на ногах: '},
   other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
- he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
+ he:{shopHintBox:'לכל משחק מדליות ומכנסונים משלו. המכנסונים עובדים מהקרב הראשון.',shareBox:(n,s)=>`ב«אגרוף» 🥊 ${n} נשאר/ה אחרון/ה על הרגליים עם ${s} חיים! מי חזק יותר?`,tipBox:'🥊 לחצו 💥 — מכה. 🥚 «מכה נמוכה» חזקה יותר, אבל רק כשהשופט לא מסתכל: נתפסתם פעמיים — פסילה! האחרון שעומד מנצח',pushBox:'מכה!',lowB:'מכה נמוכה',warn:'אזהרה!',dq:'פסילה!',ko:'נוקאאוט!',shopBox:'חנות המכנסונים',noShorts:'בלי מכנסונים',pickShorts:'ללבוש מכנסונים לסיבוב הבא?',shorts:{cap:'מכנסוני ברק',ushanka:'מכנסונים מרופדים',top:'מכנסוני נינג׳ה',crown:'מכנסוני זהב'},title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
   needName:'כתבו שם, כדי שכולם יידעו מי אתם.',connecting:'מתחבר…',errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו.',errConn:'לא הצלחנו להתחבר. נסו שוב בעוד דקה.',
   reload:'רענון',room:'חדר',hostHint:'הזמינו חברים. כל אחד בוחר דמות.',invite:'הזמנה בוואטסאפ',copy:'העתקת קישור',copied:'הועתק',
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
   inviteText:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה המבורגרים ב־30 שניות? ',push:'דחיפה',winner:n=>`${n} — האלוף!`,youWin:'אתה האלוף!',
   again:'עוד פעם',lobbyBtn:'לחדר',againHost:'משחק חדש מפעיל המארגן',go:'!קדימה',share:'להשוויץ',
-  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,loc:'מקום',locs:{diner:'🍔 ההמבורגרייה',school:'🏫 הכיתה',soccer:'⚽ כדורגל',snow:'❄️ כדורי שלג'},tipSnow:'❄️ לחצו «כדור שלג!» — הוא עף לכיוון הריצה. פגעתם — 1+! תתחבאו מאחורי אנשי השלג. 🌟 כדור הזהב נותן 2+',pushSnow:'כדור שלג!',mega:'!מגה־כדור',shareSnow:(n,s)=>`ב«קרב כדורי שלג» ❄️ ${n} פגע/ה ${s} פעמים! מי יותר מדויק?`,tipSoccer:'⚽ רוצו לכדור ולחצו «בעיטה!». תבקיעו ליד השוער! אפשר לדחוף יריבים',pushSoccer:'בעיטה!',goalTxt:'!גוללל',saveTxt:'!הצלה',shareSoccer:(n,s)=>`ב«בומברדיר» ⚽ ${n} הבקיע/ה ${s} גולים! מי יבקיע יותר?`,tipSchool:'🦶 התגנבו למורה מאחור ולחצו 💥 — בעיטה בטוסיק! המורה רואה כל מה שבתוך המשולש שלו: יראה אתכם — לפינה!',corner:'לפינה!',ouch:'אוי!',pushSchool:'בעיטה!',shareSchool:(n,s)=>`ב«Teacher Kick» 🏫 ${n} נתן/ה למורים ${s} בעיטות בטוסיק! 😂 תוכלו יותר?`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'לכל משחק מדליות וכובעים משלו. הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},hp:{diner:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},school:{cap:'זריז: עומד בפינה חצי זמן',ushanka:'בעיטה ארוכה: מגיע למורה מרחוק',top:'נינג׳ה: המורים שמים לב אליך רק מקרוב',crown:'בעיטה מלכותית: כל בעיטה שלישית שווה כפול'},soccer:{cap:'תותח: הבעיטה חזקה יותר ב־25%',ushanka:'חומה: כמעט אי אפשר להזיז אותך',top:'רגל ארוכה: בועט בכדור מרחוק',crown:'השוער מפספס את הבעיטות שלך יותר'},snow:{cap:'יד מהירה: כדורי השלג נטענים מהר',ushanka:'אוזניים חמות: מתאושש מהר אחרי פגיעה',top:'צלף: כדורי השלג שלך עפים מהר ורחוק יותר',crown:'כל כדור שלג רביעי הוא מגה־כדור'}},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',allGames:'🎮 כל המשחקים',leaveHost:'לצאת? המשחק ייגמר לכולם.',mt:{diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג'},
-  mtag:{diner:'עד 4 שחקנים. 7 המבורגרים בסיבוב: תופסים ודוחפים! מי שפחות מהמוביל — יוצא, עד שנשאר אלוף אחד.',school:'עד 4 שחקנים. מתגנבים למורה מאחור ונותנים בעיטה בטוסיק! המורה רואה אתכם — לפינה. מי שהכי הרבה — אלוף.',soccer:'עד 4 שחקנים. כדור אחד, שער גדול ושוער המורה להתעמלות. תבקיעו הכי הרבה ותהיו אלופים!',snow:'עד 4 שחקנים. כדורי שלג, אנשי שלג למחסה וכדור זהב מגה. המדויק ביותר — אלוף!'},
-  inviteM:{diner:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה? ',school:'בואו ל«Teacher Kick» 🏫 מי ייתן למורים הכי הרבה בעיטות? ',soccer:'בואו ל«בומברדיר» ⚽ מי יבקיע הכי הרבה? ',snow:'בואו ל«קרב כדורי שלג» ❄️ מי הכי מדויק? '},
+  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,loc:'מקום',locs:{diner:'🍔 ההמבורגרייה',school:'🏫 הכיתה',soccer:'⚽ כדורגל',snow:'❄️ כדורי שלג'},tipSnow:'❄️ לחצו «כדור שלג!» — הוא עף לכיוון הריצה. פגעתם — 1+! תתחבאו מאחורי אנשי השלג. 🌟 כדור הזהב נותן 2+',pushSnow:'כדור שלג!',mega:'!מגה־כדור',shareSnow:(n,s)=>`ב«קרב כדורי שלג» ❄️ ${n} פגע/ה ${s} פעמים! מי יותר מדויק?`,tipSoccer:'⚽ רוצו לכדור ולחצו «בעיטה!». תבקיעו ליד השוער! אפשר לדחוף יריבים',pushSoccer:'בעיטה!',goalTxt:'!גוללל',saveTxt:'!הצלה',shareSoccer:(n,s)=>`ב«בומברדיר» ⚽ ${n} הבקיע/ה ${s} גולים! מי יבקיע יותר?`,tipSchool:'🦶 התגנבו למורה מאחור ולחצו 💥 — בעיטה בטוסיק! המורה רואה כל מה שבתוך המשולש שלו: יראה אתכם — לפינה!',corner:'לפינה!',ouch:'אוי!',pushSchool:'בעיטה!',shareSchool:(n,s)=>`ב«Teacher Kick» 🏫 ${n} נתן/ה למורים ${s} בעיטות בטוסיק! 😂 תוכלו יותר?`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'לכל משחק מדליות וכובעים משלו. הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},hp:{diner:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},school:{cap:'זריז: עומד בפינה חצי זמן',ushanka:'בעיטה ארוכה: מגיע למורה מרחוק',top:'נינג׳ה: המורים שמים לב אליך רק מקרוב',crown:'בעיטה מלכותית: כל בעיטה שלישית שווה כפול'},soccer:{cap:'תותח: הבעיטה חזקה יותר ב־25%',ushanka:'חומה: כמעט אי אפשר להזיז אותך',top:'רגל ארוכה: בועט בכדור מרחוק',crown:'השוער מפספס את הבעיטות שלך יותר'},snow:{cap:'יד מהירה: כדורי השלג נטענים מהר',ushanka:'אוזניים חמות: מתאושש מהר אחרי פגיעה',top:'צלף: כדורי השלג שלך עפים מהר ורחוק יותר',crown:'כל כדור שלג רביעי הוא מגה־כדור'},box:{cap:'זז מהר יותר ב־12%',ushanka:'מכות נמוכות כואבות לך חצי',top:'השופט רואה את המכה הנמוכה שלך רק מקרוב',crown:'המכות שלך חזקות ב־25%'}},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',allGames:'🎮 כל המשחקים',leaveHost:'לצאת? המשחק ייגמר לכולם.',mt:{diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג',box:'אגרוף'},
+  mtag:{diner:'עד 4 שחקנים. 7 המבורגרים בסיבוב: תופסים ודוחפים! מי שפחות מהמוביל — יוצא, עד שנשאר אלוף אחד.',school:'עד 4 שחקנים. מתגנבים למורה מאחור ונותנים בעיטה בטוסיק! המורה רואה אתכם — לפינה. מי שהכי הרבה — אלוף.',soccer:'עד 4 שחקנים. כדור אחד, שער גדול ושוער המורה להתעמלות. תבקיעו הכי הרבה ותהיו אלופים!',snow:'עד 4 שחקנים. כדורי שלג, אנשי שלג למחסה וכדור זהב מגה. המדויק ביותר — אלוף!',box:'עד 4 שחקנים, כולם נגד כולם. תכו, תתחמקו ותנו מכה נמוכה כשהשופט לא מסתכל. נתפסתם פעמיים — פסילה! האחרון שעומד מנצח.'},
+  inviteM:{diner:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה? ',school:'בואו ל«Teacher Kick» 🏫 מי ייתן למורים הכי הרבה בעיטות? ',soccer:'בואו ל«בומברדיר» ⚽ מי יבקיע הכי הרבה? ',snow:'בואו ל«קרב כדורי שלג» ❄️ מי הכי מדויק? ',box:'בואו לאגרוף! 🥊 האחרון שעומד מנצח: '},
   other:'Русский',
   names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
   perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
@@ -203,10 +206,10 @@ const rid=()=>Math.random().toString(36).slice(2,10);
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const me={id:rid(),name:''};try{me.name=localStorage.getItem('burger-name')||''}catch(e){}
 /* ===== game switch (shared) ===== */
-const GN={en:{donkey:"Who's the Donkey?",diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle',sw:'Switch game: everyone stays in the room',now:'Game'},
-  ru:{donkey:'Кто осёл?',diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва',sw:'Сменить игру: все остаются в комнате',now:'Игра'},
-  he:{donkey:'מי חמור?',diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג',sw:'להחליף משחק: כולם נשארים בחדר',now:'משחק'}};
-const GI={donkey:'🫏',diner:'🍔',school:'🦶',soccer:'⚽',snow:'❄️'},GLIST=['donkey','diner','school','soccer','snow'];
+const GN={en:{donkey:"Who's the Donkey?",diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle',box:'Boxing',sw:'Switch game: everyone stays in the room',now:'Game'},
+  ru:{donkey:'Кто осёл?',diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва',box:'Бокс',sw:'Сменить игру: все остаются в комнате',now:'Игра'},
+  he:{donkey:'מי חמור?',diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג',box:'אגרוף',sw:'להחליף משחק: כולם נשארים בחדר',now:'משחק'}};
+const GI={donkey:'🫏',diner:'🍔',school:'🦶',soccer:'⚽',snow:'❄️',box:'🥊'},GLIST=['donkey','diner','school','soccer','snow','box'];
 const NAV=new URLSearchParams(location.search);let MK=(NAV.get('mk')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);const AUTO=NAV.get('auto')==='1'||!!MK;let navNm=false,gotoing=false;
 function gameUrl(g){return g==='donkey'?'../donkey/?':'../burger/?loc='+g+'&'}
 function navQ(){return '&lang='+lang+'&nm='+encodeURIComponent(me.name)}
@@ -222,6 +225,7 @@ applyLang();
 
 function hk(k){return 'burger-'+k+'-'+FIXED}
 (function(){try{if(localStorage.getItem('burger-medals')!=null&&localStorage.getItem('burger-medals-diner')==null){['medals','hats','wear'].forEach(k=>{const v=localStorage.getItem('burger-'+k);if(v!=null)localStorage.setItem('burger-'+k+'-diner',v)})}}catch(e){}})();
+function hatName(h){return FIXED==='box'?T('shorts')[h]:T('hats')[h]}
 function hatCd(h){return LOC==='diner'&&h==='crown'?600:LOC==='snow'&&h==='cap'?520:850}
 function medals(){try{return +localStorage.getItem(hk('medals'))||0}catch(e){return 0}}
 const HATS={cap:1,ushanka:2,top:3,crown:5},HAT_ORDER=['cap','ushanka','top','crown'];
@@ -248,7 +252,7 @@ const BODY={girl:{leg:22,hy:-88,hr:22,sh:[14,-62]},fat:{leg:18,hy:-104,hr:25,sh:
 const HAT_TOP={cap:14,ushanka:20,top:44,crown:26};
 function sh(g,fill,lw=3){g.fillStyle=fill;g.fill();g.lineWidth=lw;g.strokeStyle=OUT;g.lineJoin='round';g.stroke()}
 function rr(g,x,y,w,h,r){g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h)}
-function paintChar(g,c,hat,f,stun){
+function paintChar(g,c,hat,f,stun){const BX=hat&&hat.startsWith('s_')?hat.slice(2):null;if(BX)hat=null;
   const B=BODY[c],walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=walk?Math.sin(ph)*7:0,bob=walk?-Math.abs(Math.sin(ph))*3:0;
   // shadow
   g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,0,c==='fat'?44:32,9,0,0,7);g.fill();
@@ -287,12 +291,17 @@ function paintChar(g,c,hat,f,stun){
     g.beginPath();g.moveTo(0,L-46);g.lineTo(-9,L-51);g.lineTo(-9,L-41);g.closePath();g.moveTo(0,L-46);g.lineTo(9,L-51);g.lineTo(9,L-41);g.closePath();sh(g,'#e8412c',2);
     g.beginPath();g.arc(0,L-46,2.5,0,7);sh(g,'#b82a1a',1.5);
   }
+  if(BX){const w={girl:24,fat:40,tall:20,nerd:23}[c],sc={none:'#e8412c',cap:'#e8412c',ushanka:'#4f8cff',top:'#262626',crown:'#ffc531'}[BX],y0=L-14;
+    rr(g,-w,y0,2*w,20,5);sh(g,sc);g.fillStyle=BX==='top'?'#e8412c':'#fff';g.fillRect(-w+3,y0+2,2*w-6,4);
+    if(BX==='cap'){g.fillStyle='#ffc531';g.beginPath();g.moveTo(-3,y0+5);g.lineTo(5,y0+5);g.lineTo(1,y0+11);g.lineTo(6,y0+11);g.lineTo(-4,y0+19);g.lineTo(-1,y0+13);g.lineTo(-6,y0+13);g.closePath();g.fill()}
+    if(BX==='ushanka'){g.fillStyle='#fff';g.fillRect(-w+2,y0+10,5,8);g.fillRect(w-7,y0+10,5,8)}
+    if(BX==='crown'){g.fillStyle='#fff5b0';star(g,0,y0+13,6)}}
   // arms
   const col={girl:'#ff6fae',fat:'#4f8cff',tall:'#3fbf6f',nerd:'#ffffff'}[c],[sx,sy]=B.sh;
   for(const [d,s] of [[-1,step],[1,-step]]){const hx=d*(sx+8)+s*.5,hy=sy+22+(c==='tall'?6:0);
     g.lineCap='round';g.strokeStyle=OUT;g.lineWidth=13;g.beginPath();g.moveTo(d*sx,sy);g.lineTo(hx,hy);g.stroke();
     g.strokeStyle=col;g.lineWidth=8;g.beginPath();g.moveTo(d*sx,sy);g.lineTo(hx,hy);g.stroke();
-    g.beginPath();g.arc(hx,hy+2,5.5,0,7);sh(g,SKIN,2.5)}
+    if(BX){g.beginPath();g.arc(hx,hy,10.5,0,7);sh(g,BX==='crown'?'#ffc531':'#d32f2f',2.5);g.fillStyle='#ffffff55';g.beginPath();g.arc(hx-3,hy-3,3.5,0,7);g.fill()}else{g.beginPath();g.arc(hx,hy+2,5.5,0,7);sh(g,SKIN,2.5)}}
   // head
   const hy=B.hy,hr=B.hr;
   if(c==='girl'){for(const d of [-1,1]){g.beginPath();g.arc(d*(hr+8),hy+4,10,0,7);sh(g,'#ffd23f')}}
@@ -344,12 +353,14 @@ function paintChar(g,c,hat,f,stun){
 const SPR=1.3,spriteCache={};
 function charSprite(c,hat,f,stun){const k=c+'|'+(hat||'')+'|'+f+'|'+(stun?1:0);if(spriteCache[k])return spriteCache[k];
   const cv=document.createElement('canvas');cv.width=180*SPR;cv.height=250*SPR;const g=cv.getContext('2d');g.scale(SPR,SPR);g.translate(90,235);paintChar(g,c,hat,f,stun);return spriteCache[k]=cv}
-function headTop(c,hat){const B=BODY[c];return B.hy-B.hr-(hat?HAT_TOP[hat]:6)}
+function bxHat(h){return LOC==='box'?'s_'+(h||'none'):h}
+function headTop(c,hat){const B=BODY[c];if(hat&&(LOC==='box'||hat.startsWith('s_')))hat=null;return B.hy-B.hr-(hat?HAT_TOP[hat]:6)}
 function drawHero(g,v,t){const f=v.moving?1+Math.floor((t*11)%6):0;g.save();g.translate(v.x,v.y);if(v.face<0)g.scale(-1,1);
-  g.drawImage(charSprite(v.c,v.hat,f,v.stun),-90,-235,180,250);
+  if(LOC==='box'&&v.score<=0){g.rotate(-Math.PI/2*.92);g.translate(-40,30)}
+  g.drawImage(charSprite(v.c,bxHat(v.hat),f,v.stun),-90,-235,180,250);
   if(v.stun){g.fillStyle='#ffe14d';g.strokeStyle=OUT;g.lineWidth=1.5;const y=headTop(v.c,v.hat)-8;for(let i=0;i<3;i++){const a=t*6+i*2.1;star(g,Math.cos(a)*24,y+Math.sin(a)*6,6);g.stroke()}}
   g.restore()}
-function charThumb(c,hat){const cv=document.createElement('canvas');cv.width=144;cv.height=168;const g=cv.getContext('2d');g.translate(72,162);const s=Math.min(1.05,150/(-headTop(c,hat)+8));g.scale(s,s);paintChar(g,c,hat,0,false);return cv}
+function charThumb(c,hat){const cv=document.createElement('canvas');cv.width=144;cv.height=168;const g=cv.getContext('2d');g.translate(72,162);const s=Math.min(1.05,150/(-headTop(c,hat)+8));g.scale(s,s);paintChar(g,c,bxHat(hat),0,false);return cv}
 
 const burgerSprite=(()=>{const cv=document.createElement('canvas');cv.width=cv.height=96;const g=cv.getContext('2d');
   g.fillStyle='#d98c3a';g.beginPath();g.roundRect?g.roundRect(14,62,68,16,8):g.rect(14,62,68,16);g.fill();
@@ -512,7 +523,7 @@ function drawSnowball(g,b,h=38){g.fillStyle='rgba(80,110,160,.25)';g.beginPath()
   g.fillStyle='#fff';g.strokeStyle='#9fb7d4';g.lineWidth=2.5;g.beginPath();g.arc(b.x,b.y-h,11,0,7);g.fill();g.stroke();g.fillStyle='#dbe8f6';g.beginPath();g.arc(b.x+3,b.y-h+3,5,0,7);g.fill()}
 
 const floorCaches={};
-function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else if(LOC==='snow')paintSnow(f);else{
+function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else if(LOC==='snow')paintSnow(f);else if(LOC==='box')paintBox(f);else{
   const tile=75;for(let y=0;y<AH;y+=tile)for(let x=0;x<AW;x+=tile){f.fillStyle=((x+y)/tile)%2?'#efe6d6':'#d9cbb3';f.fillRect(x,y,tile,tile)}
   // counter
   f.fillStyle='#7a3b1d';f.fillRect(0,0,AW,TOP-24);f.fillStyle='#a8582c';f.fillRect(0,TOP-44,AW,20);f.fillStyle='#5e2c14';f.fillRect(0,TOP-24,AW,10);
@@ -528,11 +539,22 @@ function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.c
     f.fillStyle='#ffc531';f.beginPath();f.arc(t.x-14,t.y-6,9,0,7);f.fill();f.fillStyle='#e8412c';f.beginPath();f.arc(t.x+14,t.y-6,9,0,7);f.fill()}}
   }g.drawImage(floorCaches[LOC],0,0)}
 
+function paintBox(f){f.fillStyle='#15101c';f.fillRect(0,0,AW,AH);
+  let seed=5;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
+  for(let r=0;r<4;r++)for(let x=10+(r%2)*16;x<AW;x+=32){const y=26+r*34;f.fillStyle=['#3a2f4a','#2f263d','#463a58'][Math.floor(rnd()*3)];f.beginPath();f.arc(x,y,12,0,7);f.fill();f.beginPath();f.ellipse(x,y+16,15,10,0,0,7);f.fill();if(rnd()<.07){f.fillStyle='#fff';f.beginPath();f.arc(x+6,y-6,2.5,0,7);f.fill()}}
+  for(const x of [260,750,1240]){const gr=f.createRadialGradient(x,500,40,x,500,620);gr.addColorStop(0,'rgba(255,240,200,.16)');gr.addColorStop(1,'rgba(255,240,200,0)');f.fillStyle=gr;f.fillRect(0,0,AW,AH)}
+  f.fillStyle='#1d4f8f';f.fillRect(RX0-60,RY0-50,RX1-RX0+120,RY1-RY0+110);
+  const m=f.createLinearGradient(0,RY0,0,RY1);m.addColorStop(0,'#dfe7f2');m.addColorStop(1,'#c9d5e6');f.fillStyle=m;f.fillRect(RX0-30,RY0-30,RX1-RX0+60,RY1-RY0+60);
+  f.strokeStyle='rgba(30,60,110,.35)';f.lineWidth=6;f.beginPath();f.arc((RX0+RX1)/2,(RY0+RY1)/2,120,0,7);f.stroke();
+  f.font='900 64px Rubik, Arial Black, sans-serif';f.textAlign='center';f.textBaseline='middle';f.fillStyle='rgba(30,60,110,.22)';f.fillText('B.Y.D',(RX0+RX1)/2,(RY0+RY1)/2);
+  const posts=[[RX0-30,RY0-30,'#e8412c'],[RX1+30,RY0-30,'#4f8cff'],[RX0-30,RY1+30,'#fff'],[RX1+30,RY1+30,'#fff']];
+  for(let k=0;k<3;k++){f.strokeStyle=['#e8412c','#ffffff','#4f8cff'][k];f.lineWidth=7;const o=k*13;f.beginPath();f.moveTo(RX0-30,RY0-30-o);f.lineTo(RX1+30,RY0-30-o);f.moveTo(RX0-30-o*.3,RY0-30-o);f.lineTo(RX0-30-o*.3,RY1+30-o);f.moveTo(RX1+30+o*.3,RY0-30-o);f.lineTo(RX1+30+o*.3,RY1+30-o);f.stroke()}
+  for(const [x,y,c] of posts){f.fillStyle='#333';f.fillRect(x-9,y-52,18,60);f.fillStyle=c;rr(f,x-12,y-56,24,40,6);f.fill()}}
 /* ================= physics (shared) ================= */
-function body(c,id){const [x,y]=(LOC==='soccer'?SPAWN_SOC:SPAWN)[c];return {id,c,x,y,kx:0,ky:0,stun:0,face:1,moving:false,score:0}}
+function body(c,id){const [x,y]=spawnMap()[c];return {id,c,x,y,kx:0,ky:0,stun:0,face:1,moving:false,score:0}}
 function move(b,dx,dy,dt,others){const c=CH[b.c];if(b.stun>0){b.stun-=dt;dx=dy=0}
   const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}
-  const spd=c.sp*(b.hat==='cap'&&LOC==='diner'?1.12:1);b.x+=(dx*spd+b.kx)*dt;b.y+=(dy*spd+b.ky)*dt;const f=Math.pow(.015,dt);b.kx*=f;b.ky*=f;
+  if(LOC==='box'&&b.score<=0){dx=dy=0}const spd=c.sp*(b.hat==='cap'&&(LOC==='diner'||LOC==='box')?1.12:1);b.x+=(dx*spd+b.kx)*dt;b.y+=(dy*spd+b.ky)*dt;const f=Math.pow(.015,dt);b.kx*=f;b.ky*=f;
   b.moving=l>.15;if(Math.abs(dx)>.2)b.face=dx<0?-1:1;
   if(others)for(const o of others){if(o===b)continue;const ddx=b.x-o.x,ddy=b.y-o.y,d=Math.hypot(ddx,ddy),m=c.r+CH[o.c].r;
     if(d<m&&d>0){const push=(m-d)*CH[o.c].mass/(CH[o.c].mass+c.mass);b.x+=ddx/d*push;b.y+=ddy/d*push}}
@@ -542,6 +564,7 @@ function collide(b,rad){const r=rad||CH[b.c].r;
   if(b.x<r+14){b.x=r+14;b.kx=Math.abs(b.kx)*.5}if(b.x>AW-r-14){b.x=AW-r-14;b.kx=-Math.abs(b.kx)*.5}
   if(b.y<TOP+r-20){b.y=TOP+r-20;b.ky=Math.abs(b.ky)*.5}if(b.y>AH-r-14){b.y=AH-r-14;b.ky=-Math.abs(b.ky)*.5}
   if(LOC==='soccer'&&b.x>GX-r){b.x=GX-r;b.kx=-Math.abs(b.kx)*.5}
+  if(LOC==='box'){if(b.x<RX0+r){b.x=RX0+r;b.kx=Math.abs(b.kx)*.6}if(b.x>RX1-r){b.x=RX1-r;b.kx=-Math.abs(b.kx)*.6}if(b.y<RY0+r-20){b.y=RY0+r-20;b.ky=Math.abs(b.ky)*.6}if(b.y>RY1-6){b.y=RY1-6;b.ky=-Math.abs(b.ky)*.6}}
   for(const t of TABLES){const dx=b.x-t.x,dy=b.y-t.y,d=Math.hypot(dx,dy),m=t.r+r;if(d<m&&d>0){b.x=t.x+dx/d*m;b.y=t.y+dy/d*m}}
   const rr2=r*.8;for(const q of RECTS){const cx=clamp(b.x,q.x,q.x+q.w),cy=clamp(b.y,q.y,q.y+q.h),dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy);
     if(d<rr2){if(d===0){const l=b.x-q.x,rg=q.x+q.w-b.x,tp=b.y-q.y,bt=q.y+q.h-b.y,m=Math.min(l,rg,tp,bt);if(m===l)b.x=q.x-rr2;else if(m===rg)b.x=q.x+q.w+rr2;else if(m===tp)b.y=q.y-rr2;else b.y=q.y+q.h+rr2}
@@ -571,6 +594,7 @@ function onMsg(m){if(followGoto(m))return;if(m.t==='lobby'&&m.players&&m.players
     else if(m.t==='hat'){const q=lobbyPlayers.get(m.from);if(q)q.hat=HATS[m.h]?m.h:null;if(T0)T0.hats[m.from]=HATS[m.h]?m.h:null;if(phase==='lobby')broadcastLobby()}
     else if(m.t==='pick'){const p=lobbyPlayers.get(m.from);if(p&&phase==='lobby'&&![...lobbyPlayers].some(([id,q])=>id!==m.from&&q.c===m.c)){p.c=m.c;broadcastLobby()}}
     else if(m.t==='pos'&&G&&G.P[m.from]&&m.from!==me.id){const b=G.P[m.from];b.x=m.x;b.y=m.y;b.moving=!!m.m;b.face=m.f||1;b.seen=performance.now()}
+    else if(m.t==='low'&&G&&m.from!==me.id){hostLow(m.from)}
     else if(m.t==='push'&&G&&m.from!==me.id){const b=G.P[m.from];if(b&&m.ax!=null){b.ax=m.ax;b.ay=m.ay}hostPush(m.from)}
     else if(m.t==='sync'&&T0&&matchPhase==='inter'&&T0.lastRR){send(T0.lastRR,1)}
     else if(m.t==='sync'&&G&&T0){const rr=Object.values(G.P).map(b=>{const x=T0.all.find(y=>y[0]===b.id);return [b.id,b.c,b.name,b.bot?1:0,b.hat||null]});send({t:'start',roster:rr,round:T0.round,to:m.from,loc:LOC},1)}
@@ -611,7 +635,7 @@ function link(){return location.origin+DIRS[FIXED]+'?room='+room+'&lang='+lang}
 function lobby(){redraw=lobby;phase='lobby';show('app');const myC=lobbyPlayers.get(me.id)?.c;const inv=T('inviteM')[FIXED]+link();
   app.innerHTML=`<h2>${T('room')} <span class="code" style="font-size:28px">${esc(room)}</span></h2>
     ${isHost?`<p>${T('hostHint')}</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">${T('invite')}</a><button class="ghost" id="cp">${T('copy')}</button></div>`:`<p>${T('waitHost')}</p>`}
-    <button class="ghost" id="shopB">🎩 ${T('shop')} · 🏅 ${medals()}</button><h2 style="font-size:18px">${T('pick')}</h2><div class="chars" id="chars"></div>
+    <button class="ghost" id="shopB">${FIXED==='box'?'🩳 '+T('shopBox'):'🎩 '+T('shop')} · 🏅 ${medals()}</button><h2 style="font-size:18px">${T('pick')}</h2><div class="chars" id="chars"></div>
     ${isHost?`<label class="toggle"><input type="checkbox" id="bt" ${useBots?'checked':''}>${T('bots')}</label><button id="st">${T('start')} ${LOCS[FIXED].icon}</button>${picker(FIXED)}`:`<p class="status">🎮 ${GN[lang].now}: ${GI[FIXED]} ${GN[lang][FIXED]}</p><p class="status">${useBots?'🤖 '+T('bots'):''}</p>`}`;
   document.getElementById('shopB').onclick=()=>{audio();shop()};
 const box=document.getElementById('chars');
@@ -640,13 +664,13 @@ document.addEventListener('fullscreenchange',()=>{updFs();if(phase==='play')resi
 document.getElementById('fsb').onclick=()=>{audio();goFull()};
 /* ================= hat shop ================= */
 function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearHat(),myC=lobbyPlayers.get(me.id)?.c||'girl',n=medals();
-  app.innerHTML=`<h1 style="font-size:clamp(26px,8vw,40px)">🎩 ${T('shop')}</h1><p style="color:var(--mustard);font-weight:700;font-size:20px">🏅 ${n}</p><p>${T('shopHint')}</p>
+  app.innerHTML=`<h1 style="font-size:clamp(26px,8vw,40px)">${FIXED==='box'?'🩳 '+T('shopBox'):'🎩 '+T('shop')}</h1><p style="color:var(--mustard);font-weight:700;font-size:20px">🏅 ${n}</p><p>${FIXED==='box'?T('shopHintBox'):T('shopHint')}</p>
     ${msg?`<p style="color:var(--lettuce);font-weight:700">${msg}</p>`:''}<div class="hats" id="hats"></div><button class="ghost" id="bk">${T('back')}</button>`;
   const box=document.getElementById('hats');
   HAT_ORDER.forEach(h=>{const d=document.createElement('div');d.className='hatcard'+(cur===h?' on':'');d.appendChild(charThumb(myC,h));
-    d.insertAdjacentHTML('beforeend',`<b>${T('hats')[h]}</b><small>${T('hp')[FIXED][h]}</small>`);const b=document.createElement('button');
+    d.insertAdjacentHTML('beforeend',`<b>${hatName(h)}</b><small>${T('hp')[FIXED][h]}</small>`);const b=document.createElement('button');
     if(own.includes(h)){if(cur===h){b.textContent=T('off');b.className='ghost';b.onclick=()=>{setWear(null);shop()}}else{b.textContent=T('wear');b.onclick=()=>{tone(660,.08,'square',.1);setWear(h);shop()}}}
-    else if(n>=HATS[h]){b.textContent=T('buy')(HATS[h]);b.onclick=()=>{if(buyHat(h)){[523,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.15,'square',.12),i*110));setWear(h);shop(T('bought')+' '+T('hats')[h])}}}
+    else if(n>=HATS[h]){b.textContent=T('buy')(HATS[h]);b.onclick=()=>{if(buyHat(h)){[523,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.15,'square',.12),i*110));setWear(h);shop(T('bought')+' '+hatName(h))}}}
     else{b.textContent=T('need')(HATS[h]);b.disabled=true;b.className='ghost'}
     d.appendChild(b);box.appendChild(d)});
   document.getElementById('bk').onclick=()=>lobby()}
@@ -654,11 +678,11 @@ function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearH
 /* ================= match: shared client side ================= */
 let sbV={},starV=null,myMega=false,aim={x:1,y:0},flakes=null,ballV=null,keeperV=null,netT=0,splats=[],tview=[],curRound=0,syncAsked=false,claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=RS(),matchPhase='count',pops=[],rings=[];
 const input={dx:0,dy:0};
-function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.getElementById('pushL').textContent=LOC==='school'?T('pushSchool'):LOC==='soccer'?T('pushSoccer'):LOC==='snow'?T('pushSnow'):T('push');ballV=null;keeperV=null;sbV={};starV=null;myMega=false;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
-  const SP=LOC==='soccer'?SPAWN_SOC:SPAWN;r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[c][0],y:SP[c][1],tx:SP[c][0],ty:SP[c][1],score:0,stun:0,moving:false,face:1});
-  const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine)mine.hat=mineR[4]||null;
+function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.getElementById('pushL').textContent=LOC==='box'?T('pushBox'):LOC==='school'?T('pushSchool'):LOC==='soccer'?T('pushSoccer'):LOC==='snow'?T('pushSnow'):T('push');ballV=null;keeperV=null;sbV={};starV=null;myMega=false;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
+  const SP=spawnMap();r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[c][0],y:SP[c][1],tx:SP[c][0],ty:SP[c][1],score:LOC==='box'?HP0:0,stun:0,moving:false,face:1});
+  const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine){mine.hat=mineR[4]||null;if(LOC==='box')mine.score=HP0}document.getElementById('low').hidden=LOC!=='box';
   const w=document.getElementById('watch');w.hidden=!!mine;w.innerHTML=T('watching')+`<br><a class="btn" href="../?lang=${lang}">${T('allGames')}</a>`;document.getElementById('ctrl').style.visibility=mine?'':'hidden';
-  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):LOC==='snow'?T('tipSnow'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,9000)}else tp.hidden=true;claimed=new Set()}
+  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='box'?T('tipBox'):LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):LOC==='snow'?T('tipSnow'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,9000)}else tp.hidden=true;claimed=new Set()}
 function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filter(g=>!claimed.has(g[0]));m.ev=(m.ev||[]).filter(e=>!(e[0]==='e'&&e[1]===me.id));if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}matchPhase=m.ph}
   if(m.ph==='count'){const n=Math.ceil(m.tl);if(n!==lastCount){lastCount=n;sndBeep(0);flashBig(n,900)}}
   burgers=m.B;
@@ -669,6 +693,11 @@ function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filt
   for(const e of m.ev||[])handleEv(e)}
 let lastCount=0;
 function handleEv(e){
+  if(e[0]==='P'){pops.push({x:e[3],y:e[4]-40,t:0,txt:'-'+e[5]});tone(120,.08,'square',.25,60);if(e[2]===me.id)vib(40);return}
+  if(e[0]==='L'){pops.push({x:e[3],y:e[4]-40,t:0,txt:'🥚 -'+(e[5]||'')});tone(900,.25,'sine',.15,300);if(e[2]===me.id)vib([120,60,120]);return}
+  if(e[0]==='W'){pops.push({x:e[2],y:e[3],t:-.1,txt:T('warn'),big:1});tone(2300,.14,'square',.07);setTimeout(()=>tone(2300,.14,'square',.07),180);if(e[1]===me.id)vib([200,100,200]);return}
+  if(e[0]==='D'){pops.push({x:e[2],y:e[3],t:-.1,txt:T('dq'),big:1});tone(2300,.5,'square',.08);if(e[1]===me.id)vib([400,100,400]);return}
+  if(e[0]==='K'){flashBig(T('ko'),1200);crowd(1.4,.28);tone(90,.4,'sawtooth',.2,40);return}
   if(e[0]==='k'){pops.push({x:e[2],y:e[3]-60,t:0,txt:'+1'});tone(170,.12,'square',.25,90);setTimeout(()=>tone(950,.18,'sine',.18,1500),70);if(e[1]===me.id)vib([40,30,60]);return}
   if(e[0]==='c'){pops.push({x:e[2],y:e[3],t:-.2,txt:T('corner'),big:1});tone(2300,.14,'square',.07);setTimeout(()=>tone(2100,.3,'square',.07),150);if(e[1]===me.id)vib([200,100,200]);return}
   if(e[0]==='l'){tone(520,.06,'triangle',.06,700);return}
@@ -693,15 +722,19 @@ stick.addEventListener('pointerdown',e=>{stickId=e.pointerId;stick.setPointerCap
 stick.addEventListener('pointermove',e=>{if(e.pointerId===stickId)stickMove(e)});
 const stickEnd=e=>{if(e.pointerId!==stickId)return;stickId=null;knob.style.transform='';input.dx=input.dy=0};
 stick.addEventListener('pointerup',stickEnd);stick.addEventListener('pointercancel',stickEnd);
-function doPushLocal(){if(!mine||matchPhase!=='play'||mine.stun>0||performance.now()<pushCd)return;const pcd=hatCd(mine.hat)+50;pushCd=performance.now()+pcd;pushB.classList.add('cd');setTimeout(()=>pushB.classList.remove('cd'),pcd);
+function doPushLocal(){if(!mine||matchPhase!=='play'||mine.stun>0||(LOC==='box'&&mine.score<=0)||performance.now()<pushCd)return;const pcd=hatCd(mine.hat)+50;pushCd=performance.now()+pcd;pushB.classList.add('cd');setTimeout(()=>pushB.classList.remove('cd'),pcd);
   // lunge toward nearest
   let best=null,bd=1e9;for(const id in view){if(id===me.id)continue;const v=view[id],d=Math.hypot(v.x-mine.x,v.y-mine.y);if(d<bd){bd=d;best=v}}
-  for(const tv of tColl()){const d=Math.hypot(tv.x-mine.x,tv.y-mine.y);if(d<bd){bd=d;best=tv}}
+  if(LOC!=='box')for(const tv of tColl()){const d=Math.hypot(tv.x-mine.x,tv.y-mine.y);if(d<bd){bd=d;best=tv}}
   if(LOC==='soccer'&&ballV){const d=Math.hypot(ballV.x-mine.x,ballV.y-mine.y);if(d<bd+60){bd=d;best=ballV}}
   if(LOC!=='snow'&&best&&bd<200){mine.kx+=(best.x-mine.x)/bd*380;mine.ky+=(best.y-mine.y)/bd*380}
   rings.push({x:mine.x,y:mine.y,t:0});tone(240,.08,'square',.12,120);
   if(isHost){if(G&&G.P[me.id]){G.P[me.id].ax=aim.x;G.P[me.id].ay=aim.y}hostPush(me.id)}else send({t:'push',ax:+aim.x.toFixed(2),ay:+aim.y.toFixed(2)})}
 pushB.addEventListener('pointerdown',e=>{e.preventDefault();doPushLocal()});
+const lowB=document.getElementById('low');let lowCd=0;
+function doLowLocal(){if(!mine||matchPhase!=='play'||mine.stun>0||mine.score<=0||performance.now()<lowCd)return;lowCd=performance.now()+2500;lowB.classList.add('cd');setTimeout(()=>lowB.classList.remove('cd'),2500);
+  tone(160,.1,'sawtooth',.12,90);if(isHost)hostLow(me.id);else send({t:'low'})}
+document.getElementById('lowL').textContent=T('lowB');lowB.addEventListener('pointerdown',e=>{e.preventDefault();doLowLocal()});
 const keys={};addEventListener('keydown',e=>{keys[e.key]=1;if(e.key===' '&&phase==='play'){e.preventDefault();doPushLocal()}});addEventListener('keyup',e=>{keys[e.key]=0});
 function keyInput(){let dx=(keys.ArrowRight||keys.d||keys.D?1:0)-(keys.ArrowLeft||keys.a||keys.A?1:0),dy=(keys.ArrowDown||keys.s||keys.S?1:0)-(keys.ArrowUp||keys.w||keys.W?1:0);return dx||dy?[dx,dy]:null}
 
@@ -743,7 +776,9 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
       ctx.beginPath();ctx.moveTo(mine.x+aim.x*22,mine.y+aim.y*22);ctx.lineTo(ax,ay);ctx.stroke();ctx.beginPath();ctx.moveTo(ax+aim.x*10,ay+aim.y*10);ctx.lineTo(ax-aim.y*9,ay+aim.x*9);ctx.lineTo(ax+aim.y*9,ay-aim.x*9);ctx.closePath();ctx.fillStyle=ctx.strokeStyle;ctx.fill()}}
   const list=[...Object.values(view),...tview.map(tv=>({tch:tv,y:tv.y}))];if(LOC==='snow')for(const id in sbV)list.push({sb:sbV[id],y:sbV[id].y});if(LOC==='soccer'&&ballV)list.push({ball:ballV,y:ballV.y});if(LOC==='soccer'&&keeperV)list.push({kp:keeperV,y:keeperV.y});list.sort((a,b)=>a.y-b.y);
   for(const v of list){if(v.sb){if(v.sb.mega){ctx.save();ctx.translate(v.sb.x,v.sb.y);ctx.scale(1.8,1.8);ctx.translate(-v.sb.x,-v.sb.y);drawSnowball(ctx,v.sb,24);ctx.restore()}else drawSnowball(ctx,v.sb);continue}if(v.tch){drawTeacher(ctx,v.tch,t);continue}if(v.ball){drawBall(ctx,v.ball);continue}if(v.kp){drawTeacher(ctx,{x:KX,y:v.kp.y,a:Math.PI,st:v.kp.save?1:0,k:'pe',moving:v.kp.moving},v.kp.moving?t:0);continue}if(v.id===me.id){ctx.strokeStyle='rgba(255,197,49,.9)';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(v.x,v.y,(v.c==='fat'?50:40)+Math.sin(t*6)*3,13,0,0,7);ctx.stroke()}drawHero(ctx,v,t+v.x*.01);
-    const ny=v.y+headTop(v.c,v.hat)-14;ctx.font='700 22px Rubik, sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000a';
+    if(LOC==='box'&&v.score>0){const bw=74,hpk=Math.max(0,Math.min(1,v.score/HP0)),by=v.y+headTop(v.c,v.hat)-48;ctx.fillStyle='#000a';ctx.fillRect(v.x-bw/2-3,by-3,bw+6,14);ctx.fillStyle=hpk>.5?'#5cc560':hpk>.25?'#ffc531':'#e8412c';ctx.fillRect(v.x-bw/2,by,bw*hpk,8)}
+    if(LOC==='box'&&v.score<=0){ctx.font='900 26px Rubik, sans-serif';ctx.textAlign='center';ctx.fillStyle='#e8412c';ctx.fillText('KO',v.x,v.y-48)}
+    const ny=LOC==='box'&&v.score<=0?v.y-78:v.y+headTop(v.c,v.hat)-14;ctx.font='700 22px Rubik, sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000a';
     const label=(v.id===me.id?'▼ ':'')+v.name;ctx.strokeText(label,v.x,ny);ctx.fillStyle=v.id===me.id?'#ffc531':'#fff';ctx.fillText(label,v.x,ny)}
   for(const p of pops){p.t+=dt;if(p.t<0)continue;ctx.globalAlpha=Math.max(0,1-p.t*(p.big?.9:1.4));ctx.direction=/[\u0590-\u05FF]/.test(p.txt)?'rtl':'ltr';ctx.font=p.big?'900 44px Rubik, sans-serif':'900 34px Rubik, sans-serif';ctx.fillStyle='#ffc531';ctx.strokeStyle='#e8412c';ctx.lineWidth=5;
     ctx.strokeText(p.txt,p.x,p.y-40-p.t*70);ctx.fillText(p.txt,p.x,p.y-40-p.t*70);ctx.globalAlpha=1}
@@ -765,9 +800,9 @@ function hostStart(){phase='play';const r=[];const used=new Set();
   for(const [id,p] of lobbyPlayers){r.push([id,p.c,p.name,0]);used.add(p.c)}
   if(useBots)ORDER.forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   T0={all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{},hats:{}};for(const [id,p] of lobbyPlayers)T0.hats[id]=p.hat||null;startRound()}
-function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],T0.round>1?(T0.hats[x[0]]||null):null]);
-  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,hits:0,TC:null,ball:null,keeper:null,SB:null,star:null,starT:6};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
-  if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else if(LOC==='snow')G.SB=[];else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
+function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],(T0.round>1||LOC==='box')?(T0.hats[x[0]]||null):null]);
+  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,hits:0,TC:null,ball:null,keeper:null,SB:null,star:null,starT:6};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat;if(LOC==='box'){G.P[id].score=HP0;G.P[id].fouls=0;G.P[id].lcd=0}});
+  if(LOC==='box')G.TC=[{k:'pe',x:(RX0+RX1)/2,y:RY0+40,fx:0,fy:1,st:0,tt:1.5,tx:null,ty:null}];else if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else if(LOC==='snow')G.SB=[];else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
   send({t:'start',roster:rr,round:T0.round,loc:LOC},1);const rnd=T0.round;setTimeout(()=>{if(T0&&T0.round===rnd&&G)send({t:'start',roster:rr,round:rnd,again:1,loc:LOC},1)},700);startLocal(rr,T0.round,LOC);matchPhase='count';lastCount=0;evq=[];stAcc=0}
 function endRound(){const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]=(T0.total[id]||0)+P[id].score;T0.last[id]=P[id].score});
   const max=Math.max(...ids.map(id=>P[id].score)),leaders=ids.filter(id=>P[id].score===max),out=ids.filter(id=>!leaders.includes(id));
@@ -784,9 +819,9 @@ function showInter(m){const el=document.getElementById('inter');el.hidden=false;
     <ol class="podium">${m.scores.map(([n,c,sc])=>`<li class="${m.stay.includes(n)?'win':''}"><span class="n">${esc(n)}</span><span class="s">${sc} ${LOCS[LOC].icon}</span></li>`).join('')}</ol>
     ${m.out.length?`<p><b style="color:var(--ketchup)">${T('out')}:</b> ${m.out.map(esc).join(', ')}</p>`:''}<p><b style="color:var(--lettuce)">${T('stay')}:</b> ${m.stay.map(esc).join(', ')}</p><div id="hatPick"></div><p class="status">${T('nextR')}</p></div>`;
   const own=ownedHats();if(mine&&own.length){const hp=document.getElementById('hatPick'),myC=(m.stayChars||{})[me.id]||lobbyPlayers.get(me.id)?.c||'girl';
-    const draw=()=>{const cur=wearHat();hp.innerHTML=`<p style="color:var(--fg);font-weight:700">${T('pickHat')}</p><div class="hatrow"></div>`;const row=hp.querySelector('.hatrow');
+    const draw=()=>{const cur=wearHat();hp.innerHTML=`<p style="color:var(--fg);font-weight:700">${LOC==='box'?T('pickShorts'):T('pickHat')}</p><div class="hatrow"></div>`;const row=hp.querySelector('.hatrow');
       [null,...HAT_ORDER.filter(h=>own.includes(h))].forEach(h=>{const b=document.createElement('button');b.type='button';b.className='hatb'+((cur||null)===h?' on':'');
-        if(h)b.appendChild(charThumb(myC,h));b.insertAdjacentText('beforeend',h?T('hats')[h]:T('noHat'));b.onclick=()=>{tone(660,.08,'square',.1);setWear(h);draw()};row.appendChild(b)})};draw()}}
+        if(h)b.appendChild(charThumb(myC,h));b.insertAdjacentText('beforeend',h?hatName(h):(LOC==='box'?T('noShorts'):T('noHat')));b.onclick=()=>{tone(660,.08,'square',.1);setWear(h);draw()};row.appendChild(b)})};draw()}}
 function spawnBurger(){for(let tries=0;tries<50;tries++){const x=60+Math.random()*(AW-120),y=TOP+40+Math.random()*(AH-TOP-100);
     if(TABLES.some(t=>Math.hypot(x-t.x,y-t.y)<t.r+40))continue;if(Object.values(G.P).some(p=>Math.hypot(x-p.x,y-p.y)<120))continue;if(G.B.some(b=>Math.hypot(x-b.x,y-b.y)<90))continue;
     G.B.push({id:G.nextId++,x,y});return}}
@@ -837,7 +872,22 @@ function teacherTick(dt){const now=performance.now();for(const T of G.TC){
     T.tt-=dt;if(T.tt<=0){T.st=1;T.tt=1.3;T.fx=-T.fx;T.fy=-T.fy;evq.push(['l',0])}}
   const R=T.st===1?380:290;for(const id in G.P){const b=G.P[id];if(b.stun>0||(b.caught||0)>now)continue;const vx=b.x-T.x,vy=b.y-T.y,d=Math.hypot(vx,vy);
     if(d<(b.hat==='top'?R*.55:R)&&d>1&&(vx*T.fx+vy*T.fy)/d>.64)catchKid(id)}}}
+function boxHurt(id,dmg,st,kx,ky){const B=G.P[id];if(!B||B.score<=0)return;B.score=Math.max(0,B.score-dmg);let s=st;if(B.score<=0){s=999;evq.push(['K',id,Math.round(B.x),Math.round(B.y)])}
+  if(id===me.id&&mine){mine.kx=kx;mine.ky=ky;mine.stun=s;mine.score=B.score;sndPush();vib(s>2?[200,80,300]:[60,30,60])}else if(B.bot){B.kx=kx;B.ky=ky;B.stun=s}else{send({t:'kb',to:id,vx:Math.round(kx),vy:Math.round(ky),s},1);B.stun=s}}
+function boxTarget(A,extra){let best=null,bd=1e9;for(const id in G.P){if(id===A.id)continue;const B=G.P[id];if(B.score<=0)continue;const d=Math.hypot(B.x-A.x,B.y-A.y);if(d<CH[A.c].r+CH[B.c].r+extra&&d<bd){bd=d;best=id}}return [best,bd]}
+function refSees(A){const T=G.TC&&G.TC[0];if(!T)return false;const vx=A.x-T.x,vy=A.y-T.y,d=Math.hypot(vx,vy)||1,R=310*(A.hat==='top'?.5:1);return d<R&&(vx*T.fx+vy*T.fy)/d>.6}
+function hostLow(aid){const A=G&&G.P[aid];if(!A||LOC!=='box'||matchPhase!=='play'||A.score<=0)return;const now=performance.now();if((A.lcd||0)>now||A.stun>0)return;A.lcd=now+2400;
+  const [best,bd]=boxTarget(A,42);evq.push(['p',aid,best]);if(!best)return;const B=G.P[best],u=bd||1;
+  boxHurt(best,B.hat==='ushanka'?10:20,B.hat==='ushanka'?.8:1.5,(B.x-A.x)/u*180,(B.y-A.y)/u*180);evq.push(['L',aid,best,Math.round(B.x),Math.round(B.y),B.hat==='ushanka'?10:20]);
+  if(refSees(A)){A.fouls=(A.fouls||0)+1;const T=G.TC[0];T.st=1;T.tt=1.2;if(A.fouls>=2){A.score=0;boxHurt(aid,1,999,0,0);evq.push(['D',aid,Math.round(A.x),Math.round(A.y)])}else evq.push(['W',aid,Math.round(A.x),Math.round(A.y)])}}
+function refTick(dt){const T=G.TC[0];if(T.st===1){T.tt-=dt;if(T.tt<=0){T.st=0;T.tt=1}return}
+  if(T.tx==null||Math.hypot(T.tx-T.x,T.ty-T.y)<24){T.tx=RX0+120+Math.random()*(RX1-RX0-240);T.ty=RY0+60+Math.random()*(RY1-RY0-140)}
+  const dx=T.tx-T.x,dy=T.ty-T.y,d=Math.hypot(dx,dy)||1;T.x+=dx/d*95*dt;T.y+=dy/d*95*dt;
+  T.tt-=dt;if(T.tt<=0||T.lx==null){T.tt=1.2+Math.random()*1.8;const al=Object.values(G.P).filter(b=>b.score>0);const tg=al.length&&Math.random()<.7?al[Math.floor(Math.random()*al.length)]:null;const a=tg?Math.atan2(tg.y-T.y,tg.x-T.x):Math.random()*6.283;T.lx=Math.cos(a);T.ly=Math.sin(a)}
+  const k=Math.min(1,dt*4);T.fx+=(T.lx-T.fx)*k;T.fy+=(T.ly-T.fy)*k;const fl=Math.hypot(T.fx,T.fy)||1;T.fx/=fl;T.fy/=fl}
 function hostPush(aid){const A=G&&G.P[aid];if(!A||matchPhase!=='play')return;const now=performance.now();if(A.cd>now||A.stun>0)return;A.cd=now+hatCd(A.hat);
+  if(LOC==='box'){if(A.score<=0)return;const [best,bd]=boxTarget(A,55);evq.push(['p',aid,best]);if(!best)return;const B=G.P[best],u=bd||1,dmg=Math.round((8+3*(CH[A.c].pw-1))*(A.hat==='crown'?1.25:1)),f=420*CH[A.c].pw/CH[B.c].mass;
+    boxHurt(best,dmg,.28,(B.x-A.x)/u*f,(B.y-A.y)/u*f);evq.push(['P',aid,best,Math.round(B.x),Math.round(B.y),dmg]);return}
   if(LOC==='snow'&&G.SB){let ax=A.ax,ay=A.ay;if(ax==null){ax=A.face||1;ay=0}const l=Math.hypot(ax,ay)||1;ax/=l;ay/=l;A.tc=(A.tc||0)+1;const mega=!!A.mega||(A.hat==='crown'&&A.tc%4===0);A.mega=false;
     G.SB.push({id:G.nextId++,x:A.x+ax*(CH[A.c].r+16),y:A.y+ay*(CH[A.c].r+16),vx:ax*(mega?760:860)*(A.hat==='top'?1.35:1),vy:ay*(mega?760:860)*(A.hat==='top'?1.35:1),o:aid,life:.85,mega});evq.push(['t',aid,mega?1:0]);return}
   if(LOC==='soccer'&&G.ball&&G.ball.frozen<=0){const B=G.ball,dx=B.x-A.x,dy=B.y-A.y,d=Math.hypot(dx,dy)||1;
@@ -855,6 +905,10 @@ function hostPush(aid){const A=G&&G.P[aid];if(!A||matchPhase!=='play')return;con
     else if(B.bot){B.kx=ux*force;B.ky=uy*force;B.stun=stun}
     else{send({t:'kb',to:best,vx:Math.round(ux*force),vy:Math.round(uy*force),s:stun},1);B.stun=stun}}}
 function botThink(b,dt){const brain=botBrain[b.id]||(botBrain[b.id]={target:null,wob:Math.random()*6,react:0,idle:0});brain.react-=dt;if(brain.idle>0){brain.idle-=dt;return [0,0]}
+  if(LOC==='box'){if(b.score<=0)return [0,0];if(brain.react<=0){brain.react=.4+Math.random()*.6;if(Math.random()<.15){brain.idle=.3+Math.random()*.5;return [0,0]}let best=null,bd=1e9;for(const id in G.P){if(id===b.id)continue;const o=G.P[id];if(o.score<=0)continue;const d=Math.hypot(o.x-b.x,o.y-b.y)+Math.random()*90;if(d<bd){bd=d;best=o}}brain.tgt=best;brain.strafe=Math.random()<.5?1:-1}
+    const o=brain.tgt;if(!o||o.score<=0)return [0,0];const vx=o.x-b.x,vy=o.y-b.y,d=Math.hypot(vx,vy)||1,reach=CH[b.c].r+CH[o.c].r+40;let dx=vx/d,dy=vy/d;
+    if(b.score<30&&Math.random()<.5){dx=-dx;dy=-dy}if(d<reach){dx=-vy/d*.5*brain.strafe;dy=vx/d*.5*brain.strafe;if(Math.random()<dt*1.6)hostPush(b.id);if(Math.random()<dt*.35&&(!refSees(b)||Math.random()<.12))hostLow(b.id)}
+    brain.wob+=dt*3;return [(dx+Math.cos(brain.wob)*.15)*.62,(dy+Math.sin(brain.wob)*.15)*.62]}
   if(LOC==='snow'&&G.SB){if(brain.react<=0){brain.react=.5+Math.random()*.7;if(Math.random()<.15){brain.idle=.3+Math.random()*.5;return [0,0]}
       let best=null,bd=1e9;for(const id in G.P){if(id===b.id)continue;const o=G.P[id],d=Math.hypot(o.x-b.x,o.y-b.y);if(d<bd){bd=d;best=o}}brain.tgt=best;brain.strafe=Math.random()<.5?1:-1}
     let dx=0,dy=0;const o=brain.tgt;
@@ -886,11 +940,11 @@ function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
   if(matchPhase==='count'){G.count-=dt;timeLeft=G.count;const n=Math.ceil(G.count);if(n!==lastCount&&n>0){lastCount=n;sndBeep(0);flashBig(n,900)}
     if(G.count<=0){matchPhase='play';G.t=RS();sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}}
   else if(matchPhase==='play'){G.t-=dt;timeLeft=G.t;
-    if(G.TC)teacherTick(dt);if(G.ball)ballTick(dt);if(G.SB)snowTick(dt);
+    if(G.TC)(LOC==='box'?refTick:teacherTick)(dt);if(G.ball)ballTick(dt);if(G.SB)snowTick(dt);
     for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id!==me.id&&b.stun>0)b.stun-=dt}
     for(const id in P){const b=P[id];if(b.stun>0)continue;const reach=CH[b.c].r+26+CH[b.c].pick+(b.hat==='top'&&LOC==='diner'?32:0);
       for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<reach){G.B.splice(i,1);b.score++;evq.push(['e',id,Math.round(g.x),Math.round(g.y)])}}}
-    if(G.t<=0||(LOC==='school'?G.kicks>=LOCS.school.goal:LOC==='soccer'?G.goals>=LOCS.soccer.goal:LOC==='snow'?G.hits>=LOCS.snow.goal:G.B.length===0)){matchPhase='end'}}
+    if(G.t<=0||(LOC==='box'?Object.values(P).filter(b=>b.score>0).length<=1:LOC==='school'?G.kicks>=LOCS.school.goal:LOC==='soccer'?G.goals>=LOCS.soccer.goal:LOC==='snow'?G.hits>=LOCS.snow.goal:G.B.length===0)){matchPhase='end'}}
   // views for host render
   for(const id in P){const b=P[id],v=view[id];if(!v)continue;if(id!==me.id){v.tx=b.x;v.ty=b.y;v.moving=b.moving;v.face=b.face;v.stun=b.stun>0?1:0}v.score=b.score}
   burgers=G.B.map(g=>[g.id,Math.round(g.x),Math.round(g.y)]);
@@ -917,7 +971,7 @@ function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('
   if(!again){confetti();[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12),i*140));if(iWin)vib([100,50,100,50,300])}
   const medalIcons=['🥇','🥈','🥉','🍟'];let rank=0;
   app.innerHTML=`<div style="font-size:64px;line-height:1">🏆</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1>${medalLine?`<p style="color:var(--mustard);font-weight:700;font-size:18px">${medalLine}</p>`:''}<ol class="podium" id="pod"></ol>
-    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='school'?T('shareSchool'):LOC==='soccer'?T('shareSoccer'):LOC==='snow'?T('shareSnow'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
+    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='box'?T('shareBox'):LOC==='school'?T('shareSchool'):LOC==='soccer'?T('shareSoccer'):LOC==='snow'?T('shareSnow'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button id="ag">${T('again')} ${LOCS[FIXED].icon}</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?picker(FIXED):''}${isHost?'':`<p class="status">${T('againHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
   const pod=document.getElementById('pod');
   board.forEach((b,i)=>{rank=i;const li=document.createElement('li');li.className=rank===0?'win':'';

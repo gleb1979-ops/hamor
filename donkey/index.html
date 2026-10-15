@@ -123,10 +123,10 @@ const rid=()=>Math.random().toString(36).slice(2,10);
 const me={id:rid(),name:''};
 try{me.name=localStorage.getItem('hamor-name')||''}catch(e){}
 /* ===== game switch (shared) ===== */
-const GN={en:{donkey:"Who's the Donkey?",diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle',sw:'Switch game: everyone stays in the room',now:'Game'},
-  ru:{donkey:'Кто осёл?',diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва',sw:'Сменить игру: все остаются в комнате',now:'Игра'},
-  he:{donkey:'מי חמור?',diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג',sw:'להחליף משחק: כולם נשארים בחדר',now:'משחק'}};
-const GI={donkey:'🫏',diner:'🍔',school:'🦶',soccer:'⚽',snow:'❄️'},GLIST=['donkey','diner','school','soccer','snow'];
+const GN={en:{donkey:"Who's the Donkey?",diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle',box:'Boxing',sw:'Switch game: everyone stays in the room',now:'Game'},
+  ru:{donkey:'Кто осёл?',diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва',box:'Бокс',sw:'Сменить игру: все остаются в комнате',now:'Игра'},
+  he:{donkey:'מי חמור?',diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג',box:'אגרוף',sw:'להחליף משחק: כולם נשארים בחדר',now:'משחק'}};
+const GI={donkey:'🫏',diner:'🍔',school:'🦶',soccer:'⚽',snow:'❄️',box:'🥊'},GLIST=['donkey','diner','school','soccer','snow','box'];
 const NAV=new URLSearchParams(location.search);let MK=(NAV.get('mk')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);const AUTO=NAV.get('auto')==='1'||!!MK;let navNm=false,gotoing=false;
 function gameUrl(g){return g==='donkey'?'../donkey/?':'../burger/?loc='+g+'&'}
 function navQ(){return '&lang='+lang+'&nm='+encodeURIComponent(me.name)}

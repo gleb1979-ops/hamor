@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Кто хамор? · מי חמור? 🫏</title>
-<meta property="og:title" content="Кто хамор? · מי חמור? 🫏">
+<title>Кто осёл? · מי חמור? 🫏</title>
+<meta property="og:title" content="Кто осёл? · מי חמור? 🫏">
 <meta property="og:description" content="Жми на морковку быстрее всех! · לחצו על הגזר הכי מהר!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Rubik:wght@400;500;700&display=swap">
@@ -41,6 +41,8 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 @keyframes pop{from{transform:scale(.2)}}
 .status{font-size:13px;color:var(--muted)}
 .err{color:var(--hot)}
+.word{font-family:"Rubik",sans-serif;font-weight:700;font-size:20px;letter-spacing:2px;white-space:nowrap}.word i{font-style:normal;opacity:.18}.word b{color:var(--hot)}
+.modes{display:grid;gap:10px;width:min(100%,340px)}
 .lang{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));z-index:60;padding:8px 14px;font-size:14px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){.tgt{animation:none}}
 </style>
@@ -55,14 +57,14 @@ const ROUNDS=3, BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-hamor/v1/';
 const app=document.getElementById('app');
 const params=new URLSearchParams(location.search);
 const L={
- ru:{title:'Кто хамор?',homeJoin:'Тебя позвали в игру. Морковка появляется у всех одновременно. Самый медленный станет חמור.',homeNew:'Онлайн-игра для группы: каждый со своего телефона жмёт на морковку. Самый медленный станет חמור.',
-  name:'Твоё имя',join:'Войти в игру',create:'Создать игру',needName:'Напиши имя, чтобы другие видели, кто хамор.',connecting:'Подключаюсь…',
+ ru:{title:'Кто осёл?',homeJoin:'Тебя позвали в игру. Морковка появляется у всех одновременно. Самый медленный станет ослом.',homeNew:'Онлайн-игра для группы: каждый со своего телефона жмёт на морковку. Самый медленный станет ослом.',
+  name:'Твоё имя',join:'Войти в игру',create:'Создать игру',needName:'Напиши имя, чтобы другие видели, кто осёл.',connecting:'Подключаюсь…',
   errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться к игре. Попробуй ещё раз через минуту.',reload:'Обновить',
   room:'Комната',hostHint:'Кинь ссылку в группу. Когда все зайдут, жми «Старт».',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',you:'(ты)',inGame:'В игре: ',start:'Старт · 3 раунда',
-  inviteText:'Го играть в «Кто хамор?» 🫏 Кто последний нажмёт — тот хамор! ',round:'Раунд',waitCarrot:'Жди морковку… не жми раньше!',carrot:'Морковка',
-  ms:'мс',early:'Рано! +1500 мс',waitOthers:'ждём остальных',slept:'Проспал! +2000 мс',youHamor:'Ты — хамор! 😂',isHamor:' — хамор!',
-  share:'Похвастаться в группе',shareText:(n,ms)=>`В «Кто хамор?» 🫏 хамор сегодня — ${n} (${ms} мс)! 😂`,rematch:'Реванш',rematchHost:'Реванш запускает организатор',other:'עברית'},
+  inviteText:'Го играть в «Кто осёл?» 🫏 Кто последний нажмёт — тот осёл! ',round:'Раунд',waitCarrot:'Жди морковку… не жми раньше!',carrot:'Морковка',
+  ms:'мс',early:'Рано! +1500 мс',waitOthers:'ждём остальных',slept:'Проспал! +2000 мс',youHamor:'Ты — осёл! 😂',isHamor:' — осёл!',
+  share:'Похвастаться в группе',shareText:(n,ms)=>`В «Кто осёл?» 🫏 осёл сегодня — ${n} (${ms} мс)! 😂`,rematch:'Реванш',rematchHost:'Реванш запускает организатор',short:'Короткая · 3 раунда',long:'Длинная · до ОСЁЛ',longHint:'Длинная: каждый раунд самый медленный получает букву О → С → Ё → Л. Кто первым соберёт ОСЁЛ, тот проиграл.',gotLetter:(n,l)=>`${n} получает букву ${l}`,youGot:l=>`Тебе досталась буква ${l} 😬`,next:'Следующий раунд…',lettersShare:(n)=>`Мы играли в «Кто осёл?» до последней буквы 🫏 ${n} собрал(а) ОСЁЛ! 😂`,other:'עברית'},
  he:{title:'מי חמור?',homeJoin:'הזמינו אותך למשחק. הגזר מופיע אצל כולם באותו רגע. האיטי ביותר הוא החמור.',homeNew:'משחק אונליין לקבוצה: כל אחד לוחץ על הגזר מהטלפון שלו. האיטי ביותר הוא החמור.',
   name:'השם שלך',join:'כניסה למשחק',create:'יצירת משחק',needName:'כתבו שם, כדי שכולם יידעו מי החמור.',connecting:'מתחבר…',
   errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו את הדף.',errConn:'לא הצלחנו להתחבר למשחק. נסו שוב בעוד דקה.',reload:'רענון',
@@ -70,7 +72,7 @@ const L={
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',you:'(אני)',inGame:'במשחק: ',start:'התחלה · 3 סיבובים',
   inviteText:'בואו לשחק ב«מי חמור?» 🫏 מי שלוחץ אחרון — הוא החמור! ',round:'סיבוב',waitCarrot:'חכו לגזר… לא ללחוץ לפני הזמן!',carrot:'גזר',
   ms:'ms',early:'מוקדם מדי! 1500+ ms',waitOthers:'מחכים לשאר',slept:'פספסת! 2000+ ms',youHamor:'החמור — זה אתה! 😂',isHamor:' — החמור!',
-  share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',other:'Русский'}};
+  share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',short:'קצר · 3 סיבובים',long:'ארוך · עד חמור',longHint:'ארוך: בכל סיבוב האיטי ביותר מקבל אות ח ← מ ← ו ← ר. מי שמשלים ראשון חמור — הפסיד.',gotLetter:(n,l)=>`${n} מקבל/ת את האות ${l}`,youGot:l=>`קיבלת את האות ${l} 😬`,next:'הסיבוב הבא…',lettersShare:(n)=>`שיחקנו «מי חמור?» עד האות האחרונה 🫏 ${n} השלים/ה חמור! 😂`,other:'Русский'}};
 let lang=params.get('lang')==='he'||params.get('lang')==='ru'?params.get('lang'):null;
 if(!lang){try{lang=localStorage.getItem('hamor-lang')}catch(e){}}
 if(lang!=='he'&&lang!=='ru')lang=/^(he|iw)/i.test(navigator.language||'')?'he':'ru';
@@ -122,7 +124,8 @@ function onMsg(m){
   else if(m.t==='lobby'&&!isHost){players=new Map(m.players.map(p=>[p.id,{name:p.name,host:p.host}]));if(phase==='lobby')lobby()}
   else if(m.t==='round'){phase='play';playRound(m)}
   else if(m.t==='res'&&isHost){(results[m.round]=results[m.round]||{})[m.from]=m.ms;checkRound()}
-  else if(m.t==='end'){phase='end';final(m.board)}
+  else if(m.t==='rres'){roundResult(m)}
+  else if(m.t==='end'){phase='end';final({rows:m.board,mode:m.mode})}
   else if(m.t==='bye'){players.delete(m.from);if(isHost)broadcastLobby()}}
 function broadcastLobby(){send({t:'lobby',players:[...players].map(([id,p])=>({id,name:p.name,host:p.host}))});if(phase==='lobby')lobby()}
 addEventListener('pagehide',()=>{try{send({t:'bye'})}catch(e){}});
@@ -148,23 +151,34 @@ function lobby(){redraw=lobby;const list=[...players].map(([id,p])=>`<li class="
   app.innerHTML=`<h2>${T('room')}</h2><div class="code">${esc(room)}</div>
     ${isHost?`<p>${T('hostHint')}</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">${T('invite')}</a><button class="ghost" id="cp">${T('copy')}</button></div>`:`<p>${T('waitHost')}</p>`}
     <ul class="list">${list}</ul><p class="status">${T('inGame')}${players.size}</p>
-    ${isHost?`<button id="st" ${players.size<2?'disabled':''}>${T('start')}</button>`:''}`;
+    ${isHost?`<div class="modes"><button id="st" ${players.size<2?'disabled':''}>${T('short')}</button><button id="stl" class="ghost" ${players.size<2?'disabled':''}>${T('long')} 🫏</button></div><p class="status">${T('longHint')}</p>`:''}`;
   if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent=T('copied'),()=>e.target.textContent=link())};
-    document.getElementById('st').onclick=()=>{if(players.size>=2)startGame()}}}
+    document.getElementById('st').onclick=()=>{if(players.size>=2)startGame('short')};document.getElementById('stl').onclick=()=>{if(players.size>=2)startGame('long')}}}
 
 /* host logic */
-let total={};
-function startGame(){results={};total={};round=0;closed=0;nextRound()}
-function nextRound(){round++;if(round>ROUNDS)return endGame();
-  send({t:'round',round,delay:1200+Math.random()*2200,x:Math.random(),y:Math.random()});
+const WORDS={he:['ח','מ','ו','ר'],ru:['О','С','Ё','Л']};let WORD=WORDS[lang];
+function word(n){WORD=WORDS[lang];return `<span class="word" dir="${lang==='he'?'rtl':'ltr'}">${WORD.map((c,i)=>i<n?`<b>${c}</b>`:`<i>${c}</i>`).join('')}</span>`}
+let total={},letters={},mode='short',closed=0;
+function startGame(md){mode=md||mode;results={};total={};letters={};round=0;closed=0;for(const id of players.keys())letters[id]=0;nextRound()}
+function nextRound(){round++;if(mode==='short'&&round>ROUNDS)return endGame();if(round>40)return endGame();
+  send({t:'round',round,mode,letters,delay:1200+Math.random()*2200,x:Math.random(),y:Math.random()});
   clearTimeout(hostTimer);hostTimer=setTimeout(closeRound,6500)}
 function checkRound(){const r=results[round]||{};if([...players.keys()].every(id=>id in r)){clearTimeout(hostTimer);setTimeout(closeRound,600)}}
-let closed=0;function closeRound(){if(closed===round)return;closed=round;const r=results[round]||{};
-  for(const id of players.keys())total[id]=(total[id]||0)+(id in r?r[id]:2000);setTimeout(nextRound,1500)}
-function endGame(){const board=[...players].map(([id,p])=>({id,name:p.name,ms:Math.round(total[id]/ROUNDS)})).sort((a,b)=>a.ms-b.ms);send({t:'end',board})}
+function closeRound(){if(closed===round)return;closed=round;const r=results[round]||{},ms={};
+  for(const id of players.keys()){ms[id]=id in r?r[id]:2000;total[id]=(total[id]||0)+ms[id];if(!(id in letters))letters[id]=0}
+  if(mode==='short'){setTimeout(nextRound,1500);return}
+  const worst=Math.max(...Object.values(ms)),losers=Object.keys(ms).filter(id=>ms[id]===worst);
+  losers.forEach(id=>letters[id]=Math.min(4,letters[id]+1));
+  const over=losers.some(id=>letters[id]>=4);
+  send({t:'rres',round,losers,ms,letters,names:Object.fromEntries([...players].map(([id,p])=>[id,p.name]))});
+  setTimeout(over?endGame:nextRound,over?3500:4000)}
+function endGame(){const board=[...players].map(([id,p])=>({id,name:p.name,ms:Math.round(total[id]/Math.max(1,round-(mode==='short'?1:0))),l:letters[id]||0}));
+  if(mode==='long')board.sort((a,b)=>a.l-b.l||a.ms-b.ms);else board.sort((a,b)=>a.ms-b.ms);
+  send({t:'end',board,mode})}
 
 /* every player */
-function playRound(m){redraw=()=>{};lb.hidden=true;app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}/${ROUNDS}</h2><p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
+function playRound(m){redraw=()=>{};lb.hidden=true;const my=m.mode==='long'?(m.letters[me.id]||0):-1;
+  app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}${m.mode==='long'?'':'/'+ROUNDS}</h2>${my>=0?word(my):''}<p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
   const pad=document.getElementById('pad'),hm=document.getElementById('hm');let state='wait',t0,done=false;
   const report=ms=>{if(done)return;done=true;send({t:'res',round:m.round,ms})};
   pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML=`<span class="err">${T('early')}</span>`;try{navigator.vibrate(150)}catch(e){};report(1500)});
@@ -174,14 +188,22 @@ function playRound(m){redraw=()=>{};lb.hidden=true;app.innerHTML=`<div class="hu
       const b=t.getBoundingClientRect();burst(b.left+44,b.top+44,['🥕','✨'],12,.5);t.remove();hm.textContent=`${dt} ${T('ms')} · ${T('waitOthers')}`;report(dt)});
     setTimeout(()=>{if(state==='go'){state='x';t.remove();hm.textContent=T('slept');report(2000)}},2000)},m.delay)}
 
-function final(board){lb.hidden=false;redraw=()=>final(board,1);const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!arguments[1]){boom();rain(['🫏'],iAm?140:70);
-  setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
-  const txt=T('shareText')(last.name,last.ms);
+function roundResult(m){redraw=()=>roundResult(m,1);lb.hidden=false;const mine=m.losers.includes(me.id);
+  const names=m.losers.map(id=>m.names[id]||'?');const L1=WORDS[lang][(m.letters[m.losers[0]]||1)-1];
+  if(!arguments[1]){if(mine){boom();rain(['🫏'],25)}else blip(700)}
+  const rows=Object.keys(m.letters).sort((a,b)=>m.letters[a]-m.letters[b]||(m.ms[a]-m.ms[b])).map(id=>
+    `<li class="${m.losers.includes(id)?'loser':id===me.id?'me':''}"><span>${esc(m.names[id]||'?')}</span><span>${m.ms[id]} ${T('ms')} &nbsp;${word(m.letters[id])}</span></li>`).join('');
+  app.innerHTML=`<div class="big">${mine?'😬':'🥕'}</div><h1 style="font-size:clamp(24px,7vw,38px)">${mine?T('youGot')(L1):esc(names.join(', '))+' · '+L1}</h1>
+    ${mine?'':`<p>${esc(T('gotLetter')(names.join(', '),L1))}</p>`}<ol class="list">${rows}</ol><p class="status">${T('next')}</p>`}
+
+function final(board,again){const mode=arguments[2]||board.mode||'short';board=board.rows||board;lb.hidden=false;redraw=()=>final({rows:board,mode},1);
+  const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!again){boom();rain(['🫏'],iAm?140:70);setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
+  const txt=mode==='long'?T('lettersShare')(last.name):T('shareText')(last.name,last.ms);
   app.innerHTML=`<div class="big">🫏</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>
-    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${r.ms} ${T('ms')} ${rank(r.ms)}</span></li>`).join('')}</ol>
+    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${mode==='long'?word(r.l):r.ms+' '+T('ms')+' '+rank(r.ms)}</span></li>`).join('')}</ol>
     <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?'':`<p class="status">${T('rematchHost')}</p>`}`;
-  if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame()}}
+  if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame(mode)}}
 
 home();
 })();

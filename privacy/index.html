@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Privacy Policy · BYD Shorties</title>
+<meta name="description" content="How BYD Shorties handles information. No accounts, no ads, no tracking.">
+<meta name="theme-color" content="#170f1c">
+<link rel="icon" href="/favicon.png">
+<style>
+:root{--bg:#170f1c;--panel:#241830;--fg:#fff6ec;--muted:#c2b2c9;--mustard:#ffc531;--line:#3f2d4c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.6;
+  padding:max(18px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none;font-weight:800;letter-spacing:.04em}
+.brand img{width:40px;height:40px;border-radius:10px}.brand b{color:var(--mustard)}
+.langs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
+.langs button{font:inherit;font-size:13px;font-weight:800;background:none;border:0;color:var(--muted);border-radius:999px;padding:5px 11px;cursor:pointer}
+.langs button.on{background:var(--mustard);color:#2b1b30}
+h1{font-size:clamp(28px,7vw,40px);line-height:1.15;margin:0 0 6px}
+h2{font-size:20px;margin:28px 0 8px;color:var(--mustard)}
+p,li{color:#f1e6ea}ul{padding-inline-start:22px;margin:6px 0}
+.upd{color:var(--muted);font-size:14px;margin:0 0 18px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin:16px 0}
+a{color:var(--mustard)}
+footer{margin-top:36px;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script>
+(function(){
+const CONTACT='__CONTACT__';
+const UPDATED='2026-10-15';
+const L={
+en:{title:'Privacy Policy',upd:'Last updated: ',back:'All games',
+ short:'In short: no accounts, no ads, no tracking, nothing sold. The only thing you type is a nickname, and it is shared only with the players in your game room.',
+ s:[
+ ['Who we are','BYD Shorties is a set of short online party games made by B.Y.D (Build Your Dream), Israel. This policy covers the website and the installable app at byd-shorties.pages.dev and all its games.'],
+ ['What we collect',['<b>Nickname.</b> To play, you type a nickname. It is saved only on your own device and sent to the other players in the same game room so they can see who is who. We do not keep it on any server.','<b>Game data on your device.</b> Your language, medals, hats and nickname are stored in your browser (local storage) on your device only. We cannot see them.','<b>Game messages.</b> While you play, your phone exchanges short messages with the other players in the room (nickname, chosen hero, positions on the field, scores). They pass through a real-time server and are not stored by us.','We do <b>not</b> ask for your real name, email, phone number, photos, location, contacts or any account.']],
+ ['Services that help run the games',['<b>Cloudflare</b> hosts the website. Like every web host, it processes technical data such as your IP address to deliver the pages and protect the site from attacks.','<b>EMQX public server (broker.emqx.io)</b> passes the game messages between players in a room. The connection is encrypted in transit, but the server is public: anyone who knows a room code could join that room. Do not put private information in nicknames.','<b>Google Fonts</b> and <b>unpkg</b> deliver fonts and a code library; they receive your IP address when your browser downloads them.','We plan to move the game messages to our own server; this policy will be updated when we do.']],
+ ['What we do not do',['No advertising and no ad trackers.','No cookies for tracking or analytics profiles.','We never sell or rent any information.']],
+ ['Children','The games are made for kids and families. We do not knowingly collect personal information from children. We ask kids to use a nickname, not their full real name, and to play with a parent’s permission. A parent who has any concern can contact us and we will help.'],
+ ['How long we keep data','We do not store game data on our servers. Data on your device stays until you clear it: open your browser settings and clear the site data for this website, or delete the app.'],
+ ['Your rights','You can ask us what information we hold about you, ask to correct it or delete it, and complain to your data protection authority (in Israel: the Privacy Protection Authority).'],
+ ['Changes','If we change this policy, we will update the date at the top. Important changes will be shown in the games.'],
+ ['Contact','Questions about privacy: ']]},
+ru:{title:'Политика конфиденциальности',upd:'Обновлено: ',back:'Все игры',
+ short:'Коротко: без регистрации, без рекламы, без слежки, ничего не продаём. Единственное, что вы вводите, это ник, и его видят только игроки вашей игровой комнаты.',
+ s:[
+ ['Кто мы','BYD Shorties — набор коротких онлайн-игр для компании от B.Y.D (Build Your Dream), Израиль. Политика относится к сайту и приложению byd-shorties.pages.dev и всем его играм.'],
+ ['Что мы собираем',['<b>Ник.</b> Чтобы играть, вы вводите ник. Он хранится только на вашем устройстве и передаётся другим игрокам в той же комнате, чтобы они видели, кто есть кто. На серверах мы его не храним.','<b>Игровые данные на устройстве.</b> Язык, медали, шапки и ник сохраняются в браузере (local storage) только на вашем устройстве. Мы их не видим.','<b>Игровые сообщения.</b> Во время игры телефон обменивается короткими сообщениями с другими игроками комнаты (ник, выбранный герой, положение на поле, очки). Они проходят через сервер связи и нами не сохраняются.','Мы <b>не</b> спрашиваем настоящее имя, почту, телефон, фото, местоположение, контакты и не создаём аккаунтов.']],
+ ['Сервисы, на которых работают игры',['<b>Cloudflare</b> размещает сайт. Как любой хостинг, он обрабатывает технические данные, например IP-адрес, чтобы показывать страницы и защищать сайт от атак.','<b>Публичный сервер EMQX (broker.emqx.io)</b> передаёт игровые сообщения между игроками комнаты. Соединение шифруется при передаче, но сервер публичный: зная код комнаты, в неё можно зайти. Не пишите в ник личную информацию.','<b>Google Fonts</b> и <b>unpkg</b> отдают шрифты и библиотеку кода; при загрузке они получают ваш IP-адрес.','Мы планируем перенести игровые сообщения на собственный сервер и тогда обновим эту политику.']],
+ ['Чего мы не делаем',['Нет рекламы и рекламных трекеров.','Нет cookies для слежки и аналитических профилей.','Мы никогда не продаём и не передаём информацию за деньги.']],
+ ['Дети','Игры сделаны для детей и семей. Мы сознательно не собираем персональные данные детей. Просим детей писать ник, а не полное настоящее имя, и играть с разрешения родителей. Если у родителя есть вопрос или опасение, напишите нам, мы поможем.'],
+ ['Сколько храним','Игровые данные на наших серверах не хранятся. Данные на устройстве остаются, пока вы их не удалите: очистите данные этого сайта в настройках браузера или удалите приложение.'],
+ ['Ваши права','Вы можете спросить, какие данные о вас у нас есть, попросить исправить или удалить их и обратиться с жалобой в орган по защите данных (в Израиле: Управление по защите приватности).'],
+ ['Изменения','Если политика изменится, мы обновим дату вверху. О важных изменениях сообщим в играх.'],
+ ['Связь','Вопросы о конфиденциальности: ']]},
+he:{title:'מדיניות פרטיות',upd:'עודכן לאחרונה: ',back:'כל המשחקים',
+ short:'בקצרה: בלי הרשמה, בלי פרסומות, בלי מעקב, ושום דבר לא נמכר. הדבר היחיד שמקלידים הוא כינוי, והוא מוצג רק לשחקנים באותו חדר משחק.',
+ s:[
+ ['מי אנחנו','BYD Shorties הם משחקי מסיבה קצרים ברשת של B.Y.D (Build Your Dream), ישראל. המדיניות חלה על האתר והאפליקציה byd-shorties.pages.dev ועל כל המשחקים בהם.'],
+ ['מה אנחנו אוספים',['<b>כינוי.</b> כדי לשחק מקלידים כינוי. הוא נשמר רק במכשיר שלכם ונשלח לשחקנים האחרים באותו חדר, כדי שיראו מי זה מי. אנחנו לא שומרים אותו בשרת.','<b>נתוני משחק במכשיר.</b> השפה, המדליות, הכובעים והכינוי נשמרים בדפדפן (local storage) רק במכשיר שלכם. אנחנו לא רואים אותם.','<b>הודעות משחק.</b> בזמן המשחק הטלפון מחליף הודעות קצרות עם השחקנים בחדר (כינוי, הדמות, מיקום על המגרש, ניקוד). הן עוברות דרך שרת תקשורת ואנחנו לא שומרים אותן.','אנחנו <b>לא</b> מבקשים שם מלא, אימייל, טלפון, תמונות, מיקום או אנשי קשר, ואין חשבונות.']],
+ ['שירותים שעליהם המשחקים פועלים',['<b>Cloudflare</b> מארחת את האתר. כמו כל אחסון, היא מעבדת נתונים טכניים כמו כתובת IP כדי להציג את הדפים ולהגן על האתר מהתקפות.','<b>השרת הציבורי של EMQX (broker.emqx.io)</b> מעביר את הודעות המשחק בין השחקנים בחדר. החיבור מוצפן בזמן ההעברה, אבל השרת ציבורי: מי שיודע את קוד החדר יכול להיכנס אליו. אל תכתבו מידע אישי בכינוי.','<b>Google Fonts</b> ו־<b>unpkg</b> מספקים גופנים וספריית קוד; הם מקבלים את כתובת ה־IP בזמן ההורדה.','אנחנו מתכננים להעביר את הודעות המשחק לשרת משלנו, ואז נעדכן את המדיניות.']],
+ ['מה אנחנו לא עושים',['אין פרסומות ואין עוקבי פרסום.','אין עוגיות (cookies) למעקב או לפרופילים.','אנחנו אף פעם לא מוכרים מידע.']],
+ ['ילדים','המשחקים נועדו לילדים ולמשפחות. אנחנו לא אוספים ביודעין מידע אישי מילדים. אנחנו מבקשים מילדים להשתמש בכינוי ולא בשם המלא, ולשחק ברשות ההורים. הורה עם שאלה או חשש מוזמן לפנות אלינו.'],
+ ['כמה זמן שומרים','אנחנו לא שומרים נתוני משחק בשרתים. הנתונים במכשיר נשארים עד שתמחקו אותם: נקו את נתוני האתר בהגדרות הדפדפן או מחקו את האפליקציה.'],
+ ['הזכויות שלכם','אפשר לבקש לדעת איזה מידע יש לנו עליכם, לבקש לתקן או למחוק אותו, ולהגיש תלונה לרשות להגנת הפרטיות.'],
+ ['שינויים','אם המדיניות תשתנה, נעדכן את התאריך למעלה. על שינויים חשובים נודיע במשחקים.'],
+ ['יצירת קשר','שאלות בנושא פרטיות: ']]}};
+const LANGS=[['en','EN'],['ru','RU'],['he','עב']];
+const q=new URLSearchParams(location.search);let lang=q.get('lang');
+if(!L[lang]){try{lang=localStorage.getItem('byd-lang3')}catch(e){}}if(!L[lang])lang='en';
+function render(){const t=L[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=t.title+' · BYD Shorties';
+  try{localStorage.setItem('byd-lang3',lang)}catch(e){}
+  const secs=CONTACT.startsWith('__')?t.s.slice(0,-1):t.s;const body=secs.map(([h,c],i)=>`<h2>${h}</h2>`+(Array.isArray(c)?`<ul>${c.map(x=>`<li>${x}</li>`).join('')}</ul>`:`<p>${c}${i===secs.length-1&&secs===t.s?`<a href="mailto:${CONTACT}">${CONTACT}</a>`:''}</p>`)).join('');
+  document.getElementById('root').innerHTML=`<div class="top"><a class="brand" href="/?lang=${lang}"><img src="/brand/icon-192.png" alt=""><span><b>BYD</b> SHORTIES</span></a><div class="langs">${LANGS.map(([k,l])=>`<button type="button" data-l="${k}" class="${k===lang?'on':''}">${l}</button>`).join('')}</div></div>
+  <h1>${t.title}</h1><p class="upd">${t.upd}${UPDATED}</p><div class="box">${t.short}</div>${body}
+  <footer><a href="/?lang=${lang}">🎮 ${t.back}</a> · BYD Shorties · Build Your Dream</footer>`;
+  document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;render()})}
+render();
+})();
+</script>
+</body>
+</html>

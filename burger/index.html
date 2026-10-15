@@ -13,6 +13,7 @@
 :root{--bg:#1b1220;--panel:#2a1d33;--fg:#fff6ec;--muted:#c4b3c9;--ketchup:#e8412c;--mustard:#ffc531;--lettuce:#5cc560;--line:#45324f;
   --font:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 #app{position:fixed;inset:0;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:16px;text-align:center;
@@ -50,6 +51,10 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 #scores span{background:#000a;border-radius:999px;padding:3px 10px 3px 6px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums}
 #scores i{width:12px;height:12px;border-radius:50%;display:inline-block}
 #big{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:min(30vw,180px);color:var(--mustard);text-shadow:0 8px 0 var(--ketchup);pointer-events:none;z-index:6}
+#inter{position:absolute;inset:0;display:grid;place-items:center;background:#000b;z-index:7;padding:16px;text-align:center}
+#inter .card{display:grid;gap:10px;justify-items:center;max-width:360px}
+#inter h1{font-size:clamp(28px,9vw,44px)}
+#watch{position:absolute;left:0;right:0;bottom:calc(160px + env(safe-area-inset-bottom,0px));text-align:center;font-weight:700;color:var(--mustard);text-shadow:0 2px 0 #000;z-index:5;pointer-events:none}
 #ctrl{position:absolute;left:0;right:0;bottom:0;height:calc(150px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);display:flex;align-items:center;justify-content:space-between;
   padding-inline:max(22px,env(safe-area-inset-left,0px)) max(22px,env(safe-area-inset-right,0px));background:linear-gradient(#0000,#000c 30%);z-index:4;direction:ltr}
 #stick{width:124px;height:124px;border-radius:50%;background:#ffffff14;border:2px solid #ffffff30;position:relative;touch-action:none}
@@ -73,7 +78,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 <div id="game" hidden>
   <canvas id="cv"></canvas>
   <div id="hud"><div id="timer">30</div><div id="scores"></div></div>
-  <div id="big"></div>
+  <div id="big"></div><div id="watch" hidden></div><div id="inter" hidden></div>
   <div id="ctrl"><div id="stick"><div id="knob"></div></div><button id="push">💥<br><span id="pushL"></span></button></div>
 </div>
 <canvas id="fx"></canvas>
@@ -81,7 +86,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 <script>
 (()=>{
 /* ================= config ================= */
-const BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-burger/v1/', GAME_SECS=30, BURGERS=5;
+const BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-burger/v1/', GAME_SECS=30, BURGERS=7;
 const AW=900,AH=1300,TOP=170;
 const TABLES=[{x:230,y:500,r:74},{x:670,y:500,r:74},{x:230,y:960,r:74},{x:670,y:960,r:74}];
 const ORDER=['girl','fat','tall','nerd'];
@@ -92,22 +97,22 @@ const SPAWN={girl:[130,270],fat:[770,270],tall:[130,1210],nerd:[770,1210]};
 /* ================= i18n ================= */
 const params=new URLSearchParams(location.search);
 const L={
- ru:{title:'Бургер-гонка',tag:'До 4 игроков. 30 секунд. Хватай бургеры, толкай соперников. Больше всех собрал — победил!',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
+ ru:{title:'Бургер-гонка',tag:'До 4 игроков. На поле 7 бургеров. Хватай, толкайся! Кто собрал меньше лидера — вылетает, ничья — переигровка, пока не останется один чемпион.',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
   needName:'Напиши имя, чтобы все видели, кто ты.',connecting:'Подключаюсь…',errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться. Попробуй ещё раз через минуту.',
   reload:'Обновить',room:'Комната',hostHint:'Позови друзей. Каждый выбирает своего героя.',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
   inviteText:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров за 30 секунд? ',push:'Толкнуть',winner:n=>`${n} — чемпион!`,youWin:'Ты чемпион!',
   again:'Ещё раз',lobbyBtn:'В комнату',againHost:'Новую игру запускает организатор',go:'ВПЕРЁД!',share:'Похвастаться',
-  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
+  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
- he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 30 שניות. תופסים המבורגרים, דוחפים יריבים. מי שאסף הכי הרבה — ניצח!',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
+ he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
   needName:'כתבו שם, כדי שכולם יידעו מי אתם.',connecting:'מתחבר…',errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו.',errConn:'לא הצלחנו להתחבר. נסו שוב בעוד דקה.',
   reload:'רענון',room:'חדר',hostHint:'הזמינו חברים. כל אחד בוחר דמות.',invite:'הזמנה בוואטסאפ',copy:'העתקת קישור',copied:'הועתק',
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
   inviteText:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה המבורגרים ב־30 שניות? ',push:'דחיפה',winner:n=>`${n} — האלוף!`,youWin:'אתה האלוף!',
   again:'עוד פעם',lobbyBtn:'לחדר',againHost:'משחק חדש מפעיל המארגן',go:'!קדימה',share:'להשוויץ',
-  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
+  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
   names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
   perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
 let lang=['he','ru'].includes(params.get('lang'))?params.get('lang'):null;
@@ -128,6 +133,8 @@ const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const me={id:rid(),name:''};try{me.name=localStorage.getItem('burger-name')||''}catch(e){}
 applyLang();
 
+function medals(){try{return +localStorage.getItem('burger-medals')||0}catch(e){return 0}}
+function addMedal(){const n=medals()+1;try{localStorage.setItem('burger-medals',n)}catch(e){}return n}
 /* ================= sound ================= */
 let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}}
 function tone(f,d,type='sine',vol=.25,f2){if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
@@ -241,7 +248,8 @@ function onMsg(m){
   }
   if(m.t==='full'&&m.to===me.id)fail(T('full'));
   else if(m.t==='lobby'&&!isHost){lobbyPlayers=new Map(m.players.map(p=>[p.id,{name:p.name,c:p.c}]));useBots=m.bots;if(phase==='lobby'||phase==='end')lobby()}
-  else if(m.t==='start'&&!isHost)startLocal(m.roster);
+  else if(m.t==='start'&&!isHost)startLocal(m.roster,m.round);
+  else if(m.t==='rr'&&!isHost){matchPhase='inter';showInter(m)}
   else if(m.t==='st'&&!isHost)applyState(m);
   else if(m.t==='kb'&&m.to===me.id&&mine){mine.kx=m.vx;mine.ky=m.vy;mine.stun=m.s;sndPush();vib([80,40,80])}
   else if(m.t==='end'&&!isHost)endScreen(m.board);
@@ -255,7 +263,7 @@ let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').sli
 function home(){redraw=home;show('app');
   app.innerHTML=`<div class="row" id="heroes"></div><h1>${T('title')}</h1><p>${T('tag')}</p>${joinCode?`<div class="code">${esc(joinCode)}</div>`:''}
   <input id="nm" maxlength="14" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
-  <button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}<p class="status err" id="msg"></p>`;
+  ${medals()?`<p class="status" style="color:var(--mustard);font-size:16px">${T('medalHave')(medals())}</p>`:''}<button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}<p class="status err" id="msg"></p>`;
   const h=document.getElementById('heroes');ORDER.forEach(c=>{const cv=charThumb(c);cv.style.width='54px';cv.style.height='63px';h.appendChild(cv)});
   const nm=document.getElementById('nm');
   const ob=document.getElementById('own');if(ob)ob.onclick=()=>{joinCode='';history.replaceState(null,'',location.pathname+'?lang='+lang);home()};
@@ -283,11 +291,12 @@ function lobby(){redraw=lobby;phase='lobby';show('app');const myC=lobbyPlayers.g
 /* ================= match: shared client side ================= */
 let G=null,mine=null,view={},roster=[],burgers=[],timeLeft=GAME_SECS,matchPhase='count',pops=[],rings=[];
 const input={dx:0,dy:0};
-function startLocal(r){roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=GAME_SECS;
+function startLocal(r,rn){document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=GAME_SECS;
   r.forEach(([id,c,name,bot])=>view[id]={id,c,name,bot,x:SPAWN[c][0],y:SPAWN[c][1],tx:SPAWN[c][0],ty:SPAWN[c][1],score:0,stun:0,moving:false,face:1});
   const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;
-  show('game');resize();redraw=()=>{};lastSend=0;loopStart()}
-function applyState(m){timeLeft=m.tl;if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700)}matchPhase=m.ph}
+  const w=document.getElementById('watch');w.hidden=!!mine;w.textContent=T('watching');document.getElementById('ctrl').style.visibility=mine?'':'hidden';
+  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200)}
+function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700)}matchPhase=m.ph}
   if(m.ph==='count'){const n=Math.ceil(m.tl);if(n!==lastCount){lastCount=n;sndBeep(0);flashBig(n,900)}}
   burgers=m.B;
   for(const [id,x,y,score,stun,mv,f] of m.P){const v=view[id];if(!v)continue;if(id!==me.id){v.tx=x;v.ty=y;v.moving=!!mv;v.face=f||1}v.score=score;v.stun=stun;if(id===me.id&&mine)mine.score=score}
@@ -327,7 +336,7 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
   // my movement (client-authoritative)
   if(mine){const k=keyInput();const dx=k?k[0]:input.dx,dy=k?k[1]:input.dy;const others=Object.values(view).filter(v=>v.id!==me.id);
     move(mine,matchPhase==='play'?dx:0,matchPhase==='play'?dy:0,dt,others);
-    if(isHost){const b=G.P[me.id];b.x=mine.x;b.y=mine.y;b.moving=mine.moving;b.face=mine.face}
+    if(isHost&&G&&G.P[me.id]){const b=G.P[me.id];b.x=mine.x;b.y=mine.y;b.moving=mine.moving;b.face=mine.face}
     else if(now-lastSend>80){lastSend=now;send({t:'pos',x:Math.round(mine.x),y:Math.round(mine.y),m:mine.moving?1:0,f:mine.face})}
     const v=view[me.id];v.x=mine.x;v.y=mine.y;v.moving=mine.moving;v.face=mine.face;v.stun=mine.stun>0?1:0}
   for(const id in view){if(id===me.id)continue;const v=view[id],k=Math.min(1,dt*14);v.x+=(v.tx-v.x)*k;v.y+=(v.ty-v.y)*k}
@@ -352,12 +361,29 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
 
 /* ================= host simulation ================= */
 let evq=[],stAcc=0,botBrain={};
+let T0=null; // tournament
 function hostStart(){phase='play';const r=[];const used=new Set();
   for(const [id,p] of lobbyPlayers){r.push([id,p.c,p.name,0]);used.add(p.c)}
   if(useBots)ORDER.forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
-  G={P:{},t:0,count:3,B:[],nextId:1};r.forEach(([id,c,name,bot])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0});
+  T0={all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{}};startRound()}
+function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0]));
+  G={P:{},t:0,count:3,B:[],nextId:1};rr.forEach(([id,c,name,bot])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0});
   for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
-  send({t:'start',roster:r},1);startLocal(r);matchPhase='count';lastCount=0;evq=[];stAcc=0}
+  send({t:'start',roster:rr,round:T0.round},1);startLocal(rr,T0.round);matchPhase='count';lastCount=0;evq=[];stAcc=0}
+function endRound(){const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]=(T0.total[id]||0)+P[id].score;T0.last[id]=P[id].score});
+  const max=Math.max(...ids.map(id=>P[id].score)),leaders=ids.filter(id=>P[id].score===max),out=ids.filter(id=>!leaders.includes(id));
+  const scores=ids.map(id=>[P[id].name,P[id].c,P[id].score]).sort((a,b)=>b[2]-a[2]);G=null;
+  if(leaders.length===1){out.forEach(id=>T0.outRound[id]=T0.round);
+    const ord=T0.all.map(x=>x[0]).sort((a,b)=>a===leaders[0]?-1:b===leaders[0]?1:(T0.outRound[b]||99)-(T0.outRound[a]||99)||(T0.last[b]||0)-(T0.last[a]||0)||(T0.total[b]||0)-(T0.total[a]||0));
+    const board=ord.map(id=>{const x=T0.all.find(y=>y[0]===id);return [id,x[2],x[1],T0.total[id]||0]});send({t:'end',board},1);endScreen(board);return}
+  out.forEach(id=>T0.outRound[id]=T0.round);T0.alive=leaders;
+  const m={t:'rr',round:T0.round,scores,stay:leaders.map(id=>P[id]?P[id].name:''),out:out.map(id=>T0.all.find(x=>x[0]===id)[2]),stayIds:leaders};
+  m.stay=leaders.map(id=>T0.all.find(x=>x[0]===id)[2]);send(m,1);showInter(m);matchPhase='inter';setTimeout(()=>{if(phase==='play'&&T0)startRound()},4200)}
+function showInter(m){const el=document.getElementById('inter');el.hidden=false;const mine=m.stayIds.includes(me.id);
+  if(m.out.length)tone(220,.3,'sawtooth',.12,110);else{[440,554,659].forEach((f,i)=>setTimeout(()=>tone(f,.15,'square',.1),i*120))}
+  el.innerHTML=`<div class="card"><h1>${m.out.length?T('roundN')(m.round):T('tie')}</h1>
+    <ol class="podium">${m.scores.map(([n,c,sc])=>`<li class="${m.stay.includes(n)?'win':''}"><span class="n">${esc(n)}</span><span class="s">${sc} 🍔</span></li>`).join('')}</ol>
+    ${m.out.length?`<p><b style="color:var(--ketchup)">${T('out')}:</b> ${m.out.map(esc).join(', ')}</p>`:''}<p><b style="color:var(--lettuce)">${T('stay')}:</b> ${m.stay.map(esc).join(', ')}</p><p class="status">${T('nextR')}</p></div>`}
 function spawnBurger(){for(let tries=0;tries<50;tries++){const x=60+Math.random()*(AW-120),y=TOP+40+Math.random()*(AH-TOP-100);
     if(TABLES.some(t=>Math.hypot(x-t.x,y-t.y)<t.r+40))continue;if(Object.values(G.P).some(p=>Math.hypot(x-p.x,y-p.y)<120))continue;if(G.B.some(b=>Math.hypot(x-b.x,y-b.y)<90))continue;
     G.B.push({id:G.nextId++,x,y});return}}
@@ -376,14 +402,14 @@ function botThink(b,dt){const brain=botBrain[b.id]||(botBrain[b.id]={target:null
   const others=Object.values(G.P).filter(o=>o!==b);
   if(matchPhase==='play'&&Math.random()<dt*.9&&others.some(o=>Math.hypot(o.x-b.x,o.y-b.y)<CH[b.c].r+CH[o.c].r+40))hostPush(b.id);
   return [dx*.6,dy*.6]}
-function hostTick(dt){if(!G)return;const P=G.P;
+function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
   if(matchPhase==='count'){G.count-=dt;timeLeft=G.count;const n=Math.ceil(G.count);if(n!==lastCount&&n>0){lastCount=n;sndBeep(0);flashBig(n,900)}
     if(G.count<=0){matchPhase='play';G.t=GAME_SECS;sndBeep(1);flashBig(T('go'),700)}}
   else if(matchPhase==='play'){G.t-=dt;timeLeft=G.t;
     for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id!==me.id&&b.stun>0)b.stun-=dt}
     for(const id in P){const b=P[id];if(b.stun>0)continue;const reach=CH[b.c].r+26+CH[b.c].pick;
-      for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<reach){G.B.splice(i,1);b.score++;evq.push(['e',id,Math.round(g.x),Math.round(g.y)]);setTimeout(()=>{if(G)spawnBurger()},350)}}}
-    if(G.t<=0){matchPhase='end'}}
+      for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<reach){G.B.splice(i,1);b.score++;evq.push(['e',id,Math.round(g.x),Math.round(g.y)])}}}
+    if(G.t<=0||G.B.length===0){matchPhase='end'}}
   // views for host render
   for(const id in P){const b=P[id],v=view[id];if(!v)continue;if(id!==me.id){v.tx=b.x;v.ty=b.y;v.moving=b.moving;v.face=b.face;v.stun=b.stun>0?1:0}v.score=b.score}
   burgers=G.B.map(g=>[g.id,Math.round(g.x),Math.round(g.y)]);
@@ -391,7 +417,7 @@ function hostTick(dt){if(!G)return;const P=G.P;
   stAcc+=dt;if(stAcc>=.09||matchPhase==='end'){stAcc=0;
     send({t:'st',ph:matchPhase==='end'?'play':matchPhase,tl:Math.max(0,+timeLeft.toFixed(2)),B:burgers,ev:evq,
       P:Object.values(P).map(b=>[b.id,Math.round(b.x),Math.round(b.y),b.score,b.stun>0?1:0,b.moving?1:0,b.face])});evq=[]}
-  if(matchPhase==='end'){const board=Object.values(P).map(b=>[b.id,b.name,b.c,b.score]).sort((a,b)=>b[3]-a[3]);G=null;send({t:'end',board},1);endScreen(board)}}
+  if(matchPhase==='end')endRound()}
 const handledHost=new WeakSet();
 function handleEvHost(e){if(handledHost.has(e))return;handledHost.add(e);handleEv(e)}
 
@@ -402,15 +428,16 @@ function confetti(){fx.width=innerWidth*DPR;fx.height=innerHeight*DPR;fctx.setTr
   (function f(){fctx.clearRect(0,0,innerWidth,innerHeight);for(const p of fxParts){p.x+=p.vx;p.y+=p.vy;p.a+=.1;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.a);fctx.fillStyle=p.c;fctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);fctx.restore()}
     fxParts=fxParts.filter(p=>p.y<innerHeight+30);if(fxParts.length)requestAnimationFrame(f);else fctx.clearRect(0,0,innerWidth,innerHeight)})()}
 function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('app');stickId=null;knob.style.transform='';input.dx=input.dy=0;
-  const top=board[0],iWin=top&&top[0]===me.id&&board.filter(b=>b[3]===top[3]).length===1;
+  document.getElementById('inter').hidden=true;const top=board[0],iWin=top&&top[0]===me.id;let medalLine='';
+  if(!again&&iWin)endScreen._n=addMedal();medalLine=iWin?T('medalWin')(endScreen._n||medals()):(medals()?T('medalHave')(medals()):'');
   if(!again){confetti();[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12),i*140));if(iWin)vib([100,50,100,50,300])}
-  const medals=['🥇','🥈','🥉','🍟'];let rank=0;
-  app.innerHTML=`<div style="font-size:64px;line-height:1">🏆</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1><ol class="podium" id="pod"></ol>
+  const medalIcons=['🥇','🥈','🥉','🍟'];let rank=0;
+  app.innerHTML=`<div style="font-size:64px;line-height:1">🏆</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1>${medalLine?`<p style="color:var(--mustard);font-weight:700;font-size:18px">${medalLine}</p>`:''}<ol class="podium" id="pod"></ol>
     <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(T('shareText')(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button id="ag">${T('again')} 🍔</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?'':`<p class="status">${T('againHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
   const pod=document.getElementById('pod');
-  board.forEach((b,i)=>{if(i>0&&b[3]<board[i-1][3])rank=i;const li=document.createElement('li');li.className=rank===0?'win':'';
-    li.innerHTML=`<span class="m">${medals[Math.min(rank,3)]}</span>`;li.appendChild(charThumb(b[2]));
+  board.forEach((b,i)=>{rank=i;const li=document.createElement('li');li.className=rank===0?'win':'';
+    li.innerHTML=`<span class="m">${medalIcons[Math.min(rank,3)]}</span>`;li.appendChild(charThumb(b[2]));
     li.insertAdjacentHTML('beforeend',`<span class="n">${esc(b[1])}${b[0]===me.id?' ('+T('you')+')':''}</span><span class="s">${b[3]} 🍔</span>`);pod.appendChild(li)});
   const o2=document.getElementById('own2');if(o2)o2.onclick=createOwn;
   if(isHost){document.getElementById('ag').onclick=()=>{audio();hostStart()};document.getElementById('lo').onclick=()=>{phase='lobby';broadcastLobby()}}}

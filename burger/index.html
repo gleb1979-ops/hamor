@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1b1220">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Бургер-гонка · מרוץ ההמבורגרים 🍔</title>
 <meta property="og:title" content="Бургер-гонка · מרוץ ההמבורגרים 🍔">
 <meta property="og:description" content="Собери больше всех бургеров за 30 секунд! Толкайся, хватай, побеждай.">
@@ -65,6 +71,16 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 .hatb{padding:8px 12px;font-size:14px;background:var(--panel);box-shadow:none;border:2px solid var(--line);display:flex;align-items:center;gap:6px}
 .hatb.on{border-color:var(--mustard);background:#3d2a1e}
 .hatb canvas{width:30px;height:35px}
+#game.land #ctrl{height:auto;top:auto;bottom:0;background:none;padding-bottom:max(14px,env(safe-area-inset-bottom,0px));padding-inline:max(18px,env(safe-area-inset-left,0px)) max(18px,env(safe-area-inset-right,0px));pointer-events:none}
+#game.land #stick,#game.land #push{pointer-events:auto;opacity:.82}
+#game.land #stick{width:118px;height:118px}#game.land #push{width:100px;height:100px}
+#game.land #hud{top:max(4px,env(safe-area-inset-top,0px));gap:4px}#game.land #timer{font-size:22px;padding:0 10px}#game.land #scores span{font-size:12px;padding:2px 8px 2px 5px}
+#rot{position:absolute;left:0;right:0;bottom:calc(158px + env(safe-area-inset-bottom,0px));text-align:center;z-index:5;pointer-events:none;font-weight:700;color:var(--fg)}
+#rot span{background:#000b;border-radius:999px;padding:6px 14px;display:inline-block;animation:wig 1.6s ease-in-out infinite}
+@keyframes wig{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg)}}
+#game.land #rot{display:none}
+#fsb{position:absolute;top:max(8px,env(safe-area-inset-top,0px));inset-inline-start:max(10px,env(safe-area-inset-left,0px));z-index:8;padding:8px 12px;font-size:14px;background:#000a;box-shadow:none;border:1px solid #ffffff40}
+#tip{position:absolute;left:50%;top:22%;transform:translateX(-50%);z-index:6;background:#000c;border:2px solid var(--mustard);border-radius:16px;padding:10px 16px;font-weight:700;max-width:min(90vw,460px);text-align:center;pointer-events:none;line-height:1.4}
 #ctrl{position:absolute;left:0;right:0;bottom:0;height:calc(150px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);display:flex;align-items:center;justify-content:space-between;
   padding-inline:max(22px,env(safe-area-inset-left,0px)) max(22px,env(safe-area-inset-right,0px));background:linear-gradient(#0000,#000c 30%);z-index:4;direction:ltr}
 #stick{width:124px;height:124px;border-radius:50%;background:#ffffff14;border:2px solid #ffffff30;position:relative;touch-action:none}
@@ -88,7 +104,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 <div id="game" hidden>
   <canvas id="cv"></canvas>
   <div id="hud"><div id="timer">30</div><div id="scores"></div></div>
-  <div id="big"></div><div id="watch" hidden></div><div id="inter" hidden></div>
+  <div id="big"></div><div id="rot" hidden><span></span></div><button id="fsb" type="button" hidden></button><div id="tip" hidden></div><div id="watch" hidden></div><div id="inter" hidden></div>
   <div id="ctrl"><div id="stick"><div id="knob"></div></div><button id="push">💥<br><span id="pushL"></span></button></div>
 </div>
 <canvas id="fx"></canvas>
@@ -97,12 +113,12 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 (()=>{
 /* ================= config ================= */
 const BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-burger/v1/', GAME_SECS=30, BURGERS=7;
-const AW=900,AH=1300,TOP=170;
-const TABLES=[{x:230,y:500,r:74},{x:670,y:500,r:74},{x:230,y:960,r:74},{x:670,y:960,r:74}];
+const AW=1500,AH=860,TOP=150;
+const TABLES=[{x:440,y:370,r:70},{x:1060,y:370,r:70},{x:440,y:680,r:70},{x:1060,y:680,r:70}];
 const ORDER=['girl','fat','tall','nerd'];
 const CH={girl:{col:'#ff6fae',sp:345,mass:1,pw:1,r:30,pick:0},fat:{col:'#4f8cff',sp:265,mass:2,pw:1.7,r:40,pick:0},
   tall:{col:'#3fbf6f',sp:375,mass:1.05,pw:.85,r:29,pick:0},nerd:{col:'#ff9f2e',sp:315,mass:1,pw:1,r:31,pick:28}};
-const SPAWN={girl:[130,270],fat:[770,270],tall:[130,1210],nerd:[770,1210]};
+const SPAWN={girl:[120,250],fat:[1380,250],tall:[120,790],nerd:[1380,790]};
 
 /* ================= i18n ================= */
 const params=new URLSearchParams(location.search);
@@ -113,7 +129,7 @@ const L={
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
   inviteText:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров за 30 секунд? ',push:'Толкнуть',winner:n=>`${n} — чемпион!`,youWin:'Ты чемпион!',
   again:'Ещё раз',lobbyBtn:'В комнату',againHost:'Новую игру запускает организатор',go:'ВПЕРЁД!',share:'Похвастаться',
-  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,shop:'Магазин шапок',shopHint:'Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
+  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
  he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
@@ -122,7 +138,7 @@ const L={
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
   inviteText:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה המבורגרים ב־30 שניות? ',push:'דחיפה',winner:n=>`${n} — האלוף!`,youWin:'אתה האלוף!',
   again:'עוד פעם',lobbyBtn:'לחדר',againHost:'משחק חדש מפעיל המארגן',go:'!קדימה',share:'להשוויץ',
-  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,shop:'חנות הכובעים',shopHint:'הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
+  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
   names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
   perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
 let lang=['he','ru'].includes(params.get('lang'))?params.get('lang'):null;
@@ -334,6 +350,9 @@ function onMsg(m){
     else if(m.t==='pick'){const p=lobbyPlayers.get(m.from);if(p&&phase==='lobby'&&![...lobbyPlayers].some(([id,q])=>id!==m.from&&q.c===m.c)){p.c=m.c;broadcastLobby()}}
     else if(m.t==='pos'&&G&&G.P[m.from]&&m.from!==me.id){const b=G.P[m.from];b.x=m.x;b.y=m.y;b.moving=!!m.m;b.face=m.f||1;b.seen=performance.now()}
     else if(m.t==='push'&&G&&m.from!==me.id)hostPush(m.from);
+    else if(m.t==='grab'&&G&&matchPhase==='play'){const b=G.P[m.from],i=G.B.findIndex(g=>g.id===m.id);
+      if(b&&i>=0&&b.stun<=0){const g=G.B[i],reach=CH[b.c].r+30+CH[b.c].pick+(b.hat==='top'?32:0)+110;
+        if(Math.hypot(g.x-m.x,(g.y-12)-(m.y-30))<reach&&Math.hypot(b.x-m.x,b.y-m.y)<260){G.B.splice(i,1);b.score++;b.x=m.x;b.y=m.y;evq.push(['e',m.from,Math.round(g.x),Math.round(g.y)])}}}
     else if(m.t==='bye'){lobbyPlayers.delete(m.from);if(G&&G.P[m.from])delete G.P[m.from];if(phase==='lobby')broadcastLobby()}
   }
   if(m.t==='full'&&m.to===me.id)fail(T('full'));
@@ -359,7 +378,7 @@ function home(){redraw=home;show('app');
   const ob=document.getElementById('own');if(ob)ob.onclick=()=>{joinCode='';history.replaceState(null,'',location.pathname+'?lang='+lang);home()};
   if(params.get('create')==='1'&&!autoCreated&&me.name){autoCreated=true;history.replaceState(null,'',location.pathname+'?lang='+lang);setTimeout(()=>document.getElementById('go')?.click(),60)}
   document.getElementById('go').onclick=()=>{const v=nm.value.trim();if(!v){document.getElementById('msg').textContent=T('needName');nm.focus();return}
-    audio();me.name=v;try{localStorage.setItem('burger-name',v)}catch(e){}redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
+    audio();goFull();me.name=v;try{localStorage.setItem('burger-name',v)}catch(e){}redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
     if(joinCode)connect(joinCode,()=>{send({t:'hi',name:me.name,hat:wearHat()},1);lobby();startWatch()});
     else{isHost=true;const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
       connect(code,()=>{lobbyPlayers.set(me.id,{name:me.name,c:'girl',hat:wearHat()});broadcastLobby()})}}}
@@ -376,8 +395,16 @@ function lobby(){redraw=lobby;phase='lobby';show('app');const myC=lobbyPlayers.g
     b.onclick=()=>{if(owner&&owner[0]!==me.id)return;audio();tone(660,.08,'square',.1);if(isHost){lobbyPlayers.get(me.id).c=c;broadcastLobby()}else send({t:'pick',c},1)};box.appendChild(b)});
   if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent=T('copied'),()=>e.target.textContent=link())};
     document.getElementById('bt').onchange=e=>{useBots=e.target.checked;broadcastLobby()};
-    document.getElementById('st').onclick=()=>{audio();hostStart()}}}
+    document.getElementById('st').onclick=()=>{audio();goFull();hostStart()}}}
 
+/* ================= fullscreen / landscape ================= */
+function isFull(){return !!(document.fullscreenElement||document.webkitFullscreenElement)}
+function canFull(){const e=document.documentElement;return !!(e.requestFullscreen||e.webkitRequestFullscreen)}
+function goFull(){try{const e=document.documentElement;if(isFull())return;const r=e.requestFullscreen?e.requestFullscreen({navigationUI:'hide'}):e.webkitRequestFullscreen&&e.webkitRequestFullscreen();
+  const lock=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};if(r&&r.then)r.then(lock).catch(()=>{});else lock()}catch(e){}}
+function updFs(){const b=document.getElementById('fsb');b.hidden=!canFull()||isFull();b.textContent=T('full')}
+document.addEventListener('fullscreenchange',()=>{updFs();if(phase==='play')resize()});
+document.getElementById('fsb').onclick=()=>{audio();goFull()};
 /* ================= hat shop ================= */
 function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearHat(),myC=lobbyPlayers.get(me.id)?.c||'girl',n=medals();
   app.innerHTML=`<h1 style="font-size:clamp(26px,8vw,40px)">🎩 ${T('shop')}</h1><p style="color:var(--mustard);font-weight:700;font-size:20px">🏅 ${n}</p><p>${T('shopHint')}</p>
@@ -392,14 +419,14 @@ function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearH
   document.getElementById('bk').onclick=()=>lobby()}
 
 /* ================= match: shared client side ================= */
-let G=null,mine=null,view={},roster=[],burgers=[],timeLeft=GAME_SECS,matchPhase='count',pops=[],rings=[];
+let claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=GAME_SECS,matchPhase='count',pops=[],rings=[];
 const input={dx:0,dy:0};
 function startLocal(r,rn){document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=GAME_SECS;
   r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SPAWN[c][0],y:SPAWN[c][1],tx:SPAWN[c][0],ty:SPAWN[c][1],score:0,stun:0,moving:false,face:1});
   const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine)mine.hat=mineR[4]||null;
   const w=document.getElementById('watch');w.hidden=!!mine;w.textContent=T('watching');document.getElementById('ctrl').style.visibility=mine?'':'hidden';
-  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200)}
-function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700)}matchPhase=m.ph}
+  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,5500)}else tp.hidden=true;claimed=new Set()}
+function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filter(g=>!claimed.has(g[0]));m.ev=(m.ev||[]).filter(e=>!(e[0]==='e'&&e[1]===me.id));if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700)}matchPhase=m.ph}
   if(m.ph==='count'){const n=Math.ceil(m.tl);if(n!==lastCount){lastCount=n;sndBeep(0);flashBig(n,900)}}
   burgers=m.B;
   for(const [id,x,y,score,stun,mv,f] of m.P){const v=view[id];if(!v)continue;if(id!==me.id){v.tx=x;v.ty=y;v.moving=!!mv;v.face=f||1}v.score=score;v.stun=stun;if(id===me.id&&mine)mine.score=score}
@@ -430,9 +457,11 @@ function keyInput(){let dx=(keys.ArrowRight||keys.d||keys.D?1:0)-(keys.ArrowLeft
 
 /* ================= render loop ================= */
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');let SC=1,OX=0,OY=0,DPR=Math.min(2,devicePixelRatio||1);
-function resize(){const W=innerWidth,H=innerHeight,ctrlH=150;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
-  const availH=H-ctrlH*.55;SC=Math.min(W/AW,availH/AH);OX=(W-AW*SC)/2;OY=Math.max(0,(availH-AH*SC)/2)}
-addEventListener('resize',()=>{if(phase==='play')resize()});
+function resize(){const W=innerWidth,H=innerHeight,land=W>H*1.1;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
+  const gm=document.getElementById('game');gm.classList.toggle('land',land);const rot=document.getElementById('rot');rot.hidden=land;rot.firstChild.textContent=T('rotate');updFs();
+  if(land){SC=Math.min(W/AW,H/AH);OX=(W-AW*SC)/2;OY=(H-AH*SC)/2}
+  else{const availH=H-170;SC=Math.min(W/AW,availH/AH);OX=(W-AW*SC)/2;OY=Math.max(90,(availH-AH*SC)/2)}}
+addEventListener('resize',()=>{if(phase==='play')resize()});addEventListener('orientationchange',()=>setTimeout(()=>{if(phase==='play')resize()},250));
 let rafOn=false,lastT=0,lastSend=0;
 function loopStart(){if(rafOn)return;rafOn=true;lastT=performance.now();requestAnimationFrame(frame)}
 function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=now/1000;
@@ -441,7 +470,10 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
     move(mine,matchPhase==='play'?dx:0,matchPhase==='play'?dy:0,dt,others);
     if(isHost&&G&&G.P[me.id]){const b=G.P[me.id];b.x=mine.x;b.y=mine.y;b.moving=mine.moving;b.face=mine.face}
     else if(now-lastSend>80){lastSend=now;send({t:'pos',x:Math.round(mine.x),y:Math.round(mine.y),m:mine.moving?1:0,f:mine.face})}
-    const v=view[me.id];v.x=mine.x;v.y=mine.y;v.moving=mine.moving;v.face=mine.face;v.stun=mine.stun>0?1:0}
+    const v=view[me.id];v.x=mine.x;v.y=mine.y;v.moving=mine.moving;v.face=mine.face;v.stun=mine.stun>0?1:0;
+    if(!isHost&&matchPhase==='play'&&mine.stun<=0){const reach=CH[mine.c].r+30+CH[mine.c].pick+(mine.hat==='top'?32:0);
+      for(let i=burgers.length-1;i>=0;i--){const g=burgers[i];if(claimed.has(g[0]))continue;if(Math.hypot(g[1]-mine.x,(g[2]-12)-(mine.y-30))<reach){claimed.add(g[0]);burgers.splice(i,1);
+        send({t:'grab',id:g[0],x:Math.round(mine.x),y:Math.round(mine.y)},1);pops.push({x:g[1],y:g[2],t:0,txt:'+1'});sndEat();vib(30)}}}}
   for(const id in view){if(id===me.id)continue;const v=view[id],k=Math.min(1,dt*14);v.x+=(v.tx-v.x)*k;v.y+=(v.ty-v.y)*k}
   // draw
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#120c16';ctx.fillRect(0,0,innerWidth,innerHeight);
@@ -450,7 +482,7 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
   for(const r of rings){r.t+=dt;ctx.strokeStyle=`rgba(255,197,49,${Math.max(0,1-r.t*3)})`;ctx.lineWidth=6;ctx.beginPath();ctx.arc(r.x,r.y-30,30+r.t*260,0,7);ctx.stroke()}
   rings=rings.filter(r=>r.t<.35);
   const list=Object.values(view).sort((a,b)=>a.y-b.y);
-  for(const v of list){drawHero(ctx,v,t+v.x*.01);
+  for(const v of list){if(v.id===me.id){ctx.strokeStyle='rgba(255,197,49,.9)';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(v.x,v.y,(v.c==='fat'?50:40)+Math.sin(t*6)*3,13,0,0,7);ctx.stroke()}drawHero(ctx,v,t+v.x*.01);
     const ny=v.y+headTop(v.c,v.hat)-14;ctx.font='700 22px Rubik, sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000a';
     const label=(v.id===me.id?'▼ ':'')+v.name;ctx.strokeText(label,v.x,ny);ctx.fillStyle=v.id===me.id?'#ffc531':'#fff';ctx.fillText(label,v.x,ny)}
   for(const p of pops){p.t+=dt;ctx.globalAlpha=Math.max(0,1-p.t*1.4);ctx.font='900 34px Rubik, sans-serif';ctx.fillStyle='#ffc531';ctx.strokeStyle='#e8412c';ctx.lineWidth=5;
@@ -547,7 +579,7 @@ function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('
     li.innerHTML=`<span class="m">${medalIcons[Math.min(rank,3)]}</span>`;li.appendChild(charThumb(b[2]));
     li.insertAdjacentHTML('beforeend',`<span class="n">${esc(b[1])}${b[0]===me.id?' ('+T('you')+')':''}</span><span class="s">${b[3]} 🍔</span>`);pod.appendChild(li)});
   const o2=document.getElementById('own2');if(o2)o2.onclick=createOwn;
-  if(isHost){document.getElementById('ag').onclick=()=>{audio();hostStart()};document.getElementById('lo').onclick=()=>{phase='lobby';broadcastLobby()}}}
+  if(isHost){document.getElementById('ag').onclick=()=>{audio();goFull();hostStart()};document.getElementById('lo').onclick=()=>{phase='lobby';broadcastLobby()}}}
 
 /* ---------- room watch: host gone / create own room ---------- */
 let hostId=null,lastHost=0,watchT=null,autoCreated=false;

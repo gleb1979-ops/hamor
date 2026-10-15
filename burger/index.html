@@ -98,7 +98,7 @@ const L={
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
   inviteText:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров за 30 секунд? ',push:'Толкнуть',winner:n=>`${n} — чемпион!`,youWin:'Ты чемпион!',
   again:'Ещё раз',lobbyBtn:'В комнату',againHost:'Новую игру запускает организатор',go:'ВПЕРЁД!',share:'Похвастаться',
-  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',other:'עברית',
+  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
  he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 30 שניות. תופסים המבורגרים, דוחפים יריבים. מי שאסף הכי הרבה — ניצח!',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
@@ -107,7 +107,7 @@ const L={
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
   inviteText:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה המבורגרים ב־30 שניות? ',push:'דחיפה',winner:n=>`${n} — האלוף!`,youWin:'אתה האלוף!',
   again:'עוד פעם',lobbyBtn:'לחדר',againHost:'משחק חדש מפעיל המארגן',go:'!קדימה',share:'להשוויץ',
-  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',other:'Русский',
+  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
   names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
   perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
 let lang=['he','ru'].includes(params.get('lang'))?params.get('lang'):null;
@@ -229,6 +229,8 @@ function fail(t){redraw=()=>fail(t);show('app');app.innerHTML=`<div style="font-
 addEventListener('pagehide',()=>send({t:'bye'},1));
 
 function onMsg(m){
+  if(['lobby','round','rres','end','hb','st','start','kb'].includes(m.t))markHost(m);
+  if(m.t==='bye'&&!isHost&&hostId&&m.from===hostId&&phase!=='end'){hostGone();return}
   if(isHost){
     if(m.t==='hi'&&m.from!==me.id){if(!lobbyPlayers.has(m.from)){const humans=[...lobbyPlayers.values()].length;if(humans>=4){send({t:'full',to:m.from},1);return}
         lobbyPlayers.set(m.from,{name:m.name,c:freeChar()})}else lobbyPlayers.get(m.from).name=m.name;broadcastLobby()}
@@ -249,16 +251,18 @@ function broadcastLobby(){send({t:'lobby',bots:useBots,players:[...lobbyPlayers]
 
 /* ================= screens ================= */
 function show(which){document.getElementById('game').hidden=which!=='game';app.hidden=which!=='app';lb.hidden=which==='game'}
-const joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
 function home(){redraw=home;show('app');
   app.innerHTML=`<div class="row" id="heroes"></div><h1>${T('title')}</h1><p>${T('tag')}</p>${joinCode?`<div class="code">${esc(joinCode)}</div>`:''}
   <input id="nm" maxlength="14" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
-  <button id="go">${joinCode?T('join'):T('create')}</button><p class="status err" id="msg"></p>`;
+  <button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}<p class="status err" id="msg"></p>`;
   const h=document.getElementById('heroes');ORDER.forEach(c=>{const cv=charThumb(c);cv.style.width='54px';cv.style.height='63px';h.appendChild(cv)});
   const nm=document.getElementById('nm');
+  const ob=document.getElementById('own');if(ob)ob.onclick=()=>{joinCode='';history.replaceState(null,'',location.pathname+'?lang='+lang);home()};
+  if(params.get('create')==='1'&&!autoCreated&&me.name){autoCreated=true;history.replaceState(null,'',location.pathname+'?lang='+lang);setTimeout(()=>document.getElementById('go')?.click(),60)}
   document.getElementById('go').onclick=()=>{const v=nm.value.trim();if(!v){document.getElementById('msg').textContent=T('needName');nm.focus();return}
     audio();me.name=v;try{localStorage.setItem('burger-name',v)}catch(e){}redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
-    if(joinCode)connect(joinCode,()=>{send({t:'hi',name:me.name},1);lobby()});
+    if(joinCode)connect(joinCode,()=>{send({t:'hi',name:me.name},1);lobby();startWatch()});
     else{isHost=true;const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
       connect(code,()=>{lobbyPlayers.set(me.id,{name:me.name,c:'girl'});broadcastLobby()})}}}
 function link(){const u=new URL(location.href);u.search='?room='+room+'&lang='+lang;u.hash='';return u.toString()}
@@ -402,13 +406,25 @@ function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('
   if(!again){confetti();[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12),i*140));if(iWin)vib([100,50,100,50,300])}
   const medals=['🥇','🥈','🥉','🍟'];let rank=0;
   app.innerHTML=`<div style="font-size:64px;line-height:1">🏆</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1><ol class="podium" id="pod"></ol>
-    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(T('shareText')(top?top[1]:'',top?top[3]:0))}" target="_blank" rel="noopener">${T('share')}</a>
-    ${isHost?`<button id="ag">${T('again')} 🍔</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?'':`<p class="status">${T('againHost')}</p>`}`;
+    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(T('shareText')(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
+    ${isHost?`<button id="ag">${T('again')} 🍔</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?'':`<p class="status">${T('againHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
   const pod=document.getElementById('pod');
   board.forEach((b,i)=>{if(i>0&&b[3]<board[i-1][3])rank=i;const li=document.createElement('li');li.className=rank===0?'win':'';
     li.innerHTML=`<span class="m">${medals[Math.min(rank,3)]}</span>`;li.appendChild(charThumb(b[2]));
     li.insertAdjacentHTML('beforeend',`<span class="n">${esc(b[1])}${b[0]===me.id?' ('+T('you')+')':''}</span><span class="s">${b[3]} 🍔</span>`);pod.appendChild(li)});
+  const o2=document.getElementById('own2');if(o2)o2.onclick=createOwn;
   if(isHost){document.getElementById('ag').onclick=()=>{audio();hostStart()};document.getElementById('lo').onclick=()=>{phase='lobby';broadcastLobby()}}}
+
+/* ---------- room watch: host gone / create own room ---------- */
+let hostId=null,lastHost=0,watchT=null,autoCreated=false;
+function markHost(m){if(!isHost&&m.from!==me.id){hostId=m.from;lastHost=performance.now()}}
+function startWatch(){clearInterval(watchT);lastHost=performance.now();watchT=setInterval(()=>{if(isHost||phase==='end'||phase==='gone')return;if(performance.now()-lastHost>9000)hostGone()},1500)}
+function baseLink(){return location.origin+location.pathname+'?lang='+lang}
+function createOwn(){location.href=location.pathname+'?lang='+lang+'&create=1'}
+function hostGone(){clearInterval(watchT);try{client&&client.end(true)}catch(e){}client=null;phase='gone';redraw=hostGone;show('app');
+  app.innerHTML=`<div style="font-size:64px;line-height:1">👋</div><h2>${T(hostId?'hostGone':'noRoom')}</h2><p>${T('ownHint')}</p><button id="own">${T('createOwn')}</button>`;
+  document.getElementById('own').onclick=createOwn}
+setInterval(()=>{if(isHost&&client)send({t:'hb'})},3000);
 
 home();
 })();

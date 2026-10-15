@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Rubik:wght@400;500;700&display=swap">
 <style>
-:root{--bg:#14101f;--panel:#221a35;--fg:#f6f1ff;--muted:#a99cc4;--hot:#ff3d7f;--sun:#ffc93c;--line:#3a2e55;--ok:#25d366;
+:root{--bg:#14101f;--panel:#221a35;--fg:#f6f1ff;--muted:#a99cc4;--hot:#ff3d7f;--sun:#ffc93c;--line:#3a2e55;--ok:#25d366;--brown:#9a6232;
   --display:"Unbounded","Rubik","Arial Black",system-ui,sans-serif;--body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -97,13 +97,14 @@ try{me.name=localStorage.getItem('hamor-name')||''}catch(e){}
 /* ---------- particles ---------- */
 const fx=document.getElementById('fx'),ctx=fx.getContext('2d');let W,H,DPR=Math.min(2,devicePixelRatio||1),parts=[],running=false;
 function size(){W=innerWidth;H=innerHeight;fx.width=W*DPR;fx.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0)}size();addEventListener('resize',size);
-const cache={};function sprite(e){if(cache[e])return cache[e];const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');
+const cache={};function sprite(e){if(cache[e])return cache[e];const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');if(e==='POOP'){drawPoop(g);return cache[e]=c}
   g.font='72px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(e,48,54);return cache[e]=c}
 function burst(x,y,set,n,pw=1){for(let i=0;i<n;i++){const a=Math.random()*6.28,s=(4+Math.random()*12)*pw;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-6*pw,r:(Math.random()-.5)*.3,a:0,sz:24+Math.random()*34,e:set[i%set.length],life:1,g:.32})}loop()}
 function rain(set,n){for(let i=0;i<n;i++)parts.push({x:Math.random()*W,y:-60-Math.random()*H,vx:(Math.random()-.5)*2,vy:2+Math.random()*4,r:(Math.random()-.5)*.1,a:0,sz:30+Math.random()*30,e:set[i%set.length],life:1,g:.12,pile:1});loop()}
 function loop(){if(!running){running=true;requestAnimationFrame(step)}}
-function step(){ctx.clearRect(0,0,W,H);for(const p of parts){p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a+=p.r;
-  if(p.y>H-p.sz/2&&p.vy>0){p.y=H-p.sz/2;if(p.pile){p.vy=0;p.vx=0;p.r=0;p.life-=.004}else{p.vy*=-.45;p.vx*=.7;p.life-=.18}}
+function step(){const now=performance.now();ctx.clearRect(0,0,W,H);for(const p of parts){p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a+=p.r;
+  if(p.ty!=null){if(p.y>=p.ty){p.y=p.ty;p.vy=p.vx=p.r=p.g=0;if(now>p.until)p.life-=.035}}
+  else if(p.y>H-p.sz/2&&p.vy>0){p.y=H-p.sz/2;if(p.pile){p.vy=0;p.vx=0;p.r=0;p.life-=.004}else{p.vy*=-.45;p.vx*=.7;p.life-=.18}}
   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,p.life*2));ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.drawImage(sprite(p.e),-p.sz/2,-p.sz/2,p.sz,p.sz);ctx.restore()}
   parts=parts.filter(p=>p.life>0&&p.y<H+200);if(parts.length)requestAnimationFrame(step);else{running=false;ctx.clearRect(0,0,W,H)}}
 let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}}
@@ -115,13 +116,30 @@ const SHAPE='<ellipse cx="55" cy="55" rx="32" ry="18"/><path d="M76 46 L91 26 L1
 let dkN=0;const lvlO=n=>n<=0?0:(8+90*Math.min(1,n/4))/100;
 function donkey(n,px,from,cls){const id='dk'+(++dkN),o=lvlO(from??n);
   return `<svg class="donkey ${cls||''}" data-to="${lvlO(n)}" data-from="${o}" width="${px}" height="${Math.round(px*.82)}" viewBox="0 0 120 100" aria-hidden="true"><defs><linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="93" x2="0" y2="1">
-  <stop offset="0" style="stop-color:var(--hot)"/><stop class="m" offset="${o}" style="stop-color:var(--hot)"/><stop class="m" offset="${o}" style="stop-color:var(--line)"/><stop offset="1" style="stop-color:var(--line)"/></linearGradient></defs>
+  <stop offset="0" style="stop-color:var(--brown)"/><stop class="m" offset="${o}" style="stop-color:var(--brown)"/><stop class="m" offset="${o}" style="stop-color:var(--line)"/><stop offset="1" style="stop-color:var(--line)"/></linearGradient></defs>
   <g fill="url(#${id})">${SHAPE}</g><circle cx="105" cy="30" r="2.2" fill="var(--bg)"/></svg>`}
 function fillDonkeys(){const list=[...document.querySelectorAll('svg.donkey')].filter(d=>d.dataset.to!==d.dataset.from);if(!list.length)return;
   const t0=performance.now(),dur=reducedMotion?1:1300;(function tick(now){const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);
     list.forEach(d=>{const v=+d.dataset.from+(+d.dataset.to-+d.dataset.from)*e;d.querySelectorAll('stop.m').forEach(st=>st.setAttribute('offset',v))});
     if(k<1)requestAnimationFrame(tick)})(t0)}
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* poop: rounded three-tier pyramid */
+function drawPoop(g){const tier=(x,y,w,h,c)=>{g.fillStyle=c;g.beginPath();g.roundRect?g.roundRect(x,y,w,h,h/2):g.rect(x,y,w,h);g.fill()};
+  tier(10,62,76,26,'#6b3f1d');tier(13,60,70,22,'#8a5528');
+  tier(20,42,56,24,'#6b3f1d');tier(23,40,50,20,'#94602e');
+  tier(30,24,36,22,'#6b3f1d');tier(33,22,30,18,'#a06a34');
+  g.fillStyle='#a06a34';g.beginPath();g.ellipse(50,18,9,8,-.5,0,7);g.fill();
+  g.fillStyle='#ffffff55';g.beginPath();g.ellipse(36,66,8,3.5,0,0,7);g.fill();g.beginPath();g.ellipse(41,45,6,2.8,0,0,7);g.fill();g.beginPath();g.ellipse(44,27,4,2,0,0,7);g.fill()}
+function plop(){if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(160+Math.random()*60,t);o.frequency.exponentialRampToValueAtTime(60,t+.12);
+  g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.16)}catch(e){}}
+function poopShow(){const d=document.querySelector('svg.bray');if(!d)return;const r=d.getBoundingClientRect();
+  const rx=r.left+r.width*.16,ry=r.top+r.height*.55;let shots=0;
+  const shoot=setInterval(()=>{for(let i=0;i<3;i++)parts.push({x:rx,y:ry,vx:-(2+Math.random()*9),vy:-(3+Math.random()*9),r:(Math.random()-.5)*.2,a:0,sz:30+Math.random()*26,e:'POOP',life:1,g:.35,pile:1});
+    if(shots%2===0)plop();loop();if(++shots>=26)clearInterval(shoot)},110);
+  setTimeout(()=>{const sz=Math.max(46,Math.min(70,W/7)),gap=sz*.62,rows=Math.ceil(H/gap)+1,cols=Math.ceil(W/gap)+1,until=performance.now()+rows*70+2600;
+    for(let rI=0;rI<rows;rI++)setTimeout(()=>{for(let c=0;c<cols;c++){const ty=H-sz*.4-rI*gap+(Math.random()-.5)*8;
+        parts.push({x:c*gap+(rI%2?gap/2:0)+(Math.random()-.5)*10,y:ty-140-Math.random()*80,vx:0,vy:7,r:0,a:(Math.random()-.5)*.25,sz:sz*(.9+Math.random()*.25),e:'POOP',life:1,g:.5,ty,until})}
+      if(rI%2===0)plop();try{navigator.vibrate&&navigator.vibrate(25)}catch(e){};loop()},rI*70)},2900)}
 function seg(t,d,f1,f2,form){const o=ac.createOscillator(),lfo=ac.createOscillator(),lg=ac.createGain(),bp=ac.createBiquadFilter(),g=ac.createGain();
   o.type='sawtooth';o.frequency.setValueAtTime(f1,t);o.frequency.linearRampToValueAtTime(f2,t+d);lfo.frequency.value=26;lg.gain.value=f1*.05;lfo.connect(lg).connect(o.frequency);
   bp.type='bandpass';bp.frequency.value=form;bp.Q.value=2.2;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.55,t+.03);g.gain.setValueAtTime(.55,t+d-.05);g.gain.linearRampToValueAtTime(0,t+d);
@@ -231,7 +249,7 @@ function final(board,again){const mode=arguments[2]||board.mode||'short';board=b
     <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${mode==='long'?donkey(r.l,30)+' '+word(r.l):r.ms+' '+T('ms')+' '+rank(r.ms)}</span></li>`).join('')}</ol>
     <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?'':`<p class="status">${T('rematchHost')}</p>`}`;
-  fillDonkeys();
+  fillDonkeys();if(!again)setTimeout(poopShow,500);
   if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame(mode)}}
 
 home();

@@ -1,0 +1,6 @@
+# Old Netlify address forwards everything to the new home (Cloudflare ignores this file)
+[[redirects]]
+  from = "https://who-is-donky.netlify.app/*"
+  to = "https://byd-shorties.pages.dev/:splat"
+  status = 301
+  force = true

@@ -119,7 +119,9 @@ const BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-burger/v1/', GAME_SECS=30
 const AW=1500,AH=860,TOP=150;
 const DINER_T=[{x:440,y:370,r:70},{x:1060,y:370,r:70},{x:440,y:680,r:70},{x:1060,y:680,r:70}];
 const SCHOOL_R=[...[380,750,1120].flatMap(cx=>[400,650].map(cy=>({x:cx-85,y:cy-38,w:170,h:76}))),{x:620,y:168,w:260,h:68}];
-const LOCS={diner:{icon:'🍔'},school:{icon:'🦶'}};
+const LOCS={diner:{icon:'🍔',goal:7,secs:30},school:{icon:'🦶',goal:7,secs:30},soccer:{icon:'⚽',goal:5,secs:45}};
+const RS=()=>LOCS[LOC].secs;
+const SPAWN_SOC={girl:[260,300],fat:[260,710],tall:[520,330],nerd:[520,680]};
 let LOC='diner',TABLES=DINER_T,RECTS=[];
 function setLoc(l){LOC=LOCS[l]?l:'diner';TABLES=LOC==='diner'?DINER_T:[];RECTS=LOC==='school'?SCHOOL_R:[]}
 const ORDER=['girl','fat','tall','nerd'];
@@ -136,7 +138,7 @@ const L={
   waitHost:'Ждём, пока организатор нажмёт «Старт»…',pick:'Выбери героя',free:'свободно',bot:'бот',you:'ты',bots:'Боты на свободных героях',start:'Старт!',full:'Комната заполнена (4 игрока).',
   inviteText:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров за 30 секунд? ',push:'Толкнуть',winner:n=>`${n} — чемпион!`,youWin:'Ты чемпион!',
   again:'Ещё раз',lobbyBtn:'В комнату',againHost:'Новую игру запускает организатор',go:'ВПЕРЁД!',share:'Похвастаться',
-  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,loc:'Локация',locs:{diner:'🍔 Бургерная',school:'🏫 Класс'},tipSchool:'🦶 Подкрадись к учителю СЗАДИ и жми 💥 — поджопник! Учитель видит всё в своём конусе: заметит — в угол!',corner:'В угол!',ouch:'Ай!',pushSchool:'Пинок!',shareSchool:(n,s)=>`В «Бургер-гонке» в классе 🏫 ${n} отвесил(а) учителям ${s} поджопников! 😂 А ты сможешь?`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
+  shareText:(n,s)=>`В «Бургер-гонке» 🍔 победил(а) ${n} — ${s} бургеров! А ты сможешь больше?`,burgers:'бург.',createOwn:'Создать свою игру',roundN:n=>`Раунд ${n}`,loc:'Локация',locs:{diner:'🍔 Бургерная',school:'🏫 Класс',soccer:'⚽ Футбол'},tipSoccer:'⚽ Подбеги к мячу и жми «Удар!». Забей мимо вратаря! Соперников можно толкать',pushSoccer:'Удар!',goalTxt:'ГОООЛ!',saveTxt:'Сейв!',shareSoccer:(n,s)=>`В «Бургер-гонке» на футболе ⚽ ${n} забил(а) ${s} голов! Кто сможет больше?`,tipSchool:'🦶 Подкрадись к учителю СЗАДИ и жми 💥 — поджопник! Учитель видит всё в своём конусе: заметит — в угол!',corner:'В угол!',ouch:'Ай!',pushSchool:'Пинок!',shareSchool:(n,s)=>`В «Бургер-гонке» в классе 🏫 ${n} отвесил(а) учителям ${s} поджопников! 😂 А ты сможешь?`,rotate:'🔄 Поверни телефон горизонтально, так удобнее',full:'⛶ На весь экран',tip:'🍔 Подбеги к бургеру, и он съестся сам! 💥 толкает соперника',shop:'Магазин шапок',shopHint:'Шапки начинают действовать со 2-го раунда. В 1-м раунде все на равных.',buy:n=>`Купить · ${n} 🏅`,wear:'Надеть',wearing:'Надета ✓',off:'Снять',noHat:'Без шапки',back:'Назад',pickHat:'Надеть шапку на следующий раунд?',need:n=>`Нужно ${n} 🏅`,bought:'Куплено!',hats:{cap:'Кепка',ushanka:'Ушанка',top:'Цилиндр',crown:'Корона'},hatPerk:{cap:'Бегаешь на 12% быстрее',ushanka:'Тебя толкают слабее, звёздочки проходят быстрее',top:'Бургеры притягиваются: хватаешь издалека',crown:'Толкаешь сильнее, 💥 перезаряжается быстрее'},tie:'Ничья! Переигровка',out:'Вылетают',stay:'Играют дальше',nextR:'Следующий раунд через пару секунд…',medalWin:n=>`🏅 +1 медаль! Всего у тебя: ${n}`,medalHave:n=>`Твои медали: 🏅 ${n}`,watching:'👀 Ты вылетел. Смотри, кто победит!',hostGone:'Организатор вышел из игры',noRoom:'Комната не отвечает. Похоже, организатор уже закрыл игру.',ownHint:'Создай свою комнату и позови друзей. Это бесплатно.',other:'עברית',
   names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
   perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
  he:{title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
@@ -145,7 +147,7 @@ const L={
   waitHost:'מחכים שהמארגן ילחץ «התחלה»…',pick:'בחרו דמות',free:'פנוי',bot:'בוט',you:'אני',bots:'בוטים על דמויות פנויות',start:'התחלה!',full:'החדר מלא (4 שחקנים).',
   inviteText:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה המבורגרים ב־30 שניות? ',push:'דחיפה',winner:n=>`${n} — האלוף!`,youWin:'אתה האלוף!',
   again:'עוד פעם',lobbyBtn:'לחדר',againHost:'משחק חדש מפעיל המארגן',go:'!קדימה',share:'להשוויץ',
-  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,loc:'מקום',locs:{diner:'🍔 ההמבורגרייה',school:'🏫 הכיתה'},tipSchool:'🦶 התגנבו למורה מאחור ולחצו 💥 — בעיטה בטוסיק! המורה רואה כל מה שבתוך המשולש שלו: יראה אתכם — לפינה!',corner:'לפינה!',ouch:'אוי!',pushSchool:'בעיטה!',shareSchool:(n,s)=>`ב«מרוץ ההמבורגרים» בכיתה 🏫 ${n} נתן/ה למורים ${s} בעיטות בטוסיק! 😂 תוכלו יותר?`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
+  shareText:(n,s)=>`ב«מרוץ ההמבורגרים» 🍔 ניצח/ה ${n} עם ${s} המבורגרים! תוכלו יותר?`,burgers:'המב׳',createOwn:'ליצור משחק משלי',roundN:n=>`סיבוב ${n}`,loc:'מקום',locs:{diner:'🍔 ההמבורגרייה',school:'🏫 הכיתה',soccer:'⚽ כדורגל'},tipSoccer:'⚽ רוצו לכדור ולחצו «בעיטה!». תבקיעו ליד השוער! אפשר לדחוף יריבים',pushSoccer:'בעיטה!',goalTxt:'!גוללל',saveTxt:'!הצלה',shareSoccer:(n,s)=>`ב«מרוץ ההמבורגרים» בכדורגל ⚽ ${n} הבקיע/ה ${s} גולים! מי יבקיע יותר?`,tipSchool:'🦶 התגנבו למורה מאחור ולחצו 💥 — בעיטה בטוסיק! המורה רואה כל מה שבתוך המשולש שלו: יראה אתכם — לפינה!',corner:'לפינה!',ouch:'אוי!',pushSchool:'בעיטה!',shareSchool:(n,s)=>`ב«מרוץ ההמבורגרים» בכיתה 🏫 ${n} נתן/ה למורים ${s} בעיטות בטוסיק! 😂 תוכלו יותר?`,rotate:'🔄 סובבו את הטלפון לרוחב, ככה נוח יותר',full:'⛶ מסך מלא',tip:'🍔 רוצו אל ההמבורגר והוא נאכל לבד! 💥 דוחף יריב',shop:'חנות הכובעים',shopHint:'הכובעים פועלים מהסיבוב השני. בסיבוב הראשון כולם שווים.',buy:n=>`לקנות · ${n} 🏅`,wear:'לחבוש',wearing:'חבוש ✓',off:'להוריד',noHat:'בלי כובע',back:'חזרה',pickHat:'לחבוש כובע לסיבוב הבא?',need:n=>`צריך ${n} 🏅`,bought:'נקנה!',hats:{cap:'כובע מצחייה',ushanka:'אושנקה',top:'מגבעת',crown:'כתר'},hatPerk:{cap:'רץ מהר יותר ב־12%',ushanka:'דוחפים אותך חלש יותר, מתאושש מהר',top:'ההמבורגרים נמשכים אליך: תופס מרחוק',crown:'דוחף חזק יותר, 💥 נטען מהר'},tie:'תיקו! סיבוב נוסף',out:'יוצאים',stay:'ממשיכים לשחק',nextR:'הסיבוב הבא בעוד כמה שניות…',medalWin:n=>`🏅 +1 מדליה! סה״כ אצלך: ${n}`,medalHave:n=>`המדליות שלך: 🏅 ${n}`,watching:'👀 יצאת. תראה מי ינצח!',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',other:'Русский',
   names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
   perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
 let lang=['he','ru'].includes(params.get('lang'))?params.get('lang'):null;
@@ -389,8 +391,47 @@ function drawTeacher(g,tv,t){const f=tv.st===0?1+Math.floor((t*9)%6):0,jump=tv.s
     g.fillStyle='#fff';g.strokeStyle=OUT;g.lineWidth=3;g.beginPath();g.roundRect?g.roundRect(tv.x-w/2,hy-58,w,44,16):g.rect(tv.x-w/2,hy-58,w,44);g.fill();g.stroke();g.fillStyle='#e8412c';g.fillText(s,tv.x,hy-35)}
   else if(tv.st===1){g.font='900 46px Rubik, sans-serif';g.textAlign='center';g.textBaseline='middle';g.lineWidth=6;g.strokeStyle='#fff';g.strokeText('!',tv.x,hy-30);g.fillStyle='#e8412c';g.fillText('!',tv.x,hy-30)}}
 
+/* ================= soccer: field + ball art ================= */
+const GX=AW-90,MIDY=Math.round((TOP+AH)/2),MOUTH=[MIDY-150,MIDY+150],BALL_R=18,KX=GX-34;
+function paintSoccer(f){
+  for(let x=0,i=0;x<AW;x+=100,i++){f.fillStyle=i%2?'#43a047':'#4caf50';f.fillRect(x,0,100,AH)}
+  // stands
+  f.fillStyle='#37474f';f.fillRect(0,0,AW,TOP-14);f.fillStyle='#263238';for(let r=0;r<3;r++)f.fillRect(0,18+r*40,AW,6);
+  const cols=['#e8412c','#ffc531','#4f8cff','#ffffff','#5cc560','#ff6fae'],skins=['#f8cfa8','#e0ac7e','#a8714a','#f3d2b8'];
+  let seed=7;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
+  for(let r=0;r<3;r++)for(let x=14+(r%2)*14;x<AW;x+=28){const y=30+r*40;f.fillStyle=cols[Math.floor(rnd()*cols.length)];f.beginPath();f.ellipse(x,y+12,11,9,0,0,7);f.fill();
+    f.fillStyle=skins[Math.floor(rnd()*skins.length)];f.beginPath();f.arc(x,y,8,0,7);f.fill();
+    if(rnd()<.12){f.strokeStyle='#ddd';f.lineWidth=2;f.beginPath();f.moveTo(x+8,y+4);f.lineTo(x+8,y-22);f.stroke();f.fillStyle=cols[Math.floor(rnd()*3)];f.fillRect(x+8,y-22,18,12)}}
+  f.fillStyle='#1b5e20';f.fillRect(0,TOP-14,AW,14);
+  // ad boards
+  const ads=['B.Y.D','⚽','BURGERS','GOAL!'];f.font='900 22px Rubik, Arial';f.textAlign='center';f.textBaseline='middle';f.direction='ltr';
+  for(let i=0;i<8;i++){const x=i*AW/8;f.fillStyle=i%2?'#e8412c':'#1e88e5';f.fillRect(x+4,TOP-12,AW/8-8,10)}
+  f.fillStyle='#2e7d32';f.fillRect(0,TOP-2,14,AH);f.fillRect(0,AH-14,AW,14);
+  // lines
+  f.strokeStyle='rgba(255,255,255,.85)';f.lineWidth=5;const L=40,Tt=TOP+14,B=AH-34;
+  f.strokeRect(L,Tt,GX-L,B-Tt);const cx=(L+GX)/2;f.beginPath();f.moveTo(cx,Tt);f.lineTo(cx,B);f.stroke();f.beginPath();f.arc(cx,MIDY,95,0,7);f.stroke();
+  f.fillStyle='#fff';f.beginPath();f.arc(cx,MIDY,7,0,7);f.fill();
+  f.strokeRect(GX-230,MIDY-230,230,460);f.strokeRect(GX-90,MIDY-150,90,300);f.beginPath();f.arc(GX-170,MIDY,6,0,7);f.fill();
+  f.beginPath();f.arc(GX-230,MIDY,70,Math.PI/2,Math.PI*1.5);f.stroke();
+  f.strokeStyle='rgba(255,255,255,.4)';f.strokeRect(L,Tt,0,0);
+}
+function drawGoal(g,bulge){ // net + posts (drawn over field, under players)
+  const top=MOUTH[0],bot=MOUTH[1],back=AW-18+(bulge||0);
+  g.fillStyle='rgba(0,0,0,.18)';g.fillRect(GX,top,back-GX,bot-top);
+  g.strokeStyle='rgba(255,255,255,.55)';g.lineWidth=2;
+  for(let y=top;y<=bot;y+=18){g.beginPath();g.moveTo(GX,y);g.quadraticCurveTo((GX+back)/2+(bulge||0)*.6,y,back,y);g.stroke()}
+  for(let x=GX;x<=back;x+=18){g.beginPath();g.moveTo(x,top);g.lineTo(x,bot);g.stroke()}
+  g.strokeStyle='#fff';g.lineWidth=10;g.lineCap='round';g.beginPath();g.moveTo(back,top);g.lineTo(GX,top);g.lineTo(GX,bot);g.lineTo(back,bot);g.stroke();
+  g.strokeStyle='#ccc';g.lineWidth=5;g.beginPath();g.moveTo(back,top);g.lineTo(back,bot);g.stroke()}
+function drawBall(g,b){g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(b.x+3,b.y+6,BALL_R,BALL_R*.45,0,0,7);g.fill();
+  const lift=b.h||0;g.save();g.translate(b.x,b.y-BALL_R-lift);g.rotate(b.rot||0);
+  g.fillStyle='#fff';g.beginPath();g.arc(0,0,BALL_R,0,7);g.fill();g.lineWidth=2.5;g.strokeStyle='#2b1b30';g.stroke();
+  g.fillStyle='#2b1b30';g.beginPath();for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g.lineTo(Math.cos(a)*6.5,Math.sin(a)*6.5)}g.closePath();g.fill();
+  for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g.beginPath();g.arc(Math.cos(a)*15,Math.sin(a)*15,4.2,0,7);g.fill();g.beginPath();g.moveTo(Math.cos(a)*6.5,Math.sin(a)*6.5);g.lineTo(Math.cos(a)*12,Math.sin(a)*12);g.lineWidth=1.8;g.stroke()}
+  g.fillStyle='rgba(255,255,255,.55)';g.beginPath();g.ellipse(-6,-7,5,3,-.6,0,7);g.fill();g.restore()}
+
 const floorCaches={};
-function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='school')paintSchool(f);else{
+function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else{
   const tile=75;for(let y=0;y<AH;y+=tile)for(let x=0;x<AW;x+=tile){f.fillStyle=((x+y)/tile)%2?'#efe6d6':'#d9cbb3';f.fillRect(x,y,tile,tile)}
   // counter
   f.fillStyle='#7a3b1d';f.fillRect(0,0,AW,TOP-24);f.fillStyle='#a8582c';f.fillRect(0,TOP-44,AW,20);f.fillStyle='#5e2c14';f.fillRect(0,TOP-24,AW,10);
@@ -407,7 +448,7 @@ function drawFloor(g){if(!floorCaches[LOC]){const fc=floorCaches[LOC]=document.c
   }g.drawImage(floorCaches[LOC],0,0)}
 
 /* ================= physics (shared) ================= */
-function body(c,id){const [x,y]=SPAWN[c];return {id,c,x,y,kx:0,ky:0,stun:0,face:1,moving:false,score:0}}
+function body(c,id){const [x,y]=(LOC==='soccer'?SPAWN_SOC:SPAWN)[c];return {id,c,x,y,kx:0,ky:0,stun:0,face:1,moving:false,score:0}}
 function move(b,dx,dy,dt,others){const c=CH[b.c];if(b.stun>0){b.stun-=dt;dx=dy=0}
   const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}
   const spd=c.sp*(b.hat==='cap'?1.12:1);b.x+=(dx*spd+b.kx)*dt;b.y+=(dy*spd+b.ky)*dt;const f=Math.pow(.015,dt);b.kx*=f;b.ky*=f;
@@ -419,6 +460,7 @@ function move(b,dx,dy,dt,others){const c=CH[b.c];if(b.stun>0){b.stun-=dt;dx=dy=0
 function collide(b,rad){const r=rad||CH[b.c].r;
   if(b.x<r+14){b.x=r+14;b.kx=Math.abs(b.kx)*.5}if(b.x>AW-r-14){b.x=AW-r-14;b.kx=-Math.abs(b.kx)*.5}
   if(b.y<TOP+r-20){b.y=TOP+r-20;b.ky=Math.abs(b.ky)*.5}if(b.y>AH-r-14){b.y=AH-r-14;b.ky=-Math.abs(b.ky)*.5}
+  if(LOC==='soccer'&&b.x>GX-r){b.x=GX-r;b.kx=-Math.abs(b.kx)*.5}
   for(const t of TABLES){const dx=b.x-t.x,dy=b.y-t.y,d=Math.hypot(dx,dy),m=t.r+r;if(d<m&&d>0){b.x=t.x+dx/d*m;b.y=t.y+dy/d*m}}
   const rr2=r*.8;for(const q of RECTS){const cx=clamp(b.x,q.x,q.x+q.w),cy=clamp(b.y,q.y,q.y+q.h),dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy);
     if(d<rr2){if(d===0){const l=b.x-q.x,rg=q.x+q.w-b.x,tp=b.y-q.y,bt=q.y+q.h-b.y,m=Math.min(l,rg,tp,bt);if(m===l)b.x=q.x-rr2;else if(m===rg)b.x=q.x+q.w+rr2;else if(m===tp)b.y=q.y-rr2;else b.y=q.y+q.h+rr2}
@@ -527,16 +569,17 @@ function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearH
   document.getElementById('bk').onclick=()=>lobby()}
 
 /* ================= match: shared client side ================= */
-let tview=[],curRound=0,syncAsked=false,claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=GAME_SECS,matchPhase='count',pops=[],rings=[];
+let ballV=null,keeperV=null,netT=0,tview=[],curRound=0,syncAsked=false,claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=RS(),matchPhase='count',pops=[],rings=[];
 const input={dx:0,dy:0};
-function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.getElementById('pushL').textContent=LOC==='school'?T('pushSchool'):T('push');document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=GAME_SECS;
-  r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SPAWN[c][0],y:SPAWN[c][1],tx:SPAWN[c][0],ty:SPAWN[c][1],score:0,stun:0,moving:false,face:1});
+function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.getElementById('pushL').textContent=LOC==='school'?T('pushSchool'):LOC==='soccer'?T('pushSoccer'):T('push');ballV=null;keeperV=null;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
+  const SP=LOC==='soccer'?SPAWN_SOC:SPAWN;r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[c][0],y:SP[c][1],tx:SP[c][0],ty:SP[c][1],score:0,stun:0,moving:false,face:1});
   const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine)mine.hat=mineR[4]||null;
   const w=document.getElementById('watch');w.hidden=!!mine;w.textContent=T('watching');document.getElementById('ctrl').style.visibility=mine?'':'hidden';
-  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,5500)}else tp.hidden=true;claimed=new Set()}
+  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,5500)}else tp.hidden=true;claimed=new Set()}
 function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filter(g=>!claimed.has(g[0]));m.ev=(m.ev||[]).filter(e=>!(e[0]==='e'&&e[1]===me.id));if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700)}matchPhase=m.ph}
   if(m.ph==='count'){const n=Math.ceil(m.tl);if(n!==lastCount){lastCount=n;sndBeep(0);flashBig(n,900)}}
   burgers=m.B;
+  if(m.BL){const [x,y,vx,vy,ky,sv,fr]=m.BL;if(!ballV)ballV={x,y,rot:0};ballV.tx=x;ballV.ty=y;ballV.vx=fr?0:vx;ballV.vy=fr?0:vy;if(!keeperV)keeperV={y:ky};keeperV.ty=ky;keeperV.save=!!sv}
   if(m.TC){m.TC.forEach(([x,y,a,st,k],i)=>{let tv=tview[i];if(!tv)tv=tview[i]={x,y};tv.tx=x;tv.ty=y;tv.a=a;tv.st=st;tv.k=TKINDS[k]});tview.length=m.TC.length}else tview=[];
   for(const [id,x,y,score,stun,mv,f] of m.P){const v=view[id];if(!v)continue;if(id!==me.id){v.tx=x;v.ty=y;v.moving=!!mv;v.face=f||1}v.score=score;v.stun=stun;if(id===me.id&&mine)mine.score=score}
   for(const e of m.ev||[])handleEv(e)}
@@ -545,6 +588,9 @@ function handleEv(e){
   if(e[0]==='k'){pops.push({x:e[2],y:e[3]-60,t:0,txt:'+1'});tone(170,.12,'square',.25,90);setTimeout(()=>tone(950,.18,'sine',.18,1500),70);if(e[1]===me.id)vib([40,30,60]);return}
   if(e[0]==='c'){pops.push({x:e[2],y:e[3],t:-.2,txt:T('corner'),big:1});tone(2300,.14,'square',.07);setTimeout(()=>tone(2100,.3,'square',.07),150);if(e[1]===me.id)vib([200,100,200]);return}
   if(e[0]==='l'){tone(520,.06,'triangle',.06,700);return}
+  if(e[0]==='b'){tone(150,.09,'square',.22,70);if(e[1]===me.id)vib(25);return}
+  if(e[0]==='s'){tone(320,.12,'triangle',.18,160);crowd(.7,.12);flashBig(T('saveTxt'),700);return}
+  if(e[0]==='g'){netT=performance.now();flashBig(T('goalTxt'),1500);crowd(1.8,.3);[523,659,784,1046,1318].forEach((f,i)=>setTimeout(()=>tone(f,.18,'square',.1),i*110));confetti();if(e[1]===me.id)vib([100,50,100,50,200]);return}
   if(e[0]==='e'){pops.push({x:e[2],y:e[3],t:0,txt:'+1'});if(e[1]===me.id){sndEat();vib(30)}else tone(400,.06,'square',.05)}
   else if(e[0]==='p'){const v=view[e[1]];if(v)rings.push({x:v.id===me.id&&mine?mine.x:v.x,y:v.id===me.id&&mine?mine.y:v.y,t:0});if(e[1]!==me.id&&e[2]!==me.id)tone(200,.1,'triangle',.15,80)}}
 let bigTimer;function flashBig(t,ms){const b=document.getElementById('big');b.textContent=t;clearTimeout(bigTimer);bigTimer=setTimeout(()=>b.textContent='',ms)}
@@ -562,6 +608,7 @@ function doPushLocal(){if(!mine||matchPhase!=='play'||mine.stun>0||performance.n
   // lunge toward nearest
   let best=null,bd=1e9;for(const id in view){if(id===me.id)continue;const v=view[id],d=Math.hypot(v.x-mine.x,v.y-mine.y);if(d<bd){bd=d;best=v}}
   for(const tv of tColl()){const d=Math.hypot(tv.x-mine.x,tv.y-mine.y);if(d<bd){bd=d;best=tv}}
+  if(LOC==='soccer'&&ballV){const d=Math.hypot(ballV.x-mine.x,ballV.y-mine.y);if(d<bd+60){bd=d;best=ballV}}
   if(best&&bd<200){mine.kx+=(best.x-mine.x)/bd*380;mine.ky+=(best.y-mine.y)/bd*380}
   rings.push({x:mine.x,y:mine.y,t:0});tone(240,.08,'square',.12,120);
   if(isHost)hostPush(me.id);else send({t:'push'})}
@@ -589,6 +636,8 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
       for(let i=burgers.length-1;i>=0;i--){const g=burgers[i];if(claimed.has(g[0]))continue;if(Math.hypot(g[1]-mine.x,(g[2]-12)-(mine.y-30))<reach){claimed.add(g[0]);burgers.splice(i,1);
         send({t:'grab',id:g[0],x:Math.round(mine.x),y:Math.round(mine.y)},1);pops.push({x:g[1],y:g[2],t:0,txt:'+1'});sndEat();vib(30)}}}}
   for(const id in view){if(id===me.id)continue;const v=view[id],k=Math.min(1,dt*14);v.x+=(v.tx-v.x)*k;v.y+=(v.ty-v.y)*k}
+  if(!isHost&&ballV&&ballV.tx!=null){ballV.x+=(ballV.vx||0)*dt;ballV.y+=(ballV.vy||0)*dt;const k=Math.min(1,dt*9);ballV.x+=(ballV.tx-ballV.x)*k;ballV.y+=(ballV.ty-ballV.y)*k;ballV.rot=(ballV.rot||0)+(ballV.vx||0)*dt/BALL_R;
+    if(keeperV){const dk=(keeperV.ty-keeperV.y);keeperV.moving=Math.abs(dk)>2;keeperV.y+=dk*Math.min(1,dt*10)}}
   if(!isHost)for(const tv of tview){const k=Math.min(1,dt*12);tv.x+=(tv.tx-tv.x)*k;tv.y+=(tv.ty-tv.y)*k}
   // draw
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#120c16';ctx.fillRect(0,0,innerWidth,innerHeight);
@@ -597,15 +646,16 @@ function frame(now){if(phase!=='play'){rafOn=false;return}const dt=Math.min(.05,
   for(const r of rings){r.t+=dt;ctx.strokeStyle=`rgba(255,197,49,${Math.max(0,1-r.t*3)})`;ctx.lineWidth=6;ctx.beginPath();ctx.arc(r.x,r.y-30,30+r.t*260,0,7);ctx.stroke()}
   rings=rings.filter(r=>r.t<.35);
   for(const tv of tview)drawCone(ctx,tv);
-  const list=[...Object.values(view),...tview.map(tv=>({tch:tv,y:tv.y}))].sort((a,b)=>a.y-b.y);
-  for(const v of list){if(v.tch){drawTeacher(ctx,v.tch,t);continue}if(v.id===me.id){ctx.strokeStyle='rgba(255,197,49,.9)';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(v.x,v.y,(v.c==='fat'?50:40)+Math.sin(t*6)*3,13,0,0,7);ctx.stroke()}drawHero(ctx,v,t+v.x*.01);
+  if(LOC==='soccer'){const nb=performance.now()-netT<700?Math.sin((performance.now()-netT)/700*Math.PI)*22:0;drawGoal(ctx,nb)}
+  const list=[...Object.values(view),...tview.map(tv=>({tch:tv,y:tv.y}))];if(LOC==='soccer'&&ballV)list.push({ball:ballV,y:ballV.y});if(LOC==='soccer'&&keeperV)list.push({kp:keeperV,y:keeperV.y});list.sort((a,b)=>a.y-b.y);
+  for(const v of list){if(v.tch){drawTeacher(ctx,v.tch,t);continue}if(v.ball){drawBall(ctx,v.ball);continue}if(v.kp){drawTeacher(ctx,{x:KX,y:v.kp.y,a:Math.PI,st:v.kp.save?1:0,k:'pe',moving:v.kp.moving},v.kp.moving?t:0);continue}if(v.id===me.id){ctx.strokeStyle='rgba(255,197,49,.9)';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(v.x,v.y,(v.c==='fat'?50:40)+Math.sin(t*6)*3,13,0,0,7);ctx.stroke()}drawHero(ctx,v,t+v.x*.01);
     const ny=v.y+headTop(v.c,v.hat)-14;ctx.font='700 22px Rubik, sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000a';
     const label=(v.id===me.id?'▼ ':'')+v.name;ctx.strokeText(label,v.x,ny);ctx.fillStyle=v.id===me.id?'#ffc531':'#fff';ctx.fillText(label,v.x,ny)}
   for(const p of pops){p.t+=dt;if(p.t<0)continue;ctx.globalAlpha=Math.max(0,1-p.t*(p.big?.9:1.4));ctx.direction=/[\u0590-\u05FF]/.test(p.txt)?'rtl':'ltr';ctx.font=p.big?'900 44px Rubik, sans-serif':'900 34px Rubik, sans-serif';ctx.fillStyle='#ffc531';ctx.strokeStyle='#e8412c';ctx.lineWidth=5;
     ctx.strokeText(p.txt,p.x,p.y-40-p.t*70);ctx.fillText(p.txt,p.x,p.y-40-p.t*70);ctx.globalAlpha=1}
   pops=pops.filter(p=>p.t<(p.big?1.2:.8));
   // hud
-  const tm=document.getElementById('timer');const shown=matchPhase==='count'?GAME_SECS:Math.max(0,Math.ceil(timeLeft));if(tm.textContent!=String(shown))tm.textContent=shown;tm.classList.toggle('low',matchPhase==='play'&&timeLeft<=5);
+  const tm=document.getElementById('timer');const shown=matchPhase==='count'?RS():Math.max(0,Math.ceil(timeLeft));if(tm.textContent!=String(shown))tm.textContent=shown;tm.classList.toggle('low',matchPhase==='play'&&timeLeft<=5);
   const sc=document.getElementById('scores'),html=Object.values(view).sort((a,b)=>b.score-a.score).map(v=>`<span><i style="background:${CH[v.c].col}"></i>${esc(v.name)} ${v.score}</span>`).join('');if(sc._h!==html){sc.innerHTML=html;sc._h=html}
   if(isHost)hostTick(dt);
   requestAnimationFrame(frame)}
@@ -618,8 +668,8 @@ function hostStart(){phase='play';const r=[];const used=new Set();
   if(useBots)ORDER.forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   T0={all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{},hats:{}};for(const [id,p] of lobbyPlayers)T0.hats[id]=p.hat||null;startRound()}
 function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],T0.round>1?(T0.hats[x[0]]||null):null]);
-  G={P:{},t:0,count:3,B:[],nextId:1,kicks:0,TC:null};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
-  if(LOC==='school')spawnTeachers();else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
+  G={P:{},t:0,count:3,B:[],nextId:1,kicks:0,goals:0,TC:null,ball:null,keeper:null};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
+  if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
   send({t:'start',roster:rr,round:T0.round,loc:LOC},1);const rnd=T0.round;setTimeout(()=>{if(T0&&T0.round===rnd&&G)send({t:'start',roster:rr,round:rnd,again:1,loc:LOC},1)},700);startLocal(rr,T0.round,LOC);matchPhase='count';lastCount=0;evq=[];stAcc=0}
 function endRound(){const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]=(T0.total[id]||0)+P[id].score;T0.last[id]=P[id].score});
   const max=Math.max(...ids.map(id=>P[id].score)),leaders=ids.filter(id=>P[id].score===max),out=ids.filter(id=>!leaders.includes(id));
@@ -642,6 +692,25 @@ function showInter(m){const el=document.getElementById('inter');el.hidden=false;
 function spawnBurger(){for(let tries=0;tries<50;tries++){const x=60+Math.random()*(AW-120),y=TOP+40+Math.random()*(AH-TOP-100);
     if(TABLES.some(t=>Math.hypot(x-t.x,y-t.y)<t.r+40))continue;if(Object.values(G.P).some(p=>Math.hypot(x-p.x,y-p.y)<120))continue;if(G.B.some(b=>Math.hypot(x-b.x,y-b.y)<90))continue;
     G.B.push({id:G.nextId++,x,y});return}}
+function spawnBall(){G.ball={x:(40+GX)/2,y:MIDY,vx:0,vy:0,last:null,frozen:0,rot:0};G.keeper={y:MIDY,save:0,lag:0}}
+function crowd(dur=1.2,vol=.25){if(!ac)return;try{const t=ac.currentTime,n=ac.sampleRate*dur,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);
+  const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();f.type='bandpass';f.frequency.value=900;f.Q.value=.6;g.gain.value=vol;s.buffer=b;s.connect(f).connect(g).connect(ac.destination);s.start(t)}catch(e){}}
+function ballTick(dt){const B=G.ball,K=G.keeper,P=G.P;
+  for(const id in P){const k=P[id];let vx=(k.x-(k.px??k.x))/dt,vy=(k.y-(k.py??k.y))/dt;k.px=k.x;k.py=k.y;const sp=Math.hypot(vx,vy);if(sp>650){vx*=650/sp;vy*=650/sp}
+    if(k.stun>0||B.frozen>0)continue;const dx=B.x-k.x,dy=B.y-k.y,d=Math.hypot(dx,dy),m=CH[k.c].r+BALL_R+(k.hat==='top'?10:0);
+    if(d<m&&d>0){B.x=k.x+dx/d*m;B.y=k.y+dy/d*m;const nv=(vx*dx+vy*dy)/d;if(nv>0){B.vx=dx/d*nv*1.12+vx*.35;B.vy=dy/d*nv*1.12+vy*.35}B.last=id}}
+  if(B.frozen>0){B.frozen-=dt;B.vx*=.85;B.vy*=.85;B.x=Math.min(B.x+B.vx*dt,AW-30);if(B.frozen<=0){B.x=(40+GX)/2;B.y=MIDY;B.vx=B.vy=0;B.last=null}}
+  else{B.x+=B.vx*dt;B.y+=B.vy*dt;const f=Math.pow(.42,dt);B.vx*=f;B.vy*=f;B.rot+=(B.vx>=0?1:-1)*Math.hypot(B.vx,B.vy)*dt/BALL_R;
+    if(B.x<40+BALL_R){B.x=40+BALL_R;B.vx=Math.abs(B.vx)*.7}if(B.y<TOP+14+BALL_R){B.y=TOP+14+BALL_R;B.vy=Math.abs(B.vy)*.7}if(B.y>AH-34-BALL_R){B.y=AH-34-BALL_R;B.vy=-Math.abs(B.vy)*.7}
+    const inMouth=B.y>MOUTH[0]+8&&B.y<MOUTH[1]-8;
+    if(B.x>GX-BALL_R&&!inMouth){B.x=GX-BALL_R;B.vx=-Math.abs(B.vx)*.7}
+    for(const py of MOUTH){const dx=B.x-GX,dy=B.y-py,d=Math.hypot(dx,dy);if(d<BALL_R+6&&d>0){B.x=GX+dx/d*(BALL_R+6);B.y=py+dy/d*(BALL_R+6);const n=(B.vx*dx+B.vy*dy)/d;B.vx-=2*n*dx/d*.8;B.vy-=2*n*dy/d*.8}}
+    // keeper
+    const ky=K.y,kd=Math.hypot(B.x-KX,B.y-ky),fast=Math.hypot(B.vx,B.vy);if(kd<BALL_R+32&&B.vx>-50&&!K.miss){if(fast>600&&Math.random()<.45){K.miss=.5}else{B.vx=-Math.abs(B.vx)*.65-160;B.vy+=(B.y-ky)*4+(Math.random()-.5)*200;B.x=KX-BALL_R-41;K.save=.6;B.last=null;evq.push(['s',0])}}if(K.miss>0)K.miss-=dt;if(K.miss<=0)K.miss=0;
+    if(inMouth&&B.x>GX+14){G.goals++;const sc=B.last&&P[B.last];if(sc)sc.score++;B.frozen=1.7;evq.push(['g',B.last||'',Math.round(B.x),Math.round(B.y)])}}
+  // keeper movement: follows ball with lag, sometimes guesses wrong
+  K.lag-=dt;if(K.lag<=0){K.lag=.35+Math.random()*.35;K.aim=B.y+(Math.random()-.5)*(B.x>GX-500?170:240)}
+  const want=clamp(K.aim??MIDY,MOUTH[0]+28,MOUTH[1]-28),dy=want-K.y,ms=150*dt;K.y+=clamp(dy,-ms,ms);K.moving=Math.abs(dy)>3;if(K.save>0)K.save-=dt}
 const TSPEED={teach:120,pe:145,dir:100};
 function spawnTeachers(){const st=[[750,300],[290,525],[1210,525]];G.TC=TKINDS.map((k,i)=>({k,x:st[i][0],y:st[i][1],fx:i===1?1:-1,fy:0,st:0,tt:2.2+Math.random()*2,tx:null,ty:null}))}
 function freePoint(){for(let i=0;i<40;i++){const x=90+Math.random()*(AW-180),y=TOP+50+Math.random()*(AH-TOP-110);if(RECTS.some(q=>x>q.x-55&&x<q.x+q.w+55&&y>q.y-55&&y<q.y+q.h+55))continue;return [x,y]}return [AW/2,AH-120]}
@@ -658,6 +727,10 @@ function teacherTick(dt){const now=performance.now();for(const T of G.TC){
   const R=T.st===1?380:290;for(const id in G.P){const b=G.P[id];if(b.stun>0||(b.caught||0)>now)continue;const vx=b.x-T.x,vy=b.y-T.y,d=Math.hypot(vx,vy);
     if(d<R&&d>1&&(vx*T.fx+vy*T.fy)/d>.64)catchKid(id)}}}
 function hostPush(aid){const A=G&&G.P[aid];if(!A||matchPhase!=='play')return;const now=performance.now();if(A.cd>now||A.stun>0)return;A.cd=now+(A.hat==='crown'?600:850);
+  if(LOC==='soccer'&&G.ball&&G.ball.frozen<=0){const B=G.ball,dx=B.x-A.x,dy=B.y-A.y,d=Math.hypot(dx,dy)||1;
+    if(d<CH[A.c].r+BALL_R+48){const pw=980*(A.hat==='crown'?1.2:1)*(.92+CH[A.c].pw*.08);let ux=dx/d,uy=dy/d;
+      const gx=GX+30-B.x,gy=MIDY-B.y,gl=Math.hypot(gx,gy)||1;if(ux>.15){ux=ux*.55+gx/gl*.45;uy=uy*.55+gy/gl*.45;const l=Math.hypot(ux,uy);ux/=l;uy/=l}
+      B.vx=ux*pw;B.vy=uy*pw;B.last=aid;evq.push(['b',aid]);return}}
   if(LOC==='school'&&G.TC){let bt=null,bd2=1e9;for(const T of G.TC){if(T.st===2)continue;const d=Math.hypot(A.x-T.x,A.y-T.y);if(d<CH[A.c].r+34+62&&d<bd2){bd2=d;bt=T}}
     if(bt){const dot=((A.x-bt.x)*bt.fx+(A.y-bt.y)*bt.fy)/(bd2||1);
       if(dot<-.1){A.score++;G.kicks++;bt.st=2;bt.tt=1.4;bt.kicker=aid;evq.push(['k',aid,Math.round(bt.x),Math.round(bt.y)]);return}
@@ -669,6 +742,12 @@ function hostPush(aid){const A=G&&G.P[aid];if(!A||matchPhase!=='play')return;con
     else if(B.bot){B.kx=ux*force;B.ky=uy*force;B.stun=stun}
     else{send({t:'kb',to:best,vx:Math.round(ux*force),vy:Math.round(uy*force),s:stun},1);B.stun=stun}}}
 function botThink(b,dt){const brain=botBrain[b.id]||(botBrain[b.id]={target:null,wob:Math.random()*6,react:0,idle:0});brain.react-=dt;if(brain.idle>0){brain.idle-=dt;return [0,0]}
+  if(LOC==='soccer'&&G.ball){const B=G.ball;if(brain.react<=0){brain.react=.4+Math.random()*.6;if(Math.random()<.15){brain.idle=.3+Math.random()*.5;return [0,0]}}
+    const gx=GX+30-B.x,gy=MIDY-B.y,gl=Math.hypot(gx,gy)||1,bx=B.x-gx/gl*58,by=B.y-gy/gl*58;let dx=bx-b.x,dy=by-b.y;const d=Math.hypot(dx,dy)||1;
+    const db=Math.hypot(B.x-b.x,B.y-b.y),behind=((B.x-b.x)*gx+(B.y-b.y)*gy)/(db*gl||1);
+    if(db<CH[b.c].r+BALL_R+40&&behind>.55&&Math.random()<dt*4)hostPush(b.id);
+    if(d<20&&behind>.5){dx=B.x-b.x;dy=B.y-b.y}
+    const l=Math.hypot(dx,dy)||1;brain.wob+=dt*3;return [(dx/l+Math.cos(brain.wob)*.15)*.62,(dy/l+Math.sin(brain.wob)*.15)*.62]}
   if(LOC==='school'&&G.TC){if(brain.react<=0){brain.react=.6+Math.random()*.8;if(Math.random()<.2){brain.idle=.4+Math.random()*.6;return [0,0]}}
     let tg=null,bd=1e9;for(const T of G.TC){if(T.st===2)continue;const bx=T.x-T.fx*75,by=T.y-T.fy*75,d=Math.hypot(bx-b.x,by-b.y);if(d<bd){bd=d;tg=[bx,by]}}
     let dx=0,dy=0;if(tg){dx=tg[0]-b.x;dy=tg[1]-b.y;const d=Math.hypot(dx,dy)||1;dx/=d;dy/=d;if(bd<55&&Math.random()<dt*3)hostPush(b.id)}
@@ -684,20 +763,21 @@ function botThink(b,dt){const brain=botBrain[b.id]||(botBrain[b.id]={target:null
   return [dx*.6,dy*.6]}
 function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
   if(matchPhase==='count'){G.count-=dt;timeLeft=G.count;const n=Math.ceil(G.count);if(n!==lastCount&&n>0){lastCount=n;sndBeep(0);flashBig(n,900)}
-    if(G.count<=0){matchPhase='play';G.t=GAME_SECS;sndBeep(1);flashBig(T('go'),700)}}
+    if(G.count<=0){matchPhase='play';G.t=RS();sndBeep(1);flashBig(T('go'),700)}}
   else if(matchPhase==='play'){G.t-=dt;timeLeft=G.t;
-    if(G.TC)teacherTick(dt);
+    if(G.TC)teacherTick(dt);if(G.ball)ballTick(dt);
     for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id!==me.id&&b.stun>0)b.stun-=dt}
     for(const id in P){const b=P[id];if(b.stun>0)continue;const reach=CH[b.c].r+26+CH[b.c].pick+(b.hat==='top'?32:0);
       for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<reach){G.B.splice(i,1);b.score++;evq.push(['e',id,Math.round(g.x),Math.round(g.y)])}}}
-    if(G.t<=0||(LOC==='school'?G.kicks>=BURGERS:G.B.length===0)){matchPhase='end'}}
+    if(G.t<=0||(LOC==='school'?G.kicks>=LOCS.school.goal:LOC==='soccer'?G.goals>=LOCS.soccer.goal:G.B.length===0)){matchPhase='end'}}
   // views for host render
   for(const id in P){const b=P[id],v=view[id];if(!v)continue;if(id!==me.id){v.tx=b.x;v.ty=b.y;v.moving=b.moving;v.face=b.face;v.stun=b.stun>0?1:0}v.score=b.score}
   burgers=G.B.map(g=>[g.id,Math.round(g.x),Math.round(g.y)]);
+  if(G.ball){ballV={x:G.ball.x,y:G.ball.y,rot:G.ball.rot};keeperV={y:G.keeper.y,save:G.keeper.save>0,moving:G.keeper.moving}}
   tview=G.TC?G.TC.map(T=>({x:T.x,y:T.y,tx:T.x,ty:T.y,a:Math.atan2(T.fy,T.fx),st:T.st,k:T.k})):[];
   if(evq.length){for(const e of evq)handleEvHost(e)}
   stAcc+=dt;if(stAcc>=.09||matchPhase==='end'){stAcc=0;
-    send({t:'st',ph:matchPhase==='end'?'play':matchPhase,tl:Math.max(0,+timeLeft.toFixed(2)),B:burgers,ev:evq,TC:G.TC?G.TC.map(T=>[Math.round(T.x),Math.round(T.y),+Math.atan2(T.fy,T.fx).toFixed(2),T.st,TKINDS.indexOf(T.k)]):undefined,
+    send({t:'st',ph:matchPhase==='end'?'play':matchPhase,tl:Math.max(0,+timeLeft.toFixed(2)),B:burgers,ev:evq,TC:G.TC?G.TC.map(T=>[Math.round(T.x),Math.round(T.y),+Math.atan2(T.fy,T.fx).toFixed(2),T.st,TKINDS.indexOf(T.k)]):undefined,BL:G.ball?[Math.round(G.ball.x),Math.round(G.ball.y),Math.round(G.ball.vx),Math.round(G.ball.vy),Math.round(G.keeper.y),G.keeper.save>0?1:0,G.ball.frozen>0?1:0]:undefined,
       P:Object.values(P).map(b=>[b.id,Math.round(b.x),Math.round(b.y),b.score,b.stun>0?1:0,b.moving?1:0,b.face])});evq=[]}
   if(matchPhase==='end')endRound()}
 const handledHost=new WeakSet();
@@ -715,7 +795,7 @@ function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('
   if(!again){confetti();[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12),i*140));if(iWin)vib([100,50,100,50,300])}
   const medalIcons=['🥇','🥈','🥉','🍟'];let rank=0;
   app.innerHTML=`<div style="font-size:64px;line-height:1">🏆</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1>${medalLine?`<p style="color:var(--mustard);font-weight:700;font-size:18px">${medalLine}</p>`:''}<ol class="podium" id="pod"></ol>
-    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='school'?T('shareSchool'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
+    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='school'?T('shareSchool'):LOC==='soccer'?T('shareSoccer'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button id="ag">${T('again')} 🍔</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?'':`<p class="status">${T('againHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
   const pod=document.getElementById('pod');
   board.forEach((b,i)=>{rank=i;const li=document.createElement('li');li.className=rank===0?'win':'';

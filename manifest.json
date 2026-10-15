@@ -1,0 +1,14 @@
+{
+  "name": "BYD Shorties",
+  "short_name": "BYD Shorties",
+  "description": "Play anywhere. Play with friends. Play fast.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#170f1c",
+  "theme_color": "#170f1c",
+  "icons": [
+    {"src": "brand/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

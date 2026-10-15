@@ -1,19 +1,20 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Кто осёл? · מי חמור? 🫏</title>
-<meta property="og:title" content="Кто осёл? · מי חמור? 🫏">
-<meta property="og:description" content="Жми на морковку быстрее всех! · לחצו על הגזר הכי מהר!">
+<link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/brand/icon-180.png">
+<title>Who's the Donkey? 🫏 · BYD Shorties</title>
+<meta property="og:title" content="Who's the Donkey? 🫏 · BYD Shorties">
+<meta property="og:description" content="Tap the carrot faster than your friends. The slowest becomes the donkey! · Кто осёл? · מי חמור?">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://who-is-donky.netlify.app/donkey/">
-<meta property="og:image" content="https://who-is-donky.netlify.app/og.png">
+<meta property="og:image" content="https://who-is-donky.netlify.app/donkey/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ослик, у которого выпала какашка: Кто осёл? מי חמור?">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://who-is-donky.netlify.app/og.png">
+<meta name="twitter:image" content="https://who-is-donky.netlify.app/donkey/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Rubik:wght@400;500;700&display=swap">
 <style>
@@ -73,6 +74,14 @@ const ROUNDS=3, BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-hamor/v1/';
 const app=document.getElementById('app');
 const params=new URLSearchParams(location.search);
 const L={
+ en:{title:"Who's the Donkey?",homeJoin:"You're invited! The carrot pops up for everyone at the same moment. The slowest one becomes the donkey.",homeNew:'Online party game: everyone taps the carrot on their own phone. The slowest one becomes the donkey.',
+  name:'Your name',join:'Join game',create:'Create game',needName:'Type your name so everyone knows who the donkey is.',connecting:'Connecting…',
+  errLib:'The connection library failed to load. Check your internet and refresh.',errConn:"Couldn't connect to the game. Try again in a minute.",reload:'Refresh',
+  room:'Room',hostHint:'Send the link to your group. When everyone is in, tap «Start».',invite:'Invite on WhatsApp',copy:'Copy link',copied:'Copied',
+  waitHost:'Waiting for the host to tap «Start»…',you:'(you)',inGame:'Players: ',start:'Start · 3 rounds',
+  inviteText:"Let's play «Who's the Donkey?» 🫏 Last to tap is the donkey! ",round:'Round',waitCarrot:"Wait for the carrot… don't tap early!",carrot:'Carrot',
+  ms:'ms',early:'Too early! +1500 ms',waitOthers:'waiting for the others',slept:'Missed! +3000 ms',youHamor:"You're the donkey! 😂",isHamor:' is the donkey!',
+  share:'Brag to the group',shareText:(n,ms)=>`In «Who's the Donkey?» 🫏 today's donkey is ${n} (${ms} ms)! 😂`,rematch:'Rematch',rematchHost:'The host starts the rematch',heehaw:'Hee-haw!',short:'Short · 3 rounds',long:'Long · until DONK',longHint:'Long: every round the slowest gets a letter D → O → N → K. Whoever spells DONK first loses.',gotLetter:(n,l)=>`${n} gets the letter ${l}`,youGot:l=>`You got the letter ${l} 😬`,next:'Next round…',lettersShare:(n)=>`We played «Who's the Donkey?» to the last letter 🫏 ${n} spelled DONK! 😂`,createOwn:'Create your own game',hostGone:'The host left the game',noRoom:"The room isn't answering. The host probably closed the game.",ownHint:"Create your own room and invite friends. It's free.",allGames:'🎮 All games',other:'EN'},
  ru:{title:'Кто осёл?',homeJoin:'Тебя позвали в игру. Морковка появляется у всех одновременно. Самый медленный станет ослом.',homeNew:'Онлайн-игра для группы: каждый со своего телефона жмёт на морковку. Самый медленный станет ослом.',
   name:'Твоё имя',join:'Войти в игру',create:'Создать игру',needName:'Напиши имя, чтобы другие видели, кто осёл.',connecting:'Подключаюсь…',
   errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться к игре. Попробуй ещё раз через минуту.',reload:'Обновить',
@@ -89,14 +98,15 @@ const L={
   inviteText:'בואו לשחק ב«מי חמור?» 🫏 מי שלוחץ אחרון — הוא החמור! ',round:'סיבוב',waitCarrot:'חכו לגזר… לא ללחוץ לפני הזמן!',carrot:'גזר',
   ms:'ms',early:'מוקדם מדי! 1500+ ms',waitOthers:'מחכים לשאר',slept:'פספסת! 3000+ ms',youHamor:'החמור — זה אתה! 😂',isHamor:' — החמור!',
   share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',heehaw:'אִי־אָה!',short:'קצר · 3 סיבובים',long:'ארוך · עד חמור',longHint:'ארוך: בכל סיבוב האיטי ביותר מקבל אות ח ← מ ← ו ← ר. מי שמשלים ראשון חמור — הפסיד.',gotLetter:(n,l)=>`${n} מקבל/ת את האות ${l}`,youGot:l=>`קיבלת את האות ${l} 😬`,next:'הסיבוב הבא…',lettersShare:(n)=>`שיחקנו «מי חמור?» עד האות האחרונה 🫏 ${n} השלים/ה חמור! 😂`,createOwn:'ליצור משחק משלי',hostGone:'המארגן יצא מהמשחק',noRoom:'החדר לא עונה. כנראה המארגן כבר סגר את המשחק.',ownHint:'צרו חדר משלכם והזמינו חברים. זה בחינם.',allGames:'🎮 כל המשחקים',other:'Русский'}};
-let lang=params.get('lang')==='he'||params.get('lang')==='ru'?params.get('lang'):null;
-if(!lang){try{lang=localStorage.getItem('hamor-lang')}catch(e){}}
-if(lang!=='he'&&lang!=='ru')lang=/^(he|iw)/i.test(navigator.language||'')?'he':'ru';
+let lang=['en','ru','he'].includes(params.get('lang'))?params.get('lang'):null;
+if(!lang){try{lang=localStorage.getItem('byd-lang3')}catch(e){}}
+if(!['en','ru','he'].includes(lang))lang='en';
+const LANG_NEXT={en:'ru',ru:'he',he:'en'},LANG_LABEL={en:'🌐 EN',ru:'🌐 RU',he:'🌐 HE'};
 const T=k=>L[lang][k];
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('title')+' 🫏';
-  lb.textContent=T('other');try{localStorage.setItem('hamor-lang',lang)}catch(e){}}
+  lb.textContent=LANG_LABEL[lang];try{localStorage.setItem('byd-lang3',lang)}catch(e){}}
 const lb=document.createElement('button');lb.className='lang';document.body.appendChild(lb);
-let redraw=()=>{};lb.onclick=()=>{const n=document.getElementById('nm');if(n)me.name=n.value;lang=lang==='he'?'ru':'he';applyLang();redraw()};applyLang();
+let redraw=()=>{};lb.onclick=()=>{const n=document.getElementById('nm');if(n)me.name=n.value;lang=LANG_NEXT[lang];applyLang();redraw()};applyLang();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const rid=()=>Math.random().toString(36).slice(2,10);
 const me={id:rid(),name:''};
@@ -212,7 +222,7 @@ function lobby(){redraw=lobby;const list=[...players].map(([id,p])=>`<li class="
     document.getElementById('st').onclick=()=>{if(players.size>=2)startGame('short')};document.getElementById('stl').onclick=()=>{if(players.size>=2)startGame('long')}}}
 
 /* host logic */
-const WORDS={he:['ח','מ','ו','ר'],ru:['О','С','Ё','Л']};let WORD=WORDS[lang];
+const WORDS={he:['ח','מ','ו','ר'],ru:['О','С','Ё','Л'],en:['D','O','N','K']};let WORD=WORDS[lang];
 function word(n){WORD=WORDS[lang];return `<span class="word" dir="${lang==='he'?'rtl':'ltr'}">${WORD.map((c,i)=>i<n?`<b>${c}</b>`:`<i>${c}</i>`).join('')}</span>`}
 let total={},letters={},mode='short',closed=0;
 function startGame(md){mode=md||mode;results={};total={};letters={};round=0;closed=0;for(const id of players.keys())letters[id]=0;nextRound()}

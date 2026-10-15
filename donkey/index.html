@@ -64,6 +64,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 @media (prefers-reduced-motion:reduce){.tgt{animation:none}}
 .homeb[hidden]{display:none!important}
 .homeb{position:fixed;top:max(10px,env(safe-area-inset-top,0px));inset-inline-start:max(12px,env(safe-area-inset-left,0px));z-index:60;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;font-size:22px;text-decoration:none;background:#000a;border:1px solid #ffffff40;-webkit-tap-highlight-color:transparent}
+.gsw{margin-top:16px;width:min(100%,560px);display:grid;gap:8px;justify-items:center}.gsl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.gsb{padding:9px 14px!important;font-size:14px!important}.gsb.on{background:#ffc531!important;color:#2b1b30!important;border-color:#ffc531!important}
 </style>
 </head>
 <body>
@@ -117,6 +118,22 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const rid=()=>Math.random().toString(36).slice(2,10);
 const me={id:rid(),name:''};
 try{me.name=localStorage.getItem('hamor-name')||''}catch(e){}
+/* ===== game switch (shared) ===== */
+const GN={en:{donkey:"Who's the Donkey?",diner:'Burger Rush',school:'Teacher Kick',soccer:'Bombardier',snow:'Snow Battle',sw:'Switch game: everyone stays in the room',now:'Game'},
+  ru:{donkey:'Кто осёл?',diner:'Бургер-гонка',school:'Teacher Kick',soccer:'Бомбардир',snow:'Снежная битва',sw:'Сменить игру: все остаются в комнате',now:'Игра'},
+  he:{donkey:'מי חמור?',diner:'מרוץ ההמבורגרים',school:'Teacher Kick',soccer:'בומברדיר',snow:'קרב כדורי שלג',sw:'להחליף משחק: כולם נשארים בחדר',now:'משחק'}};
+const GI={donkey:'🫏',diner:'🍔',school:'🦶',soccer:'⚽',snow:'❄️'},GLIST=['donkey','diner','school','soccer','snow'];
+const NAV=new URLSearchParams(location.search);let MK=(NAV.get('mk')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);const AUTO=NAV.get('auto')==='1'||!!MK;let navNm=false,gotoing=false;
+function gameUrl(g){return g==='donkey'?'../donkey/?':'../burger/?loc='+g+'&'}
+function navQ(){return '&lang='+lang+'&nm='+encodeURIComponent(me.name)}
+function goGame(g){if(gotoing)return;gotoing=true;try{audio()}catch(e){}send({t:'goto',g},1);setTimeout(()=>send({t:'goto',g},1),200);setTimeout(()=>location.href=gameUrl(g)+'mk='+room+navQ(),550)}
+function followGoto(m){if(m.t!=='goto'||isHost||m.from===me.id||!GI[m.g]||gotoing)return false;gotoing=true;location.href=gameUrl(m.g)+'room='+room+'&auto=1'+navQ();return true}
+function picker(cur){return `<div class="gsw"><p class="status">🎮 ${GN[lang].sw}</p><div class="gsl">${GLIST.map(g=>`<button type="button" class="ghost gsb${g===cur?' on':''}" data-g="${g}">${GI[g]} ${GN[lang][g]}</button>`).join('')}</div></div>`}
+function bindPicker(fn){document.querySelectorAll('.gsb').forEach(b=>b.onclick=()=>fn(b.dataset.g))}
+let seenMe=false;function retryHi(f){let n=0;const iv=setInterval(()=>{if(seenMe||++n>15){clearInterval(iv);return}f()},1200)}
+function autoStart(locQ){if(!navNm){navNm=true;if(NAV.get('nm'))me.name=NAV.get('nm').slice(0,14)}
+  if(AUTO&&!autoCreated&&me.name&&(MK||joinCode)){autoCreated=true;history.replaceState(null,'',location.pathname+'?'+locQ+(MK?'':'room='+joinCode+'&')+'lang='+lang);setTimeout(()=>document.getElementById('go')?.click(),60)}}
+
 
 /* ---------- particles ---------- */
 const fx=document.getElementById('fx'),ctx=fx.getContext('2d');let W,H,DPR=Math.min(2,devicePixelRatio||1),parts=[],running=false;
@@ -186,7 +203,7 @@ function connect(code,cb){room=code;
 function fail(t){redraw=()=>fail(t);app.innerHTML=`<div class="big">😵</div><h2>${esc(t)}</h2><button onclick="location.reload()">${T('reload')}</button>`}
 function hello(){send({t:'hi',name:me.name,host:isHost})}
 
-function onMsg(m){
+function onMsg(m){if(followGoto(m))return;if(m.t==='lobby'&&m.players&&m.players.some(p=>p.id===me.id))seenMe=true;
   if(['lobby','round','rres','end','hb','st','start','kb'].includes(m.t))markHost(m);
   if(m.t==='bye'&&!isHost&&hostId&&m.from===hostId&&phase!=='end'){hostGone();return}
   if(m.t==='hi'){if(!players.has(m.from)||players.get(m.from).name!==m.name){players.set(m.from,{name:m.name,host:!!m.host})}
@@ -202,19 +219,19 @@ addEventListener('pagehide',()=>{try{send({t:'bye'})}catch(e){}});
 
 /* ---------- screens ---------- */
 let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
-function home(){redraw=home;lb.hidden=false;hb.hidden=false;app.innerHTML=`<div class="big">🫏</div><h1>${T('title')}</h1>
+function home(){redraw=home;if(!navNm){navNm=true;if(NAV.get('nm'))me.name=NAV.get('nm').slice(0,14)}lb.hidden=false;hb.hidden=false;app.innerHTML=`<div class="big">🫏</div><h1>${T('title')}</h1>
   <p>${joinCode?T('homeJoin'):T('homeNew')}</p>
   ${joinCode?`<div class="code">${esc(joinCode)}</div>`:''}
   <input id="nm" maxlength="16" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
   <div class="col"><button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}</div><p class="status err" id="msg"></p><a class="btn ghost" href="../?lang=${lang}" style="font-size:15px;padding:10px 20px">${T('allGames')}</a>`;
-  const nm=document.getElementById('nm');
+  const nm=document.getElementById('nm');autoStart('');
   const ob=document.getElementById('own');if(ob)ob.onclick=()=>{joinCode='';history.replaceState(null,'',location.pathname+'?lang='+lang);home()};
   if(params.get('create')==='1'&&!autoCreated&&me.name){autoCreated=true;history.replaceState(null,'',location.pathname+'?lang='+lang);setTimeout(()=>document.getElementById('go')?.click(),60)}
   document.getElementById('go').onclick=()=>{const v=nm.value.trim();if(!v){document.getElementById('msg').textContent=T('needName');nm.focus();return}
     audio();me.name=v;try{localStorage.setItem('hamor-name',v)}catch(e){}
     redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
-    if(joinCode){connect(joinCode,()=>{players.set(me.id,{name:me.name});hello();lobby();startWatch()})}
-    else{isHost=true;const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
+    if(joinCode){connect(joinCode,()=>{players.set(me.id,{name:me.name});hello();retryHi(hello);lobby();startWatch()})}
+    else{isHost=true;const code=MK||Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
       connect(code,()=>{players.set(me.id,{name:me.name,host:true});broadcastLobby()})}}}
 
 function link(){const u=new URL(location.href);u.search='?room='+room+'&lang='+lang;u.hash='';return u.toString()}
@@ -223,7 +240,8 @@ function lobby(){redraw=lobby;const list=[...players].map(([id,p])=>`<li class="
   app.innerHTML=`<h2>${T('room')}</h2><div class="code">${esc(room)}</div>
     ${isHost?`<p>${T('hostHint')}</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">${T('invite')}</a><button class="ghost" id="cp">${T('copy')}</button></div>`:`<p>${T('waitHost')}</p>`}
     <ul class="list">${list}</ul><p class="status">${T('inGame')}${players.size}</p>
-    ${isHost?`<div class="modes"><button id="st" ${players.size<2?'disabled':''}>${T('short')}</button><button id="stl" class="ghost" ${players.size<2?'disabled':''}>${T('long')} 🫏</button></div><p class="status">${T('longHint')}</p>`:''}`;
+    ${isHost?`<div class="modes"><button id="st" ${players.size<2?'disabled':''}>${T('short')}</button><button id="stl" class="ghost" ${players.size<2?'disabled':''}>${T('long')} 🫏</button></div><p class="status">${T('longHint')}</p>${picker('donkey')}`:''}`;
+  if(isHost)bindPicker(g=>{if(g!=='donkey')goGame(g)});
   if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent=T('copied'),()=>e.target.textContent=link())};
     document.getElementById('st').onclick=()=>{if(players.size>=2)startGame('short')};document.getElementById('stl').onclick=()=>{if(players.size>=2)startGame('long')}}}
 
@@ -280,8 +298,8 @@ function final(board,again){const mode=arguments[2]||board.mode||'short';board=b
   app.innerHTML=`<div class="dk-wrap">${hh}${donkey(4,170,again?4:(mode==='long'?3:0),again?'':'bray')}</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>
     <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${mode==='long'?donkey(r.l,30)+' '+word(r.l):r.ms+' '+T('ms')+' '+rank(r.ms)}</span></li>`).join('')}</ol>
     <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${T('share')}</a>
-    ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?'':`<p class="status">${T('rematchHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
-  fillDonkeys();if(!again)setTimeout(poopShow,500);const o2=document.getElementById('own2');if(o2)o2.onclick=createOwn;
+    ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?picker('donkey'):''}${isHost?'':`<p class="status">${T('rematchHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
+  fillDonkeys();if(!again)setTimeout(poopShow,500);if(isHost)bindPicker(g=>{if(g!=='donkey')goGame(g)});const o2=document.getElementById('own2');if(o2)o2.onclick=createOwn;
   if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame(mode)}}
 
 /* ---------- room watch: host gone / create own room ---------- */

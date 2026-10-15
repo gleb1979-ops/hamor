@@ -572,6 +572,7 @@ function onMsg(m){if(followGoto(m))return;if(m.t==='lobby'&&m.players&&m.players
     else if(m.t==='pick'){const p=lobbyPlayers.get(m.from);if(p&&phase==='lobby'&&![...lobbyPlayers].some(([id,q])=>id!==m.from&&q.c===m.c)){p.c=m.c;broadcastLobby()}}
     else if(m.t==='pos'&&G&&G.P[m.from]&&m.from!==me.id){const b=G.P[m.from];b.x=m.x;b.y=m.y;b.moving=!!m.m;b.face=m.f||1;b.seen=performance.now()}
     else if(m.t==='push'&&G&&m.from!==me.id){const b=G.P[m.from];if(b&&m.ax!=null){b.ax=m.ax;b.ay=m.ay}hostPush(m.from)}
+    else if(m.t==='sync'&&T0&&matchPhase==='inter'&&T0.lastRR){send(T0.lastRR,1)}
     else if(m.t==='sync'&&G&&T0){const rr=Object.values(G.P).map(b=>{const x=T0.all.find(y=>y[0]===b.id);return [b.id,b.c,b.name,b.bot?1:0,b.hat||null]});send({t:'start',roster:rr,round:T0.round,to:m.from,loc:LOC},1)}
     else if(m.t==='grab'&&G&&matchPhase==='play'){const b=G.P[m.from],i=G.B.findIndex(g=>g.id===m.id);
       if(b&&i>=0&&b.stun<=0){const g=G.B[i],reach=CH[b.c].r+30+CH[b.c].pick+(b.hat==='top'&&LOC==='diner'?32:0)+110;
@@ -581,10 +582,10 @@ function onMsg(m){if(followGoto(m))return;if(m.t==='lobby'&&m.players&&m.players
   if(m.t==='full'&&m.to===me.id)fail(T('full'));
   else if(m.t==='lobby'&&!isHost){if(m.loc&&LOCS[m.loc]&&m.loc!==FIXED){FIXED=m.loc;applyLang();send({t:'hat',h:wearHat()},1);history.replaceState(null,'',location.pathname+'?loc='+FIXED+'&room='+room+'&lang='+lang)}lobbyPlayers=new Map(m.players.map(p=>[p.id,{name:p.name,c:p.c,hat:p.hat}]));useBots=m.bots;setLoc(m.loc);if(phase==='lobby'||phase==='end')lobby()}
   else if(m.t==='start'&&!isHost&&!(m.again&&phase==='play'&&curRound===m.round&&matchPhase!=='inter')&&(!m.to||m.to===me.id)&&!(m.to&&phase==='play'&&matchPhase!=='inter'))startLocal(m.roster,m.round,m.loc);
-  else if(m.t==='rr'&&!isHost){matchPhase='inter';showInter(m)}
+  else if(m.t==='rr'&&!isHost&&phase==='play'){const k=m.round+'|'+JSON.stringify(m.scores);if(matchPhase==='inter'&&showInter.k===k)return;showInter.k=k;matchPhase='inter';showInter(m)}
   else if(m.t==='st'&&!isHost){if((phase!=='play'&&phase!=='gone'&&phase!=='end'||phase==='play'&&matchPhase==='inter')&&!syncAsked){syncAsked=true;send({t:'sync'},1);setTimeout(()=>syncAsked=false,3000)}else if(phase==='play')applyState(m)}
   else if(m.t==='kb'&&m.to===me.id&&mine){mine.kx=m.vx;mine.ky=m.vy;mine.stun=m.s;sndPush();vib([80,40,80])}
-  else if(m.t==='end'&&!isHost)endScreen(m.board);
+  else if(m.t==='end'&&!isHost&&phase==='play')endScreen(m.board);
 }
 function freeChar(){const used=new Set([...lobbyPlayers.values()].map(p=>p.c));return ORDER.find(c=>!used.has(c))||ORDER[0]}
 function broadcastLobby(){send({t:'lobby',loc:LOC,bots:useBots,players:[...lobbyPlayers].map(([id,p])=>({id,name:p.name,c:p.c,hat:p.hat||null}))},1);if(phase==='lobby')lobby()}
@@ -773,10 +774,10 @@ function endRound(){const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]
   const scores=ids.map(id=>[P[id].name,P[id].c,P[id].score]).sort((a,b)=>b[2]-a[2]);G=null;
   if(leaders.length===1){out.forEach(id=>T0.outRound[id]=T0.round);
     const ord=T0.all.map(x=>x[0]).sort((a,b)=>a===leaders[0]?-1:b===leaders[0]?1:(T0.outRound[b]||99)-(T0.outRound[a]||99)||(T0.last[b]||0)-(T0.last[a]||0)||(T0.total[b]||0)-(T0.total[a]||0));
-    const board=ord.map(id=>{const x=T0.all.find(y=>y[0]===id);return [id,x[2],x[1],T0.total[id]||0]});send({t:'end',board},1);endScreen(board);return}
+    const board=ord.map(id=>{const x=T0.all.find(y=>y[0]===id);return [id,x[2],x[1],T0.total[id]||0]});send({t:'end',board},1);setTimeout(()=>send({t:'end',board},1),900);setTimeout(()=>send({t:'end',board},1),2200);endScreen(board);return}
   out.forEach(id=>T0.outRound[id]=T0.round);T0.alive=leaders;
   const m={t:'rr',round:T0.round,scores,stayChars:Object.fromEntries(leaders.map(id=>[id,T0.all.find(x=>x[0]===id)[1]])),stay:leaders.map(id=>P[id]?P[id].name:''),out:out.map(id=>T0.all.find(x=>x[0]===id)[2]),stayIds:leaders};
-  m.stay=leaders.map(id=>T0.all.find(x=>x[0]===id)[2]);send(m,1);showInter(m);matchPhase='inter';setTimeout(()=>{if(phase==='play'&&T0)startRound()},6500)}
+  m.stay=leaders.map(id=>T0.all.find(x=>x[0]===id)[2]);T0.lastRR=m;send(m,1);[900,2200].forEach(d=>setTimeout(()=>{if(matchPhase==='inter'&&T0&&T0.lastRR===m)send(m,1)},d));showInter(m);matchPhase='inter';setTimeout(()=>{if(phase==='play'&&T0)startRound()},6500)}
 function showInter(m){const el=document.getElementById('inter');el.hidden=false;const mine=m.stayIds.includes(me.id);
   if(m.out.length)tone(220,.3,'sawtooth',.12,110);else{[440,554,659].forEach((f,i)=>setTimeout(()=>tone(f,.15,'square',.1),i*120))}
   el.innerHTML=`<div class="card"><h1>${m.out.length?T('roundN')(m.round):T('tie')}</h1>

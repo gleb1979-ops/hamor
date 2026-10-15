@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Кто хамор? 🫏</title>
-<meta property="og:title" content="Кто хамор? 🫏">
-<meta property="og:description" content="Жми на морковку быстрее всех. Последний — חמור!">
+<title>Кто хамор? · מי חמור? 🫏</title>
+<meta property="og:title" content="Кто хамор? · מי חמור? 🫏">
+<meta property="og:description" content="Жми на морковку быстрее всех! · לחצו על הגזר הכי מהר!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Rubik:wght@400;500;700&display=swap">
 <style>
 :root{--bg:#14101f;--panel:#221a35;--fg:#f6f1ff;--muted:#a99cc4;--hot:#ff3d7f;--sun:#ffc93c;--line:#3a2e55;--ok:#25d366;
-  --display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+  --display:"Unbounded","Rubik","Arial Black",system-ui,sans-serif;--body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;overflow:hidden;-webkit-tap-highlight-color:transparent;
@@ -41,6 +41,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 @keyframes pop{from{transform:scale(.2)}}
 .status{font-size:13px;color:var(--muted)}
 .err{color:var(--hot)}
+.lang{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));z-index:60;padding:8px 14px;font-size:14px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){.tgt{animation:none}}
 </style>
 </head>
@@ -52,6 +53,32 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 (()=>{
 const ROUNDS=3, BROKER='wss://broker.emqx.io:8084/mqtt', NS='byd-hamor/v1/';
 const app=document.getElementById('app');
+const params=new URLSearchParams(location.search);
+const L={
+ ru:{title:'Кто хамор?',homeJoin:'Тебя позвали в игру. Морковка появляется у всех одновременно. Самый медленный станет חמור.',homeNew:'Онлайн-игра для группы: каждый со своего телефона жмёт на морковку. Самый медленный станет חמור.',
+  name:'Твоё имя',join:'Войти в игру',create:'Создать игру',needName:'Напиши имя, чтобы другие видели, кто хамор.',connecting:'Подключаюсь…',
+  errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться к игре. Попробуй ещё раз через минуту.',reload:'Обновить',
+  room:'Комната',hostHint:'Кинь ссылку в группу. Когда все зайдут, жми «Старт».',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
+  waitHost:'Ждём, пока организатор нажмёт «Старт»…',you:'(ты)',inGame:'В игре: ',start:'Старт · 3 раунда',
+  inviteText:'Го играть в «Кто хамор?» 🫏 Кто последний нажмёт — тот хамор! ',round:'Раунд',waitCarrot:'Жди морковку… не жми раньше!',carrot:'Морковка',
+  ms:'мс',early:'Рано! +1500 мс',waitOthers:'ждём остальных',slept:'Проспал! +2000 мс',youHamor:'Ты — хамор! 😂',isHamor:' — хамор!',
+  share:'Похвастаться в группе',shareText:(n,ms)=>`В «Кто хамор?» 🫏 хамор сегодня — ${n} (${ms} мс)! 😂`,rematch:'Реванш',rematchHost:'Реванш запускает организатор',other:'עברית'},
+ he:{title:'מי חמור?',homeJoin:'הזמינו אותך למשחק. הגזר מופיע אצל כולם באותו רגע. האיטי ביותר הוא החמור.',homeNew:'משחק אונליין לקבוצה: כל אחד לוחץ על הגזר מהטלפון שלו. האיטי ביותר הוא החמור.',
+  name:'השם שלך',join:'כניסה למשחק',create:'יצירת משחק',needName:'כתבו שם, כדי שכולם יידעו מי החמור.',connecting:'מתחבר…',
+  errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו את הדף.',errConn:'לא הצלחנו להתחבר למשחק. נסו שוב בעוד דקה.',reload:'רענון',
+  room:'חדר',hostHint:'שלחו את הקישור לקבוצה. כשכולם בפנים, לחצו «התחלה».',invite:'הזמנה בוואטסאפ',copy:'העתקת קישור',copied:'הועתק',
+  waitHost:'מחכים שהמארגן ילחץ «התחלה»…',you:'(אני)',inGame:'במשחק: ',start:'התחלה · 3 סיבובים',
+  inviteText:'בואו לשחק ב«מי חמור?» 🫏 מי שלוחץ אחרון — הוא החמור! ',round:'סיבוב',waitCarrot:'חכו לגזר… לא ללחוץ לפני הזמן!',carrot:'גזר',
+  ms:'ms',early:'מוקדם מדי! 1500+ ms',waitOthers:'מחכים לשאר',slept:'פספסת! 2000+ ms',youHamor:'החמור — זה אתה! 😂',isHamor:' — החמור!',
+  share:'להשוויץ בקבוצה',shareText:(n,ms)=>`ב«מי חמור?» 🫏 החמור של היום — ${n} (${ms} ms)! 😂`,rematch:'משחק חוזר',rematchHost:'משחק חוזר מפעיל המארגן',other:'Русский'}};
+let lang=params.get('lang')==='he'||params.get('lang')==='ru'?params.get('lang'):null;
+if(!lang){try{lang=localStorage.getItem('hamor-lang')}catch(e){}}
+if(lang!=='he'&&lang!=='ru')lang=/^(he|iw)/i.test(navigator.language||'')?'he':'ru';
+const T=k=>L[lang][k];
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('title')+' 🫏';
+  lb.textContent=T('other');try{localStorage.setItem('hamor-lang',lang)}catch(e){}}
+const lb=document.createElement('button');lb.className='lang';document.body.appendChild(lb);
+let redraw=()=>{};lb.onclick=()=>{const n=document.getElementById('nm');if(n)me.name=n.value;lang=lang==='he'?'ru':'he';applyLang();redraw()};applyLang();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const rid=()=>Math.random().toString(36).slice(2,10);
 const me={id:rid(),name:''};
@@ -79,14 +106,14 @@ let client,room,isHost=false,players=new Map(),results={},round=0,phase='lobby',
 function topic(){return NS+room}
 function send(m){m.from=me.id;client&&client.publish(topic(),JSON.stringify(m),{qos:1})}
 function connect(code,cb){room=code;
-  if(!window.mqtt){fail('Не загрузилась библиотека связи. Проверь интернет и обнови страницу.');return}
+  if(!window.mqtt){fail(T('errLib'));return}
   client=mqtt.connect(BROKER,{clientId:'hamor_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000});
   let first=true;
   client.on('connect',()=>{client.subscribe(topic(),{qos:1},()=>{if(first){first=false;cb()}else hello()})});
   client.on('message',(t,buf)=>{let m;try{m=JSON.parse(buf.toString())}catch(e){return}onMsg(m)});
   client.on('error',()=>{});
-  setTimeout(()=>{if(first)fail('Не получилось подключиться к игре. Попробуй ещё раз через минуту.')},10000)}
-function fail(t){app.innerHTML=`<div class="big">😵</div><h2>${esc(t)}</h2><button onclick="location.reload()">Обновить</button>`}
+  setTimeout(()=>{if(first)fail(T('errConn'))},10000)}
+function fail(t){redraw=()=>fail(t);app.innerHTML=`<div class="big">😵</div><h2>${esc(t)}</h2><button onclick="location.reload()">${T('reload')}</button>`}
 function hello(){send({t:'hi',name:me.name,host:isHost})}
 
 function onMsg(m){
@@ -101,28 +128,28 @@ function broadcastLobby(){send({t:'lobby',players:[...players].map(([id,p])=>({i
 addEventListener('pagehide',()=>{try{send({t:'bye'})}catch(e){}});
 
 /* ---------- screens ---------- */
-const params=new URLSearchParams(location.search);const joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
-function home(){app.innerHTML=`<div class="big">🫏</div><h1>Кто хамор?</h1>
-  <p>${joinCode?'Тебя позвали в игру. Морковка появляется у всех одновременно. Самый медленный станет חמור.':'Онлайн-игра для группы: каждый со своего телефона жмёт на морковку. Самый медленный станет חמור.'}</p>
+const joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+function home(){redraw=home;lb.hidden=false;app.innerHTML=`<div class="big">🫏</div><h1>${T('title')}</h1>
+  <p>${joinCode?T('homeJoin'):T('homeNew')}</p>
   ${joinCode?`<div class="code">${esc(joinCode)}</div>`:''}
-  <input id="nm" maxlength="16" placeholder="Твоё имя" value="${esc(me.name)}" autocomplete="off">
-  <div class="col"><button id="go">${joinCode?'Войти в игру':'Создать игру'}</button></div><p class="status err" id="msg"></p>`;
+  <input id="nm" maxlength="16" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
+  <div class="col"><button id="go">${joinCode?T('join'):T('create')}</button></div><p class="status err" id="msg"></p>`;
   const nm=document.getElementById('nm');
-  document.getElementById('go').onclick=()=>{const v=nm.value.trim();if(!v){document.getElementById('msg').textContent='Напиши имя, чтобы другие видели, кто хамор.';nm.focus();return}
+  document.getElementById('go').onclick=()=>{const v=nm.value.trim();if(!v){document.getElementById('msg').textContent=T('needName');nm.focus();return}
     audio();me.name=v;try{localStorage.setItem('hamor-name',v)}catch(e){}
-    app.innerHTML='<h2>Подключаюсь…</h2>';
+    redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
     if(joinCode){connect(joinCode,()=>{players.set(me.id,{name:me.name});hello();lobby()})}
     else{isHost=true;const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
       connect(code,()=>{players.set(me.id,{name:me.name,host:true});broadcastLobby()})}}}
 
-function link(){const u=new URL(location.href);u.search='?room='+room;u.hash='';return u.toString()}
-function lobby(){const list=[...players].map(([id,p])=>`<li class="${id===me.id?'me':''}"><span>${esc(p.name)}${id===me.id?' (ты)':''}</span><span>${p.host?'👑':'✅'}</span></li>`).join('');
-  const inv=`Го играть в «Кто хамор?» 🫏 Кто последний нажмёт — тот хамор! ${link()}`;
-  app.innerHTML=`<h2>Комната</h2><div class="code">${esc(room)}</div>
-    ${isHost?`<p>Кинь ссылку в группу. Когда все зайдут, жми «Старт».</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">Позвать в WhatsApp</a><button class="ghost" id="cp">Копировать ссылку</button></div>`:'<p>Ждём, пока организатор нажмёт «Старт»…</p>'}
-    <ul class="list">${list}</ul><p class="status">В игре: ${players.size}</p>
-    ${isHost?`<button id="st" ${players.size<2?'disabled':''}>Старт · ${ROUNDS} раунда</button>`:''}`;
-  if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent='Скопировано',()=>e.target.textContent=link())};
+function link(){const u=new URL(location.href);u.search='?room='+room+'&lang='+lang;u.hash='';return u.toString()}
+function lobby(){redraw=lobby;const list=[...players].map(([id,p])=>`<li class="${id===me.id?'me':''}"><span>${esc(p.name)}${id===me.id?' '+T('you'):''}</span><span>${p.host?'👑':'✅'}</span></li>`).join('');
+  const inv=T('inviteText')+link();
+  app.innerHTML=`<h2>${T('room')}</h2><div class="code">${esc(room)}</div>
+    ${isHost?`<p>${T('hostHint')}</p><div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(inv)}" target="_blank" rel="noopener">${T('invite')}</a><button class="ghost" id="cp">${T('copy')}</button></div>`:`<p>${T('waitHost')}</p>`}
+    <ul class="list">${list}</ul><p class="status">${T('inGame')}${players.size}</p>
+    ${isHost?`<button id="st" ${players.size<2?'disabled':''}>${T('start')}</button>`:''}`;
+  if(isHost){document.getElementById('cp').onclick=e=>{navigator.clipboard?.writeText(link()).then(()=>e.target.textContent=T('copied'),()=>e.target.textContent=link())};
     document.getElementById('st').onclick=()=>{if(players.size>=2)startGame()}}}
 
 /* host logic */
@@ -137,23 +164,23 @@ let closed=0;function closeRound(){if(closed===round)return;closed=round;const r
 function endGame(){const board=[...players].map(([id,p])=>({id,name:p.name,ms:Math.round(total[id]/ROUNDS)})).sort((a,b)=>a.ms-b.ms);send({t:'end',board})}
 
 /* every player */
-function playRound(m){app.innerHTML=`<div class="hud"><h2>Раунд ${m.round}/${ROUNDS}</h2><p id="hm">Жди морковку… не жми раньше!</p></div><div id="pad"></div>`;
+function playRound(m){redraw=()=>{};lb.hidden=true;app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}/${ROUNDS}</h2><p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
   const pad=document.getElementById('pad'),hm=document.getElementById('hm');let state='wait',t0,done=false;
   const report=ms=>{if(done)return;done=true;send({t:'res',round:m.round,ms})};
-  pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML='<span class="err">Рано! +1500 мс</span>';try{navigator.vibrate(150)}catch(e){};report(1500)});
-  const tm=setTimeout(()=>{if(state!=='wait')return;state='go';const t=document.createElement('button');t.className='tgt';t.textContent='🥕';t.setAttribute('aria-label','Морковка');
+  pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML=`<span class="err">${T('early')}</span>`;try{navigator.vibrate(150)}catch(e){};report(1500)});
+  const tm=setTimeout(()=>{if(state!=='wait')return;state='go';const t=document.createElement('button');t.className='tgt';t.textContent='🥕';t.setAttribute('aria-label',T('carrot'));
     t.style.left=(10+m.x*(W-150))+'px';t.style.top=(130+m.y*Math.max(40,H-300))+'px';pad.appendChild(t);t0=performance.now();
     t.addEventListener('pointerdown',e=>{e.stopPropagation();if(state!=='go')return;state='x';const dt=Math.round(performance.now()-t0);blip(500+Math.max(0,900-dt));
-      const b=t.getBoundingClientRect();burst(b.left+44,b.top+44,['🥕','✨'],12,.5);t.remove();hm.textContent=`${dt} мс · ждём остальных`;report(dt)});
-    setTimeout(()=>{if(state==='go'){state='x';t.remove();hm.textContent='Проспал! +2000 мс';report(2000)}},2000)},m.delay)}
+      const b=t.getBoundingClientRect();burst(b.left+44,b.top+44,['🥕','✨'],12,.5);t.remove();hm.textContent=`${dt} ${T('ms')} · ${T('waitOthers')}`;report(dt)});
+    setTimeout(()=>{if(state==='go'){state='x';t.remove();hm.textContent=T('slept');report(2000)}},2000)},m.delay)}
 
-function final(board){const last=board[board.length-1];const iAm=last&&last.id===me.id;boom();rain(['🫏'],iAm?140:70);
-  setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300);
-  const txt=`В «Кто хамор?» 🫏 хамор сегодня — ${last.name} (${last.ms} мс)! 😂`;
-  app.innerHTML=`<div class="big">🫏</div><h1>${iAm?'Ты — хамор! 😂':esc(last.name)+' — хамор!'}</h1>
-    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${r.ms} мс ${rank(r.ms)}</span></li>`).join('')}</ol>
-    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Похвастаться в группе</a>
-    ${isHost?'<button class="ghost" id="rv">Реванш</button>':''}</div>${isHost?'':'<p class="status">Реванш запускает организатор</p>'}`;
+function final(board){lb.hidden=false;redraw=()=>final(board,1);const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!arguments[1]){boom();rain(['🫏'],iAm?140:70);
+  setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
+  const txt=T('shareText')(last.name,last.ms);
+  app.innerHTML=`<div class="big">🫏</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>
+    <ol class="list">${board.map((r,k)=>`<li class="${k===board.length-1?'loser':r.id===me.id?'me':''}"><span>${k+1}. ${esc(r.name)}</span><span>${r.ms} ${T('ms')} ${rank(r.ms)}</span></li>`).join('')}</ol>
+    <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${T('share')}</a>
+    ${isHost?`<button class="ghost" id="rv">${T('rematch')}</button>`:''}</div>${isHost?'':`<p class="status">${T('rematchHost')}</p>`}`;
   if(isHost)document.getElementById('rv').onclick=()=>{phase='play';startGame()}}
 
 home();

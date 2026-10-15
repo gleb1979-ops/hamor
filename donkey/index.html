@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/brand/icon-180.png">
+<link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/brand/icon-180.png">
 <title>Who's the Donkey? 🫏 · BYD Shorties</title>
 <meta property="og:title" content="Who's the Donkey? 🫏 · BYD Shorties">
 <meta property="og:description" content="Tap the carrot faster than your friends. The slowest becomes the donkey! · Кто осёл? · מי חמור?">
@@ -322,5 +323,6 @@ setInterval(()=>{if(isHost&&client)send({t:'hb'})},3000);
 home();
 })();
 </script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))</script>
 </body>
 </html>

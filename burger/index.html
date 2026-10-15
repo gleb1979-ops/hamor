@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -635,7 +635,7 @@ function isFull(){return !!(document.fullscreenElement||document.webkitFullscree
 function canFull(){const e=document.documentElement;return !!(e.requestFullscreen||e.webkitRequestFullscreen)}
 function goFull(){try{const e=document.documentElement;if(isFull())return;const r=e.requestFullscreen?e.requestFullscreen({navigationUI:'hide'}):e.webkitRequestFullscreen&&e.webkitRequestFullscreen();
   const lock=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};if(r&&r.then)r.then(lock).catch(()=>{});else lock()}catch(e){}}
-function updFs(){const b=document.getElementById('fsb');b.hidden=!canFull()||isFull();b.textContent=T('full')}
+function updFs(){const b=document.getElementById('fsb');b.hidden=!canFull()||isFull()||matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches;b.textContent=T('full')}
 document.addEventListener('fullscreenchange',()=>{updFs();if(phase==='play')resize()});
 document.getElementById('fsb').onclick=()=>{audio();goFull()};
 /* ================= hat shop ================= */
@@ -940,5 +940,6 @@ setInterval(()=>{if(isHost&&client)send({t:'hb'})},3000);
 home();
 })();
 </script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))</script>
 </body>
 </html>

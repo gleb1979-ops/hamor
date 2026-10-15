@@ -65,6 +65,7 @@ h2{font-size:clamp(24px,6vw,34px);font-weight:900;margin:0 0 14px;text-wrap:bala
 .steps b{font-size:18px}.steps span{color:var(--muted);font-size:15px}
 .band{background:linear-gradient(135deg,#2e2040,#3a1f2a);border:2px solid var(--line);border-radius:26px;padding:24px 20px;text-align:center;display:grid;gap:12px;justify-items:center}
 .band p{margin:0;color:var(--muted);max-width:44ch}
+#inst{margin-top:18px;display:grid;gap:8px;justify-items:center}.inst{font:inherit;cursor:pointer;border:0;text-decoration:none;display:inline-block;background:#ffc531;color:#2b1b30;font-weight:900;border-radius:999px;padding:13px 24px;font-size:17px;box-shadow:0 6px 0 #b8860b}.inst:disabled{opacity:.7}.insthint{margin:0;font-size:14px;opacity:.85;max-width:34ch;text-align:center}
 .share{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:#25d366;color:#0b2a17;font-weight:900;border-radius:999px;padding:13px 22px;box-shadow:0 6px 0 #128c4a}
 .link{font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--mustard);user-select:all;direction:ltr}
 footer{text-align:center;color:var(--muted);font-size:13px;display:grid;gap:4px}
@@ -78,7 +79,7 @@ footer b{color:var(--fg);direction:ltr;display:inline-block}
 (()=>{
 const SITE='https://who-is-donky.netlify.app/';
 const L={
- en:{slogan:'Play <span>anywhere</span>. Play <span>with friends</span>. Play <span>fast</span>.',
+ en:{inst:'📲 Install the app',instHint:'Opens full screen, without browser bars',openChrome:'📲 Open in Chrome to install',ios:'On iPhone: tap Share ⬆️ → «Add to Home Screen»',andr:'Tap ⋮ at the top → «Add to Home screen» or «Install app»',slogan:'Play <span>anywhere</span>. Play <span>with friends</span>. Play <span>fast</span>.',
   chips:['📱 No download','👫 Up to 4 friends online','⏱ 30-second rounds','💬 Invite via WhatsApp','🌍 English · Русский · עברית'],
   games:'5 games',play:'Play ▶',
   donkey:{t:"Who's the Donkey?",d:'Tap the carrot faster than everyone. The slowest collects the letters D-O-N-K and the donkey poops all over the screen.',tags:['👥 2–10 players','⏱ 1–3 minutes','🥕 Reaction']},
@@ -89,7 +90,7 @@ const L={
   how:'How to start',steps:[['Pick a game','Tap «Play» on any card.'],['Create a room','Type your name and tap «Create game».'],['Invite friends','The WhatsApp button sends the link to your group. Done!']],
   bandT:'Share with friends',bandP:'One link for all the games. Works on any phone, tablet and computer.',share:'Send on WhatsApp',
   shareText:'🎮 BYD Shorties — short games with friends right on your phone. No download! ',made:'Made by B.Y.D'},
- ru:{slogan:'Играй <span>где хочешь</span>. Играй <span>с друзьями</span>. Играй <span>быстро</span>.',
+ ru:{inst:'📲 Установить приложение',instHint:'Откроется на весь экран, без строк браузера',openChrome:'📲 Открыть в Chrome, чтобы установить',ios:'На iPhone: «Поделиться» ⬆️ → «На экран Домой»',andr:'Нажми ⋮ вверху → «Добавить на главный экран» или «Установить приложение»',slogan:'Играй <span>где хочешь</span>. Играй <span>с друзьями</span>. Играй <span>быстро</span>.',
   chips:['📱 Без скачивания','👫 До 4 друзей онлайн','⏱ Раунды по 30 секунд','💬 Зови через WhatsApp','🌍 English · Русский · עברית'],
   games:'5 игр',play:'Играть ▶',
   donkey:{t:'Кто осёл?',d:'Лови морковку быстрее всех. Самый медленный собирает буквы О-С-Ё-Л, и его ослик какает на весь экран.',tags:['👥 2–10 игроков','⏱ 1–3 минуты','🥕 На реакцию']},
@@ -100,7 +101,7 @@ const L={
   how:'Как начать',steps:[['Выбери игру','Нажми «Играть» на любой карточке.'],['Создай комнату','Напиши имя и нажми «Создать игру».'],['Позови друзей','Кнопка WhatsApp отправит ссылку в группу. Готово!']],
   bandT:'Поделись с друзьями',bandP:'Одна ссылка на все игры. Работает на любом телефоне, планшете и компьютере.',share:'Отправить в WhatsApp',
   shareText:'🎮 BYD Shorties — короткие игры с друзьями прямо в телефоне. Без скачивания! ',made:'Сделано в B.Y.D'},
- he:{slogan:'שחקו <span>איפה שבא לכם</span>. שחקו <span>עם חברים</span>. שחקו <span>מהר</span>.',
+ he:{inst:'📲 להתקין את האפליקציה',instHint:'נפתח במסך מלא, בלי השורות של הדפדפן',openChrome:'📲 לפתוח ב-Chrome כדי להתקין',ios:'באייפון: שיתוף ⬆️ ← «הוספה למסך הבית»',andr:'לחצו ⋮ למעלה ← «הוספה למסך הבית» או «התקנת אפליקציה»',slogan:'שחקו <span>איפה שבא לכם</span>. שחקו <span>עם חברים</span>. שחקו <span>מהר</span>.',
   chips:['📱 בלי להוריד','👫 עד 4 חברים אונליין','⏱ סיבובים של 30 שניות','💬 מזמינים בוואטסאפ','🌍 English · Русский · עברית'],
   games:'5 משחקים',play:'לשחק ▶',
   donkey:{t:'מי חמור?',d:'תופסים את הגזר הכי מהר. האיטי ביותר אוסף את האותיות ח-מ-ו-ר, והחמור שלו עושה קקי על כל המסך.',tags:['👥 2–10 שחקנים','⏱ 1–3 דקות','🥕 משחק תגובה']},
@@ -124,14 +125,26 @@ function render(){const t=L[lang];document.documentElement.lang=lang;document.do
   document.getElementById('root').innerHTML=`
   <div class="top"><a class="brandmark" href="./"><img src="brand/icon-192.png" alt="" width="42" height="42"><span class="mini"><b>BYD</b> SHORTIES</span></a><div class="langs" role="group" aria-label="Language">${LANGS.map(([k,l])=>`<button type="button" data-l="${k}" class="${k===lang?'on':''}">${l}</button>`).join('')}</div></div>
   <header class="hero"><img class="heroicon" src="brand/icon-512.png" alt="" width="140" height="140"><h1 class="word"><span class="a">BYD</span><span class="b">SHORTIES</span></h1><span class="pill">PLAY ANYWHERE</span>
-    <p class="slogan">${t.slogan}</p><div class="chips">${t.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div></header>
+    <p class="slogan">${t.slogan}</p><div class="chips">${t.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div><div id="inst"></div></header>
   <section><h2>${t.games}</h2><div class="games">${card('donkey','donkey/og.png','donkey/?lang='+lang)}${card('burger','burger/og.png','burger/?lang='+lang)}${card('school','school/og.png','school/?lang='+lang)}${card('soccer','soccer/og.png','soccer/?lang='+lang)}${card('snow','snow/og.png','snow/?lang='+lang)}</div></section>
   <section><h2>${t.how}</h2><ol class="steps">${t.steps.map(([b,s])=>`<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('')}</ol></section>
   <section class="band"><h2 style="margin:0">${t.bandT}</h2><p>${t.bandP}</p><a class="share" href="https://wa.me/?text=${encodeURIComponent(t.shareText+SITE+'?lang='+lang)}" target="_blank" rel="noopener">💬 ${t.share}</a><span class="link">${SITE.replace('https://','')}</span></section>
   <footer><span><b>BYD Shorties</b> · Play anywhere</span><span>${t.made} · <b>Build Your Dream</b> · 2026</span></footer>`;
-  document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;render()})}
+  document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;render()});renderInst()}
+let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;renderInst()});addEventListener('appinstalled',()=>{dip=null;renderInst()});
+function renderInst(){const el=document.getElementById('inst');if(!el)return;const t=L[lang],ua=navigator.userAgent;
+  const app=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(app){el.innerHTML='';return}
+  const and=/Android/i.test(ua),ios=/iPhone|iPad|iPod/i.test(ua),inApp=/Snapchat|Instagram|FBAN|FBAV|FB_IAB|Line\/|WhatsApp|TikTok|musical_ly|; wv\)/i.test(ua);
+  let h='';if(dip)h=`<button type="button" class="inst" id="instB">${t.inst}</button>`;
+  else if(and&&inApp)h=`<a class="inst" href="intent://${location.host}${location.pathname}${location.search}#Intent;scheme=https;package=com.android.chrome;end">${t.openChrome}</a>`;
+  else if(and)h=`<button type="button" class="inst" id="instH">${t.inst}</button>`;
+  else if(ios)h=`<p class="insthint">📲 ${t.ios}</p>`;
+  el.innerHTML=h?h+(dip||and?`<p class="insthint">${t.instHint}</p>`:''):'';
+  const b=document.getElementById('instB');if(b)b.onclick=async()=>{const p=dip;dip=null;try{await p.prompt();await p.userChoice}catch(e){}renderInst()};
+  const hb=document.getElementById('instH');if(hb)hb.onclick=()=>{el.insertAdjacentHTML('beforeend',`<p class="insthint" style="color:#ffc531">${t.andr}</p>`);hb.disabled=true}}
 render();
 })();
 </script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))</script>
 </body>
 </html>

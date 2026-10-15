@@ -83,7 +83,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:non
 @keyframes wig{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg)}}
 #game.land #rot{display:none}
 #fsb{position:absolute;top:max(8px,env(safe-area-inset-top,0px));inset-inline-start:max(10px,env(safe-area-inset-left,0px));z-index:8;padding:8px 12px;font-size:14px;background:#000a;box-shadow:none;border:1px solid #ffffff40}
-#tip{position:absolute;left:50%;top:22%;transform:translateX(-50%);z-index:6;background:#000c;border:2px solid var(--mustard);border-radius:16px;padding:10px 16px;font-weight:700;max-width:min(90vw,460px);text-align:center;pointer-events:none;line-height:1.4}
+#tip{position:absolute;left:50%;top:auto;bottom:calc(30% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:6;background:#000c;border:2px solid var(--mustard);border-radius:16px;padding:10px 16px;font-weight:700;max-width:min(90vw,460px);text-align:center;pointer-events:none;line-height:1.4}
 #ctrl{z-index:9!important;position:absolute;left:0;right:0;bottom:0;height:calc(150px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);display:flex;align-items:center;justify-content:space-between;
   padding-inline:max(22px,env(safe-area-inset-left,0px)) max(22px,env(safe-area-inset-right,0px));background:linear-gradient(#0000,#000c 30%);z-index:4;direction:ltr}
 #stick{width:124px;height:124px;border-radius:50%;background:#ffffff14;border:2px solid #ffffff30;position:relative;touch-action:none}
@@ -575,8 +575,8 @@ function startLocal(r,rn,loc){if(loc)setLoc(loc);tview=[];curRound=rn;document.g
   const SP=LOC==='soccer'?SPAWN_SOC:SPAWN;r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[c][0],y:SP[c][1],tx:SP[c][0],ty:SP[c][1],score:0,stun:0,moving:false,face:1});
   const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine)mine.hat=mineR[4]||null;
   const w=document.getElementById('watch');w.hidden=!!mine;w.textContent=T('watching');document.getElementById('ctrl').style.visibility=mine?'':'hidden';
-  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,5500)}else tp.hidden=true;claimed=new Set()}
-function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filter(g=>!claimed.has(g[0]));m.ev=(m.ev||[]).filter(e=>!(e[0]==='e'&&e[1]===me.id));if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700)}matchPhase=m.ph}
+  show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(rn===1&&mine){tp.textContent=LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,9000)}else tp.hidden=true;claimed=new Set()}
+function applyState(m){if(matchPhase==='inter')return;timeLeft=m.tl;m.B=m.B.filter(g=>!claimed.has(g[0]));m.ev=(m.ev||[]).filter(e=>!(e[0]==='e'&&e[1]===me.id));if(m.ph!==matchPhase){if(m.ph==='play'){sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}matchPhase=m.ph}
   if(m.ph==='count'){const n=Math.ceil(m.tl);if(n!==lastCount){lastCount=n;sndBeep(0);flashBig(n,900)}}
   burgers=m.B;
   if(m.BL){const [x,y,vx,vy,ky,sv,fr]=m.BL;if(!ballV)ballV={x,y,rot:0};ballV.tx=x;ballV.ty=y;ballV.vx=fr?0:vx;ballV.vy=fr?0:vy;if(!keeperV)keeperV={y:ky};keeperV.ty=ky;keeperV.save=!!sv}
@@ -668,7 +668,7 @@ function hostStart(){phase='play';const r=[];const used=new Set();
   if(useBots)ORDER.forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   T0={all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{},hats:{}};for(const [id,p] of lobbyPlayers)T0.hats[id]=p.hat||null;startRound()}
 function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],T0.round>1?(T0.hats[x[0]]||null):null]);
-  G={P:{},t:0,count:3,B:[],nextId:1,kicks:0,goals:0,TC:null,ball:null,keeper:null};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
+  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,TC:null,ball:null,keeper:null};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat});
   if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
   send({t:'start',roster:rr,round:T0.round,loc:LOC},1);const rnd=T0.round;setTimeout(()=>{if(T0&&T0.round===rnd&&G)send({t:'start',roster:rr,round:rnd,again:1,loc:LOC},1)},700);startLocal(rr,T0.round,LOC);matchPhase='count';lastCount=0;evq=[];stAcc=0}
 function endRound(){const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]=(T0.total[id]||0)+P[id].score;T0.last[id]=P[id].score});
@@ -763,7 +763,7 @@ function botThink(b,dt){const brain=botBrain[b.id]||(botBrain[b.id]={target:null
   return [dx*.6,dy*.6]}
 function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
   if(matchPhase==='count'){G.count-=dt;timeLeft=G.count;const n=Math.ceil(G.count);if(n!==lastCount&&n>0){lastCount=n;sndBeep(0);flashBig(n,900)}
-    if(G.count<=0){matchPhase='play';G.t=RS();sndBeep(1);flashBig(T('go'),700)}}
+    if(G.count<=0){matchPhase='play';G.t=RS();sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}}
   else if(matchPhase==='play'){G.t-=dt;timeLeft=G.t;
     if(G.TC)teacherTick(dt);if(G.ball)ballTick(dt);
     for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id!==me.id&&b.stun>0)b.stun-=dt}

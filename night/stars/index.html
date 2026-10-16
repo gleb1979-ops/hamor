@@ -71,11 +71,14 @@ input:focus{border-color:var(--cy)}
 .ab{position:absolute;pointer-events:auto;border:0;border-radius:50%;font-weight:900;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:inset 0 -5px 0 #0005,0 0 20px #0008}
 .ab span{font-size:11px;margin-top:2px}
 .ab{opacity:.62;transition:opacity .15s}.ab:active,.ab.ready{opacity:.95}
-#bKick{width:clamp(70px,21vh,104px);height:clamp(70px,21vh,104px);right:max(14px,env(safe-area-inset-right));bottom:clamp(10px,4vh,22px);background:radial-gradient(circle at 40% 30%,#7cf3ff,#0aa9c9);font-size:30px}
-#bSkill{width:clamp(52px,15vh,72px);height:clamp(52px,15vh,72px);right:calc(max(14px,env(safe-area-inset-right)) + clamp(78px,23vh,114px));bottom:clamp(8px,3vh,18px);background:radial-gradient(circle at 40% 30%,#d6ff7a,#6fae08);font-size:22px;color:#102000}
-#bSup{width:clamp(52px,15vh,72px);height:clamp(52px,15vh,72px);right:calc(max(14px,env(safe-area-inset-right)) + clamp(78px,23vh,114px) + clamp(58px,17vh,82px));bottom:clamp(8px,3vh,18px);background:radial-gradient(circle at 40% 30%,#ffb2d0,#d1135f);font-size:22px}
-#bSup.ready{animation:pulse .6s infinite alternate;box-shadow:0 0 30px #ff3d8b,inset 0 -5px 0 #0005}
-#bSup:not(.ready){filter:grayscale(.7) brightness(.6)}
+#ctrl{--R:max(16px,env(safe-area-inset-right));--B:clamp(12px,4vh,24px);--K:clamp(76px,22vh,108px)}
+#bKick{width:var(--K);height:var(--K);right:var(--R);bottom:var(--B);background:radial-gradient(circle at 40% 30%,#7cf3ff,#0aa9c9);font-size:30px;--sp:0}
+#bKick::after{content:'';position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(#ff3d8b calc(var(--sp)*1%),#ffffff1c 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));pointer-events:none}
+#bTack{width:clamp(58px,17vh,80px);height:clamp(58px,17vh,80px);right:calc(var(--R) + var(--K) + 12px);bottom:var(--B);background:radial-gradient(circle at 40% 30%,#ffd27a,#e26a00);font-size:24px}
+#bSkill{width:clamp(48px,14vh,64px);height:clamp(48px,14vh,64px);right:calc(var(--R) + var(--K) * .82);bottom:calc(var(--B) + var(--K) * .86);background:radial-gradient(circle at 40% 30%,#d6ff7a,#6fae08);font-size:20px;color:#102000}
+#bSup{display:none;width:calc(var(--K) * .78);height:calc(var(--K) * .78);right:calc(var(--R) - 2px);bottom:calc(var(--B) + var(--K) + 14px);background:radial-gradient(circle at 40% 30%,#ffb2d0,#d1135f);font-size:26px}
+#bSup.ready{display:flex;opacity:1;animation:supIn .35s cubic-bezier(.3,1.6,.5,1),pulse .6s .35s infinite alternate;box-shadow:0 0 30px #ff3d8b,inset 0 -5px 0 #0005}
+@keyframes supIn{from{transform:scale(0) rotate(-120deg)}to{transform:scale(1)}}
 .ab.cd{filter:grayscale(.8) brightness(.6)}
 @keyframes pulse{to{transform:scale(1.08)}}
 #big{position:fixed;left:0;right:0;top:36%;text-align:center;font-weight:900;font-size:clamp(44px,12vw,120px);pointer-events:none;z-index:6;color:#fff;text-shadow:0 0 30px var(--pk),0 6px 0 #000}
@@ -100,7 +103,7 @@ input:focus{border-color:var(--cy)}
 <canvas id="cv"></canvas>
 <div id="hud" hidden><div class="sb"><span class="a" id="sA">0</span><span class="tm" id="clk">2:00</span><span class="b" id="sB">0</span></div></div>
 <div id="ctrl" hidden><div id="zone"></div><div id="stick"><div id="knob"></div></div>
-  <button class="ab" id="bSup">🔥<span></span></button><button class="ab" id="bSkill">⚡<span></span></button><button class="ab" id="bKick">⚽<span></span></button></div>
+  <button class="ab" id="bSup">🔥<span></span></button><button class="ab" id="bSkill">⚡<span></span></button><button class="ab" id="bTack">🦵<span></span></button><button class="ab" id="bKick">⚽<span></span></button></div>
 <div id="big"></div><div id="tip" hidden></div>
 <div id="rot" hidden><div style="font-size:60px">📱↻</div><div id="rotT"></div></div>
 <div class="scr" id="menu" hidden></div>
@@ -109,8 +112,8 @@ input:focus{border-color:var(--cy)}
 <div class="scr" id="end" hidden></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="../../net.js"></script>
-<script src="game.js?v=7"></script>
+<script src="game.js?v=8"></script>
 <script type="importmap">{"imports":{"three":"../lib/three.module.min.js","three/addons/":"../lib/addons/"}}</script>
-<script type="module" src="r3d.js?v=7"></script>
+<script type="module" src="r3d.js?v=8"></script>
 </body>
 </html>

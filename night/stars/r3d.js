@@ -188,7 +188,7 @@ R3D.show=v=>{cv.style.display=v?'block':'none'};
 R3D.reset=()=>{for(const id in PL){scene.remove(PL[id].c.holder);delete PL[id]}camInit=false};
 /* ---------- load ---------- */
 radTex=mkRad();
-(async()=>{try{const names=['cappy','jimmy','kate','jennifer','kyle','shiro','robert'];await Promise.all(names.map(async n=>{const g=await loader.loadAsync('models/'+n+'.glb');prepModel(g.scene);SRC[n]=g}));
+(async()=>{try{const names=['cappy','jimmy','kate','jennifer','kyle','shiro','robert'];await Promise.all(names.map(async n=>{const g=await loader.loadAsync('models/'+n+'.glb?v=4');prepModel(g.scene);SRC[n]=g}));
   // re-create floodlight sprites texture now that radTex exists
   scene.traverse(o=>{if(o.isSprite&&!o.material.map)o.material.map=radTex;o.material&&(o.material.needsUpdate=true)});
   R3D.ok=true;R3D.loading=false;window.dispatchEvent(new Event('r3d'))}catch(e){console.error('R3D load failed',e);R3D.loading=false}})();

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head>
+<script>if(location.hostname==="byd-shorties.pages.dev")location.replace("https://games.tagshim.com"+location.pathname+location.search+location.hash)</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07071a"><link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/brand/icon-180.png">
+<title>Tagshim Night · 12+</title>
+<meta property="og:title" content="Tagshim Night · games for teens"><meta property="og:description" content="Street Stars: 3v3 rooftop football with superstars. More teen games coming soon."><meta property="og:image" content="https://games.tagshim.com/night/stars/og.png"><meta property="og:url" content="https://games.tagshim.com/night/"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap">
+<style>
+:root{--bg:#07071a;--fg:#f4f2ff;--mut:#9d9ac9;--cy:#22e3ff;--pk:#ff3d8b;--lime:#b6ff3b;--line:#2a2a5a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#2a1050 0%,#0b0a24 45%,#07071a 100%);color:var(--fg);font-family:Rubik,system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:980px;margin:0 auto}
+.top a,.top button{background:#12122e;color:var(--fg);border:0;border-radius:999px;padding:8px 14px;font:700 14px Rubik,sans-serif;text-decoration:none;box-shadow:inset 0 0 0 2px var(--line);cursor:pointer}
+h1{text-align:center;font-size:clamp(40px,9vw,80px);font-weight:900;margin:18px 0 4px;letter-spacing:.02em}
+h1 b{color:var(--lime);text-shadow:0 0 24px #b6ff3b88}
+.sub{text-align:center;color:var(--mut);max-width:52ch;margin:0 auto 22px;line-height:1.45}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:980px;margin:0 auto}
+.g{border-radius:20px;overflow:hidden;background:#0e0e2a;box-shadow:inset 0 0 0 2px var(--line);display:flex;flex-direction:column;text-decoration:none;color:var(--fg)}
+.g.live{box-shadow:0 0 0 2px var(--cy),0 0 26px #ff3d8b55}
+.g img{width:100%;display:block;aspect-ratio:1200/630;object-fit:cover}
+.g .ph{aspect-ratio:1200/630;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(135deg,#16163a,#2a1050)}
+.g div.t{padding:12px 14px 16px}.g h2{margin:0 0 6px;font-size:22px}.g p{margin:0;color:var(--mut);font-size:14px;line-height:1.4}
+.btn{display:inline-block;margin-top:10px;background:linear-gradient(90deg,var(--cy),var(--pk));color:#07071a;font-weight:900;padding:9px 16px;border-radius:12px}
+.soon{display:inline-block;margin-top:10px;font-weight:800;color:var(--mut);border:2px dashed var(--line);padding:6px 12px;border-radius:12px}
+</style></head><body>
+<div class="top"><a id="back" href="../">← Tagshim</a><button id="lg">🌐</button></div>
+<h1>TAGSHIM <b>NIGHT</b></h1><p class="sub" id="sub"></p>
+<div class="grid" id="grid"></div>
+<script>
+const TX={ru:{sub:'Игры для подростков 12+: ночной город, неон, звёзды и битвы с друзьями по ссылке.',play:'Играть ▶',soon:'Скоро',G:[['stars','⚽','Звёзды улицы','Футбол 3 на 3 на крыше: шесть звёзд со своими фишками, суперудары, празднования голов, повторы и коллекционные карточки.'],['traitor','🕵️','Предатель','Ночная экскурсия, задания и тайный предатель среди вас. Найдите его голосованием!'],['roofs','🏃','Крыши','Паркур по крышам ночного города: прыжки, толкотня, выбывание — в финале остаётся один.'],['zone','🎯','Последний в зоне','Зона сужается, водяные бластеры и щиты — побеждает последний.'],['who','🤔','Кто из нас…?','Смешные вопросы про друзей, тайное голосование и неожиданные результаты.'],['skate','🛹','Скейт-баттл','Трюки и комбо в ночном скейт-парке — кто наберёт больше очков.']]},
+en:{sub:'Games for teens 12+: night city, neon, superstars and battles with friends by link.',play:'Play ▶',soon:'Coming soon',G:[['stars','⚽','Street Stars','3v3 rooftop football: six stars with their own skills, super shots, goal celebrations, replays and collectible cards.'],['traitor','🕵️','Traitor','A night trip, tasks and a secret traitor among you. Vote them out!'],['roofs','🏃','Rooftops','Parkour across night-city rooftops: jumps, shoving, knockouts — only one makes the final.'],['zone','🎯','Last in the Zone','The zone shrinks, water blasters and shields — the last one standing wins.'],['who','🤔','Who of Us…?','Funny questions about your friends, secret votes and surprising results.'],['skate','🛹','Skate Battle','Tricks and combos in a night skate park — who scores the most.']]},
+he:{sub:'משחקים לבני נוער ‎12+‎: עיר בלילה, ניאון, כוכבים וקרבות עם חברים בקישור.',play:'לשחק ▶',soon:'בקרוב',G:[['stars','⚽','כוכבי הרחוב','כדורגל 3 על 3 על הגג: שישה כוכבים עם טריקים משלהם, בעיטות־על, חגיגות גול, הילוכים חוזרים וקלפי אספנות.'],['traitor','🕵️','הבוגד','טיול לילה, משימות ובוגד סודי ביניכם. מצאו אותו בהצבעה!'],['roofs','🏃','גגות','פארקור על גגות העיר: קפיצות, דחיפות, הדחות — רק אחד מגיע לגמר.'],['zone','🎯','האחרון באזור','האזור מצטמצם, אקדחי מים ומגנים — האחרון שנשאר מנצח.'],['who','🤔','מי מאיתנו…?','שאלות מצחיקות על החברים, הצבעה סודית ותוצאות מפתיעות.'],['skate','🛹','קרב סקייט','טריקים וקומבו בסקייטפארק בלילה — מי צובר הכי הרבה נקודות.']]}};
+const L=['ru','en','he'];let lang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('tn_lang')||((navigator.language||'').startsWith('he')?'he':(navigator.language||'').startsWith('ru')?'ru':'en');if(!TX[lang])lang='en';
+function render(){const t=TX[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.getElementById('sub').textContent=t.sub;document.getElementById('lg').textContent='🌐 '+lang.toUpperCase();document.getElementById('back').href='../?lang='+lang;
+ document.getElementById('grid').innerHTML=t.G.map(([k,ic,n,d])=>k==='stars'?`<a class="g live" href="stars/?lang=${lang}"><img src="stars/og.png" alt=""><div class="t"><h2>${n}</h2><p>${d}</p><span class="btn">${t.play}</span></div></a>`:`<div class="g"><div class="ph">${ic}</div><div class="t"><h2>${n}</h2><p>${d}</p><span class="soon">${t.soon}</span></div></div>`).join('')}
+document.getElementById('lg').onclick=()=>{lang=L[(L.indexOf(lang)+1)%3];localStorage.setItem('tn_lang',lang);render()};render();
+</script></body></html>

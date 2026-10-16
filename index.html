@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://games.tagshim.com/">
 <meta property="og:title" content="Tagshim · Play anywhere">
-<meta property="og:description" content="Play anywhere. Play with friends. Play fast. 13 games, no download.">
+<meta property="og:description" content="Play anywhere. Play with friends. Play fast. 14 games, no download.">
 <meta property="og:image" content="https://games.tagshim.com/og-hub.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://games.tagshim.com/og-hub.png">
@@ -86,7 +86,7 @@ const SITE=/^https?:$/.test(location.protocol)&&!/^(localhost|127\.)/.test(locat
 const L={
  en:{priv:'Privacy Policy',shareAll:'Share the games',invite:'Invite friends to play',inviteMsg:c=>`Join me in Tagshim! 🎮 Room ${c} — tap the link and we play together: `,inst:'📲 Install the app',instS:'Install',iosChrome:'In Chrome: tap Share ⬆️ in the address bar → “Add to Home Screen”',close:'Got it',instHint:'Opens full screen, without browser bars',openChrome:'📲 Open in Chrome to install',ios:'On iPhone: tap Share ⬆️ → “Add to Home Screen”',andr:'Tap ⋮ at the top → “Add to Home screen” or “Install app”',slogan:'Play <span>anywhere</span>. Play <span>with friends</span>. Play <span>fast</span>.',
   chips:['📱 No download','👫 Up to 4 players online','⏱ 30–60 s rounds','💬 Invite via WhatsApp','🌍 English · Русский · עברית'],
-  games:'13 games',play:'Play ▶',
+  games:'14 games',play:'Play ▶',
   donkey:{t:"Who's the Donkey?",d:'Tap the carrot faster than everyone. The slowest collects the letters D-O-N-K and the donkey poops all over the screen.',tags:['👥 2–10 players','⏱ 1–3 minutes','🥕 Reaction']},
   burger:{t:'Burger Rush',d:'Grab burgers faster than anyone and push your rivals. Knockout rounds until one champion is left.',tags:['👥 1–4 players + bots','⏱ 30 s rounds','🍔 Collect']},
   school:{t:'Teacher Kick',d:'Sneak up behind the teacher and kick! Get spotted — straight to the corner.',tags:['👥 1–4 players + bots','⏱ 30 s rounds','🦶 Sneak']},
@@ -98,6 +98,7 @@ const L={
   balloon:{t:'Balloon Battle',d:'Everyone holds 3 balloons: pop the others and protect yours! Grab floating balloons to get them back. Or team up against prickly hedgehogs that pop everything. Two maps: a fair and the rooftops.',tags:['👥 1–4 players + bots', '🗺 2 maps', '🎈 Pop & protect']},
   ghost:{t:'Ghost Castle',d:'A dark castle where ghosts are invisible until they come close. Collect candles with your lantern and banish ghosts with a flash. Or one of you plays the ghost and scares the others! Two maps: the great hall and a crypt.',tags:['👥 1–4 players + bots', '🗺 2 maps', '👻 Spooky fun']},
   pizza:{t:'Pizza Chaos',d:'A crazy pizzeria: grab tomatoes, cheese, mushrooms and peppers from the crates and build pizzas by the recipe. Steal toppings from each other, or cook together and chase away the rats that raid the table.',tags:['👥 1–4 players + bots', '⏱ 50–60 s', '🍕 Cook & steal']},
+  sniper:{t:'Night Sniper',d:'A pitch-black night in the city or the forest. Sweep your sniper scope across the dark and find the others first! Every shot gives you away, and a flash grenade lights up a hiding spot for a moment. Play everyone for himself or together against bots.',tags:['👥 1–4 players + bots', '⏱ 75–90 s', '🎯 Find & shoot']},
   box:{t:'Crazy Boxing',d:'All against all in the ring. Punch, dodge and land a sneaky low blow while the referee looks away. Caught twice and you are out!',tags:['👥 1–4 players + bots','⏱ 45 s fight','🥊 Fight']},
   snow:{t:'Snow Battle',d:'Throw snowballs, hide behind snowmen and grab the golden mega snowball for +2.',tags:['👥 1–4 players + bots','⏱ 40 s rounds','❄️ Aim']},
   how:'How to start',steps:[['Pick a game','Tap “Play” on any card.'],['Create a room','Type your name and tap “Create game”.'],['Invite friends','The WhatsApp button sends the link to your group. Done!']],
@@ -105,7 +106,7 @@ const L={
   shareText:'🎮 Tagshim — short games with friends right on your phone. No download! ',made:'Made by Tagshim'},
  ru:{priv:'Политика конфиденциальности',shareAll:'Поделиться сайтом',invite:'Позвать друзей играть',inviteMsg:c=>`Залетай ко мне в Tagshim! 🎮 Комната ${c} — жми ссылку, играем вместе: `,inst:'📲 Установить приложение',instS:'Установить',iosChrome:'В Chrome: кнопка «Поделиться» ⬆️ в адресной строке → «На экран Домой»',close:'Понятно',instHint:'Откроется на весь экран, без строк браузера',openChrome:'📲 Открыть в Chrome, чтобы установить',ios:'На iPhone: «Поделиться» ⬆️ → «На экран Домой»',andr:'Нажми ⋮ вверху → «Добавить на главный экран» или «Установить приложение»',slogan:'Играй <span>где хочешь</span>. Играй <span>с друзьями</span>. Играй <span>быстро</span>.',
   chips:['📱 Без скачивания','👫 До 4 игроков онлайн','⏱ Раунды 30–60 секунд','💬 Зови через WhatsApp','🌍 English · Русский · עברית'],
-  games:'13 игр',play:'Играть ▶',
+  games:'14 игр',play:'Играть ▶',
   donkey:{t:'Кто осёл?',d:'Лови морковку быстрее всех. Самый медленный собирает буквы О-С-Ё-Л, и его ослик какает на весь экран.',tags:['👥 2–10 игроков','⏱ 1–3 минуты','🥕 На реакцию']},
   burger:{t:'Бургер-гонка',d:'Хватай бургеры быстрее всех и толкай соперников. Раунды на выбывание, пока не останется один чемпион.',tags:['👥 1–4 игрока + боты','⏱ раунд 30 сек','🍔 Собирай']},
   school:{t:'Teacher Kick',d:'Подкрадись к учителю сзади и отвесь поджопник! Попадёшься ему на глаза — в угол.',tags:['👥 1–4 игрока + боты','⏱ раунд 30 сек','🦶 Подкрадывайся']},
@@ -117,6 +118,7 @@ const L={
   balloon:{t:'Битва шариков',d:'У каждого 3 шарика: лопай чужие и береги свои! Хватай летающие шарики, чтобы вернуть их. Или играйте вместе против колючих ежей, которые лопают всё подряд. Две карты: ярмарка и крыши.',tags:['👥 1–4 игрока + боты', '🗺 2 карты', '🎈 Лопай и береги']},
   ghost:{t:'Замок с привидениями',d:'Тёмный замок, где привидения невидимы, пока не подлетят близко. Собирай свечи с фонарём и прогоняй привидений вспышкой. Или один из вас играет за привидение и пугает остальных! Две карты: большой зал и подземелье.',tags:['👥 1–4 игрока + боты', '🗺 2 карты', '👻 Страшно весело']},
   pizza:{t:'Пицца-хаос',d:'Сумасшедшая пиццерия: хватай помидоры, сыр, грибы и перец из ящиков и собирай пиццу по рецепту. Отнимайте начинку друг у друга или готовьте вместе и гоняйте крыс, которые воруют со стола.',tags:['👥 1–4 игрока + боты', '⏱ 50–60 сек', '🍕 Готовь и отнимай']},
+  sniper:{t:'Ночной снайпер',d:'Кромешная ночь в городе или в лесу. Води снайперским прицелом по темноте и найди остальных первым! Каждый выстрел тебя выдаёт, а граната-вспышка на миг освещает укрытие. Играй каждый за себя или вместе против ботов.',tags:['👥 1–4 игрока + боты', '⏱ 75–90 сек', '🎯 Найди и стреляй']},
   box:{t:'Сумасшедший бокс',d:'Все против всех на ринге. Бей, уворачивайся и бей по яйцам, пока судья отвернулся. Заметит 2 раза — дисквалификация!',tags:['👥 1–4 игрока + боты','⏱ бой 45 сек','🥊 Драка']},
   snow:{t:'Снежная битва',d:'Кидай снежки, прячься за снеговиками и хватай золотой мега-снежок на +2.',tags:['👥 1–4 игрока + боты','⏱ раунд 40 сек','❄️ Целься']},
   how:'Как начать',steps:[['Выбери игру','Нажми «Играть» на любой карточке.'],['Создай комнату','Напиши имя и нажми «Создать игру».'],['Позови друзей','Кнопка WhatsApp отправит ссылку в группу. Готово!']],
@@ -124,7 +126,7 @@ const L={
   shareText:'🎮 Tagshim — короткие игры с друзьями прямо в телефоне. Без скачивания! ',made:'Сделано в Tagshim'},
  he:{priv:'מדיניות פרטיות',shareAll:'לשתף את האתר',invite:'להזמין חברים לשחק',inviteMsg:c=>`בואו לשחק איתי ב-Tagshim! 🎮 חדר ${c} — לחצו על הקישור ונשחק ביחד: `,inst:'📲 להתקין את האפליקציה',instS:'להתקין',iosChrome:'ב-Chrome: כפתור שיתוף ⬆️ בשורת הכתובת ← «הוספה למסך הבית»',close:'הבנתי',instHint:'נפתח במסך מלא, בלי השורות של הדפדפן',openChrome:'📲 לפתוח ב-Chrome כדי להתקין',ios:'באייפון: שיתוף ⬆️ ← «הוספה למסך הבית»',andr:'לחצו ⋮ למעלה ← «הוספה למסך הבית» או «התקנת אפליקציה»',slogan:'שחקו <span>איפה שבא לכם</span>. שחקו <span>עם חברים</span>. שחקו <span>מהר</span>.',
   chips:['📱 בלי להוריד','👫 עד 4 שחקנים אונליין','⏱ סיבובים של ⁦30–60⁩ שניות','💬 מזמינים בוואטסאפ','🌍 English · Русский · עברית'],
-  games:'13 משחקים',play:'לשחק ▶',
+  games:'14 משחקים',play:'לשחק ▶',
   donkey:{t:'מי חמור?',d:'תופסים את הגזר הכי מהר. האיטי ביותר אוסף את האותיות ח-מ-ו-ר, והחמור שלו עושה קקי על כל המסך.',tags:['👥 ⁦2–10⁩ שחקנים','⏱ ⁦1–3⁩ דקות','🥕 משחק תגובה']},
   burger:{t:'מרוץ ההמבורגרים',d:'תופסים המבורגרים הכי מהר ודוחפים יריבים. סיבובי הדחה עד שנשאר אלוף אחד.',tags:['👥 ⁦1–4⁩ שחקנים + בוטים','⏱ סיבוב 30 שנ׳','🍔 אוספים']},
   school:{t:'Teacher Kick',d:'מתגנבים למורה מאחור ונותנים בעיטה בטוסיק! המורה רואה אתכם — לפינה.',tags:['👥 ⁦1–4⁩ שחקנים + בוטים','⏱ סיבוב 30 שנ׳','🦶 מתגנבים']},
@@ -136,6 +138,7 @@ const L={
   balloon:{t:'קרב בלונים',d:'לכל אחד 3 בלונים: מפוצצים לאחרים ושומרים על שלכם! תופסים בלונים מעופפים כדי לקבל אותם בחזרה. או משחקים ביחד נגד קיפודים דוקרניים שמפוצצים הכל. שתי מפות: יריד וגגות.',tags:['👥 \u20661–4\u2069 שחקנים + בוטים', '🗺 2 מפות', '🎈 מפוצצים ושומרים']},
   ghost:{t:'טירת הרוחות',d:'טירה חשוכה שבה הרוחות שקופות עד שהן מתקרבות. אוספים נרות עם פנס ומגרשים רוחות בהבזק. או שאחד מכם משחק רוח ומפחיד את האחרים! שתי מפות: האולם הגדול והמרתף.',tags:['👥 \u20661–4\u2069 שחקנים + בוטים', '🗺 2 מפות', '👻 מפחיד ומצחיק']},
   pizza:{t:'פיצה בטירוף',d:'פיצריה מטורפת: תופסים עגבניות, גבינה, פטריות ופלפלים מהארגזים ומכינים פיצה לפי המתכון. חוטפים תוספות זה מזה, או מבשלים ביחד ומגרשים עכברושים שגונבים מהשולחן.',tags:['👥 \u20661–4\u2069 שחקנים + בוטים', '⏱ 50–60 שניות', '🍕 מבשלים וחוטפים']},
+  sniper:{t:'צלף לילה',d:'לילה חשוך לגמרי בעיר או ביער. מזיזים את כוונת הצלף בחושך ומוצאים את האחרים ראשונים! כל ירייה מסגירה אותך, ורימון הבזק מאיר מחבוא לרגע. משחקים כל אחד לעצמו או ביחד נגד בוטים.',tags:['👥 \u20661–4\u2069 שחקנים + בוטים', '⏱ 75–90 שניות', '🎯 מוצאים ויורים']},
   box:{t:'אגרוף משוגע',d:'כולם נגד כולם בזירה. תכו, תתחמקו ותנו מכה נמוכה כשהשופט לא מסתכל. נתפסתם פעמיים — פסילה!',tags:['👥 ⁦1–4⁩ שחקנים + בוטים','⏱ קרב של 45 שניות','🥊 קרב']},
   snow:{t:'קרב כדורי שלג',d:'זורקים כדורי שלג, מתחבאים מאחורי אנשי שלג ותופסים את כדור הזהב לנקודה כפולה.',tags:['👥 ⁦1–4⁩ שחקנים + בוטים','⏱ סיבוב 40 שנ׳','❄️ מכוונים']},
   how:'איך מתחילים',steps:[['בוחרים משחק','לוחצים «לשחק» על כל כרטיס.'],['יוצרים חדר','כותבים שם ולוחצים «יצירת משחק».'],['מזמינים חברים','כפתור הוואטסאפ שולח קישור לקבוצה. זהו!']],
@@ -155,7 +158,7 @@ function render(){const t=L[lang];document.documentElement.lang=lang;document.do
   <div class="top"><a class="brandmark" href="./"><img src="brand/icon-192.png" alt="" width="42" height="42"><span class="mini"><b>TAG</b>SHIM</span></a><span id="instTop"></span><div class="langs" role="group" aria-label="Language">${LANGS.map(([k,l])=>`<button type="button" data-l="${k}" class="${k===lang?'on':''}">${l}</button>`).join('')}</div></div>
   <header class="hero"><img class="heroicon" src="brand/icon-512.png" alt="" width="140" height="140"><h1 class="word"><span class="a">TAGSHIM</span></h1><span class="pill">PLAY ANYWHERE</span>
     <p class="slogan">${t.slogan}</p><button type="button" class="share shtop" id="invTop">🎮 ${t.invite}</button><button type="button" class="shsite" id="shTop">📤 ${t.shareAll}</button><div class="chips">${t.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div><div id="inst"></div></header>
-  <section><h2>${t.games}</h2><div class="games">${card('donkey','donkey/og.png','donkey/?lang='+lang)}${card('burger','burger/og.png','burger/?lang='+lang)}${card('school','school/og.png','school/?lang='+lang)}${card('soccer','soccer/og.png','soccer/?lang='+lang)}${card('snow','snow/og.png','snow/?lang='+lang)}${card('box','box/og.png','box/?lang='+lang)}${card('villain','villain/og.png','villain/?lang='+lang)}${card('train','train/og.png','train/?lang='+lang)}${card('pirate','pirate/og.png','pirate/?lang='+lang)}${card('dino','dino/og.png','dino/?lang='+lang)}${card('balloon','balloon/og.png','balloon/?lang='+lang)}${card('ghost','ghost/og.png','ghost/?lang='+lang)}${card('pizza','pizza/og.png','pizza/?lang='+lang)}</div></section>
+  <section><h2>${t.games}</h2><div class="games">${card('donkey','donkey/og.png','donkey/?lang='+lang)}${card('burger','burger/og.png','burger/?lang='+lang)}${card('school','school/og.png','school/?lang='+lang)}${card('soccer','soccer/og.png','soccer/?lang='+lang)}${card('snow','snow/og.png','snow/?lang='+lang)}${card('box','box/og.png','box/?lang='+lang)}${card('villain','villain/og.png','villain/?lang='+lang)}${card('train','train/og.png','train/?lang='+lang)}${card('pirate','pirate/og.png','pirate/?lang='+lang)}${card('dino','dino/og.png','dino/?lang='+lang)}${card('balloon','balloon/og.png','balloon/?lang='+lang)}${card('ghost','ghost/og.png','ghost/?lang='+lang)}${card('pizza','pizza/og.png','pizza/?lang='+lang)}${card('sniper','sniper/og.png','sniper/?lang='+lang)}</div></section>
   <section><h2>${t.how}</h2><ol class="steps">${t.steps.map(([b,s])=>`<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('')}</ol></section>
   <section class="band"><h2 style="margin:0">${t.bandT}</h2><p>${t.bandP}</p><a class="share" href="https://wa.me/?text=${encodeURIComponent(t.shareText+SITE+'?lang='+lang)}" target="_blank" rel="noopener">💬 ${t.share}</a><span class="link">${SITE.replace('https://','')}</span></section>
   <footer><span><b>Tagshim</b> · Play anywhere</span><span>${t.made} · 2026</span><!--privacy-link-pending--></footer>`;

@@ -11,11 +11,12 @@ const SKIN={cappy:'#f3c7a2',jimmy:'#f5c49b',kate:'#f6d0c3',jennifer:'#a9653e',ky
 const SHIRTLESS={jimmy:1};
 const KIT=[{j:'#18c9ec',s:'#11143a',so:'#18c9ec',gk:'#f3ff5a'},{j:'#ff3d8b',s:'#11143a',so:'#ff3d8b',gk:'#7dff6a'}];
 const BOOT=['#1b1b24','#d9e2f2','#ffd23f','#ff5ad8'];
-const R3D={ok:false,loading:true};window.R3D=R3D;
 
+
+const R3D={ok:false,loading:true};window.R3D=R3D;
 /* ---------- renderer & scene ---------- */
 const cv=document.createElement('canvas');cv.id='cv3';Object.assign(cv.style,{position:'fixed',inset:'0',width:'100%',height:'100%',display:'none',zIndex:'0'});document.body.prepend(cv);
-const rd=new THREE.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'});rd.outputColorSpace=THREE.SRGBColorSpace;rd.shadowMap.enabled=true;rd.shadowMap.type=THREE.PCFSoftShadowMap;rd.toneMapping=THREE.ACESFilmicToneMapping;rd.toneMappingExposure=1.15;
+let rd;try{rd=new THREE.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'})}catch(e){R3D.loading=false;cv.remove();throw new Error('no webgl: 2D mode')}rd.outputColorSpace=THREE.SRGBColorSpace;rd.shadowMap.enabled=true;rd.shadowMap.type=THREE.PCFSoftShadowMap;rd.toneMapping=THREE.ACESFilmicToneMapping;rd.toneMappingExposure=1.15;
 const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x0b0a24,26,70);
 const cam=new THREE.PerspectiveCamera(36,1,.1,200);
 function canvasTex(w,h,fn){const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t}

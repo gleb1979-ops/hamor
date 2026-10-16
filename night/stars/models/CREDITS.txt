@@ -1,3 +1,4 @@
-Characters: "100Avatars" by Polygonal Mind (https://github.com/polygonalmind/100Avatars) — released as open source for any project; not to be resold as standalone avatars.
-Models were optimized (morph targets removed) and are used inside the game with team kits applied at runtime.
+Characters: "100Avatars" by Polygonal Mind — https://github.com/polygonalmind/100Avatars
+License: CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/ (see LICENSE-100Avatars-CC-BY-4.0.md)
+Changes made: morph targets removed, models optimized, team football kits and athletic build applied at runtime, new animations and poses.
 3D engine: three.js (MIT), see ../../lib/THREE_LICENSE.txt

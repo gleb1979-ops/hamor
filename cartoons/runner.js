@@ -1,0 +1,3 @@
+(function(){const q=new URLSearchParams(location.search),k=q.get('ep'),L=q.get('lang')||'ru';
+const cv=document.createElement('canvas');cv.width=1080;cv.height=1920;cv.id='ep';Object.assign(cv.style,{position:'fixed',left:0,top:0,width:'1080px',height:'1920px',zIndex:99999,background:'#000'});
+function go(){if(!window.__E||!__E.fxReady)return setTimeout(go,100);document.body.appendChild(cv);const ep=EPISODES[k](__E,EPISODE_TXT[k][L],cv);window.renderFrame=ep.render;window.EP_LEN=ep.len;window.EP_READY=true}go()})();

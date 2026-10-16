@@ -553,7 +553,7 @@ function decoMap(f){if(!DECO.ready)return;const D=DECO;f.imageSmoothingEnabled=f
   if(LOC==='villain'&&VM==='park'){
     const fl=[[200,300,'flower'],[230,330,'flower'],[180,345,'tuft'],[520,330,'fbush'],[980,330,'ybush'],[1300,450,'flower'],[1330,430,'flower'],[160,620,'fbush'],[520,700,'flower'],[545,725,'tuft'],[980,720,'fbush'],[1300,620,'tuft'],[1000,420,'flower'],[480,430,'tuft'],[600,820,'ybush'],[900,830,'flower'],[1250,820,'flower'],[260,840,'tuft']];
     for(const [x,y,k] of fl)put(D[k],x,y,4);
-    const tr=[[90,300,'treeA'],[1410,300,'treeB'],[560,250,'pine'],[940,250,'pineD'],[90,840,'fruit'],[1410,840,'treeA'],[40,560,'pineD'],[1460,560,'pine']].sort((a,b)=>a[1]-b[1]);
+    const tr=[[50,340,'treeA'],[1450,340,'treeB'],[560,250,'pine'],[940,250,'pineD'],[50,850,'fruit'],[1450,850,'treeA'],[40,600,'pineD'],[1460,600,'pine']].sort((a,b)=>a[1]-b[1]);
     for(const [x,y,k] of tr){f.fillStyle='rgba(0,0,0,.18)';f.beginPath();f.ellipse(x+4,y-4,30,10,0,0,7);f.fill();put(D[k],x,y,4)}
     for(let x=60;x<AW-40;x+=64)if(x<690||x>810)put(D[x%128?'bush':'bushD'],x,AH-12,4)}
   else if(LOC==='soccer'){const L=40,Tt=TOP+14,B=AH-34;for(const [x,y] of [[L,Tt],[L,B],[GX,Tt],[GX,B]])f.drawImage(D.s_flag,x-6,y-52,64,54)}
@@ -594,7 +594,7 @@ function drawFloor(g){const FK=LOC==='villain'?LOC+VM:LOC;if(!floorCaches[FK]){c
     for(let i=0;i<4;i++){const a=i*Math.PI/2+.78;f.fillStyle='#c0392b';f.beginPath();f.arc(t.x+Math.cos(a)*(t.r+14),t.y+Math.sin(a)*(t.r+14),15,0,7);f.fill();f.fillStyle='#e74c3c';f.beginPath();f.arc(t.x+Math.cos(a)*(t.r+14),t.y+Math.sin(a)*(t.r+14)-3,12,0,7);f.fill()}
     f.fillStyle='#e8412c';f.beginPath();f.arc(t.x,t.y,t.r,0,7);f.fill();f.fillStyle='#fafafa';f.beginPath();f.arc(t.x,t.y,t.r-10,0,7);f.fill();
     f.fillStyle='#ffc531';f.beginPath();f.arc(t.x-14,t.y-6,9,0,7);f.fill();f.fillStyle='#e8412c';f.beginPath();f.arc(t.x+14,t.y-6,9,0,7);f.fill()}}
-  decoMap(f)}g.drawImage(floorCaches[FK],0,0)}
+  decoMap(f)}const sm=LOC==='diner'&&SC*DPR>1;if(sm)g.imageSmoothingEnabled=false;g.drawImage(floorCaches[FK],0,0);if(sm)g.imageSmoothingEnabled=true}
 
 function paintBox(f){f.fillStyle='#15101c';f.fillRect(0,0,AW,AH);
   let seed=5;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
@@ -1101,7 +1101,7 @@ function endScreen(board,again){phase='end';redraw=()=>endScreen(board,1);show('
   if(!again&&iWin)endScreen._n=addMedal();medalLine=iWin?T('medalWin')(endScreen._n||medals()):(medals()?T('medalHave')(medals()):'');
   if(!again){confetti();[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12),i*140));if(iWin)vib([100,50,100,50,300])}
   const medalIcons=[medalImg(0,34),medalImg(1,30),medalImg(2,28),'🍟'];let rank=0;
-  app.innerHTML=`<div style="font-size:64px;line-height:1">${fxReady?medalImg(0,96):'🏆'}</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1>${medalLine?`<p style="color:var(--mustard);font-weight:700;font-size:18px">${medalLine}</p>`:''}<ol class="podium" id="pod"></ol>
+  app.innerHTML=`<div style="font-size:64px;line-height:1">${iWin&&fxReady?medalImg(0,64):'🏆'}</div><h1>${iWin?T('youWin'):esc(T('winner')(top?top[1]:'?'))}</h1>${medalLine?`<p style="color:var(--mustard);font-weight:700;font-size:18px">${medalLine}</p>`:''}<ol class="podium" id="pod"></ol>
     <div class="row"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent((LOC==='villain'?T('shareV'):LOC==='box'?T('shareBox'):LOC==='school'?T('shareSchool'):LOC==='soccer'?T('shareSoccer'):LOC==='snow'?T('shareSnow'):T('shareText'))(top?top[1]:'',top?top[3]:0)+' '+baseLink())}" target="_blank" rel="noopener">${T('share')}</a>
     ${isHost?`<button id="ag">${T('again')} ${LOCS[FIXED].icon}</button><button class="ghost" id="lo">${T('lobbyBtn')}</button>`:''}</div>${isHost?picker(FIXED):''}${isHost?'':`<p class="status">${T('againHost')}</p><button class="ghost" id="own2">${T('createOwn')}</button>`}`;
   const pod=document.getElementById('pod');

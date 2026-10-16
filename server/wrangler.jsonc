@@ -2,6 +2,7 @@
   "name": "shorties-rooms",
   "main": "worker.js",
   "workers_dev": true,
+  "routes": [{ "pattern": "rooms.tagshim.com", "custom_domain": true }],
   "compatibility_date": "2026-10-01",
   "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],

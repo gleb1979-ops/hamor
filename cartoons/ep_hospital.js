@@ -53,12 +53,16 @@ function sceneD(t){g.drawImage(ward,0,0);E.drawPuddle(g,[0,3,PUD[0],PUD[1],100],
   const F1=path(t,[[15,460,320],[19,740,420],[23,760,430]]);h.add(F1[1],()=>{h.hero('fat',F1[0],F1[1],t,{mv:F1[2]&&t<19,face:F1[3]});plaster(F1[0],F1[1],F1[3]);if(t<19)E.drawPan(g,F1[0]+F1[3]*40,F1[1]-70,1.05,1,t)});
   const T1p=[1180,760],N1=[1060,770];h.add(T1p[1],()=>{h.hero('tall',T1p[0],T1p[1],t,{face:-1});plaster(T1p[0],T1p[1],-1)});h.add(N1[1],()=>{h.hero('nerd',N1[0],N1[1],t,{face:1});plaster(N1[0],N1[1],1)});
   // donkey runs, slips at 19
-  let D=path(t,[[15,300,700],[17.3,700,640],[19,PUD[0]-20,PUD[1]]]),drot=0,dy=0;
+  let D=path(t,[[15,300,700],[17.3,700,640],[19,PUD[0]-20,PUD[1]]]),drot=0,dy=0;if(t>17.7&&t<19){D=[D[0]+Math.sin(t*9)*28,D[1]+Math.cos(t*7)*22,D[2],D[3]];drot=Math.sin(t*10)*.18}
   if(t>19){const k=seg(t,19,19.8);D=[lerp(PUD[0]-20,PUD[0]+110,k),PUD[1]+40*k,false,1];drot=k*2.6;dy=-Math.sin(k*Math.PI)*120}
-  h.add(D[1],()=>{g.save();g.translate(D[0],D[1]+dy);g.rotate(Math.min(drot,1.57));h.hero('donkey',0,0,t,{mv:D[2],face:D[3],stun:t>19.8});g.restore();if(shot('donkey',t)&&t<19)plaster(D[0],D[1],D[3]);if(t>19.8)dirt(D[0],D[1]+20,t,6);if(t<19)E.drawPan(g,D[0]+36,D[1]-64,1.05,1,t)});
+  h.add(D[1],()=>{g.save();g.translate(D[0],D[1]+dy);g.rotate(t>19?Math.min(drot,1.57):drot);h.hero('donkey',0,0,t,{mv:D[2],face:D[3],stun:t>19.8});g.restore();if(shot('donkey',t)&&t<19)plaster(D[0],D[1],D[3]);if(t>19.8)dirt(D[0],D[1]+20,t,6);if(t<19)E.drawPan(g,D[0]+36,D[1]-64,1.05,1,t)});
+  const GP=[lerp(420,1150,seg(t,15,21)),650];h.add(GP[1],()=>E.GART.grandpa(g,{x:GP[0],y:GP[1],a:0,st:0},t));
   // nurse watching, then pan lands on her head
   const NP=[1240,640];h.add(NP[1],()=>{nurse(NP[0],NP[1],t,t>20.1?2:0,-1,false);if(t>20.1){dirt(NP[0],NP[1],t,5);g.save();g.translate(NP[0],NP[1]-182);g.rotate(Math.PI);E.drawPan(g,0,0,1.3,0,t);g.restore()}});
   h.flush();
+  if(t>17.4&&t<21){const a=1-seg(t,19.6,21),cx=640,cy=610;g.save();g.globalAlpha=a*.75;for(let i=0;i<7;i++){const an=i*.9+t*.8,r=40+(i%3)*18,k=Math.min(1,(t-17.4)*3);g.fillStyle=i%2?'#a8d86a':'#c6e88a';g.beginPath();g.arc(cx+Math.cos(an)*r*1.4*k,cy-30+Math.sin(an)*r*.6*k,(34+(i%2)*10)*k,0,7);g.fill()}g.restore()}
+  if(t>17.4&&t<18.8)h.say(TXT.fart,700,420,t,17.4,46,'#c6e88a','#3d6b1a',-.1);
+  if(t>17.7&&t<19){for(let i=0;i<4;i++){const a=t*7+i*1.57;E.star(g,D[0]+Math.cos(a)*32,D[1]-215+Math.sin(a)*10,9);g.fillStyle='#ffe14d';g.fill()}h.emo('swirl',D[0]+40,D[1]-240,.6*pop(t,17.7))}
   if(t>19&&t<20.1){const k=seg(t,19,20.1),x=lerp(PUD[0]+30,NP[0],k),y=lerp(PUD[1]-70,NP[1]-190,k)-Math.sin(k*Math.PI)*380;g.save();g.translate(x,y);g.rotate(k*9);E.drawPan(g,0,0,1.3,1,t);g.restore()}
   if(t>18.4&&t<19.6)h.say(TXT.flush,1290,250,t,18.4,40,'#fff','#2f7bff');
   if(t>19&&t<20.4)h.say(TXT.slip,PUD[0],PUD[1]-260,t,19,52,'#fff','#2f7bff',-.1);
@@ -84,9 +88,10 @@ function sceneF(t){h.scr();const sky=g.createLinearGradient(0,300,0,1640);sky.ad
   const riders=[['girl',0,'#ff6fae'],['fat',1,'#4f8cff'],['tall',2,'#3fbf6f'],['nerd',3,'#ff9f2e'],['donkey',4.3,'#b07a45']];
   g.save();g.translate(0,0);
   for(const [c,i,col] of riders){const x=lerp(-200-i*230,1500-i*230,seg(t,T4,T5)*.95+.05),y=1380+(i%2)*90;g.save();g.translate(x,y);g.scale(1.5,1.5);bike(0,0,t,c,col,c==='donkey');g.restore()}
+  {const x=lerp(-700,1150,seg(t,T4,T5)),y=1560;g.save();g.translate(x,y);g.scale(1.4,1.4);for(let i=0;i<4;i++){const k=((t*2+i/4)%1);g.fillStyle=`rgba(168,216,106,${.6*(1-k)})`;g.beginPath();g.arc(-110-k*120,-40-k*20,18+k*30,0,7);g.fill()}E.GART.grandpa(g,{x:0,y:0,a:0,st:0},t);g.restore();if(t>T4+1)h.say(TXT.gpa,h.cl(x+40,170,910),1290,t,T4+1,30,'#fff','#3d6b1a')}
   g.restore();
   h.say(TXT.bye,540,470,t,T4+.3,70,'#ffc531','#2e7d32',-.05);
-  if(t>T4+1.5)h.say(TXT.wait,540,1185,t,T4+1.5,36,'#fff','#e8412c')}
+  if(t>T4+1.5)h.say(TXT.wait,540,1610,t,T4+1.5,30,'#fff','#e8412c')}
 let cs=null;
 function scenes(t){h.clip();
   const S=1.75,cx=x=>h.cl(x,320,1180),cy=y=>h.cl(y,420,500);
@@ -103,12 +108,12 @@ function icon(t){g.save();g.scale(2.2,2.2);nurse(0,90,t,1,1,false);g.restore();g
 const caps=[[.3,5.4,'c1'],[5.6,10.9,'c2'],[11.1,14.9,'c3'],[15.1,18.9,'c4'],[19.1,22.9,'c5'],[23.1,26.4,'c6']];
 return {len:h.LEN,endAt:T5,render:t=>h.render(t,scenes,caps,icon,[T1,15,T4,T5])}};
 (window.EPISODE_TXT=window.EPISODE_TXT||{}).hospital={
- ru:{c1:'Утро в больнице… А вот и медсестра! 💉',c2:'Все врассыпную! Банки падают, каталки едут!',c3:'Укол нашёл всех… даже Ослика под диваном!',c4:'Теперь вынести утку в туалет. Осторожно! 🚽',c5:'Мокрый пол… ШЛЁП! Утка прилетела медсестре на голову 💩',c6:'Всех выписали! Домой — на велосипедах! 🚲',
-  shot:'УКОЛЬЧИК!',aaa:'АААА!',bam:'БАМ!',hide:'меня тут нет…',ai:'АЙ!',found:'ВОТ ТЫ ГДЕ!',aai:'АААЙ!!!',flush:'+1 🚽',slip:'ШЛЁП!',fuu:'ФУУУ!',sorry:'Я НЕ СПЕЦИАЛЬНО!',bye:'ВЫПИСАНЫ!',wait:'А Ослика помыть забыли! 🪰',
+ ru:{c1:'Утро в больнице… А вот и медсестра! 💉',c2:'Все врассыпную! Банки падают, каталки едут!',c3:'Укол нашёл всех… даже Ослика под диваном!',c4:'Несём утки в туалет… а тут дед на каталке! 💨',c5:'Мокрый пол… ШЛЁП! Утка прилетела медсестре на голову 💩',c6:'Всех выписали! Домой — на велосипедах! 🚲',
+  shot:'УКОЛЬЧИК!',aaa:'АААА!',bam:'БАМ!',hide:'меня тут нет…',ai:'АЙ!',found:'ВОТ ТЫ ГДЕ!',aai:'АААЙ!!!',flush:'+1 🚽',slip:'ШЛЁП!',fuu:'ФУУУ!',sorry:'Я НЕ СПЕЦИАЛЬНО!',bye:'ВЫПИСАНЫ!',fart:'💨 ПУУУК!',gpa:'Подождите деда!',wait:'А Ослика помыть забыли! 🪰',
   next:'Продолжение следует… 🚲',tag:'🏥 Серия 16 · Весёлая больница',title:'Весёлая больница',cta:'Играй с друзьями — бесплатно, без скачивания!',url:'games.tagshim.com'},
- en:{c1:'Morning in the hospital… here comes the nurse! 💉',c2:'Run! Jars are falling, trolleys are rolling!',c3:'The syringe found everyone… even the Donkey under the couch!',c4:'Now carry the bedpan to the toilet. Careful! 🚽',c5:'Wet floor… SPLAT! The bedpan landed on the nurse’s head 💩',c6:'Everyone is discharged! Home — by bicycle! 🚲',
-  shot:'A LITTLE SHOT!',aaa:'AAAAH!',bam:'BAM!',hide:'I’m not here…',ai:'OUCH!',found:'GOT YOU!',aai:'OOOUCH!!!',flush:'+1 🚽',slip:'SPLAT!',fuu:'EWWW!',sorry:'IT WAS AN ACCIDENT!',bye:'DISCHARGED!',wait:'They forgot to wash the Donkey! 🪰',
+ en:{c1:'Morning in the hospital… here comes the nurse! 💉',c2:'Run! Jars are falling, trolleys are rolling!',c3:'The syringe found everyone… even the Donkey under the couch!',c4:'Carrying bedpans… and here comes grandpa on a gurney! 💨',c5:'Wet floor… SPLAT! The bedpan landed on the nurse’s head 💩',c6:'Everyone is discharged! Home — by bicycle! 🚲',
+  shot:'A LITTLE SHOT!',aaa:'AAAAH!',bam:'BAM!',hide:'I’m not here…',ai:'OUCH!',found:'GOT YOU!',aai:'OOOUCH!!!',flush:'+1 🚽',slip:'SPLAT!',fuu:'EWWW!',sorry:'IT WAS AN ACCIDENT!',bye:'DISCHARGED!',fart:'💨 PFFFT!',gpa:'Wait for grandpa!',wait:'They forgot to wash the Donkey! 🪰',
   next:'To be continued… 🚲',tag:'🏥 Episode 16 · Crazy Hospital',title:'Crazy Hospital',cta:'Play with friends — free, no download!',url:'games.tagshim.com'},
- he:{c1:'בוקר בבית החולים… והנה האחות! 💉',c2:'כולם בורחים! צנצנות נופלות, עגלות נוסעות!',c3:'הזריקה מצאה את כולם… אפילו את החמור מתחת לספה!',c4:'עכשיו לסחוב את הסיר לשירותים. בזהירות! 🚽',c5:'רצפה רטובה… פלאץ׳! הסיר נחת לאחות על הראש 💩',c6:'כולם השתחררו! הביתה — באופניים! 🚲',
-  shot:'זריקונת!',aaa:'אאאא!',bam:'בום!',hide:'אני לא פה…',ai:'איי!',found:'הנה אתה!',aai:'אאאיי!!!',flush:'+1 🚽',slip:'פלאץ׳!',fuu:'איכס!',sorry:'זה לא בכוונה!',bye:'השתחררנו!',wait:'שכחו לרחוץ את החמור! 🪰',
+ he:{c1:'בוקר בבית החולים… והנה האחות! 💉',c2:'כולם בורחים! צנצנות נופלות, עגלות נוסעות!',c3:'הזריקה מצאה את כולם… אפילו את החמור מתחת לספה!',c4:'סוחבים סירים… והנה סבא על עגלה! 💨',c5:'רצפה רטובה… פלאץ׳! הסיר נחת לאחות על הראש 💩',c6:'כולם השתחררו! הביתה — באופניים! 🚲',
+  shot:'זריקונת!',aaa:'אאאא!',bam:'בום!',hide:'אני לא פה…',ai:'איי!',found:'הנה אתה!',aai:'אאאיי!!!',flush:'+1 🚽',slip:'פלאץ׳!',fuu:'איכס!',sorry:'זה לא בכוונה!',bye:'השתחררנו!',fart:'💨 פּוּוּק!',gpa:'חכו לסבא!',wait:'שכחו לרחוץ את החמור! 🪰',
   next:'המשך יבוא… 🚲',tag:'🏥 פרק 16 · בית החולים המטורף',title:'בית החולים המטורף',cta:'שחקו עם חברים — בחינם, בלי הורדה!',url:'games.tagshim.com'}};

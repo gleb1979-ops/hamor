@@ -1271,10 +1271,13 @@ function handleEvHost(e){if(handledHost.has(e))return;handledHost.add(e);handleE
 
 /* ================= end ================= */
 let fxParts=[];const fx=document.getElementById('fx'),fctx=fx.getContext('2d');
-function confetti(){fx.width=innerWidth*DPR;fx.height=innerHeight*DPR;fctx.setTransform(DPR,0,0,DPR,0,0);const cols=['#ffc531','#e8412c','#5cc560','#4f8cff','#ff6fae'];
-  for(let i=0;i<160;i++)fxParts.push({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.6,vx:(Math.random()-.5)*2,vy:2+Math.random()*3,r:Math.random()*6,c:cols[i%5],a:Math.random()*6,s:6+Math.random()*6});
-  (function f(){fctx.clearRect(0,0,innerWidth,innerHeight);for(const p of fxParts){p.x+=p.vx;p.y+=p.vy;p.a+=.1;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.a);fctx.fillStyle=p.c;fctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);fctx.restore()}
-    fxParts=fxParts.filter(p=>p.y<innerHeight+30);if(fxParts.length)requestAnimationFrame(f);else fctx.clearRect(0,0,innerWidth,innerHeight)})()}
+let fxLoop=0;function confetti(){const cols=['#ffc531','#e8412c','#5cc560','#4f8cff','#ff6fae'];
+  for(let i=0;i<160;i++)fxParts.push({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.6,vx:(Math.random()-.5)*2,vy:2+Math.random()*3,c:cols[i%5],a:Math.random()*6,s:6+Math.random()*6});
+  if(fxLoop)return;fxLoop=1;
+  (function f(){const W=innerWidth,H=innerHeight;if(fx.width!==Math.round(W*DPR)||fx.height!==Math.round(H*DPR)){fx.width=Math.round(W*DPR);fx.height=Math.round(H*DPR)}
+    fctx.setTransform(1,0,0,1,0,0);fctx.clearRect(0,0,fx.width,fx.height);fctx.setTransform(DPR,0,0,DPR,0,0);
+    for(const p of fxParts){p.x+=p.vx;p.y+=p.vy;p.a+=.1;const c=Math.cos(p.a),sn=Math.sin(p.a);fctx.setTransform(DPR*c,DPR*sn,-DPR*sn,DPR*c,DPR*p.x,DPR*p.y);fctx.fillStyle=p.c;fctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2)}
+    fxParts=fxParts.filter(p=>p.y<H+30);if(fxParts.length)requestAnimationFrame(f);else{fctx.setTransform(1,0,0,1,0,0);fctx.clearRect(0,0,fx.width,fx.height);fxLoop=0}})()}
 function endScreen(board,again,tr){phase='end';redraw=()=>endScreen(board,1,tr);show('app');stickId=null;knob.style.transform='';input.dx=input.dy=0;
   document.getElementById('inter').hidden=true;const top=board[0],iWin=tr?tr==='win'&&board.some(b=>b[0]===me.id):top&&top[0]===me.id;let medalLine='';
   if(!again&&iWin)endScreen._n=addMedal();medalLine=iWin?T('medalWin')(endScreen._n||medals()):(medals()?T('medalHave')(medals()):'');

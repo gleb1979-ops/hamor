@@ -1,0 +1,3 @@
+Characters: "100Avatars" by Polygonal Mind (https://github.com/polygonalmind/100Avatars) — released as open source for any project; not to be resold as standalone avatars.
+Models were optimized (morph targets removed) and are used inside the game with team kits applied at runtime.
+3D engine: three.js (MIT), see ../../lib/THREE_LICENSE.txt

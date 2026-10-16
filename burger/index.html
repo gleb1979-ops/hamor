@@ -1248,7 +1248,7 @@ function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
     if(G.count<=0){matchPhase='play';G.t=RS();sndBeep(1);flashBig(T('go'),700);document.getElementById('tip').hidden=true}}
   else if(matchPhase==='play'){G.t-=dt;timeLeft=G.t;
     if(GM())GM().tick(dt);else{if(G.TC)(LOC==='box'?refTick:LOC==='train'?machTick:teacherTick)(dt);if(LOC==='train')trainTick(dt)}if(G.ball)ballTick(dt);if(G.SB)snowTick(dt);
-    for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id!==me.id&&b.stun>0)b.stun-=dt}
+    for(const id in P){const b=P[id];if(b.bot){const [dx,dy]=botThink(b,dt);move(b,dx,dy,dt,Object.values(P))}else if(id===me.id)b.stun=mine?Math.max(0,mine.stun):0;else if(b.stun>0)b.stun-=dt}
     if(LOC==='villain')trapTick();
     for(const id in P){const b=P[id];if(LOC==='train'||GM()||b.stun>0||(LOC==='villain'&&id===G.vil))continue;const reach=CH[b.c].r+26+CH[b.c].pick+(b.hat==='top'&&(LOC==='diner'||LOC==='villain')?32:0);
       for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<reach){G.B.splice(i,1);b.score++;evq.push(['e',id,Math.round(g.x),Math.round(g.y)]);keyGot()}}}

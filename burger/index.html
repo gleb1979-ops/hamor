@@ -1274,7 +1274,7 @@ function teamEnd(){const P=G.P,ids=Object.keys(P),tr=G.res==='win'?'win':'lose';
 
 /* ================= BOOM button (all games except soccer) ================= */
 const BOOM_T=14,BOOM_POS={train:[750,640],box:[750,560]},SIT={};let boomV=null,boomFx=0;
-function boomOn(){return LOC!=='soccer'&&LOC!=='sniper'&&LOC!=='race'}
+function boomOn(){return LOC!=='soccer'&&LOC!=='sniper'&&LOC!=='race'&&LOC!=='hospital'}
 function boomSpot(){if(BOOM_POS[LOC])return BOOM_POS[LOC];const cx=AW/2,cy=(TOP+AH)/2+20;for(let r=0;r<420;r+=30)for(let a=0;a<6.28;a+=.5){const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r*.7;
   if(TABLES.some(t=>Math.hypot(x-t.x,y-t.y)<t.r+80))continue;if(RECTS.some(q=>x>q.x-80&&x<q.x+q.w+80&&y>q.y-70&&y<q.y+q.h+70))continue;return [Math.round(x),Math.round(y)]}return [cx,cy]}
 function boomSetup(){G.BM=boomOn()?{x:0,y:0,ch:0}:null;if(G.BM){const [x,y]=boomSpot();G.BM.x=x;G.BM.y=y}}

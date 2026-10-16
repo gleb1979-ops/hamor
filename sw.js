@@ -1,4 +1,4 @@
-/* BYD Shorties service worker: network-first, offline fallback from cache */
+/* Tagshim service worker: network-first, offline fallback from cache */
 const C='byd-v1';
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));

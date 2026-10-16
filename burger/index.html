@@ -10,8 +10,8 @@
 <meta name="theme-color" content="#1b1220">
 
 <link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/brand/icon-180.png">
-<title>Burger Rush 🍔 · BYD Shorties</title>
-<meta property="og:title" content="Burger Rush 🍔 · BYD Shorties">
+<title>Burger Rush 🍔 · Tagshim</title>
+<meta property="og:title" content="Burger Rush 🍔 · Tagshim">
 <meta property="og:description" content="Grab more burgers than anyone! Up to 4 players online · Бургер-гонка · מרוץ ההמבורגרים">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://games.tagshim.com/burger/">
@@ -207,7 +207,7 @@ function homeHref(){return '../?lang='+lang}
 hb.onclick=e=>{e.preventDefault();if(isHost&&phase==='play'&&!confirm(T('leaveHost')))return;try{send({t:'bye'},1)}catch(x){}setTimeout(()=>location.href=homeHref(),120)};
 
 let redraw=()=>{};
-function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('mt')[FIXED]+' '+LOCS[FIXED].icon+' · BYD Shorties';lb.textContent=LANG_LABEL[lang];
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('mt')[FIXED]+' '+LOCS[FIXED].icon+' · Tagshim';lb.textContent=LANG_LABEL[lang];
   document.getElementById('pushL').textContent=pushLabel();const lw=document.getElementById('lowL');if(lw)lw.textContent=T('lowB');try{localStorage.setItem('byd-lang3',lang)}catch(e){}}
 lb.onclick=()=>{const n=document.getElementById('nm');if(n)me.name=n.value;lang=LANG_NEXT[lang];applyLang();redraw()};
 
@@ -549,7 +549,7 @@ function paintSoccer(f){const BEACH=mapOf('soccer')==='beach',M2=SM==='m22';
   }
   f.fillStyle=BEACH?'#c99a52':'#1b5e20';f.fillRect(0,TOP-14,AW,14);
   // ad boards
-  const ads=['B.Y.D','⚽','BURGERS','GOAL!'];f.font='900 22px Rubik, Arial';f.textAlign='center';f.textBaseline='middle';f.direction='ltr';
+  const ads=['TAGSHIM','⚽','BURGERS','GOAL!'];f.font='900 22px Rubik, Arial';f.textAlign='center';f.textBaseline='middle';f.direction='ltr';
   for(let i=0;i<8;i++){const x=i*AW/8;f.fillStyle=i%2?'#e8412c':'#1e88e5';f.fillRect(x+4,TOP-12,AW/8-8,10)}
   f.fillStyle=BEACH?'#c99a52':'#2e7d32';f.fillRect(0,TOP-2,14,AH);f.fillRect(0,AH-14,AW,14);
   // lines
@@ -725,7 +725,7 @@ function paintBox(f){f.fillStyle='#15101c';f.fillRect(0,0,AW,AH);
   f.fillStyle='#1d4f8f';f.fillRect(RX0-60,RY0-50,RX1-RX0+120,RY1-RY0+110);
   const m=f.createLinearGradient(0,RY0,0,RY1);m.addColorStop(0,'#dfe7f2');m.addColorStop(1,'#c9d5e6');f.fillStyle=m;f.fillRect(RX0-30,RY0-30,RX1-RX0+60,RY1-RY0+60);
   f.strokeStyle='rgba(30,60,110,.35)';f.lineWidth=6;f.beginPath();f.arc((RX0+RX1)/2,(RY0+RY1)/2,120,0,7);f.stroke();
-  f.font='900 64px Rubik, Arial Black, sans-serif';f.textAlign='center';f.textBaseline='middle';f.fillStyle='rgba(30,60,110,.22)';f.fillText('B.Y.D',(RX0+RX1)/2,(RY0+RY1)/2);
+  f.font='900 46px Rubik, Arial Black, sans-serif';f.textAlign='center';f.textBaseline='middle';f.fillStyle='rgba(30,60,110,.22)';f.fillText('TAGSHIM',(RX0+RX1)/2,(RY0+RY1)/2);
   const posts=[[RX0-30,RY0-30,'#e8412c'],[RX1+30,RY0-30,'#4f8cff'],[RX0-30,RY1+30,'#fff'],[RX1+30,RY1+30,'#fff']];
   for(let k=0;k<3;k++){f.strokeStyle=['#e8412c','#ffffff','#4f8cff'][k];f.lineWidth=7;const o=k*13;f.beginPath();f.moveTo(RX0-30,RY0-30-o);f.lineTo(RX1+30,RY0-30-o);f.moveTo(RX0-30-o*.3,RY0-30-o);f.lineTo(RX0-30-o*.3,RY1+30-o);f.moveTo(RX1+30+o*.3,RY0-30-o);f.lineTo(RX1+30+o*.3,RY1+30-o);f.stroke()}
   for(const [x,y,c] of posts){f.fillStyle='#333';f.fillRect(x-9,y-52,18,60);f.fillStyle=c;rr(f,x-12,y-56,24,40,6);f.fill()}}
@@ -733,7 +733,7 @@ function paintPark(f){f.fillStyle='#5cb85c';f.fillRect(0,0,AW,AH);let seed=3;con
   f.fillStyle='rgba(40,120,40,.35)';for(let i=0;i<220;i++){f.beginPath();f.ellipse(rnd()*AW,TOP+rnd()*(AH-TOP),6+rnd()*10,3,rnd()*3,0,7);f.fill()}
   f.strokeStyle='#e9d6a8';f.lineWidth=70;f.lineCap='round';f.beginPath();f.moveTo(90,520);f.lineTo(AW-90,520);f.moveTo(750,TOP+20);f.lineTo(750,AH-30);f.stroke();
   f.fillStyle='#2a1b3d';f.fillRect(0,0,AW,TOP-10);for(let x=0;x<AW;x+=60){const c=['#ffc531','#e8412c','#4f8cff','#5cc560','#ff6fae'][(x/60)%5];f.fillStyle=c;f.beginPath();f.arc(x+30,TOP-40+Math.sin(x)*8,7,0,7);f.fill()}
-  f.font='900 46px Rubik, Arial Black, sans-serif';f.textAlign='center';f.textBaseline='middle';f.fillStyle='#ffc531';f.shadowColor='#e8412c';f.shadowBlur=16;f.fillText('BYD FUN PARK',AW/2,58);f.shadowBlur=0;
+  f.font='900 46px Rubik, Arial Black, sans-serif';f.textAlign='center';f.textBaseline='middle';f.fillStyle='#ffc531';f.shadowColor='#e8412c';f.shadowBlur=16;f.fillText('TAGSHIM PARK',AW/2,58);f.shadowBlur=0;
   f.fillStyle='#8a5a32';f.fillRect(0,TOP-12,AW,12);
   if(!DECO.ready)for(const [x,y] of [[90,260],[1410,260],[90,800],[1410,800],[560,220],[940,220]]){f.fillStyle='#3d8b3d';f.beginPath();f.arc(x,y,34,0,7);f.fill();f.fillStyle='#2f6f2f';f.beginPath();f.arc(x+8,y+6,22,0,7);f.fill()}
   const [C,W,I,Bc,Cc]=VMAPS.park;

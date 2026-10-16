@@ -6,10 +6,10 @@
 <link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="BYD Shorties">
+<meta name="apple-mobile-web-app-title" content="Tagshim">
 <link rel="apple-touch-icon" href="/brand/icon-180.png">
-<title>Who's the Donkey? 🫏 · BYD Shorties</title>
-<meta property="og:title" content="Who's the Donkey? 🫏 · BYD Shorties">
+<title>Who's the Donkey? 🫏 · Tagshim</title>
+<meta property="og:title" content="Who's the Donkey? 🫏 · Tagshim">
 <meta property="og:description" content="Tap the carrot faster than your friends. The slowest becomes the donkey! · Кто осёл? · מי חמור?">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://games.tagshim.com/donkey/">
@@ -113,7 +113,7 @@ if(!lang){try{lang=localStorage.getItem('byd-lang3')}catch(e){}}
 if(!['en','ru','he'].includes(lang))lang='en';
 const LANG_NEXT={en:'ru',ru:'he',he:'en'},LANG_LABEL={en:'🌐 EN',ru:'🌐 RU',he:'🌐 HE'};
 const T=k=>L[lang][k];
-function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('title')+' 🫏 · BYD Shorties';
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.title=T('title')+' 🫏 · Tagshim';
   lb.textContent=LANG_LABEL[lang];try{localStorage.setItem('byd-lang3',lang)}catch(e){}}
 const lb=document.createElement('button');lb.className='lang';document.body.appendChild(lb);
 const hb=document.createElement('a');hb.className='homeb';hb.textContent='🏠';document.body.appendChild(hb);

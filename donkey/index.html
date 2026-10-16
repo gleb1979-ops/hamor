@@ -154,7 +154,12 @@ function step(){const now=performance.now();ctx.clearRect(0,0,W,H);for(const p o
   else if(p.y>H-p.sz/2&&p.vy>0){p.y=H-p.sz/2;if(p.pile){p.vy=0;p.vx=0;p.r=0;p.life-=.004}else{p.vy*=-.45;p.vx*=.7;p.life-=.18}}
   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,p.life*2));ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.drawImage(sprite(p.e),-p.sz/2,-p.sz/2,p.sz,p.sz);ctx.restore()}
   parts=parts.filter(p=>p.life>0&&p.y<H+200);if(parts.length)requestAnimationFrame(step);else{running=false;ctx.clearRect(0,0,W,H)}}
-let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}}
+let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume();sfxLoad()}catch(e){}}
+// Sounds: Kenney Music Jingles / Interface Sounds (CC0)
+const SFXN=['win','lose','medal','click','err','pick','go'],SB={};let sfxLoading=false;
+function sfxLoad(){if(sfxLoading||!ac)return;sfxLoading=true;SFXN.forEach(n=>fetch('../sfx/'+n+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((res,rej)=>ac.decodeAudioData(b,res,rej))).then(buf=>{SB[n]=buf}).catch(()=>{}))}
+function sfx(n,vol=.6){if(!ac||!SB[n])return false;try{const s=ac.createBufferSource(),g=ac.createGain();s.buffer=SB[n];g.gain.value=vol;s.connect(g).connect(ac.destination);s.start()}catch(e){return false}return true}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button:not(.tgt),a.btn'))sfx('click',.35)},true);
 function blip(f){if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.8,t+.08);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.13)}catch(e){}}
 function boom(){try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}if(!ac)return;try{const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(40,t+.5);g.gain.setValueAtTime(.6,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.6)}catch(e){}}
 function rank(ms){return ms<450?'🐆':ms<650?'🐎':ms<900?'🐢':'🫏'}
@@ -278,25 +283,25 @@ function playRound(m){redraw=()=>{};lb.hidden=true;hb.hidden=true;const my=m.mod
   app.innerHTML=`<div class="hud"><h2>${T('round')} ${m.round}${m.mode==='long'?'':'/'+ROUNDS}</h2>${my>=0?donkey(my,56)+word(my):''}<p id="hm">${T('waitCarrot')}</p></div><div id="pad"></div>`;
   const pad=document.getElementById('pad'),hm=document.getElementById('hm');let state='wait',t0,done=false;
   const report=ms=>{if(done)return;done=true;send({t:'res',round:m.round,ms})};
-  pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML=`<span class="err">${T('early')}</span>`;try{navigator.vibrate(150)}catch(e){};report(1500)});
+  pad.addEventListener('pointerdown',()=>{if(state!=='wait')return;state='x';clearTimeout(tm);hm.innerHTML=`<span class="err">${T('early')}</span>`;sfx('err',.5);try{navigator.vibrate(150)}catch(e){};report(1500)});
   const tm=setTimeout(()=>{if(state!=='wait')return;state='go';const t=document.createElement('button');t.className='tgt';t.textContent='🥕';t.setAttribute('aria-label',T('carrot'));
     let px=10+m.x*(W-150),py=130+m.y*Math.max(40,H-300);const sp=Math.min(W,H)*.42,ang=m.a??Math.random()*6.28;let vx=Math.cos(ang)*sp,vy=Math.sin(ang)*sp,last=performance.now();
     const place=()=>{t.style.left=px+'px';t.style.top=py+'px'};place();pad.appendChild(t);t0=performance.now();
     (function mv(now){if(state!=='go')return;const dt=Math.min(.05,(now-last)/1000);last=now;px+=vx*dt;py+=vy*dt;
       if(px<8){px=8;vx=Math.abs(vx)}if(px>W-96){px=W-96;vx=-Math.abs(vx)}if(py<120){py=120;vy=Math.abs(vy)}if(py>H-100){py=H-100;vy=-Math.abs(vy)}
       t.style.transform=`rotate(${Math.sin(now/180)*14}deg)`;place();requestAnimationFrame(mv)})(last);
-    t.addEventListener('pointerdown',e=>{e.stopPropagation();if(state!=='go')return;state='x';const dt=Math.round(performance.now()-t0);blip(500+Math.max(0,900-dt));
+    t.addEventListener('pointerdown',e=>{e.stopPropagation();if(state!=='go')return;state='x';const dt=Math.round(performance.now()-t0);blip(500+Math.max(0,900-dt));sfx('pick',.45);
       const b=t.getBoundingClientRect();burst(b.left+44,b.top+44,['🥕','✨'],12,.5);t.remove();hm.textContent=`${dt} ${T('ms')} · ${T('waitOthers')}`;report(dt)});
     setTimeout(()=>{if(state==='go'){state='x';t.remove();hm.textContent=T('slept');report(3000)}},3000)},m.delay)}
 
 function shortResult(m,again){redraw=()=>shortResult(m,1);lb.hidden=false;hb.hidden=false;const ids=Object.keys(m.ms).sort((a,b)=>m.ms[a]-m.ms[b]);const worst=m.ms[ids[ids.length-1]];
-  const place=ids.indexOf(me.id),pm=[0,1,2].map(i=>mimg(i,26)),pmB=[0,1,2].map(i=>mimg(i,84));if(!again)blip(m.ms[me.id]===worst&&ids.length>1?300:700);
+  const place=ids.indexOf(me.id),pm=[0,1,2].map(i=>mimg(i,26)),pmB=[0,1,2].map(i=>mimg(i,84));if(!again){const lo=m.ms[me.id]===worst&&ids.length>1;if(!sfx(lo?'lose':'medal',.6))blip(lo?300:700)}
   app.innerHTML=`<div class="big">${place>=0&&place<3?pmB[place]:'🫏'}</div><h1 style="font-size:clamp(24px,7vw,38px)">${T('rres')(m.round)}</h1>
     <ol class="list">${ids.map((id,k)=>`<li class="${m.ms[id]===worst&&ids.length>1?'loser':id===me.id?'me':''}"><span>${k<3?pm[k]:k+1+'.'} ${esc(m.names[id]||'?')}${id===me.id?' '+T('you'):''}</span><span>${m.ms[id]} ${T('ms')} ${rank(m.ms[id])}</span></li>`).join('')}</ol>
     <p class="status">${m.round<ROUNDS?T('next'):'🏁'}</p>`}
 function roundResult(m){redraw=()=>roundResult(m,1);lb.hidden=false;hb.hidden=false;const mine=m.losers.includes(me.id);
   const names=m.losers.map(id=>m.names[id]||'?');const L1=WORDS[lang][(m.letters[m.losers[0]]||1)-1];
-  const again=arguments[1];if(!again){if(mine){blip(300);try{navigator.vibrate&&navigator.vibrate([150,60,150])}catch(e){}}else blip(700)}
+  const again=arguments[1];if(!again){sfx(mine?'lose':'medal',.6);if(mine){blip(300);try{navigator.vibrate&&navigator.vibrate([150,60,150])}catch(e){}}else blip(700)}
   const myN=m.letters[me.id]||0,myFrom=again?myN:(mine?myN-1:myN);
   const rows=Object.keys(m.letters).sort((a,b)=>m.letters[a]-m.letters[b]||(m.ms[a]-m.ms[b])).map(id=>
     `<li class="${m.losers.includes(id)?'loser':id===me.id?'me':''}"><span>${esc(m.names[id]||'?')}</span><span>${m.ms[id]} ${T('ms')} &nbsp;${donkey(m.letters[id],30,again?m.letters[id]:(m.losers.includes(id)?m.letters[id]-1:m.letters[id]))}</span></li>`).join('');
@@ -304,7 +309,7 @@ function roundResult(m){redraw=()=>roundResult(m,1);lb.hidden=false;hb.hidden=fa
     ${mine?'':`<p>${esc(T('gotLetter')(names.join(', '),L1))}</p>`}<ol class="list">${rows}</ol><p class="status">${T('next')}</p>`;fillDonkeys()}
 
 function final(board,again){const mode=arguments[2]||board.mode||'short';board=board.rows||board;lb.hidden=false;hb.hidden=false;redraw=()=>final({rows:board,mode},1);
-  const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!again){boom();bray(4,iAm);rain(['🫏'],iAm?140:70);setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
+  const last=board[board.length-1];const iAm=last&&last.id===me.id;if(!again){boom();bray(4,iAm);if(board[0]&&board[0].id===me.id&&!iAm)setTimeout(()=>sfx('win',.6),400);rain(['🫏'],iAm?140:70);setTimeout(()=>burst(W/2,H*.4,['🫏','😂','🥕'],100,1.2),300)}
   const hh=again?'':[0,1,2,3].map(i=>`<span class="hh" style="animation-delay:${i*.75}s;top:${-8-i%2*18}px;${i%2?'left':'right'}:${-10+i*4}px">${T('heehaw')}</span>`).join('');
   const txt=(mode==='long'?T('lettersShare')(last.name):T('shareText')(last.name,last.ms))+' '+baseLink();
   app.innerHTML=`<div class="dk-wrap">${hh}${donkey(4,170,again?4:(mode==='long'?3:0),again?'':'bray')}</div><h1>${iAm?T('youHamor'):esc(last.name)+T('isHamor')}</h1>

@@ -140,7 +140,7 @@ const barC=document.createElement('canvas');barC.width=128;barC.height=20;const 
 const aimL=new THREE.Mesh(new THREE.PlaneGeometry(1.4,.12),new THREE.MeshBasicMaterial({color:0xb6ff3b,transparent:true,opacity:.6,depthWrite:false}));aimL.rotation.x=-Math.PI/2;aimL.visible=false;scene.add(aimL);
 const ringGeo=new THREE.RingGeometry(.36,.45,40);
 const PL={},KP=[];
-function getPlayer(p){let o=PL[p.id];if(o&&o.key===p.star+p.team+p.rar)return o;if(o)scene.remove(o.c.holder);
+let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
   const c=makeChar(model,cols,{muscle:true,h:p.star==='bakari'?1.7:p.star==='tino'?1.52:1.62});c.holder.traverse(x=>{if(x.material&&x.material.userData.un)x.material.userData.un.kShirt.value=SHIRTLESS[model]?0:1});
   const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:p.me?0xb6ff3b:new THREE.Color(KIT[p.team].j),transparent:true,opacity:.9,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=.025;c.holder.add(ring);
@@ -148,8 +148,8 @@ function getPlayer(p){let o=PL[p.id];if(o&&o.key===p.star+p.team+p.rar)return o;
   const lab=textSprite((p.me?'▼ ':'')+p.name,p.me?'#b6ff3b':KIT[p.team].j,44);lab.position.y=p.me?2.1:1.95;c.holder.add(lab);
   const fire=textSprite('🔥','#fff',44);fire.position.set(0,2.4,0);fire.visible=false;c.holder.add(fire);
   const stars=textSprite('💫','#fff',44);stars.position.set(0,1.9,0);stars.visible=false;c.holder.add(stars);
-  scene.add(c.holder);o=PL[p.id]={c,key:p.star+p.team+p.rar,ring,aura,lab,fire,stars,ang:p.team?-Math.PI/2:Math.PI/2,ph:0,px:null,py:null,spd:0};return o}
-function getKeeper(i){if(KP[i])return KP[i];const k=KIT[i];const c=makeChar('robert',{kJ:k.gk,kS:'#15151c',kSo:k.gk,kB:'#1b1b24',kSk:SKIN.robert,kFa:k.gk,kHa:'#ffffff'},{muscle:true,h:1.72});c.holder.traverse(x=>{if(x.material&&x.material.userData.un)x.material.userData.un.kShirt.value=1});scene.add(c.holder);return KP[i]={c}}
+  scene.add(c.holder);o=PL[p.id]={c,key,ring,aura,lab,fire,stars,ang:p.team?-Math.PI/2:Math.PI/2,ph:0,px:null,py:null,spd:0};return o}
+function getKeeper(i){const k=KITS[i];if(KP[i]&&KP[i].col===k.gk)return KP[i];if(KP[i])scene.remove(KP[i].c.holder);const c=makeChar('robert',{kJ:k.gk,kS:'#15151c',kSo:k.gk,kB:'#1b1b24',kSk:SKIN.robert,kFa:k.gk,kHa:'#ffffff'},{muscle:true,h:1.72});c.holder.traverse(x=>{if(x.material&&x.material.userData.un)x.material.userData.un.kShirt.value=1});scene.add(c.holder);return KP[i]={c,col:k.gk}}
 /* particles */
 const parts=[];function burst(x,y,col,n){for(let i=0;i<n;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:radTex,color:new THREE.Color(col),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));const a=Math.random()*6.28,sp=2+Math.random()*5;s.position.set(wx(x),.8,wz(y));s.scale.setScalar(.25);s.userData={vx:Math.cos(a)*sp,vy:2+Math.random()*4,vz:Math.sin(a)*sp,t:0,l:.8+Math.random()*.6};scene.add(s);parts.push(s)}}
 R3D.burst=burst;
@@ -157,7 +157,7 @@ R3D.burst=burst;
 const camT=new THREE.Vector3(),camP=new THREE.Vector3();let camInit=false;
 let Q=1,fpsN=0,fpsT0=0;R3D.render=function(S){const pn=performance.now();if(!fpsT0)fpsT0=pn;fpsN++;if(pn-fpsT0>2500){const f=fpsN/((pn-fpsT0)/1000);fpsN=0;fpsT0=pn;if(f<24&&Q>0){Q--;if(Q===0){rd.shadowMap.enabled=false;scene.traverse(o=>{if(o.material)o.material.needsUpdate=true})}}}
   const w=innerWidth,h=innerHeight,dpr=Q?Math.min(2,devicePixelRatio||1):Math.min(1.25,devicePixelRatio||1);if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){rd.setPixelRatio(dpr);rd.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
-  const t=S.t,dt=S.dt;const seen=new Set();
+  const t=S.t,dt=S.dt;const seen=new Set();if(S.kits)KITS=S.kits;
   for(const p of S.P){if(p.x==null)continue;seen.add(p.id);const o=getPlayer(p),c=o.c;const X=wx(p.x),Z=wz(p.y);
     if(o.px!=null){const mx=X-o.px,mz=Z-o.py,d=Math.hypot(mx,mz);o.spd=lerpF(o.spd,Math.min(1.2,d/Math.max(dt,1e-3)/3.6),Math.min(1,dt*10));o.ph+=d*3.3;if(d>.004&&p.anim!==3&&p.anim!==4)o.tang=Math.atan2(mx,mz)}o.px=X;o.py=Z;
     if(p.me&&S.myDir&&(Math.abs(S.myDir[0])+Math.abs(S.myDir[1])>.1))o.tang=Math.atan2(S.myDir[0],S.myDir[1]);if(o.tang==null)o.tang=p.face<0?-Math.PI/2:Math.PI/2;

@@ -62,7 +62,7 @@ input:focus{border-color:var(--cy)}
 #hud{position:fixed;top:max(6px,env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:5}
 #hud[hidden]{display:none}
 .sb{direction:ltr;display:flex;align-items:center;gap:10px;background:#07071acc;border-radius:14px;padding:5px 12px;box-shadow:0 0 0 2px #ffffff18;font-weight:900;font-size:clamp(16px,3.4vw,26px)}
-.sb .a{color:var(--cy);text-shadow:0 0 10px #22e3ff}.sb .b{color:var(--pk);text-shadow:0 0 10px #ff3d8b}.sb .tm{color:#fff;font-size:.8em;min-width:3.4em;text-align:center}
+.sb .a{color:var(--ta,var(--cy));text-shadow:0 0 10px var(--ta,#22e3ff)}.sb .b{color:var(--tb,var(--pk));text-shadow:0 0 10px var(--tb,#ff3d8b)}.sb .tm{color:#fff;font-size:.8em;min-width:3.4em;text-align:center}
 #ctrl{position:fixed;inset:0;z-index:4;pointer-events:none}
 #ctrl[hidden]{display:none}
 #zone{position:absolute;left:0;top:0;bottom:0;width:50%;pointer-events:auto}
@@ -108,8 +108,8 @@ input:focus{border-color:var(--cy)}
 <div class="scr" id="end" hidden></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="../../net.js"></script>
-<script src="game.js?v=5"></script>
+<script src="game.js?v=6"></script>
 <script type="importmap">{"imports":{"three":"../lib/three.module.min.js","three/addons/":"../lib/addons/"}}</script>
-<script type="module" src="r3d.js?v=5"></script>
+<script type="module" src="r3d.js?v=6"></script>
 </body>
 </html>

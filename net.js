@@ -2,7 +2,7 @@
 (function () {
   var LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   var qp = new URLSearchParams(location.search).get('ws');
-  var BASE = (LOCAL && qp) ? qp : (location.protocol === 'file:' ? null : 'wss://rooms.tagshim.com');
+  var BASE = (LOCAL && qp) ? qp : (location.protocol === 'file:' ? null : 'wss://shorties-rooms.gleb1979.workers.dev');
   window.SHORTIES_WS = BASE;
   window.roomClient = function (topic, mqttUrl, mqttOpts) {
     var h = {}, mode = 'ws', ws = null, mq = null, opened = false, closed = false, tries = 0, q = [];

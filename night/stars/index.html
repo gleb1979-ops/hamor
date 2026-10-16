@@ -69,10 +69,11 @@ input:focus{border-color:var(--cy)}
 #stick{direction:ltr;position:absolute;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;background:#ffffff10;box-shadow:inset 0 0 0 3px #ffffff30;pointer-events:none;left:110px;bottom:40px;top:auto}
 #knob{position:absolute;left:35px;top:35px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#b6ff3b);box-shadow:0 0 16px #b6ff3b88}
 .ab{position:absolute;pointer-events:auto;border:0;border-radius:50%;font-weight:900;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:inset 0 -5px 0 #0005,0 0 20px #0008}
-.ab span{font-size:12px;margin-top:2px}
-#bKick{width:clamp(80px,25vh,118px);height:clamp(80px,25vh,118px);right:max(18px,env(safe-area-inset-right));bottom:clamp(14px,5vh,28px);background:radial-gradient(circle at 40% 30%,#7cf3ff,#0aa9c9);font-size:34px}
-#bSkill{width:clamp(60px,18vh,84px);height:clamp(60px,18vh,84px);right:calc(max(18px,env(safe-area-inset-right)) + clamp(88px,27vh,128px));bottom:clamp(10px,4vh,24px);background:radial-gradient(circle at 40% 30%,#d6ff7a,#6fae08);font-size:26px;color:#102000}
-#bSup{width:clamp(60px,18vh,84px);height:clamp(60px,18vh,84px);right:calc(max(18px,env(safe-area-inset-right)) + 10px);bottom:calc(clamp(14px,5vh,28px) + clamp(88px,27vh,128px));background:radial-gradient(circle at 40% 30%,#ffb2d0,#d1135f);font-size:26px}
+.ab span{font-size:11px;margin-top:2px}
+.ab{opacity:.62;transition:opacity .15s}.ab:active,.ab.ready{opacity:.95}
+#bKick{width:clamp(70px,21vh,104px);height:clamp(70px,21vh,104px);right:max(14px,env(safe-area-inset-right));bottom:clamp(10px,4vh,22px);background:radial-gradient(circle at 40% 30%,#7cf3ff,#0aa9c9);font-size:30px}
+#bSkill{width:clamp(52px,15vh,72px);height:clamp(52px,15vh,72px);right:calc(max(14px,env(safe-area-inset-right)) + clamp(78px,23vh,114px));bottom:clamp(8px,3vh,18px);background:radial-gradient(circle at 40% 30%,#d6ff7a,#6fae08);font-size:22px;color:#102000}
+#bSup{width:clamp(52px,15vh,72px);height:clamp(52px,15vh,72px);right:calc(max(14px,env(safe-area-inset-right)) + clamp(78px,23vh,114px) + clamp(58px,17vh,82px));bottom:clamp(8px,3vh,18px);background:radial-gradient(circle at 40% 30%,#ffb2d0,#d1135f);font-size:22px}
 #bSup.ready{animation:pulse .6s infinite alternate;box-shadow:0 0 30px #ff3d8b,inset 0 -5px 0 #0005}
 #bSup:not(.ready){filter:grayscale(.7) brightness(.6)}
 .ab.cd{filter:grayscale(.8) brightness(.6)}
@@ -108,8 +109,8 @@ input:focus{border-color:var(--cy)}
 <div class="scr" id="end" hidden></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="../../net.js"></script>
-<script src="game.js?v=6"></script>
+<script src="game.js?v=7"></script>
 <script type="importmap">{"imports":{"three":"../lib/three.module.min.js","three/addons/":"../lib/addons/"}}</script>
-<script type="module" src="r3d.js?v=6"></script>
+<script type="module" src="r3d.js?v=7"></script>
 </body>
 </html>

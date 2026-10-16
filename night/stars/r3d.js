@@ -174,7 +174,7 @@ let Q=1,fpsN=0,fpsT0=0;R3D.render=function(S){const pn=performance.now();if(!fps
   for(let i=parts.length-1;i>=0;i--){const s=parts[i],d=s.userData;d.t+=dt;if(d.t>d.l){scene.remove(s);parts.splice(i,1);continue}d.vy-=9*dt;s.position.x+=d.vx*dt;s.position.y=Math.max(.05,s.position.y+d.vy*dt);s.position.z+=d.vz*dt;s.material.opacity=1-d.t/d.l}
   // camera
   const asp=w/h,dist=asp>1.6?10.8:asp>1.2?12:15;let tx=ball.position.x,tz=ball.position.z;if(S.meP&&!S.rf){tx=lerpF(tx,wx(S.meP.x),.3);tz=lerpF(tz,wz(S.meP.y),.3)}
-  const halfV=Math.tan(cam.fov*Math.PI/360)*dist,halfW=halfV*asp*.92;tx=Math.max(-FW/2-1.2+halfW,Math.min(FW/2+1.2-halfW,tx));if(halfW*2>FW+2.4)tx=0;tz=Math.max(-FD/2+1.2,Math.min(FD/2-.6,tz));
+  const halfV=Math.tan(cam.fov*Math.PI/360)*dist,halfW=halfV*asp*.92;tx=Math.max(-FW/2-1.2+halfW,Math.min(FW/2+1.2-halfW+halfW*.42,tx));tz=Math.max(-FD/2+1.2,Math.min(FD/2-.6+halfV*.35,tz));
   if(!camInit){camT.set(tx,0,tz);camInit=true}camT.x=lerpF(camT.x,tx,Math.min(1,dt*(S.rf?5:3.2)));camT.z=lerpF(camT.z,tz,Math.min(1,dt*3));
   const sh=S.shake||0;camP.set(camT.x+(Math.random()-.5)*sh*.02,dist*.78+(Math.random()-.5)*sh*.02,camT.z+dist*.66);cam.position.copy(camP);cam.lookAt(camT.x,.6,camT.z-.2);
   sun.position.set(camT.x-4,12,camT.z+7);sun.target.position.set(camT.x,0,camT.z);

@@ -45,6 +45,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 .status{font-size:13px;color:var(--muted)}
 .err{color:var(--ketchup)}
 .chars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(100%,400px)}
+.chars .char:nth-child(5){grid-column:1/-1}
 .char{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:10px 8px;display:grid;justify-items:center;gap:4px;color:var(--fg);box-shadow:none;font-weight:500}
 .char canvas{width:72px;height:84px}
 .char b{font-size:15px}
@@ -145,9 +146,12 @@ const SPAWN_SOC={girl:[260,300],fat:[260,710],tall:[520,330],nerd:[520,680]};
 let LOC='diner',TABLES=DINER_T,RECTS=[];
 const TRAIN_R=[{x:290,y:420,w:960,h:96}],CAGE={x:750,y:320},DOORS=[[400,394],[640,394],[880,394],[400,548],[640,548],[880,548]];
 function setLoc(l){LOC=LOCS[l]?l:'diner';TABLES=LOC==='diner'?DINER_T:LOC==='snow'?SNOW_T:LOC==='villain'?VMAPS[VM]:[];RECTS=LOC==='school'?SCHOOL_R:LOC==='train'?TRAIN_R:[];if(GMS[LOC]){TABLES=GMS[LOC].tables?GMS[LOC].tables():[];RECTS=GMS[LOC].rects?GMS[LOC].rects():[]}}
-const ORDER=['girl','fat','tall','nerd'];
+const CORE=['girl','fat','tall','nerd'],ORDER=[...CORE,'donkey'];let DKS='nerd';
+function dkSlot(r){return ['nerd','tall','fat','girl'].find(c=>!r.some(x=>x[1]===c))||'nerd'}
+function sk(c){return c==='donkey'?DKS:c}
+const ACT={};
 const CH={girl:{col:'#ff6fae',sp:345,mass:1,pw:1,r:30,pick:0},fat:{col:'#4f8cff',sp:265,mass:2,pw:1.7,r:40,pick:0},
-  tall:{col:'#3fbf6f',sp:375,mass:1.05,pw:.85,r:29,pick:0},nerd:{col:'#ff9f2e',sp:315,mass:1,pw:1,r:31,pick:28}};
+  tall:{col:'#3fbf6f',sp:375,mass:1.05,pw:.85,r:29,pick:0},nerd:{col:'#ff9f2e',sp:315,mass:1,pw:1,r:31,pick:28},donkey:{col:'#b07a45',sp:325,mass:1.3,pw:1.35,r:33,pick:6}};
 const SPAWN={girl:[120,250],fat:[1380,250],tall:[120,790],nerd:[1380,790]};
 
 /* ================= i18n ================= */
@@ -166,8 +170,8 @@ const L={
   mtag:{pizza:'Up to 4 players. Grab ingredients from the crates and build pizzas by the recipe! Steal toppings from each other, or cook together and chase off the sneaky rats.',ghost:'Up to 4 players. A dark castle full of ghosts! Collect candles, light the way with a lantern and banish ghosts with a flash. Or one of you secretly plays the ghost and scares everyone!',balloon:'Up to 4 players. Everyone has 3 balloons. Pop the others and keep yours! Or team up against the prickly hedgehogs. Two maps: a fair and the rooftops.',dino:'Up to 4 players. The dinosaurs woke up at night! Collect fossils in the dark, unfreeze your friends and flash the dinos with your camera. Or play infection: whoever the dino catches becomes a dino too!',pirate:'Up to 4 players. Dig up treasure on the X marks, drag the chest to your boat and dodge the skeleton pirates! Two islands and two modes: one crew together, or every pirate for himself.',train:'Up to 4 players. Rob a train in the Wild West! Grab gold sacks from the wagons, carry them to your horse and dodge the train drivers. Two modes: all together, or every robber for himself.',diner:'Up to 4 players. 7 burgers per round: grab and push! Anyone behind the leader is out, until one champion is left.',school:'Up to 4 players. Sneak up behind a teacher and kick! Get spotted — go to the corner. Most kicks wins.',soccer:'Up to 4 players. One ball, a big goal and the PE teacher in goal. Score the most and become champion!',snow:'Up to 4 players. Snowballs, snowmen to hide behind and a golden mega snowball. Best shot wins!',box:'Up to 4 players, all against all. Punch, dodge, and land a low blow when the referee is not looking. Caught twice — disqualified! Last one standing wins.',villain:'Up to 4 players. One of you is a secret villain who hides nasty traps. Collect 20 keys, avoid the traps and catch the villain!'},
   inviteM:{pizza:"Let's play “Pizza Chaos” 🍕 Who makes the most pizzas? ",ghost:"Let's play “Ghost Castle” 👻 Brave enough to come in? ",balloon:"Let's play “Balloon Battle” 🎈 Who keeps their balloons the longest? ",dino:"Let's play “Dino Night” 🦖 Can you survive the night at the museum? ",pirate:"Let's play “Pirate Gold” 🏴‍☠️ Who digs up the most treasure? ",train:"Let's play “Train Robbers” 🚂 Who steals the most gold? ",diner:"Let's play “Burger Rush” 🍔 Who grabs the most burgers? ",school:"Let's play “Teacher Kick” 🏫 Who kicks the teachers the most? ",soccer:"Let's play “Bombardier” ⚽ Who scores the most? ",snow:"Let's play “Snow Battle” ❄️ Who's the best shot? ",box:"Let's play “Crazy Boxing” 🥊 Last one standing wins: ",villain:"Let's play “Who's the Villain?” 🦹 Find the villain before they trap you: "},
   other:'EN',
-  names:{girl:'Girl',fat:'Chubby',tall:'Lanky',nerd:'Nerd'},
-  perks:{girl:'Fast and nimble',fat:'Slow, but pushes the hardest',tall:'The fastest, weak push',nerd:'Grabs things from afar'}},
+  names:{girl:'Girl',fat:'Chubby',tall:'Lanky',nerd:'Nerd',donkey:'Donkey'},
+  perks:{girl:'Fast and nimble',fat:'Slow, but pushes the hardest',tall:'The fastest, weak push',nerd:'Grabs things from afar',donkey:'Kicks with hooves — strong push'}},
  ru:{tipPzT:'🍕 Готовьте вместе! Хватайте ингредиенты из ящиков и несите к большому столу — рецепт над ним. 🐀 Крысы воруют начинку: 💥 прогоняет крысу',tipPzF:'🍕 У каждого свой рецепт над своим столом. Носи нужные ингредиенты из ящиков по одному. 💥 бьёт соперника и отнимает ингредиент. Больше всех пицц — победа',pzTeam:'🤝 Готовим вместе против крыс',pzFfa:'🍕 Каждый повар сам за себя',pzWin:'Пиццерия — хит!',pzLose:'Крысы испортили ужин!',notNeeded:'Этого нет в рецепте!',ratAte:'Крыса утащила!',ratStole:'Крыса украла начинку!',sharePz:(n,s)=>`В «Пицца-хаосе» 🍕 ${n} приготовил(а) ${pl(s,'пиццу','пиццы','пицц')}! Кто быстрее?`,sharePzT:(n,s)=>`Наша пиццерия победила крыс в «Пицца-хаосе» 🍕! Готовь с нами!`,btnLamp:'Вспышка!',btnBoo:'Бу!',btnCatch:'Поймал!',tipGhT:'👻 Все вместе против привидений! Собирайте 🕯 свечи в темноте. Привидения невидимы, пока не подлетят близко — каждый испуг стоит команде свечу. 💥 прогоняет привидение рядом',tipGhF:'👻 Один из вас — привидение! Его не видно издалека, оно пугает игроков (+2). Остальные собирают 🕯 свечи (+1) — заметил привидение рядом, жми 💥 и поймай его (+3)',ghTeam:'🤝 Все вместе против привидений',ghFfa:'👻 Один игрок — привидение',mapHall:'🏰 Большой зал',mapCrypt:'⚰️ Подземелье',ghWin:'Замок озарился светом!',ghLose:'Привидения оставили замок во тьме!',youGhost:'Ты ПРИВИДЕНИЕ! 👻',boo:'БУ!',gotGhost:'Привидение поймано!',shareGh:(n,s)=>`В «Замке с привидениями» 👻 ${n} набрал(а) ${pl(s,'очко','очка','очков')}! Не струсишь?`,shareGhT:(n,s)=>`Мы осветили «Замок с привидениями» 👻! ${n} нашёл(ла) ${pl(s,'свечу','свечи','свечей')}. Играй с нами!`,btnPop:'Лопни!',btnShoo:'Кыш!',popTxt:'БАХ!',tipBalT:'🦔 Все вместе против ежей! Их колючки лопают шарики. 💥 прогоняет ежа. Хватай 🎈 — вернёшь шарик. Сберегите хоть один шарик до конца!',balOut:'💨 Шарики кончились — смотри, кто победит!',tipBalF:'🎈 У каждого 3 шарика. Подбеги к сопернику и жми 💥 — лопнешь шарик! Хватай 🎈 — вернёшь свой. Побеждает последний с шариками',balTeam:'🤝 Все вместе против ежей',balFfa:'🎈 Каждый сам за себя',mapFair:'🎡 Ярмарка',mapRoof:'🏙 Крыши',balWin:'Ваши шарики уцелели!',balLose:'Ежи лопнули все шарики!',shareBal:(n,s)=>`В «Битве шариков» 🎈 ${n} сберёг(ла) ${pl(s,'шарик','шарика','шариков')}! Кто лопнет?`,shareBalT:(n,s)=>`Наши шарики пережили ежей в «Битве шариков» 🎈! Играй с нами!`,btnFlash:'Вспышка!',btnBite:'Кусь!',tipDinoT:'🦖 Все вместе против динозавров! Собирайте 🦴 окаменелости в темноте. Поймали — замираешь статуей: друг расколдует, если добежит до тебя. 📸 Вспышка оглушает динозавра',tipDinoF:'🦖 Заражение! Один игрок — динозавр. Кого он поймал, тот тоже становится динозавром. Люди: собирайте 🦴 и доживите до конца (+3). Динозавры: ловите всех (+2 за каждого)',dinoTeam:'🤝 Все вместе против динозавров',dinoFfa:'🦖 Заражение: пойман — динозавр',mapMuseum:'🏛 Тёмный музей',mapDJungle:'🌋 Джунгли динозавров',dinoWin:'Вы пережили эту ночь!',dinoLose:'Этой ночью победили динозавры!',youDino:'Ты ДИНОЗАВР! 🦖',frozen:'Замер!',infected:'Теперь динозавр!',shareDino:(n,s)=>`В «Ночи в музее» 🦖 ${n} набрал(а) ${pl(s,'очко','очка','очков')}! А ты переживёшь эту ночь?`,shareDinoT:(n,s)=>`Мы пережили «Ночь в музее» 🦖! ${n} нашёл(а) ${pl(s,'окаменелость','окаменелости','окаменелостей')}. Присоединяйся!`,btnHit:'Бей!',tipPirT:'🏴‍☠️ Одна команда против скелетов! Встань на ✖ — выкопаешь сундук, тащи его к СВОЕЙ лодке. Поймали — в клетку, друзья освободят. 💥 сбивает скелета с ног',tipPirF:'💰 Каждый сам за себя! Копай сундуки на ✖ и тащи к СВОЕЙ лодке. 💥 бьёт соперника и отнимает сундук. Скелеты закапывают сундук обратно',pirTeam:'🤝 Одна команда против скелетов',pirFfa:'🏴‍☠️ Каждый сам за себя',mapBeach:'🏝 Пляж сокровищ',mapJungle:'🌴 Храм в джунглях',pirWin:'Команда нашла все сокровища!',pirLose:'Скелеты сберегли своё золото!',sharePir:(n,s)=>`В «Пиратском кладе» 🏴‍☠️ ${n} откопал(а) ${pl(s,'сундук','сундука','сундуков')}! А ты сможешь больше?`,sharePirT:(n,s)=>`Наша команда нашла клад в «Пиратском кладе» 🏴‍☠️! ${n} откопал(а) ${pl(s,'сундук','сундука','сундуков')}. Присоединяйся!`,tipTeam:'🤝 Все вместе против машинистов! Подбеги к мешку 💰 и тащи к СВОЕЙ лошади. Поймали — в клетку: друзья освободят, если добегут до неё. 💥 сбивает машиниста с ног',tipFfa:'💰 Каждый сам за себя! Тащи мешки к СВОЕЙ лошади. 💥 бьёт соперника и отнимает мешок. Машинист отберёт мешок и вернёт в вагон',pushTrain:'Бей!',tmTeam:'🤝 Все вместе против машинистов',tmFfa:'🤠 Каждый сам за себя',jail:'В клетку!',stolen:'Отнял!',lostBag:'Отобрали!',teamGoal:'💰 Банда',teamWin:'Банда ограбила поезд!',teamLose:'Машинисты спасли золото!',shareTrain:(n,s)=>`В «Грабителях поезда» 🚂 ${n} утащил(а) ${pl(s,'мешок','мешка','мешков')} золота! А ты сможешь больше?`,shareTeam:(n,s)=>`Мы ограбили поезд в «Грабителях поезда» 🚂! ${n} утащил(а) ${pl(s,'мешок','мешка','мешков')}. Вступай в банду!`,shareV:(n,s)=>`В «Кто злодей?» 🦹 победил(а) ${n}, звёзд: ${s}! А ты вычислишь злодея?`,trapB:'Капкан',catchB:'Поймал!',youVil:'🦹 Ты злодей!',findVil:'🔍 Найди злодея',tipVil:'🦹 Ты злодей! Делай вид, что ищешь ключи, жми 🪤 — оставишь невидимый капкан, лучше всего возле ключей. Главное, чтобы тебя не поймали!',tipCrew:'🔑 Собери 20 ключей и обходи невидимые капканы. Знаешь, кто злодей? Подбеги и жми «Поймал!». Ошибёшься — замрёшь на 5 секунд',vmPark:'🎡 Парк аттракционов',vmSpace:'🚀 Космическая станция',resKeys:'🔑 Команда открыла выход!',resCaught:n=>`🫵 ${n} поймал(а) злодея!`,resTime:'🦹 Злодей победил!',wasVil:'Злодеем был',trapsN:n=>`🪤 Попались в капканы: ${n}`,caughtV:'ПОЙМАЛ!',wrongV:'Мимо!',botsN:'Ботов:',shopHintBox:'В каждой игре свои медали и шорты. Шорты работают с первого боя.',shareBox:(n,s)=>`В «Сумасшедшем боксе» 🥊 ${n} — последний на ногах, осталось жизни: ${s}! Кто сильнее?`,tipBox:'🥊 Жми 💥 — удар. 🥚 «По яйцам» бьёт сильнее, но только пока судья отвернулся: заметит 2 раза — дисквалификация! Побеждает последний на ногах',pushBox:'Удар!',lowB:'По яйцам',warn:'Предупреждение!',dq:'Дисквалификация!',ko:'НОКАУТ!',shopBox:'Магазин шорт',noShorts:'Без шорт',pickShorts:'Надеть шорты на следующий раунд?',shorts:{cap:'Шорты-молнии',ushanka:'Шорты с защитой',top:'Шорты ниндзя',crown:'Золотые шорты'},title:'Бургер-гонка',tag:'До 4 игроков. На поле 7 бургеров. Хватай, толкайся! Кто собрал меньше лидера — вылетает, ничья — переигровка, пока не останется один чемпион.',join:'Войти в игру',create:'Создать игру',name:'Твоё имя',
   needName:'Напиши имя, чтобы все видели, кто ты.',connecting:'Подключаюсь…',errLib:'Не загрузилась библиотека связи. Проверь интернет и обнови страницу.',errConn:'Не получилось подключиться. Попробуй ещё раз через минуту.',
   reload:'Обновить',room:'Комната',hostHint:'Позови друзей. Каждый выбирает своего героя.',invite:'Позвать в WhatsApp',copy:'Копировать ссылку',copied:'Скопировано',
@@ -178,8 +182,8 @@ const L={
   mtag:{pizza:'До 4 игроков. Хватай ингредиенты из ящиков и собирай пиццу по рецепту! Отнимайте начинку друг у друга или готовьте вместе и гоняйте хитрых крыс.',ghost:'До 4 игроков. Тёмный замок полон привидений! Собирай свечи, свети фонарём и прогоняй привидений вспышкой. Или один из вас сам играет за привидение и пугает всех!',balloon:'До 4 игроков. У каждого 3 шарика. Лопай чужие и береги свои! Или все вместе против колючих ежей. Две карты: ярмарка и крыши.',dino:'До 4 игроков. Ночью ожили динозавры! Собирай окаменелости в темноте, расколдовывай друзей и ослепляй динозавров вспышкой. Или режим «заражение»: кого поймал динозавр, тот сам становится динозавром!',pirate:'До 4 игроков. Выкопай клад на крестике, утащи сундук к своей лодке и не попадись пиратам-скелетам! Два острова и два режима: одна команда или каждый сам за себя.',train:'До 4 игроков. Ограбь поезд на Диком Западе! Хватай мешки с золотом из вагонов, тащи к своей лошади и не попадись машинистам. Два режима: все вместе или каждый сам за себя.',diner:'До 4 игроков. 7 бургеров на раунд: хватай и толкайся! Кто меньше лидера — вылетает, пока не останется один чемпион.',school:'До 4 игроков. Подкрадись к учителю сзади и отвесь поджопник! Попадёшься ему на глаза — в угол. Кто больше всех — чемпион.',soccer:'До 4 игроков. Один мяч, большие ворота и вратарь-физрук. Забей больше всех и стань чемпионом!',snow:'До 4 игроков. Снежки, снеговики-укрытия и золотой мега-снежок. Самый меткий — чемпион!',box:'До 4 игроков, все против всех. Бей, уворачивайся и бей по яйцам, когда судья отвернулся. Заметит 2 раза — дисквалификация! Побеждает последний на ногах.',villain:'До 4 игроков. Один из вас тайный злодей и прячет капканы с гадостями. Соберите 20 ключей, обходите ловушки и поймайте злодея!'},
   inviteM:{pizza:'Го в «Пицца-хаос» 🍕 Кто приготовит больше пицц? ',ghost:'Го в «Замок с привидениями» 👻 Не струсишь? ',balloon:'Го в «Битву шариков» 🎈 Чей шарик продержится дольше всех? ',dino:'Го в «Ночь в музее» 🦖 Сможешь пережить ночь среди динозавров? ',pirate:'Го в «Пиратский клад» 🏴‍☠️ Кто откопает больше сокровищ? ',train:'Го в «Грабители поезда» 🚂 Кто утащит больше золота? ',diner:'Го в «Бургер-гонку» 🍔 Кто соберёт больше бургеров? ',school:'Го в «Teacher Kick» 🏫 Кто отвесит учителям больше поджопников? ',soccer:'Го в «Бомбардир» ⚽ Кто забьёт больше голов? ',snow:'Го в «Снежную битву» ❄️ Кто самый меткий? ',box:'Го в «Сумасшедший бокс» 🥊 Побеждает последний на ногах: ',villain:'Го в «Кто злодей?» 🦹 Найди злодея, пока он не поймал тебя в капкан: '},
   other:'עברית',
-  names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик'},
-  perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека'}},
+  names:{girl:'Девочка',fat:'Пухляш',tall:'Длинный',nerd:'Очкарик',donkey:'Ослик'},
+  perks:{girl:'Быстрая и ловкая',fat:'Медленный, но толкается сильнее всех',tall:'Самый быстрый, толкается слабо',nerd:'Хватает бургеры издалека',donkey:'Лягается копытами — мощный толчок'}},
  he:{tipPzT:'🍕 מבשלים ביחד! תופסים מצרכים מהארגזים ומביאים לשולחן הגדול — המתכון מעליו. 🐀 עכברושים גונבים תוספות: 💥 מגרש עכברוש',tipPzF:'🍕 לכל אחד מתכון משלו מעל השולחן שלו. מביאים את המצרכים הנכונים מהארגזים, אחד בכל פעם. 💥 מכה יריב וחוטף לו את המצרך. מי שמכין הכי הרבה פיצות — מנצח',pzTeam:'🤝 מבשלים ביחד נגד עכברושים',pzFfa:'🍕 כל שף לעצמו',pzWin:'הפיצריה הצליחה!',pzLose:'העכברושים הרסו את הארוחה!',notNeeded:'זה לא במתכון!',ratAte:'העכברוש לקח!',ratStole:'עכברוש גנב תוספת!',sharePz:(n,s)=>`ב«פיצה בטירוף» 🍕 ${n} הכין/ה ${s===1?'פיצה אחת':s+' פיצות'}! מי מבשל מהר יותר?`,sharePzT:(n,s)=>`הפיצריה שלנו ניצחה את העכברושים ב«פיצה בטירוף» 🍕! בואו לבשל איתנו!`,btnLamp:'הבזק!',btnBoo:'בּוּ!',btnCatch:'תפסתי!',tipGhT:'👻 כולם ביחד נגד הרוחות! אוספים 🕯 נרות בחושך. הרוחות שקופות עד שהן מתקרבות — כל בהלה עולה לצוות נר. 💥 מגרש רוח קרובה',tipGhF:'👻 אחד מכם הוא הרוח! רואים אותה רק מקרוב, והיא מפחידה שחקנים (+2). כל השאר אוספים 🕯 נרות (+1) — ראיתם את הרוח קרוב? לחצו 💥 ותפסו אותה (+3)',ghTeam:'🤝 כולם ביחד נגד הרוחות',ghFfa:'👻 שחקן אחד הוא הרוח',mapHall:'🏰 האולם הגדול',mapCrypt:'⚰️ המרתף',ghWin:'הטירה מוארת!',ghLose:'הרוחות השאירו את הטירה בחושך!',youGhost:'אתה הרוח! 👻',boo:'בּוּ!',gotGhost:'הרוח נתפסה!',shareGh:(n,s)=>`ב«טירת הרוחות» 👻 ${n} צבר/ה ${s===1?'נקודה אחת':s+' נקודות'}! אתם מספיק אמיצים?`,shareGhT:(n,s)=>`האַרנו את «טירת הרוחות» 👻! ${n} מצא/ה ${s===1?'נר אחד':s+' נרות'}. בואו לשחק!`,btnPop:'פוף!',btnShoo:'קישטה!',popTxt:'בום!',tipBalT:'🦔 כולם ביחד נגד הקיפודים! הקוצים שלהם מפוצצים בלונים. 💥 מגרש קיפוד. תפסו 🎈 כדי לקבל בלון בחזרה. תשמרו לפחות בלון אחד בצוות עד הסוף!',balOut:'💨 נגמרו הבלונים — צפו מי ינצח!',tipBalF:'🎈 לכל אחד 3 בלונים. רוצו ליריב ולחצו 💥 כדי לפוצץ בלון! תפסו 🎈 כדי לקבל בלון. האחרון עם בלונים מנצח',balTeam:'🤝 כולם ביחד נגד הקיפודים',balFfa:'🎈 כל אחד לעצמו',mapFair:'🎡 יריד',mapRoof:'🏙 גגות',balWin:'הבלונים שלכם שרדו!',balLose:'הקיפודים פוצצו הכל!',shareBal:(n,s)=>`ב«קרב בלונים» 🎈 ${n} שמר/ה ${s===1?'בלון אחד':s+' בלונים'}! מי יפוצץ?`,shareBalT:(n,s)=>`הבלונים שלנו שרדו את הקיפודים ב«קרב בלונים» 🎈! בואו לשחק!`,btnFlash:'פלאש!',btnBite:'נשיכה!',tipDinoT:'🦖 כולם ביחד נגד הדינוזאורים! אוספים 🦴 מאובנים בחושך. נתפסתם — קופאים כפסל: חבר משחרר אתכם כשהוא רץ אליכם. 📸 פלאש מהמם דינוזאור',tipDinoF:'🦖 הדבקה! שחקן אחד הוא דינוזאור. מי שהוא תופס — הופך לדינוזאור. בני אדם: אספו 🦴 ושרדו עד הסוף (+3). דינוזאורים: תפסו את כולם (+2 לכל אחד)',dinoTeam:'🤝 כולם ביחד נגד הדינוזאורים',dinoFfa:'🦖 הדבקה: נתפסת — דינוזאור',mapMuseum:'🏛 מוזיאון חשוך',mapDJungle:'🌋 ג׳ונגל הדינוזאורים',dinoWin:'שרדתם את הלילה!',dinoLose:'הלילה הדינוזאורים ניצחו!',youDino:'אתה הדינוזאור! 🦖',frozen:'קפא!',infected:'עכשיו דינוזאור!',shareDino:(n,s)=>`ב«לילה במוזיאון» 🦖 ${n} צבר/ה ${s===1?'נקודה אחת':s+' נקודות'}! תשרדו את הלילה?`,shareDinoT:(n,s)=>`שרדנו את «לילה במוזיאון» 🦖! ${n} מצא/ה ${s===1?'מאובן אחד':s+' מאובנים'}. הצטרפו!`,btnHit:'מכה!',tipPirT:'🏴‍☠️ צוות אחד נגד השלדים! עמדו על ✖ כדי לחפור תיבה, וסחבו אותה לסירה שלכם. נתפסתם — לכלוב, החברים ישחררו. 💥 מפיל שלד',tipPirF:'💰 כל פיראט לעצמו! חפרו תיבות על ✖ וסחבו לסירה שלכם. 💥 מכה יריב וחוטף לו את התיבה. השלדים קוברים את התיבה מחדש',pirTeam:'🤝 צוות אחד נגד השלדים',pirFfa:'🏴‍☠️ כל פיראט לעצמו',mapBeach:'🏝 חוף האוצר',mapJungle:'🌴 מקדש בג׳ונגל',pirWin:'הצוות מצא את כל האוצר!',pirLose:'השלדים שמרו על הזהב!',sharePir:(n,s)=>`ב«אוצר הפיראטים» 🏴‍☠️ ${n} חפר/ה ${s===1?'תיבה אחת':s+' תיבות'}! תוכלו יותר?`,sharePirT:(n,s)=>`הצוות שלנו מצא את האוצר ב«אוצר הפיראטים» 🏴‍☠️! ${n} חפר/ה ${s===1?'תיבה אחת':s+' תיבות'}. הצטרפו!`,tipTeam:'🤝 כולם ביחד נגד הנהגים! רוצו לשק 💰 וסחבו אותו לסוס שלכם. נתפסתם — לכלוב: החברים ישחררו אתכם אם יגיעו אליו. 💥 מפיל נהג',tipFfa:'💰 כל אחד לעצמו! סחבו שקים לסוס שלכם. 💥 מכה יריב וחוטף לו את השק. הנהג לוקח את השק בחזרה לקרון',pushTrain:'מכה!',tmTeam:'🤝 כולם ביחד נגד הנהגים',tmFfa:'🤠 כל אחד לעצמו',jail:'לכלוב!',stolen:'נחטף!',lostBag:'נלקח!',teamGoal:'💰 החבורה',teamWin:'החבורה שדדה את הרכבת!',teamLose:'הנהגים הצילו את הזהב!',shareTrain:(n,s)=>`ב«שודדי הרכבת» 🚂 ${n} גנב/ה ${s===1?'שק זהב אחד':s+' שקי זהב'}! תוכלו יותר?`,shareTeam:(n,s)=>`שדדנו רכבת ב«שודדי הרכבת» 🚂! ${n} סחב/ה ${s===1?'שק אחד':s+' שקים'}. הצטרפו לחבורה!`,shareV:(n,s)=>`ב«מי המרושע?» 🦹 ניצח/ה ${n} עם ${s===1?'כוכב אחד':s+' כוכבים'}! תצליחו לגלות את המרושע?`,trapB:'מלכודת',catchB:'תפסתי!',youVil:'🦹 אתה המרושע!',findVil:'🔍 מצאו את המרושע',tipVil:'🦹 אתה המרושע! תעשה כאילו אתה מחפש מפתחות, לחץ 🪤 ותשאיר מלכודת בלתי נראית, הכי טוב ליד מפתחות. העיקר שלא יתפסו אותך!',tipCrew:'🔑 אספו 20 מפתחות והיזהרו ממלכודות נסתרות. יודעים מי המרושע? רוצו אליו ולחצו «תפסתי!». טעיתם — קופאים ל־5 שניות',vmPark:'🎡 פארק שעשועים',vmSpace:'🚀 תחנת חלל',resKeys:'🔑 הקבוצה פתחה את היציאה!',resCaught:n=>`🫵 ${n} תפס/ה את המרושע!`,resTime:'🦹 המרושע ניצח!',wasVil:'המרושע היה',trapsN:n=>`🪤 נלכדו: ${n}`,caughtV:'נתפס!',wrongV:'לא הוא!',botsN:'בוטים:',shopHintBox:'לכל משחק מדליות ומכנסונים משלו. המכנסונים עובדים מהקרב הראשון.',shareBox:(n,s)=>`ב«אגרוף משוגע» 🥊 ${n} נשאר/ה אחרון/ה על הרגליים עם ${s} חיים! מי חזק יותר?`,tipBox:'🥊 לחצו 💥 — מכה. 🥚 «מכה נמוכה» חזקה יותר, אבל רק כשהשופט לא מסתכל: נתפסתם פעמיים — פסילה! האחרון שעומד מנצח',pushBox:'מכה!',lowB:'מכה נמוכה',warn:'אזהרה!',dq:'פסילה!',ko:'נוקאאוט!',shopBox:'חנות המכנסונים',noShorts:'בלי מכנסונים',pickShorts:'ללבוש מכנסונים לסיבוב הבא?',shorts:{cap:'מכנסוני ברק',ushanka:'מכנסונים מרופדים',top:'מכנסוני נינג׳ה',crown:'מכנסוני זהב'},title:'מרוץ ההמבורגרים',tag:'עד 4 שחקנים. 7 המבורגרים על הרצפה. תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, בתיקו — סיבוב נוסף, עד שנשאר אלוף אחד.',join:'כניסה למשחק',create:'יצירת משחק',name:'השם שלך',
   needName:'כתבו שם, כדי שכולם יידעו מי אתם.',connecting:'מתחבר…',errLib:'ספריית החיבור לא נטענה. בדקו את האינטרנט ורעננו.',errConn:'לא הצלחנו להתחבר. נסו שוב בעוד דקה.',
   reload:'רענון',room:'חדר',hostHint:'הזמינו חברים. כל אחד בוחר דמות.',invite:'הזמנה בוואטסאפ',copy:'העתקת קישור',copied:'הועתק',
@@ -190,8 +194,8 @@ const L={
   mtag:{pizza:'עד 4 שחקנים. תופסים מצרכים מהארגזים ומכינים פיצה לפי המתכון! חוטפים תוספות זה מזה, או מבשלים ביחד ומגרשים את העכברושים הערמומיים.',ghost:'עד 4 שחקנים. טירה חשוכה מלאה ברוחות! אוספים נרות, מאירים עם פנס ומגרשים רוחות בהבזק. או שאחד מכם משחק רוח ומפחיד את כולם!',balloon:'עד 4 שחקנים. לכל אחד 3 בלונים. מפוצצים לאחרים ושומרים על שלכם! או כולם ביחד נגד הקיפודים הדוקרניים. שתי מפות: יריד וגגות.',dino:'עד 4 שחקנים. בלילה הדינוזאורים התעוררו! אוספים מאובנים בחושך, משחררים חברים קפואים ומסנוורים דינוזאורים בפלאש. או מצב הדבקה: מי שהדינוזאור תופס — הופך לדינוזאור!',pirate:'עד 4 שחקנים. חופרים אוצר על ה־X, סוחבים את התיבה לסירה שלכם ובורחים מהשלדים הפיראטים! שני איים ושני מצבים: צוות אחד, או כל פיראט לעצמו.',train:'עד 4 שחקנים. שודדים רכבת במערב הפרוע! תופסים שקי זהב מהקרונות, סוחבים לסוס שלכם ובורחים מהנהגים. שני מצבים: כולם ביחד, או כל אחד לעצמו.',diner:'עד 4 שחקנים. 7 המבורגרים בסיבוב: תופסים ודוחפים! מי שאסף פחות מהמוביל — יוצא, עד שנשאר אלוף אחד.',school:'עד 4 שחקנים. מתגנבים למורה מאחור ונותנים בעיטה בטוסיק! המורה רואה אתכם — לפינה. מי שבועט הכי הרבה — אלוף.',soccer:'עד 4 שחקנים. כדור אחד, שער גדול ושוער המורה להתעמלות. תבקיעו הכי הרבה ותהיו אלופים!',snow:'עד 4 שחקנים. כדורי שלג, אנשי שלג למחסה וכדור מגה מזהב. המדויק ביותר — אלוף!',box:'עד 4 שחקנים, כולם נגד כולם. תכו, תתחמקו ותנו מכה נמוכה כשהשופט לא מסתכל. נתפסתם פעמיים — פסילה! האחרון שעומד מנצח.',villain:'עד 4 שחקנים. אחד מכם הוא מרושע סודי שמחביא מלכודות. אספו 20 מפתחות, היזהרו מהמלכודות ותפסו את המרושע!'},
   inviteM:{pizza:'בואו ל«פיצה בטירוף» 🍕 מי יכין הכי הרבה פיצות? ',ghost:'בואו ל«טירת הרוחות» 👻 אתם מספיק אמיצים? ',balloon:'בואו ל«קרב בלונים» 🎈 של מי הבלונים ישרדו הכי הרבה? ',dino:'בואו ל«לילה במוזיאון» 🦖 תצליחו לשרוד לילה עם דינוזאורים? ',pirate:'בואו ל«אוצר הפיראטים» 🏴‍☠️ מי יחפור הכי הרבה אוצרות? ',train:'בואו ל«שודדי הרכבת» 🚂 מי יגנוב הכי הרבה זהב? ',diner:'בואו ל«מרוץ ההמבורגרים» 🍔 מי יאסוף הכי הרבה? ',school:'בואו ל«Teacher Kick» 🏫 מי ייתן למורים הכי הרבה בעיטות? ',soccer:'בואו ל«בומברדיר» ⚽ מי יבקיע הכי הרבה? ',snow:'בואו ל«קרב כדורי שלג» ❄️ מי הכי מדויק? ',box:'בואו ל«אגרוף משוגע» 🥊 האחרון שעומד מנצח: ',villain:'בואו ל«מי המרושע?» 🦹 מצאו את המרושע לפני שהוא ילכוד אתכם: '},
   other:'Русский',
-  names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר'},
-  perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק'}}};
+  names:{girl:'הילדה',fat:'השמנמן',tall:'הגבוה',nerd:'המשקפופר',donkey:'החמור'},
+  perks:{girl:'מהירה וזריזה',fat:'איטי, אבל דוחף הכי חזק',tall:'הכי מהיר, דוחף חלש',nerd:'תופס המבורגרים מרחוק',donkey:'בועט עם הפרסות — דחיפה חזקה'}}};
 let lang=['en','ru','he'].includes(params.get('lang'))?params.get('lang'):null;
 if(!lang){try{lang=localStorage.getItem('byd-lang3')}catch(e){}}
 if(!['en','ru','he'].includes(lang))lang='en';
@@ -262,11 +266,69 @@ function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
 function star(g,x,y,r){g.beginPath();for(let i=0;i<10;i++){const a=i*Math.PI/5-Math.PI/2,rr=i%2?r*.45:r;g.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}g.fill()}
 /* ================= character art (cached sprites) ================= */
 const OUT='#2b1b30',SKIN='#f8cfa8',SKIN_D='#e9b083';
-const BODY={girl:{leg:22,hy:-88,hr:22,sh:[14,-62]},fat:{leg:18,hy:-104,hr:25,sh:[37,-74]},tall:{leg:38,hy:-128,hr:21,sh:[18,-102]},nerd:{leg:22,hy:-92,hr:23,sh:[22,-68]}};
+const BODY={girl:{leg:22,hy:-88,hr:22,sh:[14,-62]},fat:{leg:18,hy:-104,hr:25,sh:[37,-74]},tall:{leg:38,hy:-128,hr:21,sh:[18,-102]},nerd:{leg:22,hy:-92,hr:23,sh:[22,-68]},donkey:{leg:24,hy:-102,hr:24,sh:[19,-70]}};
 const HAT_TOP={cap:14,ushanka:20,top:44,crown:26};
 function sh(g,fill,lw=3){g.fillStyle=fill;g.fill();g.lineWidth=lw;g.strokeStyle=OUT;g.lineJoin='round';g.stroke()}
 function rr(g,x,y,w,h,r){g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h)}
-function paintChar(g,c,hat,f,stun){const BX=hat&&hat.startsWith('s_')?hat.slice(2):null;if(BX)hat=null;
+function drawHatAt(g,hat,hy,hr){
+  const ht=hy-hr;
+  if(hat==='cap'){g.beginPath();g.arc(0,ht+hr*.55,hr+1,Math.PI,0);g.closePath();sh(g,'#e8412c');
+    g.beginPath();g.ellipse(hr*.55,ht+hr*.55,hr*.85,4.5,0,0,7);sh(g,'#c0301e');g.fillStyle='#fff';g.beginPath();g.arc(0,ht-1,3,0,7);g.fill();
+    g.fillStyle='#ffc531';g.beginPath();g.arc(-4,ht+hr*.2,5,0,7);g.fill()}
+  else if(hat==='ushanka'){for(const d of [-1,1]){rr(g,d>0?hr-6:-hr-6,hy-6,12,22,6);sh(g,'#8a5a32')}
+    g.beginPath();g.arc(0,ht+hr*.6,hr+4,Math.PI,0);g.closePath();sh(g,'#8a5a32');rr(g,-hr-4,ht+hr*.35,2*hr+8,11,5);sh(g,'#d9b48a');
+    g.fillStyle='#ffc531';g.beginPath();g.arc(0,ht+hr*.42,3.2,0,7);g.fill()}
+  else if(hat==='top'){g.beginPath();g.ellipse(0,ht+hr*.5,hr+9,5.5,0,0,7);sh(g,'#222');rr(g,-hr*.75,ht-30,hr*1.5,34+hr*.3,3);sh(g,'#262626');
+    g.fillStyle='#e8412c';g.fillRect(-hr*.75+1.5,ht-2,hr*1.5-3,7);g.fillStyle='#ffffff30';g.fillRect(-hr*.75+3,ht-27,4,24)}
+  else if(hat==='crown'){g.beginPath();const w=hr*.95,b=ht+hr*.45;g.moveTo(-w,b);g.lineTo(-w,b-20);g.lineTo(-w*.5,b-9);g.lineTo(0,b-25);g.lineTo(w*.5,b-9);g.lineTo(w,b-20);g.lineTo(w,b);g.closePath();sh(g,'#ffc531');
+    g.fillStyle='#fff5b0';g.fillRect(-w+2,b-6,2*w-4,3);[['#e8412c',0,b-13],['#4f8cff',-w*.55,b-5],['#5cc560',w*.55,b-5]].forEach(([cc,x,y])=>{g.beginPath();g.arc(x,y,3.2,0,7);sh(g,cc,1.5)});
+    for(const x of [-w,0,w]){g.beginPath();g.arc(x,x?b-21:b-26,2.6,0,7);sh(g,'#fff5b0',1.5)}}
+}
+function paintDonkey(g,hat,f,stun,BX){const B=BODY.donkey,walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=walk?Math.sin(ph)*7:0,bob=walk?-Math.abs(Math.sin(ph))*3:0,BR='#b07a45',LT='#e2bf8e',DK='#4a3020';
+  g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,0,34,9,0,0,7);g.fill();
+  for(const [lx,s] of [[-9,step],[9,-step]]){const lift=Math.max(0,s)*.7,top=-B.leg-6;rr(g,lx-6,top,12,B.leg-lift,5);sh(g,BR,2.5);rr(g,lx-7,-10-lift,14,10,3);sh(g,'#3a2a22',2.5)}
+  g.save();g.translate(0,bob);const L=-B.leg;
+  // tail
+  g.strokeStyle=OUT;g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(-16,L-14);g.quadraticCurveTo(-34,L-4+step*.6,-32,L+14);g.stroke();g.strokeStyle=BR;g.lineWidth=3;g.stroke();g.beginPath();g.ellipse(-32,L+18,5,8,.2,0,7);sh(g,DK,2);
+  // body
+  rr(g,-21,L-52,42,56,16);sh(g,BR);g.beginPath();g.ellipse(2,L-20,13,19,0,0,7);g.fillStyle=LT;g.fill();
+  if(BX){const sc={none:'#e8412c',cap:'#e8412c',ushanka:'#4f8cff',top:'#262626',crown:'#ffc531'}[BX],y0=L-14;rr(g,-24,y0,48,20,5);sh(g,sc);g.fillStyle=BX==='top'?'#e8412c':'#fff';g.fillRect(-21,y0+2,42,4)}
+  // arms (front legs) with hooves
+  const [sx,sy]=B.sh;for(const [d,s] of [[-1,step],[1,-step]]){const hx=d*(sx+8)+s*.5,hy=sy+22;g.lineCap='round';g.strokeStyle=OUT;g.lineWidth=14;g.beginPath();g.moveTo(d*sx,sy);g.lineTo(hx,hy);g.stroke();g.strokeStyle=BR;g.lineWidth=9;g.beginPath();g.moveTo(d*sx,sy);g.lineTo(hx,hy);g.stroke();
+    if(BX){g.beginPath();g.arc(hx,hy,10.5,0,7);sh(g,BX==='crown'?'#ffc531':'#d32f2f',2.5)}else{rr(g,hx-6,hy-2,12,9,3);sh(g,'#3a2a22',2)}}
+  // ears (behind head)
+  const hy=B.hy,hr=B.hr;
+  for(const [ex,a] of [[-9,-.28],[10,.22]]){g.save();g.translate(ex,hy-hr+6);g.rotate(a+(stun?(ex<0?-.5:.5):0));g.beginPath();g.ellipse(0,-20,8,23,0,0,7);sh(g,BR,2.5);g.beginPath();g.ellipse(0,-20,3.5,15,0,0,7);g.fillStyle='#f0b8a8';g.fill();g.restore()}
+  // head
+  g.beginPath();g.ellipse(0,hy+2,hr*.95,hr*1.12,0,0,7);sh(g,BR);
+  g.beginPath();g.moveTo(-6,hy-hr+2);g.quadraticCurveTo(0,hy-hr-12,8,hy-hr-2);g.quadraticCurveTo(4,hy-hr+8,-6,hy-hr+2);sh(g,DK,2);
+  // muzzle
+  g.beginPath();g.ellipse(hr*.12,hy+hr*.72,hr*.74,hr*.5,0,0,7);sh(g,LT);
+  g.fillStyle=OUT;for(const d of [-1,1]){g.beginPath();g.ellipse(hr*.12+d*7,hy+hr*.6,2.4,3.2,0,0,7);g.fill()}
+  // eyes
+  const ex=hr*.4,ey=hy-hr*.3;
+  if(stun){g.strokeStyle=OUT;g.lineWidth=2.5;for(const d of [-1,1]){g.beginPath();g.moveTo(d*ex-4,ey-4);g.lineTo(d*ex+4,ey+4);g.moveTo(d*ex+4,ey-4);g.lineTo(d*ex-4,ey+4);g.stroke()}}
+  else for(const d of [-1,1]){g.beginPath();g.ellipse(d*ex,ey,4.6,5.8,0,0,7);sh(g,'#fff',1.6);g.fillStyle='#2a1a10';g.beginPath();g.arc(d*ex+1,ey+1,2.9,0,7);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(d*ex+2,ey-.5,1.1,0,7);g.fill()}
+  // mouth
+  const my=hy+hr*.92,mx=hr*.12;g.strokeStyle=OUT;g.lineWidth=2.2;if(stun){g.beginPath();g.ellipse(mx,my,4,5,0,0,7);sh(g,'#9b2c2c',2)}else{g.beginPath();g.moveTo(mx-9,my-3);g.quadraticCurveTo(mx,my+5,mx+9,my-3);g.stroke();g.fillStyle='#fff';g.fillRect(mx-4,my-1,3,4);g.fillRect(mx+1,my-1,3,4)}
+  drawHatAt(g,hat,hy-9,hr);g.restore()}
+// 4-legged kick pose (used for a moment when the donkey pushes)
+function drawDonkey4(g,v,t,k){const BR='#b07a45',LT='#e2bf8e',DK='#4a3020';g.save();g.translate(v.x,v.y);g.scale((v.face<0?-1:1)*.62,.62);
+  const kick=Math.sin(k*Math.PI);g.fillStyle='rgba(0,0,0,.2)';g.beginPath();g.ellipse(0,2,80,13,0,0,7);g.fill();
+  const leg=(lx,a,y0)=>{g.save();g.translate(lx,y0);g.rotate(a);rr(g,-9,0,18,62,6);sh(g,BR,3);rr(g,-10,52,20,12,4);sh(g,'#3a2a22',3);g.restore()};
+  g.save();g.translate(43,-62);g.rotate(kick*.28);g.translate(-43,62);
+  leg(-44,1.2*kick+.1,-62-kick*10);leg(-30,1.0*kick,-62-kick*10);
+  g.strokeStyle=OUT;g.lineWidth=7;g.beginPath();g.moveTo(-70,-108);g.quadraticCurveTo(-98,-120-kick*20,-96,-80);g.stroke();g.strokeStyle=BR;g.lineWidth=4;g.stroke();
+  g.beginPath();g.ellipse(-4,-102,76,44,0,0,7);sh(g,BR,3.5);g.fillStyle=LT;g.beginPath();g.ellipse(-4,-84,48,20,0,0,7);g.fill();
+  leg(36,-.05,-62);leg(50,.05,-62);
+  g.save();g.translate(58,-128);g.beginPath();g.moveTo(-20,10);g.quadraticCurveTo(-6,-40,10,-58);g.lineTo(40,-44);g.quadraticCurveTo(26,-10,20,20);g.closePath();sh(g,BR,3.5);
+  for(const [ex,er] of [[4,-.6],[22,-.4]]){g.save();g.translate(ex,-66);g.rotate(er);g.beginPath();g.ellipse(0,-30,11,32,0,0,7);sh(g,BR,3);g.restore()}
+  g.beginPath();g.ellipse(28,-62,32,24,.25,0,7);sh(g,BR,3.5);g.beginPath();g.ellipse(52,-48,22,17,.2,0,7);sh(g,LT,3);
+  g.beginPath();g.ellipse(48,-38,8,7,0,0,7);sh(g,'#5a1a1a',2.5);g.fillStyle='#fff';g.beginPath();g.ellipse(26,-70,10,11,0,0,7);g.fill();g.strokeStyle=OUT;g.lineWidth=2;g.stroke();g.fillStyle=OUT;g.beginPath();g.arc(29,-69,4,0,7);g.fill();
+  g.restore();g.restore();
+  if(kick>.3){g.fillStyle='#ffe14d';g.strokeStyle=OUT;g.lineWidth=2;for(let i=0;i<3;i++){star(g,-150-i*14,-70+i*26,10-i*2);g.fill();g.stroke()}}
+  g.restore()}
+function paintChar(g,c,hat,f,stun){const BX=hat&&hat.startsWith('s_')?hat.slice(2):null;if(BX)hat=null;if(c==='donkey')return paintDonkey(g,hat,f,stun,BX);
   const B=BODY[c],walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=walk?Math.sin(ph)*7:0,bob=walk?-Math.abs(Math.sin(ph))*3:0;
   // shadow
   g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,0,c==='fat'?44:32,9,0,0,7);g.fill();
@@ -305,7 +367,7 @@ function paintChar(g,c,hat,f,stun){const BX=hat&&hat.startsWith('s_')?hat.slice(
     g.beginPath();g.moveTo(0,L-46);g.lineTo(-9,L-51);g.lineTo(-9,L-41);g.closePath();g.moveTo(0,L-46);g.lineTo(9,L-51);g.lineTo(9,L-41);g.closePath();sh(g,'#e8412c',2);
     g.beginPath();g.arc(0,L-46,2.5,0,7);sh(g,'#b82a1a',1.5);
   }
-  if(BX){const w={girl:24,fat:40,tall:20,nerd:23}[c],sc={none:'#e8412c',cap:'#e8412c',ushanka:'#4f8cff',top:'#262626',crown:'#ffc531'}[BX],y0=L-14;
+  if(BX){const w={girl:24,fat:40,tall:20,nerd:23,donkey:24}[c],sc={none:'#e8412c',cap:'#e8412c',ushanka:'#4f8cff',top:'#262626',crown:'#ffc531'}[BX],y0=L-14;
     rr(g,-w,y0,2*w,20,5);sh(g,sc);g.fillStyle=BX==='top'?'#e8412c':'#fff';g.fillRect(-w+3,y0+2,2*w-6,4);
     if(BX==='cap'){g.fillStyle='#ffc531';g.beginPath();g.moveTo(-3,y0+5);g.lineTo(5,y0+5);g.lineTo(1,y0+11);g.lineTo(6,y0+11);g.lineTo(-4,y0+19);g.lineTo(-1,y0+13);g.lineTo(-6,y0+13);g.closePath();g.fill()}
     if(BX==='ushanka'){g.fillStyle='#fff';g.fillRect(-w+2,y0+10,5,8);g.fillRect(w-7,y0+10,5,8)}
@@ -350,26 +412,14 @@ function paintChar(g,c,hat,f,stun){const BX=hat&&hat.startsWith('s_')?hat.slice(
   if(stun){g.beginPath();g.ellipse(0,my+2,4,5,0,0,7);sh(g,'#9b2c2c',2)}
   else{g.beginPath();g.moveTo(-hr*.33,my-1);g.quadraticCurveTo(0,my+hr*.42,hr*.33,my-1);g.closePath();sh(g,'#9b2c2c',2);
     g.save();g.clip();g.fillStyle='#ff8a8a';g.beginPath();g.arc(0,my+hr*.3,5,0,7);g.fill();g.fillStyle='#fff';g.fillRect(-hr*.3,my-2,hr*.6,3);g.restore()}
-  // hat
-  const ht=hy-hr;
-  if(hat==='cap'){g.beginPath();g.arc(0,ht+hr*.55,hr+1,Math.PI,0);g.closePath();sh(g,'#e8412c');
-    g.beginPath();g.ellipse(hr*.55,ht+hr*.55,hr*.85,4.5,0,0,7);sh(g,'#c0301e');g.fillStyle='#fff';g.beginPath();g.arc(0,ht-1,3,0,7);g.fill();
-    g.fillStyle='#ffc531';g.beginPath();g.arc(-4,ht+hr*.2,5,0,7);g.fill()}
-  else if(hat==='ushanka'){for(const d of [-1,1]){rr(g,d>0?hr-6:-hr-6,hy-6,12,22,6);sh(g,'#8a5a32')}
-    g.beginPath();g.arc(0,ht+hr*.6,hr+4,Math.PI,0);g.closePath();sh(g,'#8a5a32');rr(g,-hr-4,ht+hr*.35,2*hr+8,11,5);sh(g,'#d9b48a');
-    g.fillStyle='#ffc531';g.beginPath();g.arc(0,ht+hr*.42,3.2,0,7);g.fill()}
-  else if(hat==='top'){g.beginPath();g.ellipse(0,ht+hr*.5,hr+9,5.5,0,0,7);sh(g,'#222');rr(g,-hr*.75,ht-30,hr*1.5,34+hr*.3,3);sh(g,'#262626');
-    g.fillStyle='#e8412c';g.fillRect(-hr*.75+1.5,ht-2,hr*1.5-3,7);g.fillStyle='#ffffff30';g.fillRect(-hr*.75+3,ht-27,4,24)}
-  else if(hat==='crown'){g.beginPath();const w=hr*.95,b=ht+hr*.45;g.moveTo(-w,b);g.lineTo(-w,b-20);g.lineTo(-w*.5,b-9);g.lineTo(0,b-25);g.lineTo(w*.5,b-9);g.lineTo(w,b-20);g.lineTo(w,b);g.closePath();sh(g,'#ffc531');
-    g.fillStyle='#fff5b0';g.fillRect(-w+2,b-6,2*w-4,3);[['#e8412c',0,b-13],['#4f8cff',-w*.55,b-5],['#5cc560',w*.55,b-5]].forEach(([cc,x,y])=>{g.beginPath();g.arc(x,y,3.2,0,7);sh(g,cc,1.5)});
-    for(const x of [-w,0,w]){g.beginPath();g.arc(x,x?b-21:b-26,2.6,0,7);sh(g,'#fff5b0',1.5)}}
+  drawHatAt(g,hat,hy,hr);
   g.restore()}
 const SPR=1.3,spriteCache={};
 function charSprite(c,hat,f,stun){const k=c+'|'+(hat||'')+'|'+f+'|'+(stun?1:0);if(spriteCache[k])return spriteCache[k];
   const cv=document.createElement('canvas');cv.width=180*SPR;cv.height=250*SPR;const g=cv.getContext('2d');g.scale(SPR,SPR);g.translate(90,235);paintChar(g,c,hat,f,stun);return spriteCache[k]=cv}
 function bxHat(h){return LOC==='box'?'s_'+(h||'none'):h}
 function headTop(c,hat){const B=BODY[c];if(hat&&(LOC==='box'||hat.startsWith('s_')))hat=null;return B.hy-B.hr-(hat?HAT_TOP[hat]:6)}
-function drawHero(g,v,t){const f=v.moving?1+Math.floor((t*11)%6):0;g.save();g.translate(v.x,v.y);if(v.face<0)g.scale(-1,1);
+function drawHero(g,v,t){if(v.c==='donkey'&&v.id&&ACT[v.id]&&LOC!=='box'){const k=(performance.now()-ACT[v.id])/450;if(k<1)return drawDonkey4(g,v,t,k)}const f=v.moving?1+Math.floor((t*11)%6):0;g.save();g.translate(v.x,v.y);if(v.face<0)g.scale(-1,1);
   if(LOC==='box'&&v.score<=0){g.rotate(-Math.PI/2*.92);g.translate(-40,30)}
   g.drawImage(charSprite(v.c,bxHat(v.hat),f,v.stun),-90,-235,180,250);
   if(v.stun){g.fillStyle='#ffe14d';g.strokeStyle=OUT;g.lineWidth=1.5;const y=headTop(v.c,v.hat)-8;for(let i=0;i<3;i++){const a=t*6+i*2.1;star(g,Math.cos(a)*24,y+Math.sin(a)*6,6);g.stroke()}}
@@ -632,7 +682,7 @@ function paintTrain(f){const sg=f.createLinearGradient(0,0,0,TOP);sg.addColorSto
   f.font='900 46px Rubik, Arial Black, sans-serif';f.textAlign='center';f.textBaseline='middle';
   f.fillStyle='#8a5a32';f.fillRect(0,TOP-12,AW,12);f.fillStyle='#6b4a2f';f.fillRect(0,TOP-12,14,AH);f.fillRect(AW-14,TOP-12,14,AH);f.fillRect(0,AH-14,AW,14);
   if(TM==='team'){f.fillStyle='rgba(0,0,0,.22)';f.beginPath();f.ellipse(CAGE.x+6,CAGE.y+20,92,20,0,0,7);f.fill();rr(f,CAGE.x-86,CAGE.y-8,172,34,8);sh(f,'#8a5a32',3)}
-  const HC={girl:'#c98a4b',fat:'#8b5a2b',tall:'#e8dcc4',nerd:'#5a3a22'};for(const c of ORDER){const [x,y]=SPAWN[c];paintHorse(f,x,y+14,CH[c].col,x<AW/2?1:-1,HC[c])}}
+  const HC={girl:'#c98a4b',fat:'#8b5a2b',tall:'#e8dcc4',nerd:'#5a3a22'};for(const c of CORE){const [x,y]=SPAWN[c];paintHorse(f,x,y+14,CH[c].col,x<AW/2?1:-1,HC[c])}}
 function drawCageFront(g,t,cx,cy){const x=cx??CAGE.x,y=cy??CAGE.y;
   if(jailV.length){g.strokeStyle=`rgba(255,197,49,${.55+Math.sin(t*6)*.35})`;g.lineWidth=6;g.beginPath();g.ellipse(x,y+12,112,32,0,0,7);g.stroke()}
   g.strokeStyle='#3a3a44';g.lineCap='round';g.lineWidth=6;for(let bx=x-80;bx<=x+80;bx+=20){g.beginPath();g.moveTo(bx,y+20);g.lineTo(bx,y-140);g.stroke()}
@@ -692,7 +742,7 @@ function paintSpace(f){f.fillStyle='#1c2233';f.fillRect(0,0,AW,AH);for(let y=TOP
 const keySprite=(()=>{const cv=document.createElement('canvas');cv.width=cv.height=96;const g=cv.getContext('2d');g.translate(48,48);g.rotate(-.6);g.fillStyle='#ffc531';g.strokeStyle='#8a5a10';g.lineWidth=5;
   g.beginPath();g.arc(-18,0,16,0,7);g.fill();g.stroke();g.fillStyle='#8a5a10';g.beginPath();g.arc(-18,0,6,0,7);g.fill();g.fillStyle='#ffc531';g.fillRect(-4,-6,40,12);g.strokeRect(-4,-6,40,12);g.fillRect(22,4,7,12);g.strokeRect(22,4,7,12);g.fillRect(32,4,6,9);g.strokeRect(32,4,6,9);return cv})();
 /* ================= physics (shared) ================= */
-function body(c,id){const [x,y]=spawnMap()[c];return {id,c,x,y,kx:0,ky:0,stun:0,face:1,moving:false,score:0,bag:0}}
+function body(c,id){const [x,y]=spawnMap()[sk(c)];return {id,c,x,y,kx:0,ky:0,stun:0,face:1,moving:false,score:0,bag:0}}
 function move(b,dx,dy,dt,others){const c=CH[b.c];if(b.stun>0){b.stun-=dt;dx=dy=0}
   const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}
   if(LOC==='box'&&b.score<=0){dx=dy=0}const spd=c.sp*(b.hat==='cap'&&(LOC==='diner'||LOC==='box'||LOC==='villain'||LOC==='train'||!!GM())?1.12:1)*((b.slowU||0)>performance.now()?.5:1)*(LOC==='train'&&b.bag?.85:1)*(GM()&&GM().spd?GM().spd(b):1);b.x+=(dx*spd+b.kx)*dt;b.y+=(dy*spd+b.ky)*dt;const f=Math.pow(.015,dt);b.kx*=f;b.ky*=f;
@@ -733,7 +783,7 @@ function onMsg(m){if(followGoto(m))return;if(m.t==='lobby'&&m.players&&m.players
     if(m.t==='hi'&&m.from!==me.id){if(!lobbyPlayers.has(m.from)){const humans=[...lobbyPlayers.values()].length;if(humans>=4){send({t:'full',to:m.from},1);return}
         lobbyPlayers.set(m.from,{name:m.name,c:freeChar(),hat:m.hat||null})}else{const q=lobbyPlayers.get(m.from);q.name=m.name;if('hat' in m)q.hat=m.hat||null}broadcastLobby()}
     else if(m.t==='hat'){const q=lobbyPlayers.get(m.from);if(q)q.hat=HATS[m.h]?m.h:null;if(T0)T0.hats[m.from]=HATS[m.h]?m.h:null;if(phase==='lobby')broadcastLobby()}
-    else if(m.t==='pick'){const p=lobbyPlayers.get(m.from);if(p&&phase==='lobby'&&![...lobbyPlayers].some(([id,q])=>id!==m.from&&q.c===m.c)){p.c=m.c;broadcastLobby()}}
+    else if(m.t==='pick'){const p=lobbyPlayers.get(m.from);if(p&&phase==='lobby'&&ORDER.includes(m.c)&&![...lobbyPlayers].some(([id,q])=>id!==m.from&&q.c===m.c)){p.c=m.c;broadcastLobby()}}
     else if(m.t==='pos'&&G&&G.P[m.from]&&m.from!==me.id){const b=G.P[m.from];b.x=m.x;b.y=m.y;b.moving=!!m.m;b.face=m.f||1;b.seen=performance.now()}
     else if(m.t==='low'&&G&&m.from!==me.id){hostLow(m.from)}
     else if(m.t==='sync'&&T0&&matchPhase==='inter'&&T0.lastRR&&T0.lastRR.t==='vr'){send(T0.lastRR,1)}
@@ -824,8 +874,8 @@ function shop(msg){redraw=()=>shop();show('app');const own=ownedHats(),cur=wearH
 /* ================= match: shared client side ================= */
 let amVil=false,jailV=[],teamV=null,smokeT=0,vKeys=0,trapsV=[],clouds=[],sbV={},starV=null,myMega=false,aim={x:1,y:0},flakes=null,ballV=null,keeperV=null,netT=0,splats=[],tview=[],curRound=0,syncAsked=false,claimed=new Set(),G=null,mine=null,view={},roster=[],burgers=[],timeLeft=RS(),matchPhase='count',pops=[],rings=[];
 const input={dx:0,dy:0};
-function startLocal(r,rn,loc,ex){ex=ex||{};if(ex.vm&&VMAPS[ex.vm])VM=ex.vm;if(ex.tm)TM=ex.tm;if(ex.mp&&loc)MP[loc]=ex.mp;jailV=[];teamV=null;gmV=null;if(loc)setLoc(loc);amVil=LOC==='villain'&&ex.vil===me.id;vKeys=0;trapsV=[];clouds=[];tview=[];curRound=rn;document.getElementById('pushL').textContent=pushLabel();ballV=null;keeperV=null;sbV={};starV=null;myMega=false;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
-  const SP=spawnMap();r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[c][0],y:SP[c][1],tx:SP[c][0],ty:SP[c][1],score:LOC==='box'?HP0:0,stun:0,moving:false,face:1});
+function startLocal(r,rn,loc,ex){ex=ex||{};DKS=dkSlot(r);if(ex.vm&&VMAPS[ex.vm])VM=ex.vm;if(ex.tm)TM=ex.tm;if(ex.mp&&loc)MP[loc]=ex.mp;jailV=[];teamV=null;gmV=null;if(loc)setLoc(loc);amVil=LOC==='villain'&&ex.vil===me.id;vKeys=0;trapsV=[];clouds=[];tview=[];curRound=rn;document.getElementById('pushL').textContent=pushLabel();ballV=null;keeperV=null;sbV={};starV=null;myMega=false;document.getElementById('inter').hidden=true;roster=r;phase='play';lastCount=0;view={};pops=[];rings=[];burgers=[];matchPhase='count';timeLeft=RS();
+  const SP=spawnMap();r.forEach(([id,c,name,bot,hat])=>view[id]={id,c,name,bot,hat:hat||null,x:SP[sk(c)][0],y:SP[sk(c)][1],tx:SP[sk(c)][0],ty:SP[sk(c)][1],score:LOC==='box'?HP0:0,stun:0,moving:false,face:1});
   const mineR=r.find(x=>x[0]===me.id);mine=mineR?body(mineR[1],me.id):null;if(mine){mine.hat=mineR[4]||null;if(LOC==='box')mine.score=HP0}document.getElementById('low').hidden=LOC!=='box';
   const w=document.getElementById('watch');w.hidden=!!mine;w.innerHTML=T('watching')+`<br><a class="btn" href="../?lang=${lang}">${T('allGames')}</a>`;document.getElementById('ctrl').style.visibility=mine?'':'hidden';
   show('game');resize();redraw=()=>{};lastSend=0;loopStart();if(rn>1)flashBig(T('roundN')(rn),1200);const tp=document.getElementById('tip');if(LOC==='villain'&&mine){tp.textContent=amVil?T('tipVil'):T('tipCrew');tp.hidden=false;setTimeout(()=>tp.hidden=true,8000);flashBig(amVil?T('youVil'):T('findVil'),2600)}else if(rn===1&&mine){tp.textContent=GM()?GM().tip():LOC==='train'?T(TM==='team'?'tipTeam':'tipFfa'):LOC==='box'?T('tipBox'):LOC==='school'?T('tipSchool'):LOC==='soccer'?T('tipSoccer'):LOC==='snow'?T('tipSnow'):T('tip');tp.hidden=false;setTimeout(()=>tp.hidden=true,9000)}else tp.hidden=true;claimed=new Set()}
@@ -870,7 +920,7 @@ function handleEv(e){
   if(e[0]==='s'){tone(320,.12,'triangle',.18,160);crowd(.7,.12);flashBig(T('saveTxt'),700);return}
   if(e[0]==='g'){emote(e[1],'laugh');{const q=vxy(e[1]);if(q)burst(q[0],q[1],'star',14)}netT=performance.now();flashBig(T('goalTxt'),1500);crowd(1.8,.3);if(!sfx('goal',.65))[523,659,784,1046,1318].forEach((f,i)=>setTimeout(()=>tone(f,.18,'square',.1),i*110));confetti();if(e[1]===me.id)vib([100,50,100,50,200]);return}
   if(e[0]==='e'){burst(e[2],e[3],'glint',7,.8);if(e[1]!==me.id&&Math.random()<.35)emote(e[1],'heart');pops.push({x:e[2],y:e[3],t:0,txt:'+1'});if(e[1]===me.id){sndEat();vib(30)}else tone(400,.06,'square',.05)}
-  else if(e[0]==='p'){const v=view[e[1]];if(v)burst(v.x,v.y,'puff',4,.8);if(e[2]&&view[e[2]]){emote(e[2],'swirl');emote(e[1],'anger');const q=vxy(e[2]);burst(q[0],q[1],'star',8);sfx(LOC==='box'?'bump':'punch',.6)}if(v)rings.push({x:v.id===me.id&&mine?mine.x:v.x,y:v.id===me.id&&mine?mine.y:v.y,t:0});if(e[1]!==me.id&&e[2]!==me.id)tone(200,.1,'triangle',.15,80)}}
+  else if(e[0]==='p'){const v=view[e[1]];if(v&&v.c==='donkey'){ACT[e[1]]=performance.now();if(Math.random()<.4){tone(640,.13,'sawtooth',.05,860);setTimeout(()=>tone(330,.17,'sawtooth',.05,250),130)}}if(v)burst(v.x,v.y,'puff',4,.8);if(e[2]&&view[e[2]]){emote(e[2],'swirl');emote(e[1],'anger');const q=vxy(e[2]);burst(q[0],q[1],'star',8);sfx(LOC==='box'?'bump':'punch',.6)}if(v)rings.push({x:v.id===me.id&&mine?mine.x:v.x,y:v.id===me.id&&mine?mine.y:v.y,t:0});if(e[1]!==me.id&&e[2]!==me.id)tone(200,.1,'triangle',.15,80)}}
 function applyFx(m){if(!mine)return;const now=performance.now();if(m.sl)mine.slowU=now+m.sl*1000;if(m.rv)mine.rvU=now+m.rv*1000;if(m.ck){const c=document.getElementById('cake');c.hidden=false;c.style.opacity=.96;clearTimeout(applyFx.t);applyFx.t=setTimeout(()=>{c.style.opacity=0;setTimeout(()=>c.hidden=true,600)},m.ck*1000)}}
 let bigTimer;function flashBig(t,ms){const b=document.getElementById('big');b.textContent=t;clearTimeout(bigTimer);bigTimer=setTimeout(()=>b.textContent='',ms)}
 
@@ -971,7 +1021,7 @@ function hostStart(){phase='play';const r=[];const used=new Set();
   botSlots().forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   T0={vprev:null,all:r,alive:r.map(x=>x[0]),round:0,total:{},outRound:{},last:{},hats:{}};for(const [id,p] of lobbyPlayers)T0.hats[id]=p.hat||null;startRound()}
 function startRound(){T0.round++;const rr=T0.all.filter(x=>T0.alive.includes(x[0])).map(x=>[x[0],x[1],x[2],x[3],(T0.round>1||LOC==='box'||(TM==='team'&&(GM()||LOC==='train')))?(T0.hats[x[0]]||null):null]);
-  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,hits:0,TC:null,ball:null,keeper:null,SB:null,star:null,starT:6};rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat;if(LOC==='box'){G.P[id].score=HP0;G.P[id].fouls=0;G.P[id].lcd=0}});
+  G={P:{},t:0,count:T0.round===1?5:3,B:[],nextId:1,kicks:0,goals:0,hits:0,TC:null,ball:null,keeper:null,SB:null,star:null,starT:6};DKS=dkSlot(rr);rr.forEach(([id,c,name,bot,hat])=>{G.P[id]=body(c,id);G.P[id].bot=!!bot;G.P[id].name=name;G.P[id].cd=0;G.P[id].hat=hat;if(LOC==='box'){G.P[id].score=HP0;G.P[id].fouls=0;G.P[id].lcd=0}});
   if(LOC==='villain'){const ids=rr.map(x=>x[0]),pool=ids.filter(i=>i!==T0.vprev);G.vil=(pool.length?pool:ids)[Math.floor(Math.random()*(pool.length||ids.length))];T0.vprev=G.vil;G.keys=0;G.TR=[];G.vt=0;G.sus={};for(let i=0;i<3;i++)spawnBurger()}else if(LOC==='box')G.TC=[{k:'pe',x:(RX0+RX1)/2,y:RY0+40,fx:0,fy:1,st:0,tt:1.5,tx:null,ty:null}];else if(LOC==='school')spawnTeachers();else if(LOC==='soccer')spawnBall();else if(LOC==='snow')G.SB=[];else if(GM())GM().setup(rr);else if(LOC==='train')trainSetup(rr.length);else for(let i=0;i<BURGERS;i++)spawnBurger();botBrain={};
   const ex={vil:G.vil,vm:VM,tm:TM,mp:mapOf()};send({t:'start',roster:rr,round:T0.round,loc:LOC,...ex},1);const rnd=T0.round;setTimeout(()=>{if(T0&&T0.round===rnd&&G)send({t:'start',roster:rr,round:rnd,again:1,loc:LOC,...ex},1)},700);startLocal(rr,T0.round,LOC,ex);matchPhase='count';lastCount=0;evq=[];stAcc=0}
 function endRound(){if(LOC==='villain')return vEndRound();if(GM()&&GM().end)return GM().end();if(GM()&&TM==='team')return teamEnd();if(LOC==='train'&&TM==='team')return teamEnd();const P=G.P,ids=Object.keys(P);ids.forEach(id=>{T0.total[id]=(T0.total[id]||0)+P[id].score;T0.last[id]=P[id].score});
@@ -1135,7 +1185,7 @@ function frameWalls(f,c){f.fillStyle=c;f.fillRect(0,TOP-12,AW,12);f.fillRect(0,T
 /* ================= train robbers ================= */
 function trainSetup(n){G.TC=[{k:'mach',x:520,y:352,fx:1,fy:0,st:0,tt:2,tx:null,ty:null,rest:1},{k:'mach',x:980,y:588,fx:-1,fy:0,st:0,tt:2,tx:null,ty:null,rest:1}];G.jail={};G.team=0;G.goal=Math.max(6,3*n);G.bagT=0;G.res=null;for(let i=0;i<4;i++)spawnBag()}
 function spawnBag(){const free=DOORS.filter(d=>!G.B.some(b=>Math.hypot(b.x-d[0],b.y-d[1])<40));if(!free.length)return;const d=free[Math.floor(Math.random()*free.length)];G.B.push({id:G.nextId++,x:d[0]+(Math.random()-.5)*30,y:d[1]})}
-function horseOf(b){return SPAWN[b.c]}
+function horseOf(b){return SPAWN[sk(b.c)]}
 function routeTo(x,y,tx,ty){const M=468;if((y-M)*(ty-M)<0&&x>215&&x<1325){const g=x<770?175:1365;return [g,y<M?380:556]}return [tx,ty]}
 function trainHit(id,s,tx,ty){const b=G.P[id];if(!b)return;b.stun=s;b.kx=b.ky=0;if(tx!=null){b.x=tx;b.y=ty}
   if(id===me.id&&mine){mine.stun=s;mine.kx=mine.ky=0;if(tx!=null){mine.x=tx;mine.y=ty}}else if(!b.bot)send({t:'kb',to:id,vx:0,vy:0,s,tx:tx!=null?Math.round(tx):undefined,ty:ty!=null?Math.round(ty):undefined},1)}
@@ -1364,7 +1414,7 @@ function paintPirate(f){const M=mapOf('pirate'),C=PIR[M];
     for(const t of C.t)paintJTree(f,t.x,t.y,t.r)}
   titleText(f,'PIRATE GOLD');frameWalls(f,M==='beach'?'#b88a52':'#4a3a22');
   if(TM==='team'){f.fillStyle='rgba(0,0,0,.22)';f.beginPath();f.ellipse(C.cage.x+6,C.cage.y+20,92,20,0,0,7);f.fill();rr(f,C.cage.x-86,C.cage.y-8,172,34,8);sh(f,'#8a5a32',3)}
-  for(const c of ORDER){const [x,y]=SPAWN[c];paintBoat(f,x,y+14,CH[c].col,x<AW/2?1:-1)}}
+  for(const c of CORE){const [x,y]=SPAWN[c];paintBoat(f,x,y+14,CH[c].col,x<AW/2?1:-1)}}
 GMS.pirate={paint:paintPirate,maps:['beach','jungle'],secs:()=>TM==='team'?60:45,unit:'🪙',btn:()=>T('btnHit'),tip:()=>T(TM==='team'?'tipPirT':'tipPirF'),modeName:v=>T(v==='team'?'pirTeam':'pirFfa'),mapName:v=>T(v==='beach'?'mapBeach':'mapJungle'),
   share:tr=>T(tr?'sharePirT':'sharePir'),teamTitle:tr=>T(tr==='win'?'pirWin':'pirLose'),tables:()=>PC().t,rects:()=>PC().r,
   setup(rr){const C=PC();G.TC=[{k:'skel',x:C.x[0][0],y:C.x[0][1]+60,fx:1,fy:0,st:0,tt:2,tx:null,ty:null,rest:1.5},{k:'skel',x:C.x[3][0],y:C.x[3][1]+60,fx:-1,fy:0,st:0,tt:2,tx:null,ty:null,rest:1.5}];G.jail={};G.team=0;G.goal=Math.max(6,3*rr.length);G.bagT=0;G.res=null;for(let i=0;i<4;i++)pirSpawn()},
@@ -1373,11 +1423,11 @@ GMS.pirate={paint:paintPirate,maps:['beach','jungle'],secs:()=>TM==='team'?60:45
       if(!b.bag){let on=null;for(const g of G.B){if(Math.hypot(g.x-b.x,g.y-b.y)<CH[b.c].r+28+(b.hat==='top'?30:0)){on=g;break}}
         if(on&&on.ch){G.B.splice(G.B.indexOf(on),1);b.bag=1;b.dig=0;evq.push(['G',id,Math.round(on.x),Math.round(on.y)])}
         else if(on){b.dig=(b.dig||0)+dt;if(b.dig>=1.2){b.dig=0;G.B.splice(G.B.indexOf(on),1);b.bag=1;evq.push(['G',id,Math.round(on.x),Math.round(on.y)])}}else b.dig=0}
-      else{const h=SPAWN[b.c];if(Math.hypot(h[0]-b.x,h[1]-b.y)<95){b.bag=0;b.score++;if(TM==='team'){G.team++;if(G.team>=G.goal)G.res='win'}evq.push(['H',id,h[0],h[1]])}}}
+      else{const h=SPAWN[sk(b.c)];if(Math.hypot(h[0]-b.x,h[1]-b.y)<95){b.bag=0;b.score++;if(TM==='team'){G.team++;if(G.team>=G.goal)G.res='win'}evq.push(['H',id,h[0],h[1]])}}}
     G.bagT-=dt;if(G.B.filter(g=>!g.ch).length<4&&G.bagT<=0){pirSpawn();G.bagT=1}if(G.t<=0&&!G.res)G.res=TM==='team'?'lose':'time'},
   push(A,aid){if(G.jail[aid])return true;if(gHitGuard(A,aid))return true;if(TM==='team'){evq.push(['p',aid,null]);return true}return false},
   hit(A,best){const B=G.P[best];if(!B||!B.bag)return;B.bag=0;if(!A.bag)A.bag=1;else G.B.push({id:G.nextId++,x:B.x,y:B.y+10,ch:1});evq.push(['S',A.id,best,Math.round(B.x),Math.round(B.y)])},
-  bot(b,dt,brain){return carryBot(b,dt,brain,{home:b=>SPAWN[b.c],cage:PC().cage,still:g=>!g.ch})},
+  bot(b,dt,brain){return carryBot(b,dt,brain,{home:b=>SPAWN[sk(b.c)],cage:PC().cage,still:g=>!g.ch})},
   drawItem(g,b,t,bob){if(b[3])drawChest(g,b[1],b[2]+bob*.4,.95);else drawXmark(g,b[1],b[2],t)},
   drawPlayer(g,v,t){drawHero(g,v,t+v.x*.01);if(v.bag)drawChest(g,v.x-(v.face||1)*28,v.y-58,.72)},
   over(g,t){const C=PC();if(TM==='team')drawCageFront(g,t,C.cage.x,C.cage.y);if(gmV&&gmV.d)for(const id in gmV.d){const v=view[id];if(!v)continue;const p=Math.min(1,gmV.d[id]/1.2);g.lineWidth=8;g.strokeStyle='rgba(0,0,0,.35)';g.beginPath();g.arc(v.x,v.y-150,22,0,7);g.stroke();g.strokeStyle='#ffc531';g.beginPath();g.arc(v.x,v.y-150,22,-Math.PI/2,-Math.PI/2+p*6.283);g.stroke();g.font='22px serif';g.textAlign='center';g.textBaseline='middle';g.fillText('⛏',v.x,v.y-150);g.textBaseline='alphabetic'}},
@@ -1654,7 +1704,7 @@ function pizzaBot(b,dt,brain){const P=G.P;if(b.stun>0)return [0,0];
       if(fi&&fd<420){brain.mode='floor';brain.item=fi}
       else if(TM==='ffa'){let v=null,vd=1e9;for(const id in P){const o=P[id];if(o===b||!o.bag||!nd.includes(o.bag-1))continue;const d=Math.hypot(o.x-b.x,o.y-b.y);if(d<vd){vd=d;v=id}}if(v&&vd<300&&Math.random()<.6){brain.mode='steal';brain.vic=v}}
       if(!brain.mode){const ty=nd.length?nd[Math.floor(Math.random()*nd.length)]:Math.floor(Math.random()*4);brain.mode='crate';brain.cr=PZ_CR.find(c=>c[2]===ty)}}}
-  let tx=b.x,ty=b.y;const home=TM==='team'?[PZ_T.x,PZ_T.y]:SPAWN[b.c];
+  let tx=b.x,ty=b.y;const home=TM==='team'?[PZ_T.x,PZ_T.y]:SPAWN[sk(b.c)];
   if(b.bag)[tx,ty]=home;
   else if(brain.mode==='floor'&&G.B.includes(brain.item)){tx=brain.item.x;ty=brain.item.y}
   else if(brain.mode==='steal'&&P[brain.vic]&&P[brain.vic].bag){const o=P[brain.vic];tx=o.x;ty=o.y;if(Math.hypot(o.x-b.x,o.y-b.y)<CH[b.c].r+CH[o.c].r+45&&Math.random()<dt*5)hostPush(b.id)}
@@ -1673,7 +1723,7 @@ GMS.pizza={paint:paintPizzaMap,maps:['kitchen'],secs:()=>TM==='team'?60:50,unit:
     for(const id in P){const b=P[id];if(b.stun>0)continue;
       if(!b.bag){let took=false;const nd=pzNeed(b);for(const [x,y,ty] of PZ_CR){if(Math.hypot(b.x-x,b.y-y)<88&&nd.includes(ty)){b.bag=ty+1;evq.push(['IG',id,ty]);took=true;break}}
         if(!took)for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(nd.includes(g.ty)&&Math.hypot(g.x-b.x,(g.y-12)-(b.y-30))<CH[b.c].r+30+(b.hat==='top'?30:0)){G.B.splice(i,1);b.bag=g.ty+1;evq.push(['IG',id,g.ty]);break}}}
-      else{const ty=b.bag-1,home=TM==='team'?[PZ_T.x,PZ_T.y]:SPAWN[b.c],rad=TM==='team'?PZ_T.r+72:90;if(Math.hypot(home[0]-b.x,home[1]-b.y)>rad)continue;
+      else{const ty=b.bag-1,home=TM==='team'?[PZ_T.x,PZ_T.y]:SPAWN[sk(b.c)],rad=TM==='team'?PZ_T.r+72:90;if(Math.hypot(home[0]-b.x,home[1]-b.y)>rad)continue;
         const rc=TM==='team'?G.rc:b.rc,pl=TM==='team'?G.pl:b.pl,idx=rc.findIndex((t,i)=>t===ty&&!pl[i]);b.bag=0;
         if(idx<0){evq.push(['NO',id,Math.round(b.x),Math.round(b.y)]);continue}
         pl[idx]=1;if(TM==='team')b.score++;evq.push(['PL',id,ty,Math.round(b.x),Math.round(b.y)]);
@@ -1681,7 +1731,7 @@ GMS.pizza={paint:paintPizzaMap,maps:['kitchen'],secs:()=>TM==='team'?60:50,unit:
   push(A,aid){if(TM==='team'){if(!gHitGuard(A,aid,80))evq.push(['p',aid,null]);return true}return false},
   hit(A,best){const B=G.P[best];if(!B||!B.bag)return;const ty=B.bag-1;B.bag=0;if(!A.bag)A.bag=ty+1;else G.B.push({id:G.nextId++,x:B.x,y:B.y+10,ty});evq.push(['S',A.id,best,Math.round(B.x),Math.round(B.y)])},
   bot:pizzaBot,
-  under(g,t){const x=gmV;if(!x)return;if(x.r)drawPizzaTable(g,PZ_T.x,PZ_T.y-6,x.r,x.p,true);else if(x.f)for(const id in x.f){const v=view[id];if(!v)continue;const [hx,hy]=SPAWN[v.c];drawPizzaTable(g,hx,hy+30,x.f[id][0],x.f[id][1],false,CH[v.c].col)}},
+  under(g,t){const x=gmV;if(!x)return;if(x.r)drawPizzaTable(g,PZ_T.x,PZ_T.y-6,x.r,x.p,true);else if(x.f)for(const id in x.f){const v=view[id];if(!v)continue;const [hx,hy]=SPAWN[sk(v.c)];drawPizzaTable(g,hx,hy+30,x.f[id][0],x.f[id][1],false,CH[v.c].col)}},
   drawItem(g,b,t,bob){drawIng(g,b[3]|0,b[1],b[2]-10+bob*.3,1.1)},
   drawPlayer(g,v,t){drawHero(g,v,t+v.x*.01);if(v.bag)drawIng(g,v.bag-1,v.x-(v.face||1)*24,v.y+headTop(v.c,v.hat)-6,1.05)},
   ev(e){if(e[0]==='IG'){if(e[1]===me.id){sfx('pick',.35);vib(20)}return true}

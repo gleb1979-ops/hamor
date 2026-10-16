@@ -124,6 +124,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:non
   <div id="ctrl"><div id="stick"><div id="knob"></div></div><button id="low" hidden>🥚<br><span id="lowL"></span></button><button id="push">💥<br><span id="pushL"></span></button></div>
 </div>
 <canvas id="fx"></canvas>
+<script src="../net.js"></script>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script>
 (()=>{
@@ -716,8 +717,8 @@ let lobbyPlayers=new Map(); // id -> {name,c,bot}
 let useBots=3;function botSlots(){const free=ORDER.filter(c=>![...lobbyPlayers.values()].some(p=>p.c===c));return free.slice(0,Math.max(0,Math.min(+useBots||0,4-lobbyPlayers.size)))}
 function topic(){return NS+room}
 function send(m,qos=0){m.from=me.id;try{client&&client.publish(topic(),JSON.stringify(m),{qos})}catch(e){}}
-function connect(code,cb){room=code;if(!window.mqtt){fail(T('errLib'));return}
-  client=mqtt.connect(BROKER,{clientId:'brg_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000});let first=true;
+function connect(code,cb){room=code;if(!window.roomClient&&!window.mqtt){fail(T('errLib'));return}
+  client=window.roomClient?roomClient(topic(),BROKER,{clientId:'brg_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000}):mqtt.connect(BROKER,{clientId:'brg_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000});let first=true;
   client.on('connect',()=>{client.subscribe(topic(),{qos:1},()=>{if(first){first=false;cb()}else if(!isHost)send({t:'hi',name:me.name},1)})});
   client.on('message',(t,buf)=>{let m;try{m=JSON.parse(buf.toString())}catch(e){return}if(m.from===me.id&&!isHost)return;onMsg(m)});
   client.on('error',()=>{});setTimeout(()=>{if(first)fail(T('errConn'))},10000)}

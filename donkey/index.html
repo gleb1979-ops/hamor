@@ -74,6 +74,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 <body>
 <div id="app"></div>
 <canvas id="fx"></canvas>
+<script src="../net.js"></script>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script>
 // Medals: Kenney Medals pack (CC0)
@@ -204,8 +205,8 @@ let client,room,isHost=false,players=new Map(),results={},round=0,phase='lobby',
 function topic(){return NS+room}
 function send(m){m.from=me.id;client&&client.publish(topic(),JSON.stringify(m),{qos:1})}
 function connect(code,cb){room=code;
-  if(!window.mqtt){fail(T('errLib'));return}
-  client=mqtt.connect(BROKER,{clientId:'hamor_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000});
+  if(!window.roomClient&&!window.mqtt){fail(T('errLib'));return}
+  client=window.roomClient?roomClient(topic(),BROKER,{clientId:'hamor_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000}):mqtt.connect(BROKER,{clientId:'hamor_'+me.id,clean:true,reconnectPeriod:2000,connectTimeout:8000});
   let first=true;
   client.on('connect',()=>{client.subscribe(topic(),{qos:1},()=>{if(first){first=false;cb()}else hello()})});
   client.on('message',(t,buf)=>{let m;try{m=JSON.parse(buf.toString())}catch(e){return}onMsg(m)});

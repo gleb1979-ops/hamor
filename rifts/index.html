@@ -846,8 +846,24 @@ function lanternBoom(e){e.dead=true;addFx({type:'ring',x:e.x,y:e.y,r:0,maxR:110,
  for(const p of players)if(!p.down&&Math.hypot(p.x-e.x,p.y-e.y)<92)hurtPlayer(p,15,'boom');
  for(const o of enemies)if(o!==e&&!o.dead&&o.spawn<=0&&Math.hypot(o.x-e.x,o.y-e.y)<92)damageEnemy(o,25,null,(o.x-e.x)*3,(o.y-e.y)*3)}
 // --- drawing new enemies
+// small melee monsters on hand-made maps: painted creatures (not this stage's mini-boss kinds)
+const ONI_POOL=['goblin','devil','caveman','shaman','viking','boar'];
+function mapOniKind(e){const mini=STAGE_MINI[stageIdx]||[],pool=ONI_POOL.filter(n=>!mini.includes(n)),L=Math.max(0,LV);return pool[(L*2+((e.v||0)%2)*3)%pool.length]}
+function drawMapOni(e){const c=ctx,n=mapOniKind(e);if(!mbImg(n).complete||!mbImg(n).naturalWidth)return false;
+ const sc=0.62*(e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1),mv=Math.hypot(e.vx||0,e.vy||0)>25;
+ const dirA=(e.st==='wind'||e.st==='atk')?(e.dashA||0):mv?Math.atan2(e.vy,e.vx):(e.dir||0),D=mbDir(dirA);
+ let anim=D+'idle',f=(e.t*6)%4;if(e.st==='wind'){anim=D+'atk';f=Math.min(2,(e.t*7)%3)}else if(e.st==='atk'){anim=D+'atk';f=3+Math.min(2,(e.t*14)%3)}else if(e.flash>0){anim=D+'hurt';f=1}else if(mv){anim=D+'walk';f=(e.t*11)%6}
+ c.fillStyle='rgba(0,0,0,0.4)';c.beginPath();c.ellipse(e.x,e.y,30,10,0,0,TAU);c.fill();
+ c.save();c.globalCompositeOperation='lighter';glow(c,e.x,e.y-45,46,'#dc2626',0.16+0.06*Math.sin(e.t*5+e.phase));c.restore();
+ if(e.st==='wind'){c.strokeStyle=`rgba(255,60,60,${0.35+0.3*Math.sin(time*30)})`;c.lineWidth=3;c.beginPath();c.arc(e.x,e.y-18,64,(e.dashA||0)-1.1,(e.dashA||0)+1.1);c.stroke()}
+ mbFrame(c,e.x,e.y,n,anim,f,sc);
+ if(e.flash>0){c.save();c.globalCompositeOperation='lighter';c.globalAlpha=0.45;mbFrame(c,e.x,e.y,n,anim,f,sc);c.restore()}
+ if(e.stun>0){c.fillStyle='#fde68a';for(let i=0;i<3;i++){const a=time*5+i/3*TAU;c.beginPath();c.arc(e.x+Math.cos(a)*16,e.y-98+Math.sin(a)*4,2.5,0,TAU);c.fill()}}
+ if(e.hp<e.max&&e.spawn<=0){const w=44;c.fillStyle='rgba(0,0,0,0.6)';c.fillRect(e.x-w/2,e.y-96,w,4);c.fillStyle='#ef4444';c.fillRect(e.x-w/2,e.y-96,w*Math.max(0,e.hp/e.max),4)}
+ e.ex=e.x;e.ey=e.y-50;return true}
 function drawEnemyL1(e){
  const c=ctx,T=e.type;if(T!=='oni'&&T!=='skel'&&T!=='ninja'&&T!=='lantern')return false;
+ if(T==='oni'&&S.map&&drawMapOni(e))return true;
  {const skn=skinStage(e);if(skn!==0)return drawSkin(e,skn)}
  const sc=e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1;const face=Math.cos(e.dir||0)>=0?1:-1,mv=Math.hypot(e.vx||0,e.vy||0)>25;
  c.save();c.translate(e.x,e.y);c.fillStyle='rgba(0,0,0,0.38)';c.beginPath();c.ellipse(0,0,e.r*1.15,e.r*0.42,0,0,TAU);c.fill();c.scale(sc,sc);
@@ -1416,15 +1432,20 @@ function miniArea(){return LV<0||AREA>0}
 function lastOfRun(){return LV<0||(LV===CAMP.length-1&&AREA===CAMP[LV].areas.length-1)}
 function LNAME(){return LV>=0?CAMP[LV].name:S.name}
 function LSUB(){if(LV<0)return 'Испытание';const L=CAMP[LV];return `${WORLDS[L.w].ic} ${L.w+1}-${L.n} · участок ${AREA+1}/${L.areas.length}`}
-function startLabel(){return START.tr!=null?'Испытание: '+STAGES[START.tr].name:`${WORLDS[CAMP[START.lv].w].ic} ${CAMP[START.lv].w+1}-${CAMP[START.lv].n} ${CAMP[START.lv].name}`}
+function startLabel(){if(START.tr!=null&&START.m!==undefined){const f=FREEMAPS.find(x=>x[0]===START.m);return '🏟 Битва: '+(f?f[2]:STAGES[START.tr].name)}return START.tr!=null?'Испытание: '+STAGES[START.tr].name:`${WORLDS[CAMP[START.lv].w].ic} ${CAMP[START.lv].w+1}-${CAMP[START.lv].n} ${CAMP[START.lv].name}`}
 function startArea(){const A=CAMP[LV].areas[AREA];AREA_OPT={map:A.m||null,seed:A.seed||0};startStage(CAMP[LV].st)}
-function beginRun(){if(START.tr!=null){LV=-1;AREA=0;AREA_OPT={map:STAGES[START.tr].map0||null,seed:0};startStage(START.tr)}else{LV=clamp(START.lv|0,0,CAMP.length-1);AREA=0;startArea()}}
+const FREEMAPS=[['port',0,'Неоновый порт'],['junk',10,'Свалка'],['crime',0,'Криминальный квартал'],['fields',8,'Цветущие поля'],['canyon',9,'Горное ущелье'],['ruins',1,'Древние руины'],['coral',5,'Коралловый лабиринт'],['ships',5,'Затонувшие корабли'],['sea',5,'Храм глубин'],['volcano',3,'Вулканическая долина'],['lavacave',3,'Лавовые пещеры'],['fort',3,'Огненная крепость']];
+function beginRun(){if(START.tr!=null){LV=-1;AREA=0;AREA_OPT={map:START.m!==undefined?(START.m||null):(STAGES[START.tr].map0||null),seed:0};startStage(START.tr)}else{LV=clamp(START.lv|0,0,CAMP.length-1);AREA=0;startArea()}}
 function areaClear(){phase='portal';setTimeout(flushEarn,50);const last=AREA===CAMP[LV].areas.length-1;portal=Object.assign(freeNear(WW-300,WH/2),{t:0});for(const q of players)earn(q,last?15:5);showBanner(last?'Уровень пройден!':'Путь открыт',last?'Все в портал — дальше новый уровень':'Идите к воротам справа →',2.2);sfx('portal')}
 function advance(){if(LV<0){state='victory';stateT=0;runEnd();return}if(AREA<CAMP[LV].areas.length-1){AREA++;startArea();return}unlockLv(LV+1);if(LV>=CAMP.length-1){state='victory';stateT=0;runEnd();return}LV++;AREA=0;startArea()}
 function showWorldMap(){const pr=progLv();showUI(`<h2>🗺 Карта мира</h2><p class="sub">4 мира по 3 уровня. В каждом уровне 3 участка, на третьем уровне мира — босс.</p>
- ${WORLDS.map((W,w)=>`<div style="border:1px solid ${W.col}66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:${W.col};font-size:18px">${W.ic} Мир ${w+1}. ${W.name}</b><div class="row" style="margin-top:6px">${CAMP.map((L,i)=>L.w!==w?'':`<button class="big" data-lv="${i}" ${i>pr?'disabled':''} style="flex:1;font-size:14px;padding:8px;${START.lv===i&&START.tr==null?'background:#fde68a;color:#1b1830':''}">${i>pr?'🔒 ':''}${L.n}. ${L.name}${L.boss?' 👑':''}</button>`).join('')}</div></div>`).join('')}
+ ${WORLDS.map((W,w)=>`<div style="border:1px solid ${W.col}66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:${W.col};font-size:18px">${W.ic} Мир ${w+1}. ${W.name}</b><div class="row" style="margin-top:6px">${CAMP.map((L,i)=>L.w!==w?'':`<button class="big" data-lv="${i}" ${i>pr&&!ARENA?'disabled':''} style="flex:1;font-size:14px;padding:8px;${START.lv===i&&START.tr==null?'background:#fde68a;color:#1b1830':''}">${i>pr&&!ARENA?'🔒 ':''}${L.n}. ${L.name}${L.boss?' 👑':''}</button>`).join('')}</div></div>`).join('')}
  <div style="border:1px solid #a78bfa66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:#c4b5fd;font-size:18px">⚔️ Испытания</b> <span class="sub" style="margin:0">отдельные битвы с боссами</span><div class="row" style="margin-top:6px;flex-wrap:wrap">${TRIALS.map(t=>`<button class="big" data-tr="${t}" style="flex:1;min-width:140px;font-size:14px;padding:8px;${START.tr===t?'background:#fde68a;color:#1b1830':''}">${esc(STAGES[t].name)}<br><small>${esc(STAGES[t].boss.name)}</small></button>`).join('')}</div></div>
+ <div style="border:1px solid #fde68a66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:#fde68a;font-size:18px">🏟 Битва на любой карте</b> <span class="sub" style="margin:0">волны врагов и босс на одной карте${ARENA?' · для арены':''}, всё открыто</span>
+ <div class="row" style="margin-top:6px;flex-wrap:wrap">${FREEMAPS.map(([k,st,nm])=>`<button class="big" data-fm="${k}" data-st="${st}" style="flex:1;min-width:140px;font-size:14px;padding:8px;${START.m===k?'background:#fde68a;color:#1b1830':''}">${nm}</button>`).join('')}</div>
+ <p class="sub" style="margin:6px 0 2px">Классические локации</p><div class="row" style="flex-wrap:wrap">${STAGES.map((S0,i)=>`<button class="big" data-fm="" data-st="${i}" style="flex:1;min-width:140px;font-size:14px;padding:8px;${START.m===''&&START.tr===i?'background:#fde68a;color:#1b1830':''}">${esc(S0.name)}</button>`).join('')}</div></div>
  <div class="row"><button class="big" id="wmBack">Назад</button></div>`);
+ document.querySelectorAll('[data-fm]').forEach(b=>b.onclick=()=>{START={tr:+b.dataset.st,m:b.dataset.fm};try{localStorage.setItem('tr_start',JSON.stringify(START))}catch(e){}showMode()});
  const save=()=>{try{localStorage.setItem('tr_start',JSON.stringify(START))}catch(e){}};
  document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{START={lv:+b.dataset.lv};save();showMode()});
  document.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{START={tr:+b.dataset.tr};save();showMode()});bind('wmBack',()=>showMode())}
@@ -1878,7 +1899,7 @@ function showMode(){state='mode';stateT=0;showUI(`<h2>Как играем?</h2>
  bind('mJoin',join);document.getElementById('mCode').onkeydown=e=>{if(e.key==='Enter')join()};
  bind('mBack',()=>{hideUI();state='title';stateT=0});
 }
-function showMsg(t){state='netmsg';stateT=0;showUI(`<h2>${esc(t)}</h2><button class="big pri" id="mm">В меню</button>`);bind('mm',showMode)}
+function showMsg(t,rj){state='netmsg';stateT=0;showUI(`<h2>${esc(t)}</h2>${rj?`<button class="big pri" id="mRj">Вернуться в игру</button>`:''}<button class="big${rj?'':' pri'}" id="mm">В меню</button>`);bind('mm',showMode);if(rj)bind('mRj',()=>guestJoin(rj))}
 function topicR(){return 'tagshim/rifts/v1/'+NET.room}
 function nsend(m){if(!NET.client)return;m.from=ME_ID;try{NET.client.publish(topicR(),JSON.stringify(m),{qos:0})}catch(e){}}
 function netConnect(code,cb){NET.room=code;
@@ -1899,13 +1920,20 @@ function guestJoin(code){if(window.findRoom)findRoom(code).then(u=>{if(u&&u.inde
  showUI(`<h2>Комната <span style="color:#fde68a">${esc(code)}</span></h2><p class="sub">Подключаемся…</p><button class="big" id="lBack">Выйти</button>`);bind('lBack',()=>{netLeave();showMode()});
  netConnect(code,()=>{const hi=()=>nsend({t:'hi',name:myName(),hero:MY_HERO,up:{w:WAL.w,a:WAL.a,s:WAL.sel,ta:myTeamUp('armor')},tm:myTeam()});hi();NET.hiTimer=setInterval(()=>{if(!NET.joined)hi()},1200)});
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}}
+function heroCard(h){const H=HEROES[h]||HEROES[0],pip=(n,c)=>[0,1,2,3,4].map(i=>`<i style="display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:3px;background:${i<n?c:'#2a2640'}"></i>`).join('');
+ return `<div style="display:flex;gap:12px;align-items:center;margin:10px 0;padding:10px;border-radius:14px;background:#120f24;box-shadow:inset 0 0 0 2px ${H.col}55">
+ <img src="img/h${h}_i.webp?v=${h===2?2:1}" alt="" style="width:96px;height:96px;object-fit:contain;flex:none">
+ <div style="text-align:left;min-width:0"><b style="color:${H.col};font-size:18px">${H.name}</b> <span style="color:#b9b3d8;font-size:13px">${H.title}</span>
+ <div style="font-size:13px;line-height:1.35;margin:4px 0;color:#e7e5f5">${H.desc}</div>
+ <div style="font-size:12px;color:#b9b3d8">${['Сила','Скорость','Стойкость'].map((nm,j)=>`<span style="display:inline-block;width:74px">${nm}</span>${pip(H.stats[j],H.col)}`).join('<br>')}</div>
+ <div style="font-size:12px;color:#b9b3d8;margin-top:3px">Здоровье ${H.hp} · Супер: кнопка «Супер»</div></div></div>`}
 function renderLobby(){
  const list=[...NET.peers.values()].sort((a,b)=>a.slot-b.slot),me=NET.peers.get(ME_ID),link=location.origin+location.pathname+'?room='+NET.room;
  const rows=[0,1,2,3].map(s=>{const p=list.find(q=>q.slot===s);if(!p)return `<div class="pl free"><span>Игрок ${s+1}</span><span>свободно</span></div>`;const Hh=HEROES[p.hero]||HEROES[0];return `<div class="pl"><span>${s===0?'👑 ':''}${esc(p.name)}${p.id===ME_ID?' (ты)':''}</span><b style="color:${Hh.col}">${Hh.name}</b></div>`}).join('');
  showUI(`<h2>Комната</h2><div class="code">${esc(NET.room||'')}</div>
- <div class="row"><button class="big pri" id="lInv">Пригласить</button><button class="big" id="lCopy">Скопировать ссылку</button></div>
+ ${me?`<p class="sub" style="margin:4px 0">👇 Выбери своего героя</p><div class="heroes" style="grid-template-columns:repeat(4,1fr)">${HEROES.map((Hh,i)=>`<button class="hb${me.hero===i?' on':''}" data-h="${i}" style="color:${Hh.col};padding:4px" type="button"><img src="img/h${i}_i.webp?v=${i===2?2:1}" alt="" style="width:56px;height:56px;object-fit:contain"><b>${Hh.name}</b></button>`).join('')}</div>${heroCard(me.hero)}`:'<p class="sub">Подключаемся…</p>'}
  <div class="plist">${rows}</div>
- ${me?`<p class="sub">Твой герой</p><div class="heroes">${HEROES.map((Hh,i)=>`<button class="hb${me.hero===i?' on':''}" data-h="${i}" style="color:${Hh.col}" type="button"><b>${Hh.name}</b><span>${Hh.title}</span></button>`).join('')}</div>`:'<p class="sub">Подключаемся…</p>'}
+ <div class="row"><button class="big" id="lInv">Пригласить</button><button class="big" id="lCopy">Скопировать ссылку</button></div>
  ${NET.host?`<button class="big pri" id="lStart">Начать игру · игроков: ${list.length}</button>`:'<p class="sub">Ждём, пока создатель комнаты начнёт игру…</p>'}
  <button class="big" id="lBack">Выйти</button>`);
  bind('lInv',()=>{const txt='Играем в «Три разлома»! Комната '+NET.room+' — заходи: ';if(navigator.share)navigator.share({title:'Три разлома',text:txt,url:link}).catch(()=>{});else window.open('https://wa.me/?text='+encodeURIComponent(txt+link),'_blank','noopener')});
@@ -1920,7 +1948,15 @@ function backToLobby(){state='lobby';stateT=0;players=[];enemies=[];bullets=[];p
 function onNet(m){const now=performance.now();
  if(NET.host){
   if(m.t==='hi'){let p=NET.peers.get(m.from);
-   if(!p){if(state!=='lobby'){nsend({t:'full',to:m.from,why:'started'});return}const used=new Set([...NET.peers.values()].map(q=>q.slot));let s=-1;for(let i=1;i<4;i++)if(!used.has(i)){s=i;break}if(s<0){nsend({t:'full',to:m.from});return}p={id:m.from,slot:s};NET.peers.set(m.from,p);sfx('select')}
+   if(!p&&state!=='lobby'){const nm=String(m.name||'').slice(0,14),stale=[...NET.peers.values()].filter(q=>q.id!==ME_ID&&now-(q.lastIn||0)>4000);
+    const old=[...NET.peers.values()].find(q=>q.id!==ME_ID&&q.name===nm)||(stale.length===1?stale[0]:null);
+    if(old){NET.peers.delete(old.id);old.id=m.from;old.lastIn=now;NET.peers.set(m.from,old);p=old}
+    else if([...NET.peers.values()].some(q=>q.id!==ME_ID&&now-(q.lastIn||0)>1500))return;
+    else{nsend({t:'full',to:m.from,why:'started'});return}}
+   if(p&&state!=='lobby'){p.lastIn=now;REMOTE[p.slot]=null;const pl=players.find(o=>o.i===p.slot);if(pl){pl.inv=Math.max(pl.inv||0,2);if(pl.down){pl.down=false;pl.hp=pl.max*0.5}}
+    const roster=[...NET.peers.values()].sort((a,b)=>a.slot-b.slot).map(q=>({slot:q.slot,hero:(players.find(o=>o.i===q.slot)||q).hero,name:q.name,id:q.id}));
+    nsend({t:'start',roster,ar:ARENA?1:0,to:m.from});text(pl?pl.x:0,pl?pl.y-90:0,'вернулся','#86efac',1.2);return}
+   if(!p){const used=new Set([...NET.peers.values()].map(q=>q.slot));let s=-1;for(let i=1;i<4;i++)if(!used.has(i)){s=i;break}if(s<0){nsend({t:'full',to:m.from});return}p={id:m.from,slot:s};NET.peers.set(m.from,p);sfx('select')}
    p.name=String(m.name||'Игрок').slice(0,14);p.hero=clamp(m.hero|0,0,HEROES.length-1);if(m.up)p.up=m.up;p.tm=String(m.tm||'').slice(0,8);lobbyBroadcast()}
   else if(m.t==='pick'){const p=NET.peers.get(m.from);if(p&&state==='lobby'){p.hero=clamp(m.hero|0,0,HEROES.length-1);lobbyBroadcast()}}
   else if(m.t==='in'){const q=NET.peers.get(m.from);if(!q)return;q.lastIn=now;REMOTE[q.slot]={mx:clamp(+m.mx||0,-1,1),my:clamp(+m.my||0,-1,1),atk:!!m.a,sp:!!m.s};
@@ -1929,15 +1965,15 @@ function onNet(m){const now=performance.now();
  }else if(NET.guest){
   if(m.t==='lobby'||m.t==='st'||m.t==='start')NET.lastHost=now;
   if(m.t==='lobby'){NET.peers=new Map((m.players||[]).map(p=>[p.id,p]));const me=NET.peers.get(ME_ID);if(me){NET.joined=true;NET.slot=me.slot;MY_HERO=me.hero}
-   if(state!=='lobby'){if(!me)return;state='lobby';stateT=0;players=[];banner=null}renderLobby()}
-  else if(m.t==='start'){if(state==='play')return;const me=(m.roster||[]).find(r=>r.id===ME_ID);if(!me)return;ARENA=!!m.ar;RUN_DONE=false;NET.slot=me.slot;NET.joined=true;
+   if(state!=='lobby'){if(!me||state==='play')return;state='lobby';stateT=0;players=[];banner=null}renderLobby()}
+  else if(m.t==='start'){if(state==='play'||(m.to&&m.to!==ME_ID))return;const me=(m.roster||[]).find(r=>r.id===ME_ID);if(!me)return;NET.rj=null;ARENA=!!m.ar;RUN_DONE=false;NET.slot=me.slot;NET.joined=true;
    players=m.roster.map(r=>{const p=makePlayer(r.slot,r.hero);p.name=r.name;return p});np=players.length;stageIdx=-1;state='play';stateT=0;hideUI()}
   else if(m.t==='st'){if(!NET.joined)return;applySnap(m)}
   else if(m.t==='full'&&m.to===ME_ID){netLeave();showMsg(m.why==='started'?'В этой комнате игра уже идёт':'Комната заполнена: уже 4 игрока')}
  }}
 const r1=v=>Math.round(v||0),r2=v=>Math.round((v||0)*100)/100;
 function snap(){
- return{t:'st',cl:[LV,AREA],ar:ARENA?1:0,aw:ARENA_WIN,state,si:stageIdx,ph:phase,wn:waveNum,ts:toSpawn,rt:r1(runTime),fd:r2(fade),sh:r1(shake),fl:r2(flashA),bn:banner?[banner.big,banner.small,r2(banner.t),banner.max]:0,
+ return{t:'st',cl:[LV,AREA],mk:LV<0?(AREA_OPT.map||''):undefined,ar:ARENA?1:0,aw:ARENA_WIN,state,si:stageIdx,ph:phase,wn:waveNum,ts:toSpawn,rt:r1(runTime),fd:r2(fade),sh:r1(shake),fl:r2(flashA),bn:banner?[banner.big,banner.small,r2(banner.t),banner.max]:0,
   P:players.map(p=>({i:p.i,h:p.hero,n:p.name||'',x:r1(p.x),y:r1(p.y),vx:r1(p.vx),vy:r1(p.vy),f:r2(p.face),hp:r1(p.hp),mx:p.max,e:r1(p.energy),d:p.down?1:0,rv:r2(p.revive),an:r2(p.anim),am:p.animMax,c:p.combo,ch:r2(p.charge),cl:p.clvl,iv:r2(p.inv),fl:r2(p.flash),ds:p.dash?1:0,su:p.supT>0?r2(p.supT):0,pw:p.pw||0,pt:r1(p.pwT),sd:p.shield||0,wt:p.wt||1,lg:p.i===0?0:(()=>{const q=[...NET.peers.values()].find(z=>z.slot===p.i);return q&&q.lastIn?Math.min(99,Math.round((performance.now()-q.lastIn)/100)/10):0})(),mv:p.moving?1:0,k:p.kills,dm:p.dmg,cn:p.coins||0,ck:p.cloak>0?1:0,wl:p.wall>0?1:0,sk:p.skin||0,lv:p.lives||0,pk:p.pk||0})),
   E:enemies.map(e=>({id:e.id||(e.id=NID++),ty:e.type,x:r1(e.x),y:r1(e.y),vx:r1(e.vx),vy:r1(e.vy),r:e.r,hp:r1(e.hp),mx:r1(e.max),sp:r2(e.spawn),fl:r2(e.flash),sn:r2(e.stun),st:e.st,dr:r2(e.dir),da:r2(e.dashA),cd:r2(e.cd),ph:r2(e.phase),v:e.v||0})),
   B:boss?{x:r1(boss.x),y:r1(boss.y),vx:r1(boss.vx),vy:r1(boss.vy),r:boss.r,hp:r1(boss.hp),mx:r1(boss.max),sp:r2(boss.spawn),fl:r2(boss.flash),sn:r2(boss.stun),en:boss.enraged?1:0,pat:boss.pat||0,sub:boss.sub||'',dr:r2(boss.dir),al:r1(boss.alt||0),n:boss.name,c:boss.col,c2:boss.col2}:0,
@@ -1950,7 +1986,7 @@ function snap(){
 }
 function lerpTo(o,dt){if(o.tx==null)return;o.tx+=(o.vx||0)*dt;o.ty+=(o.vy||0)*dt;const k=Math.min(1,dt*12);o.x+=(o.tx-o.x)*k;o.y+=(o.ty-o.y)*k}
 function applySnap(m){
- const ck=(m.cl||[0,0]).join(',');if(m.si!==stageIdx||!ground||ck!==applySnap.ck){applySnap.ck=ck;LV=(m.cl||[0])[0];AREA=(m.cl||[0,0])[1];AREA_OPT=LV>=0&&CAMP[LV]?{map:CAMP[LV].areas[AREA].m||null,seed:CAMP[LV].areas[AREA].seed||0}:{map:STAGES[m.si].map0||null,seed:0};buildStage(m.si);stageIdx=m.si;mines=[];fx=[];parts=[];texts=[];enemies=[];boss=null;players.forEach(p=>p.tx=null)}
+ const ck=(m.cl||[0,0]).join(',')+(m.mk||'');if(m.si!==stageIdx||!ground||ck!==applySnap.ck){applySnap.ck=ck;LV=(m.cl||[0])[0];AREA=(m.cl||[0,0])[1];AREA_OPT=LV>=0&&CAMP[LV]?{map:CAMP[LV].areas[AREA].m||null,seed:CAMP[LV].areas[AREA].seed||0}:{map:m.mk!==undefined?(m.mk||null):(STAGES[m.si].map0||null),seed:0};buildStage(m.si);stageIdx=m.si;mines=[];fx=[];parts=[];texts=[];enemies=[];boss=null;players.forEach(p=>p.tx=null)}
  if(state!==m.state){state=m.state;stateT=0;if(state==='victory'||state==='gameover')runEnd()}if(!$ui.hidden)hideUI();
  ARENA=!!m.ar;ARENA_WIN=m.aw||'';phase=m.ph;waveNum=m.wn;toSpawn=m.ts;runTime=m.rt;fade=m.fd;shake=Math.max(shake,m.sh);flashA=Math.max(flashA,m.fl);
  if(m.bn){if(!banner||banner.big!==m.bn[0]||banner.small!==m.bn[1])banner={big:m.bn[0],small:m.bn[1],t:m.bn[2],max:m.bn[3]}}else banner=null;
@@ -1991,10 +2027,11 @@ function guestUpdate(dt){
  if(players.length)updateCamera(dt);
 }
 function netTick(dt){
+ if(NET.host&&state==='play'){const now=performance.now();for(const q of NET.peers.values())if(q.id!==ME_ID&&REMOTE[q.slot]&&now-(q.lastIn||0)>1200)REMOTE[q.slot]=null}
  if(NET.host&&(state==='play'||state==='gameover'||state==='victory')){NET.snapT-=dt;if(NET.snapT<=0){NET.snapT=0.066;nsend(snap())}}
  if(NET.guest){const now=performance.now();
-  if(!NET.joined&&state==='lobby'&&now-NET.joinT>12000){netLeave();showMsg('Комната не найдена. Проверь код.')}
-  else if(NET.joined&&state!=='netmsg'&&now-NET.lastHost>9000){netLeave();showMsg('Связь с создателем комнаты потеряна')}}
+  if(!NET.joined&&state==='lobby'&&now-NET.joinT>12000){const rj=NET.rj;netLeave();showMsg(rj?'Связь с создателем комнаты потеряна':'Комната не найдена. Проверь код.',rj)}
+  else if(NET.joined&&state!=='netmsg'&&now-NET.lastHost>9000){const rc=NET.room;guestJoin(rc);NET.rj=rc}}
 }
 
 const unlock=()=>{initAudio();if(AC&&AC.state==='suspended')AC.resume()};['touchend','click','keydown'].forEach(t=>addEventListener(t,unlock,{passive:true}));
@@ -2010,7 +2047,7 @@ const HOME_URL=NET_OK?'../?lang=ru':'';
 if(NET_OK){const rq=new URLSearchParams(location.search).get('room');if(rq&&/^[A-Za-z0-9]{4}$/.test(rq))guestJoin(rq.toUpperCase())}
 let last=performance.now();
 const bPEl=document.getElementById('bP');
-let artT=0;function preloadArt(){try{for(const p of players){if(!HSP[p.hero])continue;for(const k of ['i','r1','r2','a','s']){const im=hsImg(p.hero,k,0);if(p.skin&&im.complete&&im.naturalWidth&&!hsImg(p.hero,k,p.skin)){hsImg(p.hero,k,p.skin,1);return}}}
+let artT=0;function preloadArt(){try{if(S&&S.map)for(const n of ONI_POOL)mbImg(n);for(const p of players){if(!HSP[p.hero])continue;for(const k of ['i','r1','r2','a','s']){const im=hsImg(p.hero,k,0);if(p.skin&&im.complete&&im.naturalWidth&&!hsImg(p.hero,k,p.skin)){hsImg(p.hero,k,p.skin,1);return}}}
  const k=S&&S.boss&&S.boss.kind,D=BSP[k];if(D&&(state==='play'))for(const ps of ['i','a','f'])if(D[ps])bsImg(k,ps)}catch(e){}}
 function frame(now){const dt=Math.min(0.033,Math.max(0,(now-last)/1000));last=now;if((artT-=dt)<=0){artT=0.3;preloadArt()}pollInput();update(dt);render();if(touch.on){const h=!(state==='play'||state==='gameover'||state==='victory')||pauseOpen;if(bPEl.hidden!==h)bPEl.hidden=h}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);

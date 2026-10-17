@@ -1755,7 +1755,7 @@ function drawTitle(){
  const g=ctx.createLinearGradient(0,0,0,Hu);g.addColorStop(0,'rgba(7,6,13,0.6)');g.addColorStop(0.5,'rgba(7,6,13,0.15)');g.addColorStop(1,'rgba(7,6,13,0.85)');ctx.fillStyle=g;ctx.fillRect(0,0,Wu,Hu);
  const ty=Hu*0.25;ctx.textAlign='center';ctx.font=`100px ${FONT_D}`;ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillText('ТРИ РАЗЛОМА',Wu/2+5,ty+6);
  const tg=ctx.createLinearGradient(Wu/2-380,0,Wu/2+380,0);tg.addColorStop(0,'#8b5cf6');tg.addColorStop(0.5,'#fde68a');tg.addColorStop(1,'#38bdf8');ctx.fillStyle=tg;ctx.fillText('ТРИ РАЗЛОМА',Wu/2,ty);
- ctx.font=`600 26px ${FONT_B}`;ctx.fillStyle='#ffffff';ctx.fillText('До 4 игроков  ·  8 героев  ·  11 локаций  ·  11 боссов',Wu/2,ty+50);
+ ctx.font=`600 26px ${FONT_B}`;ctx.fillStyle='#ffffff';ctx.fillText('До 4 игроков  ·  8 героев  ·  4 мира  ·  12 уровней  ·  11 боссов',Wu/2,ty+50);
  const by=Hu*0.79,NH=HEROES.length,gap=Math.min(150,(Wu-60)/NH),hx0=i=>Wu/2+(i-(NH-1)/2)*gap;ctx.globalCompositeOperation='lighter';for(let i=0;i<NH;i++)glow(ctx,hx0(i),by-20,70,HEROES[i].col,0.3);ctx.globalCompositeOperation='source-over';
  for(let i=0;i<NH;i++){const x=hx0(i),sc=Math.min(2.6,gap/58);drawHero(ctx,i,x,by,{face:Math.PI/2+Math.sin(time+i)*0.4,t:time+i,scale:sc});ctx.font=`${Math.min(26,gap/5.5)|0}px ${FONT_D}`;ctx.fillStyle=HEROES[i].col;ctx.fillText(HEROES[i].name,x,by+34);ctx.font=`600 ${Math.min(15,gap/9)|0}px ${FONT_B}`;ctx.fillStyle='#d1cde8';ctx.fillText(HEROES[i].title,x,by+54)}
  ctx.globalAlpha=0.65+0.35*Math.sin(time*4);ctx.font=`600 22px ${FONT_B}`;ctx.fillStyle='#ffffff';ctx.fillText(touch.on?'Коснись экрана, чтобы начать':'Нажми ENTER, F или кнопку A на геймпаде',Wu/2,Hu-20);ctx.globalAlpha=1;

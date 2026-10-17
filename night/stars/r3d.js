@@ -140,9 +140,9 @@ const barC=document.createElement('canvas');barC.width=128;barC.height=20;const 
 const aimL=new THREE.Mesh(new THREE.PlaneGeometry(1.4,.12),new THREE.MeshBasicMaterial({color:0xb6ff3b,transparent:true,opacity:.6,depthWrite:false}));aimL.rotation.x=-Math.PI/2;aimL.visible=false;scene.add(aimL);
 const ringGeo=new THREE.RingGeometry(.36,.45,40);
 const PL={},KP=[];
-const HTEX={};function heroTex(c,col){const k=c+col;if(HTEX[k])return HTEX[k];const cvs=window.HERO_ART.canvas(c,col);const t=new THREE.CanvasTexture(cvs);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return HTEX[k]={t,asp:cvs.width/cvs.height}}
+const HTEX={};function heroTex(c,col,kt){const k=c+col+(kt?kt.j+kt.s:'');if(HTEX[k])return HTEX[k];const cvs=window.HERO_ART.canvas(c,col,kt);const t=new THREE.CanvasTexture(cvs);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return HTEX[k]={t,asp:cvs.width/cvs.height}}
 const blobGeo=new THREE.CircleGeometry(.55,32);
-function heroBody(c,col,H){const holder=new THREE.Group();const {t,asp}=heroTex(c,col);const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,alphaTest:.04}));spr.center.set(.5,.02);spr.scale.set(H*asp,H,1);holder.add(spr);
+function heroBody(c,col,H,kt){const holder=new THREE.Group();const {t,asp}=heroTex(c,col,kt);const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,alphaTest:.04}));spr.center.set(.5,.02);spr.scale.set(H*asp,H,1);holder.add(spr);
   const blob=new THREE.Mesh(blobGeo,new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35,depthWrite:false}));blob.rotation.x=-Math.PI/2;blob.position.y=.015;blob.scale.set(1,.55,1);holder.add(blob);return {holder,spr,W:H*asp,H}}
 function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=1,sy=1;const ph=o.ph*2.2;
   if(an===1){y=Math.abs(Math.sin(ph))*.16;rot=Math.sin(ph)*.07;sy=1-Math.abs(Math.cos(ph))*.06;sx=1+Math.abs(Math.cos(ph))*.04}
@@ -154,7 +154,7 @@ function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=
   o.fx=o.fx==null?face:o.fx+(face-o.fx)*Math.min(1,dt*14);s.scale.set(c.W*sx*o.fx,c.H*sy,1);s.position.y=y;m.rotation=rot}
 let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
-  const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1));
+  const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1),{j:k.j,s:k.s});
   const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:p.me?0xb6ff3b:new THREE.Color(KIT[p.team].j),transparent:true,opacity:.9,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=.025;c.holder.add(ring);
   let aura=null;if((p.rar||0)>=2){aura=new THREE.Mesh(new THREE.CircleGeometry(.7,40),new THREE.MeshBasicMaterial({map:radTex,color:p.rar>2?0xff5ad8:0xffd23f,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));aura.rotation.x=-Math.PI/2;aura.position.y=.03;c.holder.add(aura)}
   const lab=textSprite(p.me?p.name:p.name,p.me?'#b6ff3b':KIT[p.team].j,p.me?52:38);lab.position.y=c.H+(p.me?.3:.18);if(!p.me)lab.scale.multiplyScalar(.85);c.holder.add(lab);

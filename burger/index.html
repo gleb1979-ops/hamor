@@ -870,7 +870,7 @@ function home(){redraw=home;if(!navNm){navNm=true;if(NAV.get('nm'))me.name=NAV.g
     audio();goFull();me.name=v;try{localStorage.setItem('burger-name',v)}catch(e){}redraw=()=>{};app.innerHTML=`<h2>${T('connecting')}</h2>`;
     if(joinCode)connect(joinCode,()=>{const hi=()=>send({t:'hi',name:me.name,hat:wearHat()},1);hi();retryHi(hi);lobby();startWatch()});
     else{isHost=true;const code=MK||Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
-      connect(code,()=>{lobbyPlayers.set(me.id,{name:me.name,c:CAST()[0],hat:wearHat()});broadcastLobby()})}};appBanner()}
+      connect(code,()=>{if(client&&client.bridge)client.bridge();lobbyPlayers.set(me.id,{name:me.name,c:CAST()[0],hat:wearHat()});broadcastLobby()})}};appBanner()}
 function switchTo(g){if(!isHost)return;if(!LOCS[g]){goGame(g);return}audio();tone(660,.08,'square',.1);FIXED=g;setLoc(g);{const used=new Set();for(const p of lobbyPlayers.values()){if(!CAST().includes(p.c)||used.has(p.c))p.c=CAST().find(c=>!used.has(c));used.add(p.c)}}applyLang();history.replaceState(null,'',location.pathname+'?loc='+g+'&lang='+lang);const mp=lobbyPlayers.get(me.id);if(mp)mp.hat=wearHat();phase='lobby';broadcastLobby()}
 function link(){return location.origin+DIRS[FIXED]+'?room='+room+'&lang='+lang}
 function lobby(){redraw=lobby;phase='lobby';show('app');const myC=lobbyPlayers.get(me.id)?.c;const inv=T('inviteM')[FIXED]+link();

@@ -144,7 +144,7 @@ const HEROES=[
   desc:'Водные шары и посох прилива. Супер: исцеляющая волна — лечит всех рядом, мгновенно поднимает упавших друзей и смывает врагов.'}
 ];
 const STAGES=[
- {name:'Неоновый Токио',deco:'city',map:'port',base:['#1a1631','#0e0c1d'],accent:'#ff3d81',accent2:'#22d3ee',dark:'rgba(6,4,22,0.22)',ecol:'#ff3d81',ecol2:'#4a0b30',eye:'#fff1a8',amb:'rain',obstacles:22,shot:1,trap:{zone:'elec',fall:'sign'},
+ {name:'Неоновый Токио',deco:'city',map0:'port',base:['#1a1631','#0e0c1d'],accent:'#ff3d81',accent2:'#22d3ee',dark:'rgba(6,4,22,0.22)',ecol:'#ff3d81',ecol2:'#4a0b30',eye:'#fff1a8',amb:'rain',obstacles:22,shot:1,trap:{zone:'elec',fall:'sign'},
   boss:{name:'Они-Палач',col:'#ff3d3d',col2:'#2a0606',kind:'oni',patterns:['slam','car','charge','summon','slam','car','aimed']}},
  {name:'Лес духов',deco:'forest',base:['#11301f','#08190f'],accent:'#7cf5c0',accent2:'#d9f99d',dark:'rgba(2,12,8,0.6)',ecol:'#5eead4',ecol2:'#0f3d36',eye:'#fef08a',amb:'fireflies',obstacles:30,shot:3,trap:{zone:'roots',fall:null},
   boss:{name:'Кицунэ Девятихвостая',col:'#fb923c',col2:'#7c2d12',kind:'fox',patterns:['blink','spiral','charge','summon','blink','aimed']}},
@@ -154,7 +154,7 @@ const STAGES=[
   boss:{name:'Огненный дракон Рю',col:'#ff7a1a',col2:'#2a0a00',kind:'dragon',patterns:['fly','breath','rain','spiral','summon','breath']}},
  {name:'Замок теней',deco:'castle',base:['#1c1726','#0b0910'],accent:'#a78bfa',accent2:'#f0abfc',dark:'rgba(6,2,14,0.62)',ecol:'#c084fc',ecol2:'#2e1065',eye:'#f5d0fe',amb:'dust',obstacles:24,shot:5,trap:{zone:'spikes',fall:'chandelier'},
   boss:{name:'Чёрный рыцарь',col:'#a78bfa',col2:'#1e1b4b',kind:'knight',patterns:['charge','slam','aimed','summon','charge','burst']}},
- {name:'Затонувший храм',deco:'temple',map:'sea',base:['#0b2a3a','#04141d'],accent:'#2dd4bf',accent2:'#a5f3fc',dark:'rgba(0,10,20,0.18)',ecol:'#22d3ee',ecol2:'#0e3a4a',eye:'#fef9c3',amb:'bubbles',obstacles:22,shot:0,trap:{zone:'whirl',fall:null},
+ {name:'Затонувший храм',deco:'temple',map0:'sea',base:['#0b2a3a','#04141d'],accent:'#2dd4bf',accent2:'#a5f3fc',dark:'rgba(0,10,20,0.18)',ecol:'#22d3ee',ecol2:'#0e3a4a',eye:'#fef9c3',amb:'bubbles',obstacles:22,shot:0,trap:{zone:'whirl',fall:null},
   boss:{name:'Кракен Глубин',col:'#d946ef',col2:'#3b0764',kind:'kraken',patterns:['rain','burst','spiral','summon','rain','aimed']}},
  {name:'Небесная цитадель',deco:'sky',base:['#22325a','#111a33'],accent:'#c4b5fd',accent2:'#fde68a',dark:'rgba(4,8,30,0.42)',ecol:'#a78bfa',ecol2:'#24104f',eye:'#e0f2fe',amb:'stars',obstacles:20,shot:3,trap:{zone:null,fall:'bolt'},
   boss:{name:'Король Тэнгу',col:'#ef4444',col2:'#450a0a',kind:'tengu',patterns:['fly','aimed','spiral','summon','fly','burst']}},
@@ -162,9 +162,9 @@ const STAGES=[
   boss:{name:'Повелитель бурь',col:'#facc15',col2:'#1e1b4b',kind:'storm',patterns:['rain','fly','spiral','burst','summon','slam','aimed','rain']}},
  {name:'Деревня у мельницы',deco:'village',base:['#5f9e3f','#3f7a2c'],accent:'#fde047',accent2:'#fb923c',dark:'rgba(20,10,0,0.06)',ecol:'#f97316',ecol2:'#7c2d12',eye:'#fff7c2',amb:'dust',obstacles:20,shot:3,trap:{zone:'roots',fall:'rock'},day:1,
   boss:{name:'Вепрь-Великан',col:'#f97316',col2:'#431407',kind:'giant',spr:'boar',patterns:['charge','slam','summon','aimed','charge','slam']}},
- {name:'Речная переправа',deco:'river',map:'canyon',base:['#4f9a46','#2f6f3a'],accent:'#38bdf8',accent2:'#a7f3d0',dark:'rgba(0,10,30,0.08)',ecol:'#38bdf8',ecol2:'#0c4a6e',eye:'#e0f2fe',amb:'bubbles',obstacles:20,shot:4,trap:{zone:'whirl',fall:null},day:1,
+ {name:'Речная переправа',deco:'river',map0:'canyon',base:['#4f9a46','#2f6f3a'],accent:'#38bdf8',accent2:'#a7f3d0',dark:'rgba(0,10,30,0.08)',ecol:'#38bdf8',ecol2:'#0c4a6e',eye:'#e0f2fe',amb:'bubbles',obstacles:20,shot:4,trap:{zone:'whirl',fall:null},day:1,
   boss:{name:'Ярл Речной',col:'#38bdf8',col2:'#0c4a6e',kind:'giant',spr:'viking',patterns:['slam','aimed','charge','rain','summon','slam','burst']}},
- {name:'Ночная свалка',deco:'city',map:'junk',base:['#1c1714','#0c0a08'],accent:'#fb923c',accent2:'#f43f5e',dark:'rgba(10,6,4,0.2)',ecol:'#fb923c',ecol2:'#431407',eye:'#fde68a',amb:'embers',obstacles:0,shot:1,trap:{zone:'elec',fall:'sign'},
+ {name:'Ночная свалка',deco:'city',map0:'junk',base:['#1c1714','#0c0a08'],accent:'#fb923c',accent2:'#f43f5e',dark:'rgba(10,6,4,0.2)',ecol:'#fb923c',ecol2:'#431407',eye:'#fde68a',amb:'embers',obstacles:0,shot:1,trap:{zone:'elec',fall:'sign'},
   boss:{name:'Король свалки',col:'#fb923c',col2:'#431407',kind:'giant',spr:'goblin',patterns:['charge','aimed','slam','summon','burst','charge','rain']}}
 ];
 const PW={spread:{name:'Тройной выстрел',letter:'S',col:'#fde047'},laser:{name:'Лазер',letter:'L',col:'#f43f5e'},rapid:{name:'Скорострел',letter:'R',col:'#fb923c'},shield:{name:'Щит',letter:'B',col:'#60a5fa'},homing:{name:'Ракеты',letter:'H',col:'#a78bfa'}};
@@ -245,7 +245,7 @@ let amb=[],prevCam={x:0,y:0};
 
 // ================= Stage build =================
 function buildStage(i){
- S=STAGES[i];const rng=mulberry(i*977+13);obstacles=[];if(S.map){mapImg(S.map);obstacles=MAPOBS[S.map].map(([x,y,r])=>({x,y,r,h:10,inv:1,seed:0,neon:S.accent,pts:[],veins:[]}))}
+ S=STAGES[i];S.map=AREA_OPT.map||null;const rng=mulberry(i*977+13+(AREA_OPT.seed||0)*7919);obstacles=[];if(S.map){mapImg(S.map);obstacles=MAPOBS[S.map].map(([x,y,r])=>({x,y,r,h:10,inv:1,seed:0,neon:S.accent,pts:[],veins:[]}))}
  let tries=0;while(!S.map&&obstacles.length<S.obstacles&&tries<2000){tries++;
   const r=28+rng()*20,x=140+rng()*(WW-280),y=160+rng()*(WH-300);
   if(Math.hypot(x-WW/2,y-WH/2)<340)continue;
@@ -301,8 +301,9 @@ function initAmbient(){amb=[];const n=S.amb==='rain'?140:S.amb==='fireflies'?55:
 
 // ================= Entities =================
 function makePlayer(i,hero){const Hh=HEROES[hero];return{i,hero,x:0,y:0,vx:0,vy:0,r:19,pw:null,pwT:0,shield:0,hp:Hh.hp,max:Hh.hp,energy:40,face:Math.PI/2,atkCd:0,anim:0,animMax:0.2,combo:0,comboT:0,inv:0,flash:0,down:false,revive:0,dash:null,charge:-1,clvl:0,moving:false,t:Math.random()*9,kills:0,dmg:0,hx:0,hy:0,wt:1}}
-function hpScale(){return(1+stageIdx*0.22)*(0.65+0.35*np)}
-function dmgScale(){return 1+stageIdx*0.08}
+function DIFF(){return LV>=0?LV*0.85+AREA*0.2:stageIdx}
+function hpScale(){return(1+DIFF()*0.22)*(0.65+0.35*np)}
+function dmgScale(){return 1+DIFF()*0.08}
 function spawnEnemy(type,x,y){const T=ETYPES[type],sc=hpScale();enemies.push({type,x,y,vx:0,vy:0,r:T.r,hp:T.hp*sc,max:T.hp*sc,spd:T.spd*(1+stageIdx*0.04),cd:rand(1,2.4),flash:0,stun:0,spawn:0.7,hitCd:0,phase:rand(0,TAU),st:'chase',stT:0,t:0,dir:0,ex:x,ey:y,v:Math.random()*3|0,tc:rand(2,4),bk:rand(3,6)})}
 function spawnPos(dmin,dmax){const c=centroid();for(let k=0;k<12;k++){const a=rand(0,TAU),d=rand(dmin,dmax);const x=clamp(c.x+Math.cos(a)*d,90,WW-90),y=clamp(c.y+Math.sin(a)*d,90,WH-90);if(!obstacles.some(o=>Math.hypot(o.x-x,o.y-y)<o.r+40)&&!players.some(p=>Math.hypot(p.x-x,p.y-y)<260))return{x,y}}return{x:clamp(c.x+dmax,90,WW-90),y:c.y}}
 function centroid(){let x=0,y=0;if(!players.length)return{x:WW/2,y:WH/2};for(const p of players){x+=p.x;y+=p.y}return{x:x/players.length,y:y/players.length}}
@@ -319,7 +320,7 @@ function showBanner(big,small,dur=2.4){banner={big,small,t:dur,max:dur}}
 
 // ================= Game flow =================
 function startGame(){
- players=[];slots.forEach((s,i)=>{if(s.joined)players.push(makePlayer(i,s.hero))});players.forEach(p=>applyUp(p,{w:WAL.w,a:WAL.a,s:WAL.sel}));np=players.length;runTime=0;RUN_DONE=false;startStage(START_LV);state='play';paused=false;
+ players=[];slots.forEach((s,i)=>{if(s.joined)players.push(makePlayer(i,s.hero))});players.forEach(p=>applyUp(p,{w:WAL.w,a:WAL.a,s:WAL.sel}));np=players.length;runTime=0;RUN_DONE=false;beginRun();state='play';paused=false;
 }
 function startStage(i){
  stageIdx=i;buildStage(i);mines=[];mineT=rand(6,9);podT=1e9;enemies=[];bullets=[];pshots=[];fx=[];parts=[];texts=[];pickups=[];boss=null;portal=null;bossDone=false;initHZ();
@@ -328,17 +329,17 @@ function startStage(i){
  players.forEach((p,k)=>{p.x=st0.x+offs[k][0]*0.7;p.y=st0.y+offs[k][1]*0.7;p.vx=p.vy=0;if(p.down){p.down=false;p.hp=p.max*0.5}p.hp=Math.min(p.max,p.hp+p.max*0.5);p.dash=null;p.charge=-1;p.inv=1;p.face=-Math.PI/2});
  const c=centroid();cam.x=c.x;cam.y=c.y;cam.z=1;
  phase='intro';phaseT=2.4;waveNum=0;toSpawn=0;
- showBanner(`Локация ${i+1} из ${STAGES.length}`,S.name,2.6);
+ if(LV>=0){const L=CAMP[LV];showBanner(`${WORLDS[L.w].name} · уровень ${L.n}`,`${L.name} · участок ${AREA+1} из ${L.areas.length}`,2.6)}else showBanner('Испытание',S.name,2.6);
  fade=1;fadeDir=-1;
 }
-function nextWave(){waveNum++;if(waveNum===3)(STAGE_MINI[stageIdx]||[]).forEach(n=>{const sp=spawnPos(380,540);spawnMini(n,sp.x,sp.y)});if(waveNum===2||waveNum===3){const c=centroid();players.forEach((pl,ii)=>dropWeapon(c.x+(ii-(players.length-1)/2)*70,c.y-90))}podT=rand(3,5);podsLeft=2+np;toSpawn=Math.round((6+waveNum*3+stageIdx*2)*(0.6+0.4*np)*(ARENA?0.45:1));spawnT=0.4;phase='waves';phaseT=1.5;if(ARENA)showBanner(`Арена · волна ${waveNum}`,'Бей соперников и монстров',1.4);else showBanner(`Волна ${waveNum} из 3`,waveNum===3?'Последняя волна перед боссом':'Отбейтесь от врагов',1.6);sfx('wave')}
+function nextWave(){waveNum++;if(waveNum===NW()&&miniArea())(STAGE_MINI[stageIdx]||[]).forEach(n=>{const sp=spawnPos(380,540);spawnMini(n,sp.x,sp.y)});if(waveNum>=2){const c=centroid();players.forEach((pl,ii)=>dropWeapon(c.x+(ii-(players.length-1)/2)*70,c.y-90))}podT=rand(3,5);podsLeft=2+np;toSpawn=Math.round((6+waveNum*3+stageIdx*2)*(0.6+0.4*np)*(ARENA?0.45:1));spawnT=0.4;phase='waves';phaseT=1.5;if(ARENA)showBanner(`Арена · волна ${waveNum}`,'Бей соперников и монстров',1.4);else showBanner(`Волна ${waveNum} из ${NW()}`,waveNum===NW()?(bossArea()?'Последняя волна перед боссом':miniArea()?'Идёт мини-босс!':'Последняя волна'):'Отбейтесь от врагов',1.6);sfx('wave')}
 function startBoss(){
  phase='boss';podT=9;const B=S.boss;const sp=spawnPos(330,420);
- const hp=750*(1+stageIdx*0.28)*(0.6+0.4*np);
+ const hp=750*(1+DIFF()*0.28)*(0.6+0.4*np);
  boss={isBoss:true,x:sp.x,y:sp.y,vx:0,vy:0,r:BOSS_R[S.boss.kind]||50,alt:0,hp,max:hp,name:B.name,col:B.col,col2:B.col2,t:0,spawn:1.6,flash:0,stun:0,pat:null,pt:0,pc:0,pa:0,pi:0,cd:2,enraged:false,dir:0,sub:'',ex:sp.x,ey:sp.y};
  showBanner('БОСС',B.name,2.6);shake=18;sfx('roar');
 }
-function retryStage(){RUN_DONE=false;players=players.map(p=>{const n=makePlayer(p.i,p.hero);n.kills=p.kills;n.dmg=p.dmg;n.wt=p.wt||1;n.name=p.name;n.dmul=p.dmul;n.arm=p.arm;n.skin=p.skin;n.coins=p.coins;n.lives=ARENA?3:0;n.pk=0;return n});startStage(stageIdx);state='play'}
+function retryStage(){RUN_DONE=false;const _ra=1;players=players.map(p=>{const n=makePlayer(p.i,p.hero);n.kills=p.kills;n.dmg=p.dmg;n.wt=p.wt||1;n.name=p.name;n.dmul=p.dmul;n.arm=p.arm;n.skin=p.skin;n.coins=p.coins;n.lives=ARENA?3:0;n.pk=0;return n});if(LV>=0)startArea();else startStage(stageIdx);state='play'}
 
 // ================= Combat =================
 function autoAim(p,range){let best=null,bs=1e9;for(const e of targets()){const d=Math.hypot(e.x-p.x,e.y-p.y)-e.r;if(d>range)continue;const a=Math.atan2(e.y-p.y,e.x-p.x),s=d+Math.abs(angDiff(p.face,a))*140;if(s<bs){bs=s;best=a}}if(best!=null)p.face=best}
@@ -366,7 +367,7 @@ function bossDeath(b){for(const q of players)earn(q,30);
  addFx({type:'ring',x:b.x,y:b.y,r:0,maxR:420,t:0.9,max:0.9,col:b.col});
  for(let i=0;i<3;i++)pickups.push({kind:'heal',x:b.x+rand(-60,60),y:b.y+rand(-40,40),t:0,bob:rand(0,6)});for(let i=0;i<2+np;i++){const a=i/(2+np)*TAU;dropPower(b.x+Math.cos(a)*80,b.y+20+Math.sin(a)*50)}mines=[];HZ=HZ.filter(h=>h.k==='pud');for(const pl of players)dropWeapon(b.x+rand(-90,90),b.y+rand(-50,50));
  enemies.forEach(e=>{if(!e.dead){e.dead=true;burst(e.x,e.y-e.r,S.ecol,10,240)}});bullets=[];
- boss=null;bossDone=true;phase='bossdead';phaseT=stageIdx===STAGES.length-1?3:1.6;
+ boss=null;bossDone=true;phase='bossdead';phaseT=lastOfRun()?3:1.6;
 }
 function hurtPlayer(p,dmg,src){
  if(p.down||p.inv>0||p.dash)return false;
@@ -545,7 +546,7 @@ function updateBoss(b,dt){
 }
 function updatePlay(dt){
  runTime+=dt;
- if(fadeDir){fade+=fadeDir*dt*1.6;if(fade<=0){fade=0;fadeDir=0}if(fade>=1&&fadeDir>0){fade=1;fadeDir=0;startStage(stageIdx+1);return}}
+ if(fadeDir){fade+=fadeDir*dt*1.6;if(fade<=0){fade=0;fadeDir=0}if(fade>=1&&fadeDir>0){fade=1;fadeDir=0;advance();return}}
  for(const p of players)updatePlayer(p,dt);
  for(const e of enemies)updateEnemy(e,dt);
  if(boss)updateBoss(boss,dt);
@@ -576,8 +577,8 @@ function updatePlay(dt){
  else if(phase==='waves'){
   if(toSpawn>0){spawnT-=dt;const cap=12+np*4;if(spawnT<=0&&enemies.length<cap){spawnT=rand(0.35,0.7);const n=Math.min(toSpawn,Math.random()<0.4?2:1);
    for(let i=0;i<n;i++){toSpawn--;const r=Math.random();let type='grunt';const sq=Math.min(stageIdx,3);if((waveNum>=2||stageIdx>=1)&&r<0.25+sq*0.05)type='shooter';else if((waveNum>=3||stageIdx>=2)&&r<0.42+sq*0.06)type='brute';const sp=spawnPos(480,640);spawnEnemy(stType(type),sp.x,sp.y)}}}
-  else if(enemies.every(e=>e.type==='pod')){phaseT-=dt;if(phaseT<=0){if(ARENA||waveNum<3)nextWave();else startBoss()}}}
- else if(phase==='bossdead'){phaseT-=dt;if(phaseT<=0){if(stageIdx===STAGES.length-1){state='victory';stateT=0;runEnd()}else{phase='portal';portal=Object.assign(S.map?freeNear(WW/2,WH/2):{x:WW/2,y:WH/2},{t:0});showBanner('Портал открыт','Войдите в него всем отрядом',2.2);sfx('portal')}}}
+  else if(enemies.every(e=>e.type==='pod')){phaseT-=dt;if(phaseT<=0){if(ARENA||waveNum<NW())nextWave();else if(bossArea())startBoss();else areaClear()}}}
+ else if(phase==='bossdead'){phaseT-=dt;if(phaseT<=0){if(lastOfRun()){state='victory';stateT=0;runEnd();unlockLv(LV+1)}else{phase='portal';portal=Object.assign(S.map?freeNear(WW/2,WH/2):{x:WW/2,y:WH/2},{t:0});showBanner('Портал открыт','Войдите в него всем отрядом',2.2);sfx('portal')}}}
  else if(phase==='portal'&&portal){portal.t+=dt;if(Math.random()<0.9){const a=rand(0,TAU);part(portal.x+Math.cos(a)*120,portal.y+Math.sin(a)*55,-Math.cos(a)*140,-Math.sin(a)*70-40,0.8,3,Math.random()<0.5?S.accent:'#ffffff',{drag:0.5})}
   const al=alivePlayers();if(al.length&&al.every(p=>Math.hypot(p.x-portal.x,p.y-portal.y)<100)&&!fadeDir){fadeDir=1;sfx('portal');flashA=0.4}}
  if(ARENA)arenaCheck();else if(players.length&&players.every(p=>p.down)&&phase!=='lost'){phase='lost';phaseT=1.8}
@@ -933,6 +934,7 @@ function drawSkelDeaths(){for(const f of fx){if(f.type==='gld'){const k=1-f.t/f.
 // ================= Levels 2-8: grounds, obstacles, enemy skins =================
 function groundExtra(S,c,rng,spots){
  if(S.deco==='village'||S.deco==='river')return dayGround(S,c,rng,spots);
+ if(S.deco==='temple'&&reefGround(S,c,rng,spots))return true;
  if(S.deco==='ice'){
   for(let i=0;i<1400;i++){c.fillStyle=rng()<0.5?'rgba(224,242,254,0.05)':'rgba(10,20,40,0.08)';c.beginPath();c.ellipse(rng()*WW,rng()*WH,rng()*60+10,rng()*24+6,rng()*3,0,TAU);c.fill()}
   c.strokeStyle='rgba(224,242,254,0.18)';c.lineWidth=1.5;for(let i=0;i<70;i++){let x=rng()*WW,y=rng()*WH;c.beginPath();c.moveTo(x,y);for(let k=0;k<6;k++){x+=rng()*60-30;y+=rng()*40-20;c.lineTo(x,y)}c.stroke()}
@@ -960,6 +962,7 @@ function groundExtra(S,c,rng,spots){
  return false}
 function obstacleExtra(c,o){const R=o.r;
  if((S.deco==='village'||S.deco==='river'||S.deco==='sky')&&dayObstacle(c,o))return true;
+ if(S.deco==='temple'&&reefObstacle(c,o))return true;
  if(S.deco==='ice'){const sh=[[-R*0.5,R*1.6,0.5],[R*0.4,R*1.2,0.42],[0,R*2.3,0.58],[R*0.9,R*0.8,0.3]];for(const [dx,hh,ww] of sh){const g=c.createLinearGradient(dx-R*ww,0,dx+R*ww,0);g.addColorStop(0,'#f0f9ff');g.addColorStop(0.5,'#7dd3fc');g.addColorStop(1,'#1e40af');c.fillStyle=g;c.beginPath();c.moveTo(dx,-hh);c.lineTo(dx+R*ww,-R*0.2);c.lineTo(dx,0);c.lineTo(dx-R*ww,-R*0.2);c.closePath();c.fill();olf(c,1.4)}return true}
  if(S.deco==='castle'){const w=R*1.2,h=o.h+20;c.fillStyle='#3b3550';c.fillRect(-w/2,-h,w,h);c.fillStyle='#2a2540';c.fillRect(-w/2,-h,w*0.3,h);c.strokeStyle='rgba(0,0,0,0.4)';c.lineWidth=2;for(let y=-h+22;y<0;y+=22){c.beginPath();c.moveTo(-w/2,y);c.lineTo(w/2,y);c.stroke()}c.fillStyle='#4c4466';c.fillRect(-w/2-6,-h-10,w+12,12);
   c.fillStyle='#6b4423';c.fillRect(-3,-h*0.62,6,12);c.fillStyle='#fbbf24';c.beginPath();c.ellipse(0,-h*0.62-6+Math.sin(time*9+o.seed*9)*1.5,5,9,0,0,TAU);c.fill();return true}
@@ -1255,6 +1258,44 @@ function drawMini(e){const c=ctx,n=MBN[e.v||0]||'devil',sc0=e.spawn>0?Math.max(0
  e.ex=e.x;e.ey=e.y-160;return true}
 function drawMiniDeaths(){for(const f of fx){if(f.type!=='mbd')continue;const k=1-f.t/f.max;ctx.globalAlpha=Math.min(1,f.t/f.max*3);mbFrame(ctx,f.x,f.y,MBN[f.v||0],'die',Math.min(5,k*8),1.5);ctx.globalAlpha=1}}
 
+// ================= Campaign: 4 worlds x 3 levels, each level = 3 areas with an exit gate; trials = the other old levels =================
+const WORLDS=[{name:'Ночной город',ic:'🌃',col:'#ff3d81'},{name:'Солнечная долина',ic:'🌄',col:'#84cc16'},{name:'Подводное царство',ic:'🌊',col:'#22d3ee'},{name:'Огненные земли',ic:'🌋',col:'#f97316'}];
+const CAMP=[
+ {w:0,n:1,name:'Неоновые улицы',st:0,areas:[{m:'port'},{seed:1},{seed:2}]},
+ {w:0,n:2,name:'Заброшенный промышленный район',st:10,areas:[{m:'junk'},{seed:1},{seed:2}]},
+ {w:0,n:3,name:'Криминальные кварталы',st:0,boss:1,areas:[{seed:3},{m:'junk'},{m:'port'}]},
+ {w:1,n:1,name:'Цветущие поля',st:8,areas:[{seed:0},{seed:1},{seed:2}]},
+ {w:1,n:2,name:'Горные ущелья и мосты',st:9,areas:[{m:'canyon'},{seed:1},{m:'canyon'}]},
+ {w:1,n:3,name:'Древние руины',st:1,boss:1,areas:[{seed:0},{seed:1},{seed:2}]},
+ {w:2,n:1,name:'Коралловые лабиринты',st:5,areas:[{seed:1},{seed:2},{seed:3}]},
+ {w:2,n:2,name:'Затонувшие корабли',st:5,areas:[{seed:4},{m:'sea'},{seed:5}]},
+ {w:2,n:3,name:'Храм глубин',st:5,boss:1,areas:[{seed:6},{seed:7},{m:'sea'}]},
+ {w:3,n:1,name:'Вулканическая долина',st:3,areas:[{seed:0},{seed:1},{seed:2}]},
+ {w:3,n:2,name:'Лавовые пещеры',st:3,areas:[{seed:3},{seed:4},{seed:5}]},
+ {w:3,n:3,name:'Огненная крепость',st:3,boss:1,areas:[{seed:6},{seed:7},{seed:8}]}];
+const TRIALS=[2,4,6,7];
+let LV=0,AREA=0,AREA_OPT={},START={lv:0};try{const o=JSON.parse(localStorage.getItem('tr_start')||'null');if(o&&(o.lv!=null||o.tr!=null))START=o}catch(e){}
+function progLv(){try{return +(localStorage.getItem('tr_prog')||0)|0}catch(e){return 0}}
+function unlockLv(n){if(LV<0||NET.guest)return;try{if(n>progLv())localStorage.setItem('tr_prog',Math.min(CAMP.length-1,n))}catch(e){}}
+function NW(){return LV<0?3:(CAMP[LV].boss&&AREA===2)?2:AREA===0?2:3}
+function bossArea(){return LV<0||(CAMP[LV].boss&&AREA===CAMP[LV].areas.length-1)}
+function miniArea(){return LV<0||AREA>0}
+function lastOfRun(){return LV<0||(LV===CAMP.length-1&&AREA===CAMP[LV].areas.length-1)}
+function LNAME(){return LV>=0?CAMP[LV].name:S.name}
+function LSUB(){if(LV<0)return 'Испытание';const L=CAMP[LV];return `${WORLDS[L.w].ic} ${L.w+1}-${L.n} · участок ${AREA+1}/${L.areas.length}`}
+function startLabel(){return START.tr!=null?'Испытание: '+STAGES[START.tr].name:`${WORLDS[CAMP[START.lv].w].ic} ${CAMP[START.lv].w+1}-${CAMP[START.lv].n} ${CAMP[START.lv].name}`}
+function startArea(){const A=CAMP[LV].areas[AREA];AREA_OPT={map:A.m||null,seed:A.seed||0};startStage(CAMP[LV].st)}
+function beginRun(){if(START.tr!=null){LV=-1;AREA=0;AREA_OPT={map:STAGES[START.tr].map0||null,seed:0};startStage(START.tr)}else{LV=clamp(START.lv|0,0,CAMP.length-1);AREA=0;startArea()}}
+function areaClear(){phase='portal';const last=AREA===CAMP[LV].areas.length-1;portal=Object.assign(freeNear(WW-300,WH/2),{t:0});for(const q of players)earn(q,last?15:5);showBanner(last?'Уровень пройден!':'Путь открыт',last?'Все в портал — дальше новый уровень':'Идите к воротам справа →',2.2);sfx('portal')}
+function advance(){if(LV<0){state='victory';stateT=0;runEnd();return}if(AREA<CAMP[LV].areas.length-1){AREA++;startArea();return}unlockLv(LV+1);if(LV>=CAMP.length-1){state='victory';stateT=0;runEnd();return}LV++;AREA=0;startArea()}
+function showWorldMap(){const pr=progLv();showUI(`<h2>🗺 Карта мира</h2><p class="sub">4 мира по 3 уровня. В каждом уровне 3 участка, на третьем уровне мира — босс.</p>
+ ${WORLDS.map((W,w)=>`<div style="border:1px solid ${W.col}66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:${W.col};font-size:18px">${W.ic} Мир ${w+1}. ${W.name}</b><div class="row" style="margin-top:6px">${CAMP.map((L,i)=>L.w!==w?'':`<button class="big" data-lv="${i}" ${i>pr?'disabled':''} style="flex:1;font-size:14px;padding:8px;${START.lv===i&&START.tr==null?'background:#fde68a;color:#1b1830':''}">${i>pr?'🔒 ':''}${L.n}. ${L.name}${L.boss?' 👑':''}</button>`).join('')}</div></div>`).join('')}
+ <div style="border:1px solid #a78bfa66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:#c4b5fd;font-size:18px">⚔️ Испытания</b> <span class="sub" style="margin:0">отдельные битвы с боссами</span><div class="row" style="margin-top:6px;flex-wrap:wrap">${TRIALS.map(t=>`<button class="big" data-tr="${t}" style="flex:1;min-width:140px;font-size:14px;padding:8px;${START.tr===t?'background:#fde68a;color:#1b1830':''}">${esc(STAGES[t].name)}<br><small>${esc(STAGES[t].boss.name)}</small></button>`).join('')}</div></div>
+ <div class="row"><button class="big" id="wmBack">Назад</button></div>`);
+ const save=()=>{try{localStorage.setItem('tr_start',JSON.stringify(START))}catch(e){}};
+ document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{START={lv:+b.dataset.lv};save();showMode()});
+ document.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{START={tr:+b.dataset.tr};save();showMode()});bind('wmBack',()=>showMode())}
+
 // ================= Tagshim coins, upgrades, skins, chests, PvP arena =================
 let ARENA=false,ARENA_WIN='',RUN_DONE=false;
 const WAL=(()=>{const w={c:0,w:[],a:[],own:[],sel:[],g:0,day:'',ch:0};try{const o=JSON.parse(localStorage.getItem('tr_wallet')||'{}');Object.assign(w,o)}catch(e){}for(let h=0;h<8;h++){w.w[h]=w.w[h]|0;w.a[h]=w.a[h]|0;w.sel[h]=w.sel[h]|0;if(!Array.isArray(w.own[h]))w.own[h]=[]}return w})();
@@ -1294,6 +1335,19 @@ function showShop(msg){state='mode';const daily=WAL.day!==today(),chests=(WAL.ch
  bind('shChest',()=>{if(WAL.day!==today())WAL.day=today();else if(WAL.ch>0)WAL.ch--;else return;const r=chestRoll();walSave();sfx('power');showShop(r)});
  bind('shBuy',()=>{if(WAL.c<120)return;WAL.c-=120;const r=chestRoll();walSave();sfx('power');showShop(r)});
  bind('shBack',()=>showMode())}
+
+// ================= Underwater world: coral reef props pack (nacl1234) for procedural reef / shipwreck areas
+const RFIMG=new Image();RFIMG.src='img/reef.webp?v=1';const RFF=new Image();RFF.src='img/reeffl.webp?v=2';const RFF2=new Image();RFF2.src='img/reeffl2.webp?v=2';
+const RFR={"coral_pillar_coral_tall":[0,0,133,150],"coral_tube_coral_cluster":[135,0,139,150],"rocks_terrain_sea_stack_tall":[276,0,122,150],"wreck_ruins_anchor_iron_old":[400,0,140,150],"sea_plants_kelp_strand_tall":[542,0,67,150],"sea_plants_sea_anemone_pink":[611,0,147,150],"sea_plants_sea_anemone_green":[760,0,144,150],"sea_plants_seagrass_patch":[0,152,141,150],"sea_plants_tube_sponge_group":[143,152,143,150],"rocks_terrain_bubble_geyser_seabed":[288,152,149,150],"sea_plants_kelp_forest_cluster":[439,152,133,150],"sea_plants_red_algae_cluster":[574,152,150,141],"sea_life_sea_urchin_spiny":[726,152,150,141],"coral_fire_coral_branch":[0,304,150,140],"rocks_terrain_rock_pillar_stack":[152,304,150,140],"sea_life_starfish_orange":[304,304,150,140],"coral_staghorn_coral":[456,304,150,136],"rocks_terrain_kelp_covered_rock":[608,304,150,134],"sea_life_clam_giant_open":[760,304,150,134],"sea_life_conch_shell":[0,446,150,130],"coral_plate_coral_stack":[152,446,150,128],"coral_star_coral_boulder":[304,446,150,128],"rocks_terrain_boulder_mossy_large":[456,446,150,126],"rocks_terrain_glowing_crystal_cluster":[608,446,150,126],"coral_coral_cluster_mixed":[760,446,150,125],"rocks_terrain_coral_encrusted_rock":[0,578,150,125],"wreck_ruins_ruined_arch_stone":[152,578,150,125],"wreck_ruins_ships_cannon_rusty":[304,578,150,124],"wreck_ruins_sunken_statue_moss":[456,578,150,122],"sea_life_sea_turtle":[608,578,150,122],"wreck_ruins_shipwreck_hull_broken":[760,578,150,121],"coral_lettuce_coral":[0,705,150,119],"coral_brain_coral_round":[152,705,150,118],"treasure_props_sunken_crate_group":[304,705,150,114],"sea_plants_sea_fan_gorgonian":[456,705,146,114],"wreck_ruins_sunken_altar_stone":[604,705,150,113],"treasure_props_gem_cluster_underwater":[756,705,150,113],"wreck_ruins_ship_mast_fallen":[0,826,150,112],"sea_life_crab_reef":[152,826,150,112],"wreck_ruins_ruined_wall_ancient":[304,826,150,110],"coral_fan_coral_purple":[456,826,150,109],"wreck_ruins_sunken_rowboat":[608,826,150,108],"coral_elkhorn_coral":[760,826,150,105],"coral_table_coral_flat":[0,940,150,105],"treasure_props_skull_coral_covered":[152,940,150,105],"wreck_ruins_ship_barrel_sunken":[304,940,150,104],"treasure_props_gold_coin_pile_sea":[456,940,150,104],"wreck_ruins_sunken_column_stone":[608,940,150,99]},RFO=["coral_brain_coral_round", "coral_coral_cluster_mixed", "coral_elkhorn_coral", "coral_fan_coral_purple", "coral_pillar_coral_tall", "coral_plate_coral_stack", "coral_staghorn_coral", "coral_star_coral_boulder", "coral_table_coral_flat", "coral_tube_coral_cluster", "coral_fire_coral_branch", "coral_lettuce_coral", "rocks_terrain_boulder_mossy_large", "rocks_terrain_coral_encrusted_rock", "rocks_terrain_rock_pillar_stack", "rocks_terrain_sea_stack_tall", "rocks_terrain_glowing_crystal_cluster", "rocks_terrain_kelp_covered_rock"],RFW=["wreck_ruins_shipwreck_hull_broken", "wreck_ruins_sunken_column_stone", "wreck_ruins_sunken_statue_moss", "wreck_ruins_ruined_arch_stone", "wreck_ruins_ship_mast_fallen", "wreck_ruins_ships_cannon_rusty", "wreck_ruins_sunken_rowboat", "wreck_ruins_ruined_wall_ancient", "wreck_ruins_sunken_altar_stone", "treasure_props_sunken_crate_group", "wreck_ruins_ship_barrel_sunken", "wreck_ruins_anchor_iron_old"],RFD=["sea_plants_kelp_strand_tall", "sea_plants_sea_anemone_pink", "sea_plants_sea_anemone_green", "sea_plants_seagrass_patch", "sea_plants_red_algae_cluster", "sea_plants_sea_fan_gorgonian", "sea_plants_tube_sponge_group", "sea_life_starfish_orange", "sea_life_clam_giant_open", "sea_life_crab_reef", "sea_life_sea_urchin_spiny", "treasure_props_gold_coin_pile_sea", "treasure_props_skull_coral_covered", "treasure_props_gem_cluster_underwater", "rocks_terrain_bubble_geyser_seabed", "sea_life_conch_shell", "sea_plants_kelp_forest_cluster", "sea_life_sea_turtle"];
+function rf(c,k,x,y,sc){if(!RFIMG.complete||!RFIMG.naturalWidth)return false;const r=RFR[k];if(!r)return false;c.drawImage(RFIMG,r[0],r[1],r[2],r[3],x-r[2]*sc/2,y-r[3]*sc*0.86,r[2]*sc,r[3]*sc);return true}
+function wreckLv(){return LV>=0&&CAMP[LV]&&/корабл/i.test(CAMP[LV].name)}
+function reefGround(S,c,rng,spots){if(!RFF.complete||!RFF.naturalWidth||!RFIMG.complete||!RFIMG.naturalWidth)return false;c.fillStyle=c.createPattern(RFF,'repeat');c.fillRect(0,0,WW,WH);
+ if(RFF2.complete&&RFF2.naturalWidth){const p2=c.createPattern(RFF2,'repeat');for(let i=0;i<8;i++){const x=rng()*WW,y=rng()*WH,rx=110+rng()*160,ry=70+rng()*100;c.save();c.beginPath();c.ellipse(x,y,rx,ry,rng()*3,0,TAU);c.clip();c.fillStyle=p2;c.fillRect(x-rx,y-ry,rx*2,ry*2);c.restore()}}
+ const wg=c.createRadialGradient(WW/2,WH/2,200,WW/2,WH/2,WW*0.7);wg.addColorStop(0,'rgba(20,90,140,0.15)');wg.addColorStop(1,'rgba(4,20,50,0.55)');c.fillStyle=wg;c.fillRect(0,0,WW,WH);
+ c.globalCompositeOperation='lighter';for(let i=0;i<40;i++){const x=rng()*WW,y=rng()*WH;c.strokeStyle='rgba(160,230,255,0.07)';c.lineWidth=3;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+40,y+20,x+90,y+4);c.stroke()}c.globalCompositeOperation='source-over';
+ for(let i=0;i<90;i++){const x=110+rng()*(WW-220),y=130+rng()*(WH-240);if(Math.hypot(x-WW/2,y-WH/2)<300)continue;rf(c,RFD[(rng()*RFD.length)|0],x,y,0.42+rng()*0.25)}
+ for(let i=0;i<10;i++)spots.push({x:rng()*WW,y:rng()*WH,r:70,col:i%2?'#22d3ee':'#a78bfa',p:rng()*6});return true}
+function reefObstacle(c,o){const L=wreckLv()&&o.seed<0.7?RFW:(o.seed<0.22?RFW:RFO),k=L[Math.floor(o.seed*977)%L.length];const r=RFR[k];if(!r)return false;const sc=o.r*2.9/Math.max(r[2],r[3]*0.8);return rf(c,k,0,10,sc)}
 
 // ================= Hand-made maps by the user (top-down art), with collision cells
 function freeNear(x0,y0){const ok=(x,y)=>!obstacles.some(o=>Math.hypot(o.x-x,o.y-y)<o.r+70);for(let r=0;r<900;r+=30)for(let k=0;k<16;k++){const a=k/16*TAU,x=x0+Math.cos(a)*r,y=y0+Math.sin(a)*r*0.7;if(x>150&&x<WW-150&&y>160&&y<WH-120&&ok(x,y))return{x,y}}return{x:x0,y:y0}}
@@ -1542,9 +1596,9 @@ function drawHUD(){
   if(p.down){ctx.fillStyle='rgba(9,7,18,0.65)';rr(ctx,x,y,cw,CH,10);ctx.fill();ctx.textAlign='left';ctx.font=`13px ${FONT_D}`;ctx.fillStyle='#ff8fa3';ctx.fillText('ПОВЕРЖЕН',bx,y+30);ctx.font=`600 10px ${FONT_B}`;ctx.fillStyle='#d1cde8';ctx.fillText('Встань рядом — подними',bx,y+46)}
  });
  if(NET.guest&&state==='play'&&performance.now()-NET.lastHost>2500){ctx.textAlign='center';ctx.font=`600 14px ${FONT_B}`;ctx.fillStyle='rgba(120,10,20,0.85)';rr(ctx,Wu/2-150,CH+16,300,26,8);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('⚠ Связь с создателем комнаты…',Wu/2,CH+34)}
- const cardsEnd=10+n*(cw+8),sub=phase==='intro'?'Приготовьтесь':phase==='waves'?`Волна ${waveNum} из 3 · врагов: ${enemies.filter(e=>e.type!=='pod').length+toSpawn}`:phase==='boss'?'Победите босса':phase==='portal'?'Все в портал!':phase==='lost'?'Отряд пал':'';
- if(cardsEnd<Wu-330){const rx=Wu-(touch.on?80:20);ctx.textAlign='right';ctx.font=`20px ${FONT_D}`;ctx.fillStyle='#ffffff';ctx.fillText(S.name,rx,34);ctx.font=`600 14px ${FONT_B}`;ctx.fillStyle='#c4bfe0';ctx.fillText(`Локация ${stageIdx+1}/${STAGES.length} · ${sub}`,rx,56)}
- else{ctx.textAlign='left';ctx.font=`600 12px ${FONT_B}`;ctx.fillStyle='#c4bfe0';ctx.fillText(`${S.name} · Локация ${stageIdx+1}/${STAGES.length} · ${sub}`,12,CH+24)}
+ const cardsEnd=10+n*(cw+8),sub=phase==='intro'?'Приготовьтесь':phase==='waves'?`Волна ${waveNum} из ${NW()} · врагов: ${enemies.filter(e=>e.type!=='pod').length+toSpawn}`:phase==='boss'?'Победите босса':phase==='portal'?'Все в портал!':phase==='lost'?'Отряд пал':'';
+ if(cardsEnd<Wu-330){const rx=Wu-(touch.on?80:20);ctx.textAlign='right';ctx.font=`20px ${FONT_D}`;ctx.fillStyle='#ffffff';ctx.fillText(LNAME(),rx,34);ctx.font=`600 14px ${FONT_B}`;ctx.fillStyle='#c4bfe0';ctx.fillText(`${LSUB()} · ${sub}`,rx,56)}
+ else{ctx.textAlign='left';ctx.font=`600 12px ${FONT_B}`;ctx.fillStyle='#c4bfe0';ctx.fillText(`${LNAME()} · ${LSUB()} · ${sub}`,12,CH+24)}
  if(boss&&boss.spawn<=0){const w=touch.on?Math.min(560,Wu-300):580,x=Wu/2-w/2,y=Hu-(touch.on?26:40);ctx.textAlign='center';ctx.font=`18px ${FONT_D}`;ctx.fillStyle=boss.enraged?'#ff6b6b':'#ffffff';ctx.fillText(boss.name+(boss.enraged?' · ЯРОСТЬ':''),Wu/2,y-10);
   ctx.fillStyle='rgba(0,0,0,0.6)';rr(ctx,x-3,y-3,w+6,20,10);ctx.fill();bar(x,y,w,14,boss.hp/boss.max,hexA(boss.col,0.6),boss.enraged?'#ef4444':boss.col)}
  ctx.setTransform(1,0,0,1,0,0);
@@ -1673,10 +1727,10 @@ function showMode(){state='mode';stateT=0;showUI(`<h2>Как играем?</h2>
  <div class="row"><input id="mCode" maxlength="4" placeholder="Код комнаты" autocapitalize="characters" autocomplete="off"><button class="big" id="mJoin">Войти</button></div>
  <button class="big" id="mLocal">На одном устройстве</button>
  <div class="row"><button class="big" id="mAr" style="flex:1">${ARENA?'⚔️ Режим: Арена — друг против друга':'🤝 Режим: Поход вместе'}</button><button class="big" id="mShop" style="flex:1">🛒 Магазин · ${WAL.c} ₮${(WAL.ch||0)+(WAL.day!==today()?1:0)?' 🎁':''}</button></div>
- <div class="row" style="align-items:center"><span class="sub" style="margin:0">Начать с уровня:</span><select id="mLv" style="flex:1;padding:10px;border-radius:10px;background:#1b1830;color:#fff;border:1px solid #3b3560;font:600 15px Rubik,sans-serif">${STAGES.map((st,i)=>`<option value="${i}"${i===START_LV?' selected':''}>${i+1}. ${esc(st.name)} — ${esc(st.boss.name)}</option>`).join('')}</select></div>
+ <button class="big" id="mMap">🗺 Карта мира: ${esc(startLabel())}</button>
  <p class="sub">Онлайн — до 4 игроков, каждый со своего телефона или компьютера.</p>
  <div class="row"><button class="big" id="mBack">Назад</button>${HOME_URL?`<a class="big" href="${HOME_URL}">Все игры</a>`:''}</div>`);
- {const sl=document.getElementById('mLv');if(sl)sl.onchange=()=>{START_LV=+sl.value||0;try{localStorage.setItem('tr_lv',START_LV)}catch(e){}}}
+ bind('mMap',()=>showWorldMap());
  bind('mAr',()=>{ARENA=!ARENA;showMode()});bind('mShop',()=>showShop());
  bind('mLocal',()=>{saveName();hideUI();state='select';stateT=0;if(touch.on)slots[0].joined=true});
  bind('mHost',()=>{saveName();hostCreate()});
@@ -1720,7 +1774,7 @@ function renderLobby(){
  bind('lStart',hostStartOnline);bind('lBack',()=>{netLeave();showMode()})}
 function hostStartOnline(){
  const list=[...NET.peers.values()].sort((a,b)=>a.slot-b.slot);
- players=list.map(q=>{const pl=makePlayer(q.slot,q.hero);pl.name=q.name;applyUp(pl,q.id===ME_ID?{w:WAL.w,a:WAL.a,s:WAL.sel}:q.up);return pl});np=players.length;runTime=0;RUN_DONE=false;EVQ.length=0;startStage(START_LV);state='play';stateT=0;paused=false;hideUI();
+ players=list.map(q=>{const pl=makePlayer(q.slot,q.hero);pl.name=q.name;applyUp(pl,q.id===ME_ID?{w:WAL.w,a:WAL.a,s:WAL.sel}:q.up);return pl});np=players.length;runTime=0;RUN_DONE=false;EVQ.length=0;beginRun();state='play';stateT=0;paused=false;hideUI();
  const roster=list.map(q=>({slot:q.slot,hero:q.hero,name:q.name,id:q.id}));for(let i=0;i<3;i++)setTimeout(()=>nsend({t:'start',roster,ar:ARENA?1:0}),i*400)}
 function backToLobby(){state='lobby';stateT=0;players=[];enemies=[];bullets=[];pshots=[];pickups=[];mines=[];boss=null;portal=null;banner=null;for(let i=0;i<4;i++)REMOTE[i]=null;lobbyBroadcast()}
 function onNet(m){const now=performance.now();
@@ -1743,7 +1797,7 @@ function onNet(m){const now=performance.now();
  }}
 const r1=v=>Math.round(v||0),r2=v=>Math.round((v||0)*100)/100;
 function snap(){
- return{t:'st',ar:ARENA?1:0,aw:ARENA_WIN,state,si:stageIdx,ph:phase,wn:waveNum,ts:toSpawn,rt:r1(runTime),fd:r2(fade),sh:r1(shake),fl:r2(flashA),bn:banner?[banner.big,banner.small,r2(banner.t),banner.max]:0,
+ return{t:'st',cl:[LV,AREA],ar:ARENA?1:0,aw:ARENA_WIN,state,si:stageIdx,ph:phase,wn:waveNum,ts:toSpawn,rt:r1(runTime),fd:r2(fade),sh:r1(shake),fl:r2(flashA),bn:banner?[banner.big,banner.small,r2(banner.t),banner.max]:0,
   P:players.map(p=>({i:p.i,h:p.hero,n:p.name||'',x:r1(p.x),y:r1(p.y),vx:r1(p.vx),vy:r1(p.vy),f:r2(p.face),hp:r1(p.hp),mx:p.max,e:r1(p.energy),d:p.down?1:0,rv:r2(p.revive),an:r2(p.anim),am:p.animMax,c:p.combo,ch:r2(p.charge),cl:p.clvl,iv:r2(p.inv),fl:r2(p.flash),ds:p.dash?1:0,pw:p.pw||0,pt:r1(p.pwT),sd:p.shield||0,wt:p.wt||1,lg:p.i===0?0:(()=>{const q=[...NET.peers.values()].find(z=>z.slot===p.i);return q&&q.lastIn?Math.min(99,Math.round((performance.now()-q.lastIn)/100)/10):0})(),mv:p.moving?1:0,k:p.kills,dm:p.dmg,cn:p.coins||0,ck:p.cloak>0?1:0,wl:p.wall>0?1:0,sk:p.skin||0,lv:p.lives||0,pk:p.pk||0})),
   E:enemies.map(e=>({id:e.id||(e.id=NID++),ty:e.type,x:r1(e.x),y:r1(e.y),vx:r1(e.vx),vy:r1(e.vy),r:e.r,hp:r1(e.hp),mx:r1(e.max),sp:r2(e.spawn),fl:r2(e.flash),sn:r2(e.stun),st:e.st,dr:r2(e.dir),da:r2(e.dashA),cd:r2(e.cd),ph:r2(e.phase),v:e.v||0})),
   B:boss?{x:r1(boss.x),y:r1(boss.y),vx:r1(boss.vx),vy:r1(boss.vy),r:boss.r,hp:r1(boss.hp),mx:r1(boss.max),sp:r2(boss.spawn),fl:r2(boss.flash),sn:r2(boss.stun),en:boss.enraged?1:0,pat:boss.pat||0,sub:boss.sub||'',dr:r2(boss.dir),al:r1(boss.alt||0),n:boss.name,c:boss.col,c2:boss.col2}:0,
@@ -1756,7 +1810,7 @@ function snap(){
 }
 function lerpTo(o,dt){if(o.tx==null)return;o.tx+=(o.vx||0)*dt;o.ty+=(o.vy||0)*dt;const k=Math.min(1,dt*12);o.x+=(o.tx-o.x)*k;o.y+=(o.ty-o.y)*k}
 function applySnap(m){
- if(m.si!==stageIdx||!ground){buildStage(m.si);stageIdx=m.si;mines=[];fx=[];parts=[];texts=[];enemies=[];boss=null;players.forEach(p=>p.tx=null)}
+ const ck=(m.cl||[0,0]).join(',');if(m.si!==stageIdx||!ground||ck!==applySnap.ck){applySnap.ck=ck;LV=(m.cl||[0])[0];AREA=(m.cl||[0,0])[1];AREA_OPT=LV>=0&&CAMP[LV]?{map:CAMP[LV].areas[AREA].m||null,seed:CAMP[LV].areas[AREA].seed||0}:{map:STAGES[m.si].map0||null,seed:0};buildStage(m.si);stageIdx=m.si;mines=[];fx=[];parts=[];texts=[];enemies=[];boss=null;players.forEach(p=>p.tx=null)}
  if(state!==m.state){state=m.state;stateT=0;if(state==='victory'||state==='gameover')runEnd()}if(!$ui.hidden)hideUI();
  ARENA=!!m.ar;ARENA_WIN=m.aw||'';phase=m.ph;waveNum=m.wn;toSpawn=m.ts;runTime=m.rt;fade=m.fd;shake=Math.max(shake,m.sh);flashA=Math.max(flashA,m.fl);
  if(m.bn){if(!banner||banner.big!==m.bn[0]||banner.small!==m.bn[1])banner={big:m.bn[0],small:m.bn[1],t:m.bn[2],max:m.bn[3]}}else banner=null;

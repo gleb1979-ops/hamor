@@ -859,6 +859,7 @@ async function appBanner(){const el=document.getElementById('appb');if(!el||IS_A
     document.getElementById('cpCode').onclick=async e=>{try{await navigator.clipboard.writeText(joinCode);e.target.textContent='✅ '+T('copied')}catch(x){}}}}
 function home(){redraw=home;if(!navNm){navNm=true;if(NAV.get('nm'))me.name=NAV.get('nm').slice(0,14)}show('app');
   const anyJ=joinCode&&!params.get('loc')&&!params.get('mk');
+  if(anyJ&&window.findRoom&&!home._probe){home._probe=1;findRoom(joinCode).then(u=>{if(u&&u.indexOf('/burger/')<0)location.href=u+'&lang='+lang})}
   app.innerHTML=`${anyJ?'':'<div class="row" id="heroes"></div>'}<h1>${anyJ?'🔑 '+T('joinRoom'):T('mt')[FIXED]}</h1><p>${anyJ?T('joinRoomP'):T('mtag')[FIXED]}</p>${joinCode?`<div class="code">${esc(joinCode)}</div><div id="appb"></div>`:''}
   <input id="nm" maxlength="14" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
   ${medals()?`<p class="status" style="color:var(--mustard);font-size:16px">${T('medalHave')(medals())}</p>`:''}<button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}<p class="status err" id="msg"></p><a class="btn ghost" href="../?lang=${lang}" style="font-size:15px;padding:10px 20px">${T('allGames')}</a>`;

@@ -1467,7 +1467,7 @@ function hostCreate(){netLeave();const code=Array.from({length:4},()=>'ABCDEFGHJ
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}
  state='lobby';stateT=0;renderLobby()}
 function lobbyBroadcast(){nsend({t:'lobby',players:[...NET.peers.values()].map(p=>({id:p.id,name:p.name,hero:p.hero,slot:p.slot}))});if(state==='lobby')renderLobby()}
-function guestJoin(code){netLeave();Object.assign(NET,{on:true,guest:true});NET.joinT=performance.now();NET.lastHost=performance.now();state='lobby';stateT=0;players=[];
+function guestJoin(code){if(window.findRoom)findRoom(code).then(u=>{if(u&&u.indexOf('/rifts/')<0&&!NET.joined&&NET.guest)location.href=u});netLeave();Object.assign(NET,{on:true,guest:true});NET.joinT=performance.now();NET.lastHost=performance.now();state='lobby';stateT=0;players=[];
  showUI(`<h2>Комната <span style="color:#fde68a">${esc(code)}</span></h2><p class="sub">Подключаемся…</p><button class="big" id="lBack">Выйти</button>`);bind('lBack',()=>{netLeave();showMode()});
  netConnect(code,()=>{const hi=()=>nsend({t:'hi',name:myName(),hero:MY_HERO});hi();NET.hiTimer=setInterval(()=>{if(!NET.joined)hi()},1200)});
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}}

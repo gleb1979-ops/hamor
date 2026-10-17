@@ -45,3 +45,15 @@
     return api;
   };
 })();
+/* Find which Tagshim game a room code belongs to: listen on every game's room channel and return the first one where a host is talking. */
+(function(){
+  var GAMES=[['byd-burger/v1/','/burger/?room='],['tagshim/rifts/v1/','/rifts/?room='],['tagshim-night/stars/v1/','/night/stars/?room='],['byd-hamor/v1/','/donkey/?room=']];
+  window.TAGSHIM_GAMES=GAMES;
+  window.findRoom=function(code,opts){opts=opts||{};return new Promise(function(res){
+    if(!window.roomClient){res(null);return}
+    var done=false,cl=[];function fin(v){if(done)return;done=true;cl.forEach(function(x){try{x.end()}catch(e){}});res(v)}
+    GAMES.forEach(function(g){if(opts.skip&&opts.skip===g[0])return;var tp=g[0]+code;try{var x=window.roomClient(tp,'wss://broker.emqx.io:8084/mqtt',{clientId:'find_'+Math.random().toString(36).slice(2,10),clean:true,connectTimeout:8000});cl.push(x);
+      x.on('connect',function(){x.subscribe(tp,{qos:0},function(){})});x.on('message',function(t,buf){var m;try{m=JSON.parse(buf.toString())}catch(e){return}if(m&&m.t&&m.t!=='hi'&&m.t!=='bye'&&m.t!=='in'&&m.t!=='pick')fin(g[1]+code)})}catch(e){}});
+    setTimeout(function(){fin(null)},opts.timeout||6000)})};
+  window.goRoomElsewhere=function(code,skipNs,lang){return window.findRoom(code,{skip:skipNs}).then(function(u){if(u){location.href=u+(lang?'&lang='+lang:'');return true}return false})};
+})();

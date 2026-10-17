@@ -196,17 +196,11 @@ function render(){const t=L[lang];document.documentElement.lang=lang;document.do
     const url=SITE+'burger/?room='+code+'&lang='+lang,txt=t.inviteMsg(code),go=()=>{location.href='burger/?mk='+code+'&loc=diner&lang='+lang};
     if(navigator.share){navigator.share({title:'Tagshim',text:txt,url}).then(go,e=>{if(!(e&&e.name==='AbortError'))go()})}else{window.open('https://wa.me/?text='+encodeURIComponent(txt+url),'_blank','noopener');setTimeout(go,300)}};
   document.getElementById('shTop').onclick=async()=>{const url=SITE+'?lang='+lang;try{if(navigator.share){await navigator.share({title:'Tagshim',text:t.shareText,url});return}}catch(e){if(e&&e.name==='AbortError')return}open('https://wa.me/?text='+encodeURIComponent(t.shareText+url),'_blank','noopener')};
-  document.getElementById('joinF').onsubmit=e=>{e.preventDefault();const c=document.getElementById('joinC').value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);if(c.length<4)return;findRoom(c)};
+  document.getElementById('joinF').onsubmit=e=>{e.preventDefault();const c=document.getElementById('joinC').value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);if(c.length<4)return;findRoomHub(c)};
   function loadJs(src){return new Promise(r=>{const s=document.createElement('script');s.src=src;s.onload=s.onerror=()=>r();document.head.appendChild(s)})}
-  async function findRoom(c){const btn=document.querySelector('#joinF button'),inp=document.getElementById('joinC');if(btn){btn.disabled=true;btn.dataset.t=btn.textContent;btn.textContent='🔎 …'}
-   const G=[['byd-burger/v1/','burger/?room='],['tagshim/rifts/v1/','rifts/?room='],['tagshim-night/stars/v1/','night/stars/?room='],['byd-hamor/v1/','donkey/?room=']];
-   const go=u=>{location.href=u+c+'&lang='+lang};
-   if(!window.roomClient){await loadJs('https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js');await loadJs('net.js')}
-   if(!window.roomClient){go(G[0][1]);return}
-   let done=false;const cl=[];const fin=u=>{if(done)return;done=true;cl.forEach(x=>{try{x.end()}catch(e){}});go(u)};
-   for(const [ns,u] of G){const tp=ns+c;try{const x=roomClient(tp,'wss://broker.emqx.io:8084/mqtt',{clientId:'hub_'+Math.random().toString(36).slice(2,10),clean:true,connectTimeout:8000});cl.push(x);
-     x.on('connect',()=>x.subscribe(tp,{qos:0},()=>{}));x.on('message',(t,buf)=>{let m;try{m=JSON.parse(buf.toString())}catch(e){return}if(m&&m.t&&m.t!=='hi'&&m.t!=='bye')fin(u)})}catch(e){}}
-   setTimeout(()=>fin(G[0][1]),7000)}
+  async function findRoomHub(c){const btn=document.querySelector('#joinF button');if(btn){btn.disabled=true;btn.textContent='🔎 …'}
+   if(!window.findRoom){await loadJs('https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js');await loadJs('net.js')}
+   const u=window.findRoom?await window.findRoom(c,{timeout:7000}):null;location.href=(u?u.replace(/^\//,''):'burger/?room='+c)+'&lang='+lang}
   renderInst()}
 let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;renderInst()});addEventListener('appinstalled',()=>{dip=null;renderInst()});
 function renderInst(){const el=document.getElementById('instTop');if(!el)return;const t=L[lang],ua=navigator.userAgent;

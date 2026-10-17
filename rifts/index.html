@@ -320,7 +320,7 @@ function showBanner(big,small,dur=2.4){banner={big,small,t:dur,max:dur}}
 
 // ================= Game flow =================
 function startGame(){
- players=[];slots.forEach((s,i)=>{if(s.joined)players.push(makePlayer(i,s.hero))});players.forEach(p=>applyUp(p,{w:WAL.w,a:WAL.a,s:WAL.sel}));np=players.length;runTime=0;RUN_DONE=false;beginRun();state='play';paused=false;
+ players=[];slots.forEach((s,i)=>{if(s.joined)players.push(makePlayer(i,s.hero))});players.forEach(p=>applyUp(p,{w:WAL.w,a:WAL.a,s:WAL.sel,ta:myTeamUp('armor')}));np=players.length;runTime=0;RUN_DONE=false;beginRun();state='play';paused=false;
 }
 function startStage(i){
  stageIdx=i;buildStage(i);mines=[];mineT=rand(6,9);podT=1e9;enemies=[];bullets=[];pshots=[];fx=[];parts=[];texts=[];pickups=[];boss=null;portal=null;bossDone=false;initHZ();
@@ -352,7 +352,7 @@ function damageEnemy(e,dmg,p,kx,ky){
  sfx('hit');if(e.hp<=0)killEnemy(e,p);
 }
 function killEnemy(e,p){
- e.dead=true;if(p)p.kills++;if(p)earn(p,e.type==='mini'?15:(e.type==='brute'||e.type==='skel')?2:1);if(e.type==='mini')for(const q of players)if(q!==p)earn(q,6);
+ e.dead=true;if(p)p.kills++;if(p&&isMine(p))REP.kills++;if(e.isBoss)REP.bosses++;if(p)earn(p,e.type==='mini'?15:(e.type==='brute'||e.type==='skel')?2:1);if(e.type==='mini')for(const q of players)if(q!==p)earn(q,6);
  if(e.isBoss){bossDeath(e);return}
  if(e.type==='pod'){burst(e.x,e.y-34,'#e2e8f0',26,320);burst(e.x,e.y-34,S.accent,10,200);dropPower(e.x,e.y);sfx('die');return}
  if(e.type==='mini'){addFx({type:'mbd',x:e.x,y:e.y,v:e.v||0,t:1.2,max:1.2});burst(e.x,e.y-60,'#fde68a',40,420);shake=Math.max(shake,14);sfx('boom');for(let k=0;k<Math.max(2,np);k++)dropWeapon(e.x+(k-(Math.max(2,np)-1)/2)*70,e.y-30);for(let k=0;k<3;k++)dropPower(e.x+(k-1)*60,e.y+30);pickups.push({kind:'heal',x:e.x-40,y:e.y+70,t:0,bob:0});pickups.push({kind:'heal',x:e.x+40,y:e.y+70,t:0,bob:0});return}
@@ -361,7 +361,7 @@ function killEnemy(e,p){
  burst(e.x,e.y-e.r,S.ecol,18,320);burst(e.x,e.y-e.r,'#ffffff',6,200);sfx('die');
  const r=Math.random();if(r<(e.type==='brute'||e.type==='skel'?0.5:0.17))dropPower(e.x,e.y);else if(r<0.34)pickups.push({kind:'heal',x:e.x,y:e.y,t:0,bob:rand(0,6)});
 }
-function bossDeath(b){for(const q of players)earn(q,30);
+function bossDeath(b){for(const q of players)earn(q,30);setTimeout(flushEarn,50);
  hitStop=0.3;shake=30;flashA=0.8;sfx('boom');
  for(let i=0;i<4;i++){burst(b.x+rand(-30,30),b.y-b.r+rand(-30,30),[b.col,'#ffffff',S.accent2][i%3],50,620)}
  addFx({type:'ring',x:b.x,y:b.y,r:0,maxR:420,t:0.9,max:0.9,col:b.col});
@@ -545,7 +545,7 @@ function updateBoss(b,dt){
  if(!(b.alt>40))for(const p of players)if(!p.down&&Math.hypot(p.x-b.x,p.y-b.y)<b.r+p.r)hurtPlayer(p,b.pat==='charge'?22:15,'melee');
 }
 function updatePlay(dt){
- runTime+=dt;
+ runTime+=dt;REP.secs+=dt;
  if(fadeDir){fade+=fadeDir*dt*1.6;if(fade<=0){fade=0;fadeDir=0}if(fade>=1&&fadeDir>0){fade=1;fadeDir=0;advance();return}}
  for(const p of players)updatePlayer(p,dt);
  for(const e of enemies)updateEnemy(e,dt);
@@ -1258,6 +1258,50 @@ function drawMini(e){const c=ctx,n=MBN[e.v||0]||'devil',sc0=e.spawn>0?Math.max(0
  e.ex=e.x;e.ey=e.y-160;return true}
 function drawMiniDeaths(){for(const f of fx){if(f.type!=='mbd')continue;const k=1-f.t/f.max;ctx.globalAlpha=Math.min(1,f.t/f.max*3);mbFrame(ctx,f.x,f.y,MBN[f.v||0],'die',Math.min(5,k*8),1.5);ctx.globalAlpha=1}}
 
+// ================= Account on the server (guest profile, no registration), earnings report, teams =================
+const API=(()=>{try{const q=new URLSearchParams(location.search).get('api');if(q)return q}catch(e){}return 'https://rooms.tagshim.com/api/'})();
+const ACC={on:false,id:'',secret:''};let PROF=null;const REP={coins:0,kills:0,secs:0,bosses:0,games:0};
+try{const a=JSON.parse(localStorage.getItem('tr_acct')||'null');if(a&&a.id){ACC.id=a.id;ACC.secret=a.secret}}catch(e){}
+function myTeam(){return PROF&&PROF.team?PROF.team.code:''}
+function myTeamUp(k){return PROF&&PROF.team&&PROF.team.ups?(PROF.team.ups[k]|0):0}
+async function api(op,body){const r=await fetch(API+op,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({id:ACC.id,secret:ACC.secret},body||{}))});return r.json()}
+function applyProf(d){if(!d||!d.ok)return false;PROF=d;ACC.on=true;if(d.secret){ACC.secret=d.secret;ACC.id=d.id}try{localStorage.setItem('tr_acct',JSON.stringify({id:ACC.id,secret:ACC.secret}))}catch(e){}
+ const D=d.data;Object.assign(WAL,{c:D.c,w:D.w,a:D.a,own:D.own,sel:D.sel,g:D.g,day:D.day,ch:D.ch});walSave();try{if((D.prog|0)>progLv())localStorage.setItem('tr_prog',D.prog|0)}catch(e){}return true}
+async function accInit(){try{const d=await api('hello',{name:myName(),local:ACC.id?undefined:{c:WAL.c,w:WAL.w,a:WAL.a,own:WAL.own,sel:WAL.sel,prog:progLv()}});if(d.err==='auth'){ACC.id='';ACC.secret='';return accInit()}applyProf(d)}catch(e){ACC.on=false}}
+let flushing=false;
+async function flushEarn(){if(!ACC.on||flushing)return;if(REP.coins<=0&&!REP.games&&REP.secs<20)return;const body={coins:REP.coins,kills:REP.kills,secs:Math.round(REP.secs),bosses:REP.bosses,online:NET.on?1:0,teamBattle:NET.on&&myTeam()&&[...NET.peers.values()].some(q=>q.id!==ME_ID&&q.tm&&q.tm===myTeam())?1:0,prog:progLv(),games:REP.games};
+ Object.assign(REP,{coins:0,kills:0,secs:0,bosses:0,games:0});flushing=true;try{const d=await api('earn',body);if(d.ok){const local=WAL.c;applyProf(d);if(d.toTeam)showBanner('Командная битва',`+${d.toTeam} ₮ в казну команды`,1.8)}}catch(e){REP.coins+=body.coins;REP.kills+=body.kills;REP.secs+=body.secs}flushing=false}
+setInterval(()=>{if(state==='play')flushEarn()},45000);
+addEventListener('pagehide',()=>{if(ACC.on&&REP.coins>0){try{navigator.sendBeacon(API+'earn',new Blob([JSON.stringify({id:ACC.id,secret:ACC.secret,coins:REP.coins,kills:REP.kills,secs:Math.round(REP.secs),bosses:REP.bosses,online:NET.on?1:0,prog:progLv()})],{type:'text/plain'}))}catch(e){}}});
+function chestText(m){if(!m)return '';if(typeof m==='string')return m;if(m.up)return `${HEROES[m.h].name}: ${m.up==='w'?'оружие':'броня'} ур. ${m.lvl}`;if(m.skin)return `Новый облик: ${HEROES[m.h].name} «${SKN[m.h][m.skin-1]}»`;return ''}
+async function srvBuy(it){try{const d=await api('buy',{item:it});if(d.ok){applyProf(d);sfx(it.startsWith('s')?'select':'power');showShop(chestText(d.msg))}else{sfx('deny');showShop(d.err==='money'?'Не хватает тагшимов':d.err==='nochest'?'Сундуков пока нет':'Не получилось')}}catch(e){showShop('Нет связи с сервером')}}
+function showAccount(){showUI(`<h2>☁️ Мой профиль</h2><p class="sub">Регистрация не нужна: профиль привязан к этому телефону и хранится на сервере.</p>
+ <p>Код для переноса на другой телефон:</p><div class="code" style="font-size:20px;user-select:all">${esc(ACC.id+'-'+ACC.secret)}</div>
+ <div class="row"><button class="big" id="acCopy">Скопировать код</button></div><p class="sub">Сохраните код. На новом телефоне нажмите «Ввести код», и всё вернётся: тагшимы, улучшения, облики, прогресс и команда.</p>
+ <div class="row"><input id="acCode" placeholder="Ввести код с другого телефона" autocomplete="off"><button class="big" id="acGo">Ввести</button></div><p class="sub" id="acMsg"></p><button class="big" id="acBack">Назад</button>`);
+ bind('acCopy',()=>{try{navigator.clipboard.writeText(ACC.id+'-'+ACC.secret)}catch(e){}});bind('acBack',()=>showShop());
+ bind('acGo',async()=>{const v=document.getElementById('acCode').value.trim(),i=v.indexOf('-');if(i<4)return;const id=v.slice(0,i),sec=v.slice(i+1);try{const d=await fetch(API+'state',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id,secret:sec})}).then(r=>r.json());if(d.ok){ACC.id=id;ACC.secret=sec;applyProf(d);showShop('Профиль перенесён на этот телефон')}else document.getElementById('acMsg').textContent='Код не подошёл'}catch(e){document.getElementById('acMsg').textContent='Нет связи с сервером'}})}
+async function teamCall(op,body){try{const d=await api(op,body);if(d.ok){applyProf(d);showTeam()}else showTeam({nocode:'Нет команды с таким кодом',full:'В команде уже 12 игроков',captain:'Это может только капитан или офицер',money:'В казне не хватает тагшимов',max:'Уже максимальный уровень',inteam:'Сначала выйдите из своей команды'}[d.err]||'Не получилось')}catch(e){showTeam('Нет связи с сервером')}}
+function showTeam(msg){state='mode';if(!ACC.on){showUI(`<h2>👥 Команда</h2><p class="sub">Команды работают через сервер, а связи с ним сейчас нет. Попробуйте позже.</p><button class="big" id="tmBack">Назад</button>`);bind('tmBack',()=>showMode());accInit();return}
+ const T=PROF.team;
+ if(!T){showUI(`<h2>👥 Команда</h2>${msg?`<p style="color:#fde68a">${esc(msg)}</p>`:''}<p class="sub">В одиночной игре 100% тагшимов твои. В командной битве (онлайн вместе с членами команды) — 50% тебе и 50% в казну команды. На казну капитан покупает усиления для всех.</p>
+  <div class="row"><input id="tmName" maxlength="20" placeholder="Название новой команды"><button class="big pri" id="tmNew">Создать</button></div>
+  <div class="row"><input id="tmCode" maxlength="5" placeholder="Код команды" autocapitalize="characters"><button class="big" id="tmJoin">Вступить</button></div><button class="big" id="tmBack">Назад</button>`);
+  bind('tmNew',()=>teamCall('team/create',{name:document.getElementById('tmName').value.trim()||'Команда'}));bind('tmJoin',()=>teamCall('team/join',{code:document.getElementById('tmCode').value.trim().toUpperCase()}));bind('tmBack',()=>showMode());return}
+ const boss=T.me==='captain'||T.me==='officer',RN={captain:'👑 капитан',officer:'⭐ офицер',member:'участник'};
+ showUI(`<h2>${esc(T.emblem)} ${esc(T.name)}</h2>${msg?`<p style="color:#fde68a">${esc(msg)}</p>`:''}<div class="code">${esc(T.code)}</div><p class="sub">Код для вступления — отправьте друзьям. Ты: ${RN[T.me]}</p>
+  <div class="row"><button class="big pri" id="tmInv">Пригласить</button></div>
+  <h3>💰 Казна: <span style="color:#fde68a">${T.bank} ₮</span></h3>
+  <div class="row" style="flex-wrap:wrap">${Object.entries(T.shop).map(([k,U])=>{const L=T.ups[k]|0,c=U.cost[Math.min(L,U.cost.length-1)],mx=L>=U.max;return `<button class="big" data-tb="${k}" ${!boss||mx||T.bank<c?'disabled':''} style="flex:1;min-width:150px;font-size:13px;padding:8px">${U.name}${U.max<99?` ${L}/${U.max}`:''}<br><small>${mx?'MAX':c+' ₮'} · ${k==='banner'?'+10% тагшимов всем':k==='armor'?'+5% защиты всем':k==='chest'?'сундук каждому':'новый значок'}</small></button>`}).join('')}</div>
+  <p class="sub">${boss?'Покупки из казны делают капитан и офицеры.':'Покупки из казны делают капитан и офицеры.'}</p>
+  <div class="plist">${T.members.map(m=>`<div class="pl"><span>${esc(m.name)}${m.id===ACC.id?' (ты)':''}</span><b>${RN[m.role]}</b>${T.me==='captain'&&m.id!==ACC.id?`<button class="big" data-ro="${m.id}" data-r="${m.role==='officer'?'member':'officer'}" style="font-size:12px;padding:4px 8px">${m.role==='officer'?'снять офицера':'сделать офицером'}</button>`:''}</div>`).join('')}</div>
+  <div class="row"><button class="big" id="tmBack">Назад</button><button class="big" id="tmLeave">Выйти из команды</button></div>`);
+ document.querySelectorAll('[data-tb]').forEach(b=>b.onclick=()=>teamCall('team/buy',{item:b.dataset.tb,emblem:PROF.emblems[Math.random()*PROF.emblems.length|0]}));
+ document.querySelectorAll('[data-ro]').forEach(b=>b.onclick=()=>teamCall('team/role',{pid:b.dataset.ro,role:b.dataset.r}));
+ bind('tmInv',()=>{const txt=`Вступай в мою команду «${T.name}» в «Трёх разломах»! Код команды: ${T.code} — `;const link=location.origin+location.pathname;if(navigator.share)navigator.share({title:'Три разлома',text:txt,url:link}).catch(()=>{});else window.open('https://wa.me/?text='+encodeURIComponent(txt+link),'_blank','noopener')});
+ bind('tmLeave',()=>{if(confirm('Выйти из команды? Ваши тагшимы останутся у вас, казна останется команде.'))teamCall('team/leave')});bind('tmBack',()=>showMode())}
+setTimeout(accInit,300);
+
 // ================= Campaign: 4 worlds x 3 levels, each level = 3 areas with an exit gate; trials = the other old levels =================
 const WORLDS=[{name:'Ночной город',ic:'🌃',col:'#ff3d81'},{name:'Солнечная долина',ic:'🌄',col:'#84cc16'},{name:'Подводное царство',ic:'🌊',col:'#22d3ee'},{name:'Огненные земли',ic:'🌋',col:'#f97316'}];
 const CAMP=[
@@ -1286,7 +1330,7 @@ function LSUB(){if(LV<0)return 'Испытание';const L=CAMP[LV];return `${W
 function startLabel(){return START.tr!=null?'Испытание: '+STAGES[START.tr].name:`${WORLDS[CAMP[START.lv].w].ic} ${CAMP[START.lv].w+1}-${CAMP[START.lv].n} ${CAMP[START.lv].name}`}
 function startArea(){const A=CAMP[LV].areas[AREA];AREA_OPT={map:A.m||null,seed:A.seed||0};startStage(CAMP[LV].st)}
 function beginRun(){if(START.tr!=null){LV=-1;AREA=0;AREA_OPT={map:STAGES[START.tr].map0||null,seed:0};startStage(START.tr)}else{LV=clamp(START.lv|0,0,CAMP.length-1);AREA=0;startArea()}}
-function areaClear(){phase='portal';const last=AREA===CAMP[LV].areas.length-1;portal=Object.assign(freeNear(WW-300,WH/2),{t:0});for(const q of players)earn(q,last?15:5);showBanner(last?'Уровень пройден!':'Путь открыт',last?'Все в портал — дальше новый уровень':'Идите к воротам справа →',2.2);sfx('portal')}
+function areaClear(){phase='portal';setTimeout(flushEarn,50);const last=AREA===CAMP[LV].areas.length-1;portal=Object.assign(freeNear(WW-300,WH/2),{t:0});for(const q of players)earn(q,last?15:5);showBanner(last?'Уровень пройден!':'Путь открыт',last?'Все в портал — дальше новый уровень':'Идите к воротам справа →',2.2);sfx('portal')}
 function advance(){if(LV<0){state='victory';stateT=0;runEnd();return}if(AREA<CAMP[LV].areas.length-1){AREA++;startArea();return}unlockLv(LV+1);if(LV>=CAMP.length-1){state='victory';stateT=0;runEnd();return}LV++;AREA=0;startArea()}
 function showWorldMap(){const pr=progLv();showUI(`<h2>🗺 Карта мира</h2><p class="sub">4 мира по 3 уровня. В каждом уровне 3 участка, на третьем уровне мира — босс.</p>
  ${WORLDS.map((W,w)=>`<div style="border:1px solid ${W.col}66;border-radius:14px;padding:8px;margin:8px 0;background:#15122a"><b style="color:${W.col};font-size:18px">${W.ic} Мир ${w+1}. ${W.name}</b><div class="row" style="margin-top:6px">${CAMP.map((L,i)=>L.w!==w?'':`<button class="big" data-lv="${i}" ${i>pr?'disabled':''} style="flex:1;font-size:14px;padding:8px;${START.lv===i&&START.tr==null?'background:#fde68a;color:#1b1830':''}">${i>pr?'🔒 ':''}${L.n}. ${L.name}${L.boss?' 👑':''}</button>`).join('')}</div></div>`).join('')}
@@ -1301,9 +1345,9 @@ let ARENA=false,ARENA_WIN='',RUN_DONE=false;
 const WAL=(()=>{const w={c:0,w:[],a:[],own:[],sel:[],g:0,day:'',ch:0};try{const o=JSON.parse(localStorage.getItem('tr_wallet')||'{}');Object.assign(w,o)}catch(e){}for(let h=0;h<8;h++){w.w[h]=w.w[h]|0;w.a[h]=w.a[h]|0;w.sel[h]=w.sel[h]|0;if(!Array.isArray(w.own[h]))w.own[h]=[]}return w})();
 function walSave(){try{localStorage.setItem('tr_wallet',JSON.stringify(WAL))}catch(e){}}
 function isMine(p){return !NET.on||(NET.host&&p.i===0)}
-function earn(p,n){if(!p||!n||NET.guest)return;p.coins=(p.coins||0)+n;if(n>=5)text(p.x,p.y-104,'+'+n+' ₮','#fde68a',1.1);if(isMine(p)){WAL.c+=n;walSave()}}
-function applyUp(p,u){u=u||{};const h=p.hero,w=(u.w||[])[h]|0,a=(u.a||[])[h]|0;p.dmul=1+0.1*clamp(w,0,5);p.arm=0.07*clamp(a,0,5);p.skin=clamp((u.s||[])[h]|0,0,3);p.coins=0;p.lives=ARENA?3:0;p.pk=0}
-function runEnd(){if(RUN_DONE)return;RUN_DONE=true;WAL.g=(WAL.g||0)+1;if(WAL.g%3===0)WAL.ch=(WAL.ch||0)+1;walSave()}
+function earn(p,n){if(!p||!n||NET.guest)return;p.coins=(p.coins||0)+n;if(n>=5)text(p.x,p.y-104,'+'+n+' ₮','#fde68a',1.1);if(isMine(p)){WAL.c+=n;REP.coins+=n;walSave()}}
+function applyUp(p,u){u=u||{};const h=p.hero,w=(u.w||[])[h]|0,a=(u.a||[])[h]|0;p.dmul=1+0.1*clamp(w,0,5);p.arm=0.07*clamp(a,0,5)+0.05*clamp(u.ta|0,0,3);p.skin=clamp((u.s||[])[h]|0,0,3);p.coins=0;p.lives=ARENA?3:0;p.pk=0}
+function runEnd(){if(RUN_DONE)return;RUN_DONE=true;REP.games=1;flushEarn();WAL.g=(WAL.g||0)+1;if(WAL.g%3===0)WAL.ch=(WAL.ch||0)+1;walSave()}
 const SKP=[
  [{coat:'#7f1d1d',coat2:'#450a0a',trim:'#f87171',pants:'#1c0a0a',shoe:'#0b0a14',hair:'#e5e7eb',hair2:'#9ca3af',iris:'#ef4444'},{coat:'#e5e7eb',coat2:'#9ca3af',trim:'#38bdf8',pants:'#334155',shoe:'#0f172a',hair:'#f8fafc',hair2:'#cbd5e1',iris:'#0ea5e9'},{coat:'#a16207',coat2:'#713f12',trim:'#fde047',pants:'#1c1917',shoe:'#0c0a09',hair:'#fde047',hair2:'#ca8a04',iris:'#facc15'}],
  [{coat:'#166534',coat2:'#14532d',trim:'#a3e635',pants:'#1a2e05',shoe:'#0f1a07',hair:'#3f2a14',hair2:'#5c3a1e',iris:'#65a30d'},{coat:'#1e293b',coat2:'#0f172a',trim:'#60a5fa',pants:'#020617',shoe:'#020617',hair:'#111827',hair2:'#374151',iris:'#3b82f6'},{coat:'#6b21a8',coat2:'#3b0764',trim:'#fbbf24',pants:'#1e1b4b',shoe:'#0b0a14',hair:'#7c2d12',hair2:'#9a3412',iris:'#c084fc'}],
@@ -1319,7 +1363,7 @@ function arenaCheck(){if(phase==='lost'||state!=='play')return;const live=player
 function chestRoll(){const r=Math.random();if(r<0.55){const n=40+(Math.random()*110|0);WAL.c+=n;return `+${n} ₮ тагшим`}
  if(r<0.85){const h=Math.random()*HEROES.length|0,k=Math.random()<0.5?'w':'a';if(WAL[k][h]<5){WAL[k][h]++;return `${HEROES[h].name}: ${k==='w'?'оружие':'броня'} ур. ${WAL[k][h]}`}WAL.c+=120;return '+120 ₮ тагшим'}
  const free=[];for(let h=0;h<HEROES.length;h++)for(let i=1;i<=3;i++)if(!WAL.own[h].includes(i))free.push([h,i]);if(free.length){const [h,i]=free[Math.random()*free.length|0];WAL.own[h].push(i);return `Новый облик: ${HEROES[h].name} «${SKN[h][i-1]}»`}WAL.c+=200;return '+200 ₮ тагшим'}
-function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function today(){return new Date().toISOString().slice(0,10);const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 function showShop(msg){state='mode';const daily=WAL.day!==today(),chests=(WAL.ch||0)+(daily?1:0),left=3-((WAL.g||0)%3);
  const hero=h=>`<div style="background:#1b1830;border:1px solid #3b3560;border-radius:14px;padding:10px;margin:8px 0;text-align:left">
   <b style="color:${HEROES[h].col};font-size:18px">${HEROES[h].name}</b> <span class="sub" style="margin:0">${HEROES[h].title}</span>
@@ -1329,7 +1373,8 @@ function showShop(msg){state='mode';const daily=WAL.day!==today(),chests=(WAL.ch
   <p class="sub">Тагшимы ₮ дают за врагов, мини-боссов, боссов и победы на арене. Улучшения работают и онлайн.</p>
   <div class="row"><button class="big pri" id="shChest" ${chests>0?'':'disabled'}>🎁 Открыть сундук${chests>0?` (${chests})`:''}</button><button class="big" id="shBuy" ${WAL.c<120?'disabled':''}>🎁 Купить сундук · 120 ₮</button></div>
   <p class="sub">${daily?'Ежедневный сундук ждёт тебя! ':'Ежедневный сундук — завтра. '}Бесплатный сундук за каждые 3 игры: осталось ${left}.</p>
-  ${HEROES.map((_,i)=>hero(i)).join('')}<div class="row"><button class="big" id="shBack">Назад</button></div>`);
+  ${HEROES.map((_,i)=>hero(i)).join('')}<p class="sub">${ACC.on?`☁️ Сохранено на сервере · профиль ${esc(ACC.id)} · <a href="#" id="shAcc" style="color:#fde68a">перенести на другой телефон</a>`:'⚠️ Нет связи с сервером — сохранено только на этом телефоне'}</p><div class="row"><button class="big" id="shBack">Назад</button></div>`);
+ if(ACC.on){document.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>srvBuy(b.dataset.up));document.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>srvBuy('s'+b.dataset.sk));bind('shChest',()=>srvBuy('chest'));bind('shBuy',()=>srvBuy('buychest'));bind('shBack',()=>showMode());bind('shAcc',()=>showAccount());return}
  document.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const k=b.dataset.up[0],h=+b.dataset.up[1],L=WAL[k][h];if(L<5&&WAL.c>=UPC[L]){WAL.c-=UPC[L];WAL[k][h]++;walSave();sfx('power');showShop()}});
  document.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{const h=+b.dataset.sk[0],i=+b.dataset.sk[1];const own=i===0||WAL.own[h].includes(i);if(!own){if(WAL.c<SKC[i-1])return;WAL.c-=SKC[i-1];WAL.own[h].push(i)}WAL.sel[h]=i;walSave();sfx('select');showShop()});
  bind('shChest',()=>{if(WAL.day!==today())WAL.day=today();else if(WAL.ch>0)WAL.ch--;else return;const r=chestRoll();walSave();sfx('power');showShop(r)});
@@ -1726,12 +1771,12 @@ function showMode(){state='mode';stateT=0;showUI(`<h2>Как играем?</h2>
  <button class="big pri" id="mHost">Онлайн: создать комнату</button>
  <div class="row"><input id="mCode" maxlength="4" placeholder="Код комнаты" autocapitalize="characters" autocomplete="off"><button class="big" id="mJoin">Войти</button></div>
  <button class="big" id="mLocal">На одном устройстве</button>
- <div class="row"><button class="big" id="mAr" style="flex:1">${ARENA?'⚔️ Режим: Арена — друг против друга':'🤝 Режим: Поход вместе'}</button><button class="big" id="mShop" style="flex:1">🛒 Магазин · ${WAL.c} ₮${(WAL.ch||0)+(WAL.day!==today()?1:0)?' 🎁':''}</button></div>
+ <div class="row"><button class="big" id="mAr" style="flex:1">${ARENA?'⚔️ Режим: Арена — друг против друга':'🤝 Режим: Поход вместе'}</button><button class="big" id="mTeam" style="flex:1">👥 ${PROF&&PROF.team?esc(PROF.team.emblem+' '+PROF.team.name):'Команда'}</button><button class="big" id="mShop" style="flex:1">🛒 Магазин · ${WAL.c} ₮${(WAL.ch||0)+(WAL.day!==today()?1:0)?' 🎁':''}</button></div>
  <button class="big" id="mMap">🗺 Карта мира: ${esc(startLabel())}</button>
  <p class="sub">Онлайн — до 4 игроков, каждый со своего телефона или компьютера.</p>
  <div class="row"><button class="big" id="mBack">Назад</button>${HOME_URL?`<a class="big" href="${HOME_URL}">Все игры</a>`:''}</div>`);
  bind('mMap',()=>showWorldMap());
- bind('mAr',()=>{ARENA=!ARENA;showMode()});bind('mShop',()=>showShop());
+ bind('mAr',()=>{ARENA=!ARENA;showMode()});bind('mShop',()=>showShop());bind('mTeam',()=>showTeam());
  bind('mLocal',()=>{saveName();hideUI();state='select';stateT=0;if(touch.on)slots[0].joined=true});
  bind('mHost',()=>{saveName();hostCreate()});
  const join=()=>{saveName();const c=document.getElementById('mCode').value.toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length===4)guestJoin(c);else document.getElementById('mCode').focus()};
@@ -1754,10 +1799,10 @@ function hostCreate(){netLeave();const code=Array.from({length:4},()=>'ABCDEFGHJ
  netConnect(code,()=>{if(NET.client&&NET.client.bridge)NET.client.bridge();lobbyBroadcast()});NET.lobbyTimer=setInterval(()=>{if(state==='lobby')lobbyBroadcast()},1500);
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}
  state='lobby';stateT=0;renderLobby()}
-function lobbyBroadcast(){nsend({t:'lobby',players:[...NET.peers.values()].map(p=>({id:p.id,name:p.name,hero:p.hero,slot:p.slot}))});if(state==='lobby')renderLobby()}
+function lobbyBroadcast(){nsend({t:'lobby',players:[...NET.peers.values()].map(p=>({id:p.id,name:p.name,hero:p.hero,slot:p.slot,tm:p.id===ME_ID?myTeam():(p.tm||'')}))});if(state==='lobby')renderLobby()}
 function guestJoin(code){if(window.findRoom)findRoom(code).then(u=>{if(u&&u.indexOf('/rifts/')<0&&!NET.joined&&NET.guest)location.href=u});netLeave();Object.assign(NET,{on:true,guest:true});NET.joinT=performance.now();NET.lastHost=performance.now();state='lobby';stateT=0;players=[];
  showUI(`<h2>Комната <span style="color:#fde68a">${esc(code)}</span></h2><p class="sub">Подключаемся…</p><button class="big" id="lBack">Выйти</button>`);bind('lBack',()=>{netLeave();showMode()});
- netConnect(code,()=>{const hi=()=>nsend({t:'hi',name:myName(),hero:MY_HERO,up:{w:WAL.w,a:WAL.a,s:WAL.sel}});hi();NET.hiTimer=setInterval(()=>{if(!NET.joined)hi()},1200)});
+ netConnect(code,()=>{const hi=()=>nsend({t:'hi',name:myName(),hero:MY_HERO,up:{w:WAL.w,a:WAL.a,s:WAL.sel,ta:myTeamUp('armor')},tm:myTeam()});hi();NET.hiTimer=setInterval(()=>{if(!NET.joined)hi()},1200)});
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}}
 function renderLobby(){
  const list=[...NET.peers.values()].sort((a,b)=>a.slot-b.slot),me=NET.peers.get(ME_ID),link=location.origin+location.pathname+'?room='+NET.room;
@@ -1774,14 +1819,14 @@ function renderLobby(){
  bind('lStart',hostStartOnline);bind('lBack',()=>{netLeave();showMode()})}
 function hostStartOnline(){
  const list=[...NET.peers.values()].sort((a,b)=>a.slot-b.slot);
- players=list.map(q=>{const pl=makePlayer(q.slot,q.hero);pl.name=q.name;applyUp(pl,q.id===ME_ID?{w:WAL.w,a:WAL.a,s:WAL.sel}:q.up);return pl});np=players.length;runTime=0;RUN_DONE=false;EVQ.length=0;beginRun();state='play';stateT=0;paused=false;hideUI();
+ players=list.map(q=>{const pl=makePlayer(q.slot,q.hero);pl.name=q.name;applyUp(pl,q.id===ME_ID?{w:WAL.w,a:WAL.a,s:WAL.sel,ta:myTeamUp('armor')}:q.up);return pl});np=players.length;runTime=0;RUN_DONE=false;EVQ.length=0;beginRun();state='play';stateT=0;paused=false;hideUI();
  const roster=list.map(q=>({slot:q.slot,hero:q.hero,name:q.name,id:q.id}));for(let i=0;i<3;i++)setTimeout(()=>nsend({t:'start',roster,ar:ARENA?1:0}),i*400)}
 function backToLobby(){state='lobby';stateT=0;players=[];enemies=[];bullets=[];pshots=[];pickups=[];mines=[];boss=null;portal=null;banner=null;for(let i=0;i<4;i++)REMOTE[i]=null;lobbyBroadcast()}
 function onNet(m){const now=performance.now();
  if(NET.host){
   if(m.t==='hi'){let p=NET.peers.get(m.from);
    if(!p){if(state!=='lobby'){nsend({t:'full',to:m.from,why:'started'});return}const used=new Set([...NET.peers.values()].map(q=>q.slot));let s=-1;for(let i=1;i<4;i++)if(!used.has(i)){s=i;break}if(s<0){nsend({t:'full',to:m.from});return}p={id:m.from,slot:s};NET.peers.set(m.from,p);sfx('select')}
-   p.name=String(m.name||'Игрок').slice(0,14);p.hero=clamp(m.hero|0,0,HEROES.length-1);if(m.up)p.up=m.up;lobbyBroadcast()}
+   p.name=String(m.name||'Игрок').slice(0,14);p.hero=clamp(m.hero|0,0,HEROES.length-1);if(m.up)p.up=m.up;p.tm=String(m.tm||'').slice(0,8);lobbyBroadcast()}
   else if(m.t==='pick'){const p=NET.peers.get(m.from);if(p&&state==='lobby'){p.hero=clamp(m.hero|0,0,HEROES.length-1);lobbyBroadcast()}}
   else if(m.t==='in'){const q=NET.peers.get(m.from);if(!q)return;q.lastIn=now;REMOTE[q.slot]={mx:clamp(+m.mx||0,-1,1),my:clamp(+m.my||0,-1,1),atk:!!m.a,sp:!!m.s};
    const pl=players.find(o=>o.i===q.slot);if(pl&&!pl.down&&!pl.dash&&typeof m.x==='number'&&typeof m.y==='number'&&Math.hypot(m.x-pl.x,m.y-pl.y)<260){pl.x=clamp(m.x,60+pl.r,WW-60-pl.r);pl.y=clamp(m.y,70+pl.r,WH-50-pl.r)}}
@@ -1816,7 +1861,7 @@ function applySnap(m){
  if(m.bn){if(!banner||banner.big!==m.bn[0]||banner.small!==m.bn[1])banner={big:m.bn[0],small:m.bn[1],t:m.bn[2],max:m.bn[3]}}else banner=null;
  const byI=new Map(players.map(p=>[p.i,p]));
  players=m.P.map(s=>{let p=byI.get(s.i);const fresh=!p;if(!p)p=makePlayer(s.i,s.h);
-  Object.assign(p,{hero:s.h,name:s.n||p.name,hp:s.hp,max:s.mx,energy:s.e,down:!!s.d,revive:s.rv,anim:s.an,animMax:s.am,combo:s.c,charge:s.ch,clvl:s.cl,inv:s.iv,flash:s.fl,pw:s.pw||null,pwT:s.pt,shield:s.sd,wt:s.wt||1,lg:s.lg||0,kills:s.k,dmg:s.dm,skin:s.sk||0,cloak:s.ck?1:0,wall:s.wl?1:0,lives:s.lv||0,pk:s.pk||0});if(s.i===NET.slot&&!fresh&&(s.cn||0)>(p.coins||0)){const d=(s.cn||0)-(p.coins||0);WAL.c+=d;walSave()}p.coins=s.cn||0;
+  Object.assign(p,{hero:s.h,name:s.n||p.name,hp:s.hp,max:s.mx,energy:s.e,down:!!s.d,revive:s.rv,anim:s.an,animMax:s.am,combo:s.c,charge:s.ch,clvl:s.cl,inv:s.iv,flash:s.fl,pw:s.pw||null,pwT:s.pt,shield:s.sd,wt:s.wt||1,lg:s.lg||0,kills:s.k,dmg:s.dm,skin:s.sk||0,cloak:s.ck?1:0,wall:s.wl?1:0,lives:s.lv||0,pk:s.pk||0});if(s.i===NET.slot&&!fresh&&(s.cn||0)>(p.coins||0)){const d=(s.cn||0)-(p.coins||0);WAL.c+=d;REP.coins+=d;walSave()}if(s.i===NET.slot&&!fresh&&(s.k||0)>(p.kills||0))REP.kills+=(s.k||0)-(p.kills||0);p.coins=s.cn||0;
   p.dash=s.ds?{t:0.1,a:s.f,hit:new Set()}:null;
   if(s.i===NET.slot){if(fresh||p.down||s.ds||Math.hypot(p.x-s.x,p.y-s.y)>220){p.x=s.x;p.y=s.y;p.vx=p.vy=0}if(p.down||s.ds)p.face=s.f}
   else{p.face=s.f;p.moving=!!s.mv;p.vx=s.vx;p.vy=s.vy;p.tx=s.x;p.ty=s.y;if(fresh||Math.hypot(p.x-s.x,p.y-s.y)>300){p.x=s.x;p.y=s.y}}

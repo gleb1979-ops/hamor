@@ -1,3 +1,5 @@
+import { Bank, bankRoute } from './bank.js';
+export { Bank };
 // Shorties rooms server: one Durable Object per game room relays messages between players (WebSocket, hibernation API).
 const MAX_SOCKETS = 16;
 export class Room {
@@ -22,6 +24,7 @@ export default {
     const url = new URL(req.url);
     const m = url.pathname.match(/^\/ws\/([A-Za-z0-9_.%-]{1,120})$/);
     if (m) return env.ROOMS.get(env.ROOMS.idFromName(m[1])).fetch(req);
+    if (url.pathname.startsWith('/api/')) return bankRoute(req, env);
     if (url.pathname === '/health') return new Response('ok');
     return new Response('Shorties rooms server is running', { headers: { 'content-type': 'text/plain; charset=utf-8' } });
   },

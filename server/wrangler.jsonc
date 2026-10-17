@@ -4,7 +4,7 @@
   "workers_dev": true,
   "routes": [{ "pattern": "rooms.tagshim.com", "custom_domain": true }],
   "compatibility_date": "2026-10-01",
-  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }, { "name": "BANK", "class_name": "Bank" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }, { "tag": "v2", "new_sqlite_classes": ["Bank"] }],
   "observability": { "enabled": true }
 }

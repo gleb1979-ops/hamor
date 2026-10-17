@@ -167,13 +167,23 @@ function getKeeper(i){const k=KITS[i];if(KP[i]&&KP[i].col===k.gk)return KP[i];if
 /* particles */
 const parts=[];function burst(x,y,col,n){n=Math.min(n,Math.max(0,120-parts.length));for(let i=0;i<n;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:radTex,color:new THREE.Color(col),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));const a=Math.random()*6.28,sp=2+Math.random()*5;s.position.set(wx(x),.8,wz(y));s.scale.setScalar(.25);s.userData={vx:Math.cos(a)*sp,vy:2+Math.random()*4,vz:Math.sin(a)*sp,t:0,l:.8+Math.random()*.6};scene.add(s);parts.push(s)}}
 R3D.burst=burst;
+/* juice: ball trail, running dust, kick rings */
+const trail=[],dusts=[],rings=[];let trailT=0;
+function trailSprite(){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:radTex,color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));scene.add(s);return s}
+function dustPuff(x,z){if(dusts.length>60)return;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:radTex,color:0xd9d2c0,transparent:true,depthWrite:false,opacity:.5}));s.position.set(x,.15,z);s.scale.setScalar(.25);s.userData={t:0,l:.55};scene.add(s);dusts.push(s)}
+R3D.ring=function(x,y,col,big){const m=new THREE.Mesh(new THREE.RingGeometry(.3,.42,40),new THREE.MeshBasicMaterial({color:new THREE.Color(col),transparent:true,opacity:.9,depthWrite:false,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.set(wx(x),.04,wz(y));m.userData={t:0,l:big?.55:.35,big};scene.add(m);rings.push(m)};
+function juice(dt,b,sp){
+ trailT-=dt;if(sp>380&&!b.fire&&trailT<=0){trailT=.025;const s=trail.length<10?trailSprite():trail.shift();s.position.copy(ball.position);s.scale.setScalar(.42);s.material.opacity=.55;s.userData.t=0;trail.push(s)}
+ for(const s of trail){s.userData.t+=dt;s.material.opacity=Math.max(0,.55-s.userData.t*2.4);s.scale.setScalar(Math.max(.05,.42-s.userData.t*1.2))}
+ for(let i=dusts.length-1;i>=0;i--){const s=dusts[i],d=s.userData;d.t+=dt;if(d.t>d.l){scene.remove(s);s.material.dispose();dusts.splice(i,1);continue}s.scale.setScalar(.25+d.t*1.2);s.position.y+=dt*.4;s.material.opacity=.5*(1-d.t/d.l)}
+ for(let i=rings.length-1;i>=0;i--){const m=rings[i],d=m.userData;d.t+=dt;if(d.t>d.l){scene.remove(m);m.geometry.dispose();m.material.dispose();rings.splice(i,1);continue}const k=d.t/d.l;m.scale.setScalar(1+k*(d.big?6:3.5));m.material.opacity=.9*(1-k)}}
 /* ---------- frame ---------- */
 const camT=new THREE.Vector3(),camP=new THREE.Vector3();let camInit=false;
 const RS={w:0,h:0,cw:0,ch:0,at:0,dpr:0};let Q=1,fpsN=0,fpsT0=0;R3D.render=function(S){const pn=performance.now();if(!fpsT0)fpsT0=pn;fpsN++;if(pn-fpsT0>2500){const f=fpsN/((pn-fpsT0)/1000);fpsN=0;fpsT0=pn;if(f<24&&Q>0){Q--;if(Q===0){rd.shadowMap.enabled=false;scene.traverse(o=>{if(o.material)o.material.needsUpdate=true})}}}
   const dpr=Q?Math.min(1.5,devicePixelRatio||1):Math.min(1,devicePixelRatio||1);let w=RS.w,h=RS.h;const iw=innerWidth,ih=innerHeight;if(iw!==RS.cw||ih!==RS.ch){RS.cw=iw;RS.ch=ih;RS.at=pn}if(!RS.w||(pn-RS.at>180&&(RS.w!==iw||RS.h!==ih))||RS.dpr!==dpr){RS.w=w=iw;RS.h=h=ih;RS.dpr=dpr;rd.setPixelRatio(dpr);rd.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
   const t=S.t,dt=S.dt;const seen=new Set();if(S.kits)KITS=S.kits;
   for(const p of S.P){if(p.x==null)continue;seen.add(p.id);const o=getPlayer(p),c=o.c;const X=wx(p.x),Z=wz(p.y);
-    if(o.px!=null){const mx=X-o.px,mz=Z-o.py,d=Math.hypot(mx,mz);o.spd=lerpF(o.spd,Math.min(1.2,d/Math.max(dt,1e-3)/3.6),Math.min(1,dt*10));o.ph+=d*3.3;if(d>.004&&p.anim!==3&&p.anim!==4)o.tang=Math.atan2(mx,mz)}o.px=X;o.py=Z;
+    if(o.px!=null){const mx=X-o.px,mz=Z-o.py,d=Math.hypot(mx,mz);o.spd=lerpF(o.spd,Math.min(1.2,d/Math.max(dt,1e-3)/3.6),Math.min(1,dt*10));o.ph+=d*3.3;if(o.spd>.55&&p.anim!==4&&Math.random()<dt*9)dustPuff(X-Math.sin(o.ang)*.3,Z-Math.cos(o.ang)*.3);if(d>.004&&p.anim!==3&&p.anim!==4)o.tang=Math.atan2(mx,mz)}o.px=X;o.py=Z;
     if(p.me&&S.myDir&&(Math.abs(S.myDir[0])+Math.abs(S.myDir[1])>.1))o.tang=Math.atan2(S.myDir[0],S.myDir[1]);if(o.tang==null)o.tang=p.face<0?-Math.PI/2:Math.PI/2;
     let da=o.tang-o.ang;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;o.ang+=da*Math.min(1,dt*12);
     c.holder.position.set(X,0,Z);const an=p.anim===1&&o.spd<.08?0:p.anim;heroPose(o,c,an,t+(p.seed||0),dt,Math.sin(o.ang)>=-.05?1:-1);
@@ -181,6 +191,7 @@ const RS={w:0,h:0,cw:0,ch:0,at:0,dpr:0};let Q=1,fpsN=0,fpsT0=0;R3D.render=functi
   for(const id in PL)if(!seen.has(id)){scene.remove(PL[id].c.holder);delete PL[id]}
   S.K.forEach((k,i)=>{const o=getKeeper(i),c=o.c;c.holder.visible=!k.hide;if(k.hide)return;const X=wx(i?FX1-30:FX0+30),Z=wz(k.y);c.holder.position.set(X,0,Z);const kd=(k.dy||1),sm=c.spr;let rot=0,y=0;if(k.a===2){rot=-kd*1.1*(i?-1:1);y=.2}else if(k.a===4){rot=(i?1:-1)*1.4}else y=Math.abs(Math.sin(t*4+i))*.05;sm.material.rotation=rot;sm.position.y=y;sm.scale.set(c.W*(i?-1:1),c.H,1)});
   const b=S.B,bz=(b.z||0)*U;ball.position.set(wx(b.x),BR+bz,wz(b.y));const vx=b.vx||0,vy=b.vy||0,sp=Math.hypot(vx,vy);if(sp>5){const ax=new THREE.Vector3(vy,0,-vx).normalize();ball.rotateOnWorldAxis(ax,-sp*U*dt/BR)}
+  juice(dt,b,sp);
   ballRing.position.set(ball.position.x,.02,ball.position.z);ballRing.visible=!b.owner;ballRing.material.opacity=.45+.35*Math.sin(t*7);
   fireS.forEach((s,i)=>{s.visible=!!b.fire;if(b.fire){s.position.set(ball.position.x-vx*U*.012*i,ball.position.y,ball.position.z-vy*U*.012*i);s.scale.setScalar(.6-i*.045);s.material.color.setHSL(.07-i*.006,1,.55);s.material.map=radTex}});
   barS.visible=S.charge!=null;if(S.charge!=null&&S.meP){const g=barC.getContext('2d');g.clearRect(0,0,128,20);g.fillStyle='rgba(0,0,0,.7)';g.fillRect(0,0,128,20);g.fillStyle=S.charge>.85?'#ff3d8b':'#b6ff3b';g.fillRect(3,3,122*S.charge,14);barT.needsUpdate=true;barS.position.set(wx(S.meP.x),2.3,wz(S.meP.y))}

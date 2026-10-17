@@ -152,6 +152,7 @@ const BLV=[{sp:.72,rt:.42,tk:.3,acc:.45,sk:.08,kp:.78,pw:.75},{sp:.82,rt:.2,tk:.
 function hum(t){if(!G)return false;if(!G.hum){G.hum=[0,0];for(const id in G.P)if(!G.P[id].bot)G.hum[G.P[id].team]=1}return !!G.hum[t]}
 function bl(t){return BLV[hum(t)?Math.min(2,BL+1):BL]}function applyMix(){const L=[...LP.values()];const old={};L.forEach((p,i)=>{const t=MIX==='coop'?(i<3?0:1):i%2;if(p.team!==t){old[p.id]=p.star;p.team=t;p.star=null}});for(const p of L)if(!p.star)p.star=freeStar(p.team,old[p.id])}
 let V=null,G=null,isHost=false,solo=false,client=null,room=null,phase='menu',ROSTER=[],lastHost=0,rpSeen=-1;
+window.TG_BUSY=()=>!!client||phase==='play';
 const M={x:CX,y:CY,face:1,fx:1,fy:0,stun:0,dashU:0,feintU:0,slideT:0,sdx:0,sdy:0,kickA:0};
 const inp={dx:0,dy:0};let kickDown=0,skillCd=0,lastSend=0;
 const fx=[];let evSeen=0,REPLAY=null,REC=[],lastClip=null,goalLog={},myGoals=0;

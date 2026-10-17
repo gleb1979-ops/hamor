@@ -1907,6 +1907,7 @@ function netConnect(code,cb){NET.room=code;
  NET.client.on('connect',()=>{NET.client.subscribe(topicR(),{qos:0},()=>cb&&cb())});
  NET.client.on('message',(t,buf)=>{let m;try{m=JSON.parse(buf.toString())}catch(e){return}if(!m||m.from===ME_ID)return;onNet(m)});
  NET.client.on('error',()=>{})}
+window.TG_BUSY=()=>NET.on||state==='play';document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;const n=performance.now();NET.lastHost=n;if(!NET.joined)NET.joinT=n;for(const q of NET.peers.values())q.lastIn=n});
 function netLeave(){try{if(NET.client){nsend({t:'bye'});const c=NET.client;setTimeout(()=>{try{c.end()}catch(e){}},150)}}catch(e){}
  clearInterval(NET.lobbyTimer);clearInterval(NET.hiTimer);Object.assign(NET,{on:false,host:false,guest:false,client:null,room:null,slot:0,joined:false,lastKey:-1});NET.peers=new Map();for(let i=0;i<4;i++)REMOTE[i]=null;
  try{history.replaceState(null,'',location.pathname+location.search.replace(/([?&])room=[^&]*&?/,'$1').replace(/[?&]$/,''))}catch(e){}}

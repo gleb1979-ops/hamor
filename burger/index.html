@@ -1555,7 +1555,7 @@ function endScreen(board,again,tr){phase='end';redraw=()=>endScreen(board,1,tr);
 /* ---------- room watch: host gone / create own room ---------- */
 let hostId=null,lastHost=0,watchT=null,autoCreated=false;
 function markHost(m){if(!isHost&&m.from!==me.id){hostId=m.from;lastHost=performance.now()}}
-function startWatch(){clearInterval(watchT);lastHost=performance.now();watchT=setInterval(()=>{if(isHost||phase==='end'||phase==='gone')return;if(performance.now()-lastHost>9000)hostGone()},1500)}
+function startWatch(){clearInterval(watchT);lastHost=performance.now();watchT=setInterval(()=>{if(isHost||phase==='end'||phase==='gone')return;if(performance.now()-lastHost>20000)hostGone()},1500)}
 function baseLink(){return location.origin+DIRS[FIXED]+'?lang='+lang}
 function createOwn(){location.href=location.pathname+'?lang='+lang+'&create=1&loc='+FIXED}
 function hostGone(){clearInterval(watchT);try{client&&client.end(true)}catch(e){}client=null;phase='gone';redraw=hostGone;show('app');
@@ -1567,7 +1567,7 @@ const SEEN={};
 function dropP(id){if(G&&G.P[id]){delete G.P[id];if(view[id])delete view[id];if(botBrain&&botBrain[id])delete botBrain[id]}}
 function purgeStale(ms){const now=performance.now();let ch=false;for(const [id,p] of [...lobbyPlayers]){if(id===me.id)continue;if(!SEEN[id]){SEEN[id]=now;continue}if(now-SEEN[id]>ms){if(phase==='play'){p.off=1;dropP(id)}else{lobbyPlayers.delete(id);ch=true}}}if(ch&&phase!=='play')broadcastLobby()}
 setInterval(()=>{if(isHost&&client)purgeStale(phase==='play'?11000:15000)},2000);
-window.__tg=()=>({G,room,lobbyPlayers,mine,phase,isHost});
+window.__tg=()=>({G,room,lobbyPlayers,mine,phase,isHost});window.TG_BUSY=()=>!!client&&phase!=='gone';document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;const n=performance.now();lastHost=n;for(const id in SEEN)SEEN[id]=n});
 function readd(id){if(!G||!T0||G.P[id]||phase!=='play')return;const lp=lobbyPlayers.get(id);if(!lp)return;const r=T0.all.find(x=>x[0]===id);if(!r)return;lp.off=0;const b=body(r[1],id);b.bot=false;b.name=r[2];b.cd=0;b.hat=T0.hats[id]||null;if(LOC==='box'){b.score=HP0;b.fouls=0;b.lcd=0}G.P[id]=b;try{if(GM()&&GM().rejoin)GM().rejoin(b)}catch(e){}}
 /* same name comes back with a new id (browser restarted): take over the silent player's seat */
 function reclaim(m){if(!m.name)return false;const now=performance.now();for(const [id,p] of lobbyPlayers){if(id===me.id||p.name!==m.name||now-(SEEN[id]||now)<4000)continue;const nid=m.from;lobbyPlayers.delete(id);lobbyPlayers.set(nid,{...p,off:0,hat:'hat' in m?m.hat||null:p.hat});SEEN[nid]=now;

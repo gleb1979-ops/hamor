@@ -140,18 +140,30 @@ const barC=document.createElement('canvas');barC.width=128;barC.height=20;const 
 const aimL=new THREE.Mesh(new THREE.PlaneGeometry(1.4,.12),new THREE.MeshBasicMaterial({color:0xb6ff3b,transparent:true,opacity:.6,depthWrite:false}));aimL.rotation.x=-Math.PI/2;aimL.visible=false;scene.add(aimL);
 const ringGeo=new THREE.RingGeometry(.36,.45,40);
 const PL={},KP=[];
+const HTEX={};function heroTex(c,col){const k=c+col;if(HTEX[k])return HTEX[k];const cvs=window.HERO_ART.canvas(c,col);const t=new THREE.CanvasTexture(cvs);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return HTEX[k]={t,asp:cvs.width/cvs.height}}
+const blobGeo=new THREE.CircleGeometry(.55,32);
+function heroBody(c,col,H){const holder=new THREE.Group();const {t,asp}=heroTex(c,col);const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,alphaTest:.04}));spr.center.set(.5,.02);spr.scale.set(H*asp,H,1);holder.add(spr);
+  const blob=new THREE.Mesh(blobGeo,new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35,depthWrite:false}));blob.rotation.x=-Math.PI/2;blob.position.y=.015;blob.scale.set(1,.55,1);holder.add(blob);return {holder,spr,W:H*asp,H}}
+function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=1,sy=1;const ph=o.ph*2.2;
+  if(an===1){y=Math.abs(Math.sin(ph))*.16;rot=Math.sin(ph)*.07;sy=1-Math.abs(Math.cos(ph))*.06;sx=1+Math.abs(Math.cos(ph))*.04}
+  else if(an===2){rot=-.38*face;sx=1.08;sy=.94}
+  else if(an===3){y=Math.abs(Math.sin(t*9))*.6;rot=Math.sin(t*12)*.5}
+  else if(an===4){rot=1.35*face;y=-.05}
+  else if(an===5){rot=1.0*face;y=-.1}
+  else{sy=1+Math.sin(t*3+o.ph)*.025}
+  o.fx=o.fx==null?face:o.fx+(face-o.fx)*Math.min(1,dt*14);s.scale.set(c.W*sx*o.fx,c.H*sy,1);s.position.y=y;m.rotation=rot}
 let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
-  const c=makeChar(model,cols,{muscle:true,h:p.star==='bakari'?1.7:p.star==='tino'?1.52:1.62});c.holder.traverse(x=>{if(x.material&&x.material.userData.un)x.material.userData.un.kShirt.value=SHIRTLESS[model]?0:1});
+  const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1));
   const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:p.me?0xb6ff3b:new THREE.Color(KIT[p.team].j),transparent:true,opacity:.9,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=.025;c.holder.add(ring);
   let aura=null;if((p.rar||0)>=2){aura=new THREE.Mesh(new THREE.CircleGeometry(.7,40),new THREE.MeshBasicMaterial({map:radTex,color:p.rar>2?0xff5ad8:0xffd23f,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));aura.rotation.x=-Math.PI/2;aura.position.y=.03;c.holder.add(aura)}
-  const lab=textSprite(p.me?p.name:p.name,p.me?'#b6ff3b':KIT[p.team].j,p.me?52:38);lab.position.y=p.me?2.25:1.95;if(!p.me)lab.scale.multiplyScalar(.85);c.holder.add(lab);
+  const lab=textSprite(p.me?p.name:p.name,p.me?'#b6ff3b':KIT[p.team].j,p.me?52:38);lab.position.y=c.H+(p.me?.3:.18);if(!p.me)lab.scale.multiplyScalar(.85);c.holder.add(lab);
   let arrow=null,glow=null;if(p.me){ring.scale.setScalar(1.5);glow=new THREE.Mesh(new THREE.CircleGeometry(1.1,40),new THREE.MeshBasicMaterial({map:radTex,color:0xb6ff3b,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));glow.rotation.x=-Math.PI/2;glow.position.y=.02;c.holder.add(glow);
-    arrow=new THREE.Sprite(new THREE.SpriteMaterial({map:chevTex,depthTest:false,transparent:true}));arrow.renderOrder=12;arrow.scale.set(.5,.5,1);arrow.position.y=2.75;c.holder.add(arrow)}
-  const fire=textSprite('🔥','#fff',44);fire.position.set(0,2.4,0);fire.visible=false;c.holder.add(fire);
-  const stars=textSprite('💫','#fff',44);stars.position.set(0,1.9,0);stars.visible=false;c.holder.add(stars);
+    arrow=new THREE.Sprite(new THREE.SpriteMaterial({map:chevTex,depthTest:false,transparent:true}));arrow.renderOrder=12;arrow.scale.set(.5,.5,1);arrow.position.y=c.H+.75;c.holder.add(arrow)}
+  const fire=textSprite('🔥','#fff',44);fire.position.set(0,c.H+.45,0);fire.visible=false;c.holder.add(fire);
+  const stars=textSprite('💫','#fff',44);stars.position.set(0,c.H*.7,0);stars.visible=false;c.holder.add(stars);
   scene.add(c.holder);o=PL[p.id]={c,key,ring,aura,lab,fire,stars,arrow,glow,ang:p.team?-Math.PI/2:Math.PI/2,ph:0,px:null,py:null,spd:0};return o}
-function getKeeper(i){const k=KITS[i];if(KP[i]&&KP[i].col===k.gk)return KP[i];if(KP[i])scene.remove(KP[i].c.holder);const c=makeChar('robert',{kJ:k.gk,kS:'#15151c',kSo:k.gk,kB:'#1b1b24',kSk:SKIN.robert,kFa:k.gk,kHa:'#ffffff'},{muscle:true,h:1.72});c.holder.traverse(x=>{if(x.material&&x.material.userData.un)x.material.userData.un.kShirt.value=1});scene.add(c.holder);return KP[i]={c,col:k.gk}}
+function getKeeper(i){const k=KITS[i];if(KP[i]&&KP[i].col===k.gk)return KP[i];if(KP[i])scene.remove(KP[i].c.holder);const c=heroBody('keeper',k.gk,2.0);scene.add(c.holder);return KP[i]={c,col:k.gk,ph:0}}
 /* particles */
 const parts=[];function burst(x,y,col,n){for(let i=0;i<n;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:radTex,color:new THREE.Color(col),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));const a=Math.random()*6.28,sp=2+Math.random()*5;s.position.set(wx(x),.8,wz(y));s.scale.setScalar(.25);s.userData={vx:Math.cos(a)*sp,vy:2+Math.random()*4,vz:Math.sin(a)*sp,t:0,l:.8+Math.random()*.6};scene.add(s);parts.push(s)}}
 R3D.burst=burst;
@@ -164,10 +176,10 @@ let Q=1,fpsN=0,fpsT0=0;R3D.render=function(S){const pn=performance.now();if(!fps
     if(o.px!=null){const mx=X-o.px,mz=Z-o.py,d=Math.hypot(mx,mz);o.spd=lerpF(o.spd,Math.min(1.2,d/Math.max(dt,1e-3)/3.6),Math.min(1,dt*10));o.ph+=d*3.3;if(d>.004&&p.anim!==3&&p.anim!==4)o.tang=Math.atan2(mx,mz)}o.px=X;o.py=Z;
     if(p.me&&S.myDir&&(Math.abs(S.myDir[0])+Math.abs(S.myDir[1])>.1))o.tang=Math.atan2(S.myDir[0],S.myDir[1]);if(o.tang==null)o.tang=p.face<0?-Math.PI/2:Math.PI/2;
     let da=o.tang-o.ang;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;o.ang+=da*Math.min(1,dt*12);
-    c.holder.position.set(X,0,Z);c.holder.rotation.y=o.ang;const an=p.anim===1&&o.spd<.08?0:p.anim;pose(c,an,p.cel,t+(p.seed||0),o.ph,Math.max(.35,o.spd));
-    o.ring.material.opacity=.65+.3*Math.sin(t*6);if(o.arrow){o.arrow.position.y=2.75+Math.abs(Math.sin(t*4))*.25;o.arrow.visible=!S.rf;o.glow.material.opacity=.55+.25*Math.sin(t*5)}if(o.aura)o.aura.material.opacity=.5+.3*Math.sin(t*4);o.fire.visible=p.sup>=100&&!S.rf;o.lab.visible=!S.rf;o.stars.visible=p.anim===4;if(o.stars.visible)o.stars.position.x=Math.sin(t*6)*.25}
+    c.holder.position.set(X,0,Z);const an=p.anim===1&&o.spd<.08?0:p.anim;heroPose(o,c,an,t+(p.seed||0),dt,Math.sin(o.ang)>=-.05?1:-1);
+    o.ring.material.opacity=.65+.3*Math.sin(t*6);if(o.arrow){o.arrow.position.y=c.H+.75+Math.abs(Math.sin(t*4))*.25;o.arrow.visible=!S.rf;o.glow.material.opacity=.55+.25*Math.sin(t*5)}if(o.aura)o.aura.material.opacity=.5+.3*Math.sin(t*4);o.fire.visible=p.sup>=100&&!S.rf;o.lab.visible=!S.rf;o.stars.visible=p.anim===4;if(o.stars.visible)o.stars.position.x=Math.sin(t*6)*.25}
   for(const id in PL)if(!seen.has(id)){scene.remove(PL[id].c.holder);delete PL[id]}
-  S.K.forEach((k,i)=>{const o=getKeeper(i),c=o.c,X=wx(i?FX1-30:FX0+30),Z=wz(k.y);c.holder.position.set(X,0,Z);c.holder.rotation.y=i?-Math.PI/2:Math.PI/2;keeperPose(c,k.a,t,(k.dy||1)*(i?-1:1))});
+  S.K.forEach((k,i)=>{const o=getKeeper(i),c=o.c,X=wx(i?FX1-30:FX0+30),Z=wz(k.y);c.holder.position.set(X,0,Z);const kd=(k.dy||1),sm=c.spr;let rot=0,y=0;if(k.a===2){rot=-kd*1.1*(i?-1:1);y=.2}else if(k.a===4){rot=(i?1:-1)*1.4}else y=Math.abs(Math.sin(t*4+i))*.05;sm.material.rotation=rot;sm.position.y=y;sm.scale.set(c.W*(i?-1:1),c.H,1)});
   const b=S.B,bz=(b.z||0)*U;ball.position.set(wx(b.x),BR+bz,wz(b.y));const vx=b.vx||0,vy=b.vy||0,sp=Math.hypot(vx,vy);if(sp>5){const ax=new THREE.Vector3(vy,0,-vx).normalize();ball.rotateOnWorldAxis(ax,-sp*U*dt/BR)}
   ballRing.position.set(ball.position.x,.02,ball.position.z);ballRing.visible=!b.owner;ballRing.material.opacity=.45+.35*Math.sin(t*7);
   fireS.forEach((s,i)=>{s.visible=!!b.fire;if(b.fire){s.position.set(ball.position.x-vx*U*.012*i,ball.position.y,ball.position.z-vy*U*.012*i);s.scale.setScalar(.6-i*.045);s.material.color.setHSL(.07-i*.006,1,.55);s.material.map=radTex}});
@@ -190,7 +202,7 @@ R3D.show=v=>{cv.style.display=v?'block':'none'};
 R3D.reset=()=>{for(const id in PL){scene.remove(PL[id].c.holder);delete PL[id]}camInit=false};
 /* ---------- load ---------- */
 radTex=mkRad();
-(async()=>{try{const names=['cappy','jimmy','kate','jennifer','kyle','shiro','robert'];await Promise.all(names.map(async n=>{const g=await loader.loadAsync('models/'+n+'.glb?v=4');prepModel(g.scene);SRC[n]=g}));
+(async()=>{try{const names=[];await Promise.all(names.map(async n=>{const g=await loader.loadAsync('models/'+n+'.glb?v=4');prepModel(g.scene);SRC[n]=g}));
   // re-create floodlight sprites texture now that radTex exists
   scene.traverse(o=>{if(o.isSprite&&!o.material.map)o.material.map=radTex;o.material&&(o.material.needsUpdate=true)});
   R3D.ok=true;R3D.loading=false;window.dispatchEvent(new Event('r3d'))}catch(e){console.error('R3D load failed',e);R3D.loading=false}})();

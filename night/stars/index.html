@@ -74,9 +74,10 @@ input:focus{border-color:var(--cy)}
 #ctrl{--R:max(16px,env(safe-area-inset-right));--B:clamp(12px,4vh,24px);--K:clamp(76px,22vh,108px)}
 #bKick{width:var(--K);height:var(--K);right:var(--R);bottom:var(--B);background:radial-gradient(circle at 40% 30%,#7cf3ff,#0aa9c9);font-size:30px;--sp:0}
 #bKick::after{content:'';position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(#ff3d8b calc(var(--sp)*1%),#ffffff1c 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));pointer-events:none}
+#bPass,#bTack,#bSup{display:none!important}
 #bPass{width:clamp(60px,18vh,84px);height:clamp(60px,18vh,84px);right:calc(var(--R) + var(--K) + 12px);bottom:var(--B);background:radial-gradient(circle at 40% 30%,#c7f5ff,#2f7bff);font-size:26px}
 #bTack{width:clamp(50px,14vh,66px);height:clamp(50px,14vh,66px);right:calc(var(--R) + var(--K) * .12);bottom:calc(var(--B) + var(--K) + 10px);background:radial-gradient(circle at 40% 30%,#ffd27a,#e26a00);font-size:24px}
-#bSkill{width:clamp(48px,14vh,64px);height:clamp(48px,14vh,64px);right:calc(var(--R) + var(--K) + 12px + clamp(60px,18vh,84px) * .2);bottom:calc(var(--B) + clamp(60px,18vh,84px) + 10px);background:radial-gradient(circle at 40% 30%,#d6ff7a,#6fae08);font-size:20px;color:#102000}
+#bSkill{width:clamp(62px,19vh,88px);height:clamp(62px,19vh,88px);right:calc(var(--R) + var(--K) + 14px);bottom:var(--B);background:radial-gradient(circle at 40% 30%,#d6ff7a,#6fae08);font-size:20px;color:#102000}
 #mecard{position:fixed;left:max(10px,env(safe-area-inset-left));top:10px;z-index:5;display:flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border:3px solid #fff;border-radius:30px;background:#0009;font:800 15px Rubik,system-ui,sans-serif;color:#fff;pointer-events:none}#mecard img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 12%;background:#fff2}
 #bSup{display:none;width:calc(var(--K) * .78);height:calc(var(--K) * .78);right:calc(var(--R) + var(--K) * .62);bottom:calc(var(--B) + var(--K) + 86px);background:radial-gradient(circle at 40% 30%,#ffb2d0,#d1135f);font-size:26px}
 #bSup.ready{display:flex;opacity:1;animation:supIn .35s cubic-bezier(.3,1.6,.5,1),pulse .6s .35s infinite alternate;box-shadow:0 0 30px #ff3d8b,inset 0 -5px 0 #0005}
@@ -105,7 +106,7 @@ input:focus{border-color:var(--cy)}
 <canvas id="cv"></canvas>
 <div id="hud" hidden><div class="sb"><span class="a" id="sA">0</span><span class="tm" id="clk">2:00</span><span class="b" id="sB">0</span></div></div>
 <div id="ctrl" hidden><div id="zone"></div><div id="stick"><div id="knob"></div></div>
-  <button class="ab" id="bSup">🔥<span></span></button><button class="ab" id="bSkill">⚡<span></span></button><button class="ab" id="bTack">🦵<span></span></button><button class="ab" id="bPass">👟<span></span></button><button class="ab" id="bKick">⚽<span></span></button></div>
+  <button class="ab" id="bSup">🔥<span></span></button><button class="ab" id="bSkill">⭐<span></span></button><button class="ab" id="bTack">🦵<span></span></button><button class="ab" id="bPass">👟<span></span></button><button class="ab" id="bKick">⚽<span></span></button></div>
 <div id="mecard" hidden></div><div id="big"></div><div id="tip" hidden></div>
 <div id="rot" hidden><div style="font-size:60px">📱↻</div><div id="rotT"></div></div>
 <div class="scr" id="menu" hidden></div>
@@ -114,8 +115,8 @@ input:focus{border-color:var(--cy)}
 <div class="scr" id="end" hidden></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="../../net.js"></script>
-<script src="game.js?v=9"></script>
+<script src="heroes.js?v=10"></script><script src="game.js?v=10"></script>
 <script type="importmap">{"imports":{"three":"../lib/three.module.min.js","three/addons/":"../lib/addons/"}}</script>
-<script type="module" src="r3d.js?v=9"></script>
+<script type="module" src="r3d.js?v=10"></script>
 </body>
 </html>

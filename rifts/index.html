@@ -51,7 +51,7 @@ body.touch #wrap{width:100%;height:100%;max-width:none;aspect-ratio:auto;border-
 .tb{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.22);color:#fff;font:600 12px var(--body);pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 #bA{right:calc(10px + env(safe-area-inset-right,0px));bottom:10px;width:76px;height:76px;background:rgba(255,61,129,.26)}
 #bB{right:calc(10px + env(safe-area-inset-right,0px));bottom:96px;width:62px;height:62px;background:rgba(56,189,248,.26)}
-#bP{right:calc(10px + env(safe-area-inset-right,0px));top:10px;width:40px;height:40px;background:rgba(255,255,255,.1);font-size:13px}
+#bP{right:calc(10px + env(safe-area-inset-right,0px));top:10px;width:48px;height:48px;background:rgba(255,255,255,.22);font-size:16px;font-weight:800;z-index:4}
 .tb.on{filter:brightness(1.6)}
 #ui{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto;background:rgba(7,6,13,.4)}
 #ui .card{width:min(500px,100%);max-height:100%;overflow:auto;background:rgba(17,15,30,.94);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
@@ -570,9 +570,9 @@ function update(dt){
   for(let i=0;i<4;i++){const I=IN[i],s=slots[i];if(!s.joined){if(I.atkP){s.joined=true;sfx('select')}}else{if(I.leftP){s.hero=(s.hero+2)%3;sfx('select')}if(I.rightP){s.hero=(s.hero+1)%3;sfx('select')}}}
   const any=slots.some(s=>s.joined);if(any&&stateT>0.3&&(G.startP||slots.some((s,i)=>s.joined&&IN[i].spP)))startGame();
   if(G.pauseP&&!G.pads.some(p=>p.startP)){state='title';stateT=0}}
- else if(state==='play'){if(NET.guest)guestUpdate(dt);else{if(G.pauseP&&!NET.on)paused=!paused;if(!paused){if(hitStop>0)hitStop-=dt;else updatePlay(dt)}}}
- else if(state==='gameover'){if(NET.guest)guestUpdate(dt);else if(stateT>1&&anyAtkP())retryStage()}
- else if(state==='victory'){if(NET.guest)guestUpdate(dt);else if(stateT>2&&anyAtkP()){if(NET.host)backToLobby();else{state='title';stateT=0;stageIdx=0;buildStage(0)}}}
+ else if(state==='play'){if(G.pauseP){if(pauseOpen)closePause();else openPause()}if(NET.guest)guestUpdate(dt);else{if(!paused){if(hitStop>0)hitStop-=dt;else updatePlay(dt)}}}
+ else if(state==='gameover'){if(G.pauseP){if(pauseOpen)closePause();else openPause()}if(pauseOpen){}else if(NET.guest)guestUpdate(dt);else if(stateT>1&&anyAtkP())retryStage()}
+ else if(state==='victory'){if(G.pauseP){if(pauseOpen)closePause();else openPause()}if(pauseOpen){}else if(NET.guest)guestUpdate(dt);else if(stateT>2&&anyAtkP()){if(NET.host)backToLobby();else{state='title';stateT=0;stageIdx=0;buildStage(0)}}}
  netTick(dt);
  if(!paused||state!=='play')updateFX(dt);
  shX=(Math.random()-0.5)*shake*1.4;shY=(Math.random()-0.5)*shake*1.4;
@@ -887,7 +887,7 @@ function render(){
  else if(state==='mode'||state==='lobby'||state==='netmsg'){drawMenuWorld();ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='rgba(7,6,13,0.45)';ctx.fillRect(0,0,W,H)}
  else{drawPlayWorld();drawHUD();drawBanner();
   if(state==='gameover')drawEnd(false);if(state==='victory')drawEnd(true);
-  if(paused&&state==='play'){ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.font=`72px ${FONT_D}`;ctx.fillStyle='#fff';ctx.fillText('ПАУЗА',W/2,H/2);ctx.font=`600 28px ${FONT_B}`;ctx.fillText(touch.on?'Нажми II, чтобы продолжить':'Esc или Start — продолжить',W/2,H/2+52)}}
+  if(paused&&state==='play'&&!pauseOpen){ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.font=`72px ${FONT_D}`;ctx.fillStyle='#fff';ctx.fillText('ПАУЗА',W/2,H/2);ctx.font=`600 28px ${FONT_B}`;ctx.fillText(touch.on?'Нажми II, чтобы продолжить':'Esc или Start — продолжить',W/2,H/2+52)}}
  ctx.setTransform(1,0,0,1,0,0);
  if(flashA>0){ctx.fillStyle=`rgba(255,255,255,${flashA*0.6})`;ctx.fillRect(0,0,W,H)}
  if(fade>0){ctx.fillStyle=`rgba(0,0,0,${fade})`;ctx.fillRect(0,0,W,H)}
@@ -923,6 +923,17 @@ function hideUI(){$ui.hidden=true;$ui.innerHTML='';try{cvs.focus({preventScroll:
 function bind(id,f){const el=document.getElementById(id);if(el)el.onclick=()=>{initAudio();f()}}
 function saveName(){const el=document.getElementById('nm');if(el){MY_NAME=el.value.trim().slice(0,14);try{localStorage.setItem('tr_name',MY_NAME)}catch(e){}}}
 function myName(){return MY_NAME||'Игрок'}
+let pauseOpen=false;
+function openPause(){if(pauseOpen)return;pauseOpen=true;if(!NET.on)paused=true;sfx('select');
+ showUI(`<h2>Пауза</h2>${NET.on?'<p class="sub">Онлайн-игра у друзей не останавливается.</p>':''}
+ <button class="big pri" id="pRes">▶ Продолжить</button>
+ ${!NET.on&&state==='play'?'<button class="big" id="pRetry">🔄 Начать уровень заново</button>':''}
+ <button class="big" id="pMenu">🏠 Главное меню</button>
+ ${HOME_URL?`<a class="big" href="${HOME_URL}" id="pHome">🎮 Все игры Tagshim</a>`:''}`);
+ bind('pRes',closePause);bind('pMenu',pauseToMenu);if(document.getElementById('pRetry'))bind('pRetry',()=>{closePause();retryStage()});
+ const h=document.getElementById('pHome');if(h)h.addEventListener('click',()=>{if(NET.on)netLeave()})}
+function closePause(){if(!pauseOpen)return;pauseOpen=false;paused=false;hideUI()}
+function pauseToMenu(){pauseOpen=false;paused=false;hideUI();if(NET.on)netLeave();stageIdx=0;try{buildStage(0)}catch(e){}for(const sl of slots)sl.joined=false;if(NET_OK)showMode();else{state='title';stateT=0}}
 function showMode(){state='mode';stateT=0;showUI(`<h2>Как играем?</h2>
  <input id="nm" maxlength="14" placeholder="Твоё имя" value="${esc(MY_NAME)}" autocomplete="off">
  <button class="big pri" id="mHost">Онлайн: создать комнату</button>
@@ -1068,7 +1079,7 @@ const HOME_URL=NET_OK?'../?lang=ru':'';
 if(NET_OK){const rq=new URLSearchParams(location.search).get('room');if(rq&&/^[A-Za-z0-9]{4}$/.test(rq))guestJoin(rq.toUpperCase())}
 let last=performance.now();
 const bPEl=document.getElementById('bP');
-function frame(now){const dt=Math.min(0.033,Math.max(0,(now-last)/1000));last=now;pollInput();update(dt);render();if(touch.on){const h=state!=='play';if(bPEl.hidden!==h)bPEl.hidden=h}requestAnimationFrame(frame)}
+function frame(now){const dt=Math.min(0.033,Math.max(0,(now-last)/1000));last=now;pollInput();update(dt);render();if(touch.on){const h=!(state==='play'||state==='gameover'||state==='victory')||pauseOpen;if(bPEl.hidden!==h)bPEl.hidden=h}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 try{cvs.focus({preventScroll:true})}catch(e){}
 </script>

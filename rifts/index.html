@@ -302,7 +302,7 @@ function startStage(i){
  showBanner(`Локация ${i+1} из 4`,S.name,2.6);
  fade=1;fadeDir=-1;
 }
-function nextWave(){waveNum++;podT=rand(3,6);podsLeft=2;toSpawn=Math.round((6+waveNum*3+stageIdx*2)*(0.6+0.4*np));spawnT=0.4;phase='waves';phaseT=1.5;showBanner(`Волна ${waveNum} из 3`,waveNum===3?'Последняя волна перед боссом':'Отбейтесь от врагов',1.6);sfx('wave')}
+function nextWave(){waveNum++;podT=rand(3,6);podsLeft=1+np;toSpawn=Math.round((6+waveNum*3+stageIdx*2)*(0.6+0.4*np));spawnT=0.4;phase='waves';phaseT=1.5;showBanner(`Волна ${waveNum} из 3`,waveNum===3?'Последняя волна перед боссом':'Отбейтесь от врагов',1.6);sfx('wave')}
 function startBoss(){
  phase='boss';podT=9;const B=S.boss;const sp=spawnPos(330,420);
  const hp=750*(1+stageIdx*0.45)*(0.6+0.4*np);
@@ -332,7 +332,7 @@ function bossDeath(b){
  hitStop=0.3;shake=30;flashA=0.8;sfx('boom');
  for(let i=0;i<4;i++){burst(b.x+rand(-30,30),b.y-b.r+rand(-30,30),[b.col,'#ffffff',S.accent2][i%3],50,620)}
  addFx({type:'ring',x:b.x,y:b.y,r:0,maxR:420,t:0.9,max:0.9,col:b.col});
- for(let i=0;i<3;i++)pickups.push({kind:'heal',x:b.x+rand(-60,60),y:b.y+rand(-40,40),t:0,bob:rand(0,6)});dropPower(b.x-60,b.y+20);dropPower(b.x+60,b.y+20);dropPower(b.x,b.y+60);mines=[];
+ for(let i=0;i<3;i++)pickups.push({kind:'heal',x:b.x+rand(-60,60),y:b.y+rand(-40,40),t:0,bob:rand(0,6)});for(let i=0;i<2+np;i++){const a=i/(2+np)*TAU;dropPower(b.x+Math.cos(a)*80,b.y+20+Math.sin(a)*50)}mines=[];
  enemies.forEach(e=>{if(!e.dead){e.dead=true;burst(e.x,e.y-e.r,S.ecol,10,240)}});bullets=[];
  boss=null;bossDone=true;phase='bossdead';phaseT=stageIdx===3?3:1.6;
 }
@@ -524,7 +524,7 @@ function updatePlay(dt){
  // pickups
  pickups=pickups.filter(k=>{k.t+=dt;for(const p of players){if(p.down)continue;const d=Math.hypot(p.x-k.x,p.y-k.y);if(d<130){k.x+=(p.x-k.x)/d*320*dt;k.y+=(p.y-k.y)/d*320*dt}if(d<32){applyPickup(p,k);return false}}return k.t<18});
  // flow
- if(phase==='waves'||phase==='boss'){podT-=dt;if(podT<=0){spawnPod();if(phase==='boss')podT=rand(11,16);else{podsLeft--;podT=podsLeft>0?rand(9,14):1e9}}}
+ if(phase==='waves'||phase==='boss'){podT-=dt;if(podT<=0){spawnPod();if(phase==='boss')podT=rand(11,16)/Math.sqrt(np);else{podsLeft--;podT=podsLeft>0?rand(6,11)*(2/(1+np)):1e9}}}
  if(phase==='waves'||phase==='boss'){mineT-=dt;if(mineT<=0){spawnMine();mineT=Math.max(2.5,rand(4,7)-stageIdx*0.7)}}
  updateMines(dt);
  if(phase==='intro'){phaseT-=dt;if(phaseT<=0)nextWave()}

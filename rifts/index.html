@@ -145,21 +145,21 @@ const HEROES=[
 ];
 const STAGES=[
  {name:'Неоновый Токио',deco:'city',map0:'port',base:['#1a1631','#0e0c1d'],accent:'#ff3d81',accent2:'#22d3ee',dark:'rgba(6,4,22,0.22)',ecol:'#ff3d81',ecol2:'#4a0b30',eye:'#fff1a8',amb:'rain',obstacles:22,shot:1,trap:{zone:'elec',fall:'sign'},
-  boss:{name:'Они-Палач',col:'#ff3d3d',col2:'#2a0606',kind:'oni',patterns:['slam','car','charge','summon','slam','car','aimed']}},
+  boss:{name:'Они-Палач',col:'#ff3d3d',col2:'#2a0606',kind:'oni',patterns:['slam','beam','car','charge','summon','slam','car','beam','aimed']}},
  {name:'Лес духов',deco:'forest',base:['#11301f','#08190f'],accent:'#7cf5c0',accent2:'#d9f99d',dark:'rgba(2,12,8,0.6)',ecol:'#5eead4',ecol2:'#0f3d36',eye:'#fef08a',amb:'fireflies',obstacles:30,shot:3,trap:{zone:'roots',fall:null},
-  boss:{name:'Кицунэ Девятихвостая',col:'#fb923c',col2:'#7c2d12',kind:'fox',patterns:['blink','spiral','charge','summon','blink','aimed']}},
+  boss:{name:'Кицунэ Девятихвостая',col:'#fb923c',col2:'#7c2d12',kind:'fox',patterns:['blink','beam','spiral','charge','summon','blink','beam','aimed']}},
  {name:'Ледяные пещеры',deco:'ice',base:['#1b2b45','#0c1626'],accent:'#7dd3fc',accent2:'#e0f2fe',dark:'rgba(4,10,24,0.5)',ecol:'#93c5fd',ecol2:'#1e3a8a',eye:'#e0f2fe',amb:'snow',obstacles:24,shot:4,trap:{zone:'frost',fall:'icicle'},
-  boss:{name:'Снежный Зверь Хёга',col:'#e0f2fe',col2:'#1e3a8a',kind:'yeti',patterns:['slam','breath','charge','rain','summon','slam']}},
+  boss:{name:'Снежный Зверь Хёга',col:'#e0f2fe',col2:'#1e3a8a',kind:'yeti',patterns:['slam','beam','breath','charge','rain','summon','slam']}},
  {name:'Огненный вулкан',deco:'lava',base:['#2b140c','#140704'],accent:'#ff7a1a',accent2:'#ffd166',dark:'rgba(16,3,0,0.52)',ecol:'#ff7a1a',ecol2:'#3d1000',eye:'#fff3b0',amb:'embers',obstacles:24,shot:0,trap:{zone:'geyser',fall:'rock'},
-  boss:{name:'Огненный дракон Рю',col:'#ff7a1a',col2:'#2a0a00',kind:'dragon',patterns:['fly','breath','rain','spiral','summon','breath']}},
+  boss:{name:'Огненный дракон Рю',col:'#ff7a1a',col2:'#2a0a00',kind:'dragon',patterns:['beam','fly','breath','rain','spiral','summon','beam','breath']}},
  {name:'Замок теней',deco:'castle',base:['#1c1726','#0b0910'],accent:'#a78bfa',accent2:'#f0abfc',dark:'rgba(6,2,14,0.62)',ecol:'#c084fc',ecol2:'#2e1065',eye:'#f5d0fe',amb:'dust',obstacles:24,shot:5,trap:{zone:'spikes',fall:'chandelier'},
-  boss:{name:'Чёрный рыцарь',col:'#a78bfa',col2:'#1e1b4b',kind:'knight',patterns:['charge','slam','aimed','summon','charge','burst']}},
+  boss:{name:'Чёрный рыцарь',col:'#a78bfa',col2:'#1e1b4b',kind:'knight',patterns:['charge','beam','slam','aimed','summon','charge','burst']}},
  {name:'Затонувший храм',deco:'temple',map0:'sea',base:['#0b2a3a','#04141d'],accent:'#2dd4bf',accent2:'#a5f3fc',dark:'rgba(0,10,20,0.18)',ecol:'#22d3ee',ecol2:'#0e3a4a',eye:'#fef9c3',amb:'bubbles',obstacles:22,shot:0,trap:{zone:'whirl',fall:null},
-  boss:{name:'Кракен Глубин',col:'#d946ef',col2:'#3b0764',kind:'kraken',patterns:['rain','burst','spiral','summon','rain','aimed']}},
+  boss:{name:'Кракен Глубин',col:'#d946ef',col2:'#3b0764',kind:'kraken',patterns:['beam','rain','burst','spiral','summon','beam','rain','aimed']}},
  {name:'Небесная цитадель',deco:'sky',base:['#22325a','#111a33'],accent:'#c4b5fd',accent2:'#fde68a',dark:'rgba(4,8,30,0.42)',ecol:'#a78bfa',ecol2:'#24104f',eye:'#e0f2fe',amb:'stars',obstacles:20,shot:3,trap:{zone:null,fall:'bolt'},
-  boss:{name:'Король Тэнгу',col:'#ef4444',col2:'#450a0a',kind:'tengu',patterns:['fly','aimed','spiral','summon','fly','burst']}},
+  boss:{name:'Король Тэнгу',col:'#ef4444',col2:'#450a0a',kind:'tengu',patterns:['fly','beam','aimed','spiral','summon','fly','burst']}},
  {name:'Око бури',deco:'storm',base:['#151a2e','#070912'],accent:'#facc15',accent2:'#a5b4fc',dark:'rgba(2,4,14,0.6)',ecol:'#facc15',ecol2:'#312e81',eye:'#fef9c3',amb:'rain',obstacles:18,shot:0,trap:{zone:'storm',fall:'bolt'},
-  boss:{name:'Повелитель бурь',col:'#facc15',col2:'#1e1b4b',kind:'storm',patterns:['rain','fly','spiral','burst','summon','slam','aimed','rain']}},
+  boss:{name:'Повелитель бурь',col:'#facc15',col2:'#1e1b4b',kind:'storm',patterns:['beam','rain','fly','spiral','burst','summon','beam','slam','aimed','rain']}},
  {name:'Деревня у мельницы',deco:'village',base:['#5f9e3f','#3f7a2c'],accent:'#fde047',accent2:'#fb923c',dark:'rgba(20,10,0,0.06)',ecol:'#f97316',ecol2:'#7c2d12',eye:'#fff7c2',amb:'dust',obstacles:20,shot:3,trap:{zone:'roots',fall:'rock'},day:1,
   boss:{name:'Вепрь-Великан',col:'#f97316',col2:'#431407',kind:'giant',spr:'boar',patterns:['charge','slam','summon','aimed','charge','slam']}},
  {name:'Речная переправа',deco:'river',map0:'canyon',base:['#4f9a46','#2f6f3a'],accent:'#38bdf8',accent2:'#a7f3d0',dark:'rgba(0,10,30,0.08)',ecol:'#38bdf8',ecol2:'#0c4a6e',eye:'#e0f2fe',amb:'bubbles',obstacles:20,shot:4,trap:{zone:'whirl',fall:null},day:1,
@@ -531,7 +531,7 @@ function updateBoss(b,dt){
  else if(!b.pat){if(tg){const dx=tg.x-b.x,dy=tg.y-b.y,d=Math.hypot(dx,dy)||1;const want=d>260?1:d<170?-1:0,ms=S.boss.kind==='kraken'?25:90;dvx=dx/d*ms*want;dvy=dy/d*ms*want}
   b.cd-=dt*(enr?1.5:1);if(b.cd<=0){const P=S.boss.patterns;b.pat=P[b.pi++%P.length];b.pt=0;b.pc=0;b.pa=rand(0,TAU);b.sub='wind';b.st=0}}
  else{b.pt+=dt;const Pt=b.pat;
-  if(oniPat(b,dt,tg,enr)||bossPat2(b,dt,tg,enr)){}else if(Pt==='burst'){const tot=enr?4:3;if(b.pt>=0.5+b.pc*0.45&&b.pc<tot){bossRing(b,14+stageIdx*3+(enr?4:0),190*bs,b.pc*0.22);b.pc++}if(b.pc>=tot&&b.pt>0.5+tot*0.45+0.4)endPat(b)}
+  if(bossBeam(b,dt,tg,enr)||oniPat(b,dt,tg,enr)||bossPat2(b,dt,tg,enr)){}else if(Pt==='burst'){const tot=enr?4:3;if(b.pt>=0.5+b.pc*0.45&&b.pc<tot){bossRing(b,14+stageIdx*3+(enr?4:0),190*bs,b.pc*0.22);b.pc++}if(b.pc>=tot&&b.pt>0.5+tot*0.45+0.4)endPat(b)}
   else if(Pt==='spiral'){b.pa+=dt*(enr?3.2:2.4);b.st-=dt;if(b.st<=0){b.st=0.075;const arms=enr?4:3;for(let i=0;i<arms;i++){const a=b.pa+i/arms*TAU;bullets.push({x:b.x,y:b.y-b.r,vx:Math.cos(a)*180*bs,vy:Math.sin(a)*180*bs,r:8,dmg:9,life:5,col:S.accent2})}sfx('shoot')}if(b.pt>3)endPat(b)}
   else if(Pt==='charge'){const reps=enr?3:2;
    if(b.sub==='wind'){if(tg&&b.st<=0)b.dir=Math.atan2(tg.y-b.y,tg.x-b.x);b.st+=dt;if(b.st>0.7){b.sub='dash';b.st=0;sfx('dash');shake=Math.max(shake,6)}}
@@ -1225,6 +1225,33 @@ function drawStorm(b){const o=bossBase(b),c=o.c,f=o.face,t=b.t;
 function drawBossKind(b){const k=S.boss&&S.boss.kind;if(k==='giant')return drawGiantBoss(b);if(k==='oni'){drawOniBoss(b);return true}const F={fox:drawFox,yeti:drawYeti,dragon:drawDragon,knight:drawKnightBoss,kraken:drawKraken,tengu:drawTengu,storm:drawStorm}[k];if(F){F(b);return true}return false}
 const BOSS_R={oni:58,fox:56,yeti:64,dragon:58,knight:52,kraken:70,tengu:52,storm:62,giant:66};
 
+// ================= Boss beams: laser / fire stream / water jet / foxfire / ice / lightning
+const BEAM={oni:{c:'#ff2d55',c2:'#ffd1dc',t:'laser',name:'Лазер они'},fox:{c:'#c084fc',c2:'#f5e1ff',t:'spirit'},kraken:{c:'#38bdf8',c2:'#e0f2fe',t:'water'},dragon:{c:'#ff6a00',c2:'#fff1a8',t:'fire'},tengu:{c:'#a3e635',c2:'#ecfccb',t:'wind'},storm:{c:'#facc15',c2:'#ffffff',t:'bolt'},yeti:{c:'#7dd3fc',c2:'#ffffff',t:'ice'},knight:{c:'#a78bfa',c2:'#ede9fe',t:'laser'},giant:{c:'#f97316',c2:'#fff7ed',t:'fire'}};
+function beamOrigin(b){return{x:b.x+Math.cos(b.dir||0)*b.r*0.6,y:b.y-b.r*1.2-(b.alt||0)+Math.sin(b.dir||0)*b.r*0.3}}
+function bossBeam(b,dt,tg,enr){if(b.pat!=='beam')return false;b.st+=dt;
+ if(b.sub==='wind'){if(tg)b.dir=Math.atan2(tg.y-20-b.y+b.r*1.2,tg.x-b.x);if(b.st>0.95){b.sub='fire';b.st=0;b.hits={};shake=Math.max(shake,10);sfx('beam',2)}return true}
+ if(b.sub==='fire'){if(tg){const a=Math.atan2(tg.y-20-(b.y-b.r*1.2),tg.x-b.x);b.dir+=clamp(angDiff(b.dir,a),-(enr?0.75:0.5)*dt,(enr?0.75:0.5)*dt)}
+  const o=beamOrigin(b),c=Math.cos(b.dir),s=Math.sin(b.dir),len=1150,w=enr?40:32,bs=1+DIFF()*0.06;
+  for(const p of players){if(p.down)continue;const dx=p.x-o.x,dy=p.y-24-o.y,t=dx*c+dy*s;if(t<0||t>len)continue;if(Math.abs(-dx*s+dy*c)<w+p.r){const k=p.i;if(!(b.hits[k]>0)){if(hurtPlayer(p,Math.round(13*bs),'beam')){p.vx+=c*260;p.vy+=s*260}b.hits[k]=0.35}}}
+  for(const k in b.hits)b.hits[k]-=dt;
+  if(Math.random()<0.5){const t=rand(80,len),x=o.x+c*t,y=o.y+s*t;const B=BEAM[S.boss.kind]||BEAM.oni;part(x,y,rand(-60,60),rand(-80,20),0.4,rand(3,6),Math.random()<0.5?B.c:B.c2,{drag:2})}
+  if(b.st>(enr?2.2:1.7)){b.sub='rest';b.st=0}return true}
+ if(b.st>0.45)endPat(b);return true}
+function drawBeam(b){if(b.pat!=='beam'||!(b.sub==='wind'||b.sub==='fire'))return;const B=BEAM[S.boss.kind]||BEAM.oni,c=ctx,o=beamOrigin(b),a=b.dir||0,len=1150;c.save();c.translate(o.x,o.y);c.rotate(a);c.globalCompositeOperation='lighter';
+ if(b.sub==='wind'){const k=Math.min(1,(b.st||0.5)/0.95),fl=0.5+0.5*Math.sin(time*40);c.strokeStyle=hexA(B.c,0.25+0.35*fl);c.lineWidth=2+k*3;c.setLineDash([22,14]);c.lineDashOffset=-time*300;c.beginPath();c.moveTo(0,0);c.lineTo(len,0);c.stroke();c.setLineDash([]);
+  const r=14+k*30;const g=c.createRadialGradient(0,0,0,0,0,r*2);g.addColorStop(0,B.c2);g.addColorStop(0.35,B.c);g.addColorStop(1,hexA(B.c,0));c.fillStyle=g;c.beginPath();c.arc(0,0,r*2,0,TAU);c.fill();c.restore();return}
+ const T=B.t,wob=Math.sin(time*30)*3,W=(b.enraged?40:32)+wob;
+ if(T==='bolt'){for(let pass=0;pass<3;pass++){c.strokeStyle=pass===2?B.c2:hexA(B.c,pass?0.8:0.35);c.lineWidth=pass===0?28:pass===1?10:3;c.beginPath();c.moveTo(0,0);let y=0;for(let x=40;x<=len;x+=40){y=Math.sin(x*0.07+time*60+pass)*18*(Math.random()*0.6+0.7);c.lineTo(x,y)}c.stroke()}}
+ else{const gl=c.createLinearGradient(0,-W*2,0,W*2);gl.addColorStop(0,hexA(B.c,0));gl.addColorStop(0.5,hexA(B.c,0.45));gl.addColorStop(1,hexA(B.c,0));c.fillStyle=gl;c.fillRect(0,-W*2,len,W*4);
+  const fade=c.createLinearGradient(0,0,len,0);fade.addColorStop(0,B.c2);fade.addColorStop(0.15,B.c);fade.addColorStop(0.85,B.c);fade.addColorStop(1,hexA(B.c,0.2));
+  c.fillStyle=fade;c.beginPath();c.moveTo(0,-W*0.55);for(let x=0;x<=len;x+=30){const ww=W*(0.55+(T==='fire'||T==='spirit'?0.25*Math.sin(x*0.05-time*25):0.06*Math.sin(x*0.1-time*40)))*(T==='fire'?Math.min(1.6,0.6+x/500):1);c.lineTo(x,-ww)}for(let x=len;x>=0;x-=30){const ww=W*(0.55+(T==='fire'||T==='spirit'?0.25*Math.sin(x*0.05-time*25+2):0.06*Math.sin(x*0.1-time*40+1)))*(T==='fire'?Math.min(1.6,0.6+x/500):1);c.lineTo(x,ww)}c.closePath();c.fill();
+  c.fillStyle=B.c2;c.globalAlpha=0.9;c.fillRect(0,-W*0.16,len*0.97,W*0.32);c.globalAlpha=1;
+  if(T==='water'||T==='ice'){c.fillStyle=hexA('#ffffff',0.8);for(let i=0;i<26;i++){const x=((i*97+time*900)%len),y=Math.sin(i*13.7+time*8)*W*0.7;c.beginPath();c.arc(x,y,2+(i%4),0,TAU);c.fill()}}
+  if(T==='fire'){for(let i=0;i<22;i++){const x=((i*71+time*700)%len),y=Math.sin(i*7.3+time*12)*W*0.9;const g=c.createRadialGradient(x,y,0,x,y,14+i%10);g.addColorStop(0,'#fff3b0');g.addColorStop(1,hexA('#ff6a00',0));c.fillStyle=g;c.beginPath();c.arc(x,y,14+i%10,0,TAU);c.fill()}}
+  if(T==='spirit'||T==='wind'){c.strokeStyle=hexA(B.c2,0.6);c.lineWidth=2;for(let i=0;i<5;i++){c.beginPath();for(let x=0;x<=len;x+=20){const y=Math.sin(x*0.03+time*12+i*1.3)*W*0.8;x?c.lineTo(x,y):c.moveTo(x,y)}c.stroke()}}}
+ const g=c.createRadialGradient(0,0,0,0,0,W*2.2);g.addColorStop(0,'#ffffff');g.addColorStop(0.3,B.c2);g.addColorStop(1,hexA(B.c,0));c.fillStyle=g;c.beginPath();c.arc(0,0,W*2.2,0,TAU);c.fill();
+ const e=c.createRadialGradient(len,0,0,len,0,W*2.6);e.addColorStop(0,hexA(B.c2,0.9));e.addColorStop(1,hexA(B.c,0));c.fillStyle=e;c.beginPath();c.arc(len,0,W*2.6,0,TAU);c.fill();c.restore()}
+
 // ================= Mini-bosses (craftpix top-down bosses), magic projectiles, summer props =================
 const MBN=['devil','goblin','viking','caveman','boar','shaman'];
 const MBNAME={devil:'Демон-вожак',goblin:'Гигантский гоблин',viking:'Вождь викингов',caveman:'Пещерный великан',boar:'Король-кабан',shaman:'Король-шаман'};
@@ -1574,7 +1601,7 @@ function drawPlayWorld(){
   else if(t===1){const Hh=HEROES[o.hero];if(o.inv>0&&!o.down&&!o.dash&&Math.floor(time*20)%2)continue;const opt={face:o.face,t:o.t,moving:o.moving&&!o.down,anim:o.anim,animMax:o.animMax,combo:o.combo,down:o.down,berserk:o.hero===0&&o.hp<o.max*0.35&&!o.down,clvl:o.charge>=0?o.clvl:0,wt:o.wt||1,skin:o.skin||0,alpha:o.cloak>0?0.35:undefined};opt.scale=HS;drawHero(ctx,o.hero,o.x,o.y,opt);o.wx=opt.wx;o.wy=opt.wy;
    ctx.font=`15px ${FONT_D}`;ctx.textAlign='center';ctx.fillStyle=Hh.col;ctx.fillText(NET.on&&o.name?o.name:'P'+(o.i+1),o.x,o.y-112);
    if(o.flash>0){ctx.globalCompositeOperation='lighter';glow(ctx,o.x,o.y-28,44,'#ff4d6d',o.flash*3);ctx.globalCompositeOperation='source-over'}}
-  else if(t===2)drawEnemy(o);else if(t===3)drawBoss(o);
+  else if(t===2)drawEnemy(o);else if(t===3){drawBoss(o);drawBeam(o)}
   else drawPickup(o);
  }
  drawSkelDeaths();drawMiniDeaths();for(const b of bullets){if(b.sh)drawBulletShape(b)||drawBulletShape2(b);else drawEnemyBullet(b)}for(const q of pshots){if(q.hammer)drawHammerShot(q);else drawHeroShot(q)}drawHZOver();

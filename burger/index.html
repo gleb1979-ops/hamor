@@ -3099,7 +3099,7 @@ function r3Draw(g,t){const X=gmV;if(!X||!X.e)return;const now=performance.now()/
   if(X.tr){const k=Math.min(1,X.tr);g.fillStyle=`rgba(0,0,0,${k*.6})`;g.fillRect(0,0,AW,AH)}}
 GMS.rifts3={rejoin(b){b.hp=60;b.dn=0},paint:f=>{f.drawImage(r3Paint(0),0,0)},maps:['trip'],secs:()=>210,unit:'🤪',btn:()=>T('btnR3'),icons:['👊','🌀','r3SupL'],tip:()=>T(TM==='team'?'tipR3T':'tipR3F'),
   modeName:v=>T(v==='team'?'r3Team':'r3Ffa'),mapName:()=>T('r3Map'),share:tr=>T(tr?'shareR3T':'shareR3'),teamTitle:tr=>T(tr==='win'?'r3Win':'r3Lose'),tables:()=>R3M[Math.max(0,r3Stg)].t,rects:()=>[],
-  spd:b=>(b.hp|0)<=0?0:1,
+  spd:b=>{const q=(G&&G.P&&G.P[b.id])||b,hp=q.hp!=null?q.hp:(view[b.id]&&view[b.id].hp);return hp!=null&&(hp|0)<=0?0:1},
   throwG(){if(isHost)r3Low(me.id);else send({t:'low'});tone(500,.15,'sawtooth',.1,1200);vib(30);return mine&&mine.hat==='crown'?5000:6500},
   low:r3Low,
   setup(rr){r3Stg=-1;r3SetStage(0);G.n=rr.length;G.stg=0;G.kills=0;G.team=0;G.EN=[];G.PR=[];G.PD=[];G.nid=1;G.spT=1.5;G.trans=0;G.bwin=0;G.boss=0;G.res=null;G.need=()=>Math.round(9+3*G.n);rr.forEach(x=>{const b=G.P[x[0]];b.hp=R3_HP;b.dn=0})},

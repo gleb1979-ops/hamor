@@ -1714,7 +1714,7 @@ function paintDino(g,f,st,col){const walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=w
   g.strokeStyle=OUT;g.lineWidth=3;g.beginPath();g.moveTo(31,-154);g.lineTo(52,-150+(st===1?6:0));g.stroke();g.fillStyle=OUT;g.beginPath();g.arc(70,-130,2.5,0,7);g.fill();
   g.strokeStyle=OUT;g.lineWidth=8;g.lineCap='round';g.beginPath();g.moveTo(26,-84);g.lineTo(41,-72);g.stroke();g.strokeStyle=C;g.lineWidth=4;g.stroke();
   if(col){g.beginPath();g.ellipse(14,-106,17,8,.5,0,7);sh(g,col,2.5);g.fillStyle='#ffc531';g.beginPath();g.arc(21,-99,4,0,7);g.fill()}g.restore()}
-const PNPC={dino:{u:.6,m:185},ghost:{u:.46,m:165,fl:1},hog:{u:.5,m:130}},PNI={};for(const k in PNPC){const i=new Image();i.src='img/n_'+k+'.webp';PNI[k]=i}
+const PNPC={dino:{u:.6,m:185},ghost:{u:.46,m:165,fl:1},hog:{u:.5,m:130},rat:{u:.42,m:100},nurse:{u:.66,m:200},grandpa:{u:.57,m:175},sneezer:{u:.68,m:190}},PNI={};for(const k in PNPC){const i=new Image();i.src='img/n_'+k+'.webp';PNI[k]=i}
 function drawPNPC(g,tv,t,k,alpha){const im=PNI[k];if(!im||!im.complete||!im.naturalWidth)return false;const P=PNPC[k],u=P.u,fi=tv.st===2?6:tv.st===1?5:tv.moving===false?0:1+Math.floor(t*(k==='ghost'?5:8))%4;g.save();g.translate(tv.x,tv.y);if(alpha!=null)g.globalAlpha=alpha;if(P.fl)g.translate(0,-10-Math.sin(t*3+tv.x*.01)*6);if(Math.cos(tv.a||0)<0)g.scale(-1,1);g.drawImage(im,fi*400,0,400,360,-200*u,-350*u,400*u,360*u);g.restore();if(alpha==null||alpha>.4)guardMark(g,tv.x,tv.y-P.m,tv.st===1?1:tv.st===2?2:0);return true}
 GART.dino=(g,tv,t)=>{if(!drawPNPC(g,tv,t,'dino'))drawGuardSprite(g,tv,t,'dino',paintDino,-170,260,220,200)};
 function drawPDino(g,v,t){const f=v.moving?1+Math.floor((t*11)%6):0,col=CH[v.c].col;g.save();g.translate(v.x,v.y);if(v.face<0)g.scale(-1,1);g.drawImage(artSprite('dino'+col,0,f,(gg,ff,ss)=>paintDino(gg,ff,ss,col),260,220,200),-130,-200,260,220);g.restore()}
@@ -1939,7 +1939,7 @@ function paintRat(g,f,st){const walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=walk?M
   g.fillStyle='#d98c9a';g.beginPath();g.arc(48,-17,4,0,7);g.fill();g.beginPath();g.ellipse(12,-38,9,10,0,0,7);sh(g,'#b8b8c4',2.5);g.fillStyle='#d98c9a';g.beginPath();g.ellipse(12,-38,5,6,0,0,7);g.fill();
   g.fillStyle=OUT;g.beginPath();g.arc(30,-24,3,0,7);g.fill();g.strokeStyle=OUT;g.lineWidth=1.5;for(const dy of [-2,3]){g.beginPath();g.moveTo(44,-16);g.lineTo(58,-18+dy*2);g.stroke()}
   if(st===1){g.strokeStyle=OUT;g.lineWidth=2.5;g.beginPath();g.moveTo(24,-32);g.lineTo(34,-29);g.stroke()}}
-GART.rat=(g,tv,t)=>drawGuardSprite(g,tv,t,'rat',paintRat,-70,140,90,80);
+GART.rat=(g,tv,t)=>{if(!drawPNPC(g,tv,t,'rat'))drawGuardSprite(g,tv,t,'rat',paintRat,-70,140,90,80)};
 function paintPizzaMap(f){f.fillStyle='#e9dcc4';f.fillRect(0,0,AW,TOP);for(let y=0;y<TOP;y+=26)for(let x=0;x<AW;x+=26){f.fillStyle='rgba(0,0,0,.06)';f.fillRect(x,y,24,24)}
   f.fillStyle='#8a5a32';for(const y of [44,96])f.fillRect(0,y,AW,8);for(const [x,c] of [[120,'#c0392b'],[180,'#2f2f3a'],[1320,'#2f2f3a'],[1380,'#c0392b']]){f.fillStyle=c;f.beginPath();f.arc(x,72,20,0,7);f.fill();f.fillRect(x-3,40,6,14)}
   for(let i=0;i<10;i++){f.fillStyle=['#ffc531','#e8412c','#5cc560'][i%3];f.fillRect(300+i*95,20,30,24);f.fillStyle='rgba(255,255,255,.6)';f.fillRect(300+i*95,20,30,6)}
@@ -1953,7 +1953,7 @@ function paintPizzaMap(f){f.fillStyle='#e9dcc4';f.fillRect(0,0,AW,TOP);for(let y
 const PZC=()=>mapOf('pizza')==='cellar',PZ_HOLES=[[90,TOP+70],[AW-90,TOP+70],[90,AH-60],[AW-90,AH-60],[750,AH-46],[750,TOP+40]];
 function drawWholePizza(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s*.82);g.fillStyle='rgba(0,0,0,.2)';g.beginPath();g.ellipse(4,10,44,14,0,0,7);g.fill();g.beginPath();g.arc(0,0,40,0,7);sh(g,'#e0a458',3);g.beginPath();g.arc(0,0,32,0,7);g.fillStyle='#e8412c';g.fill();
   g.fillStyle='#ffe08a';for(let i=0;i<9;i++){const a=i*2.4,r=8+(i*7)%20;g.beginPath();g.ellipse(Math.cos(a)*r,Math.sin(a)*r,8,5,a,0,7);g.fill()}g.fillStyle='#a8231a';for(const [px,py] of [[-14,-10],[12,-14],[16,10],[-10,14],[1,-1]]){g.beginPath();g.arc(px,py,5.5,0,7);g.fill()}g.restore()}
-GART.ratp=(g,tv,t)=>{GART.rat(g,tv,t);const fl=Math.cos(tv.a||0)<0?-1:1;drawWholePizza(g,tv.x-fl*10,tv.y-58,.72)};
+GART.ratp=(g,tv,t)=>{GART.rat(g,tv,t);const fl=Math.cos(tv.a||0)<0?-1:1;if(PNI.rat&&PNI.rat.complete&&PNI.rat.naturalWidth)drawWholePizza(g,tv.x-fl*38,tv.y-(tv.st===2?40:62),.55);else drawWholePizza(g,tv.x-fl*10,tv.y-58,.72)};
 function paintCellar(f){f.fillStyle='#2a2430';f.fillRect(0,0,AW,TOP);for(let y=0;y<TOP;y+=34)for(let x=(y/34%2)*40;x<AW;x+=80){rr(f,x+2,y+2,76,30,5);f.fillStyle=(x+y)%3?'#4a4250':'#423a48';f.fill()}
   for(const x of [200,560,940,1300]){f.fillStyle='#6b4423';f.fillRect(x-5,52,10,34);const gr=f.createRadialGradient(x,44,2,x,44,70);gr.addColorStop(0,'rgba(255,200,90,.85)');gr.addColorStop(1,'rgba(255,160,40,0)');f.fillStyle=gr;f.beginPath();f.arc(x,44,70,0,7);f.fill();f.fillStyle='#ffcf5a';f.beginPath();f.ellipse(x,40,7,13,0,0,7);f.fill()}
   for(let y=TOP-14,j=0;y<AH;y+=56,j++)for(let x=-(j%2)*28,i=0;x<AW;x+=56,i++){rr(f,x+2,y+2,52,52,6);f.fillStyle=((i*7+j*3)%5)?'#5b5562':'#544e5b';f.fill()}
@@ -2298,7 +2298,7 @@ function E_rr(g,x,y,w,h,r){rr(g,x,y,w,h,r)}
 function drawPill(g,x,y,s,t){g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='rgba(0,0,0,.18)';g.beginPath();g.ellipse(0,4,20,6,0,0,7);g.fill();g.translate(0,-22);g.rotate(-.5+Math.sin(t*2+x)*.1);
   g.save();rr(g,-22,-10,44,20,10);g.clip();g.fillStyle='#ff4d6d';g.fillRect(-22,-10,22,20);g.fillStyle='#fff';g.fillRect(0,-10,22,20);g.restore();rr(g,-22,-10,44,20,10);g.lineWidth=2.5;g.strokeStyle=OUT;g.stroke();g.fillStyle='rgba(255,255,255,.6)';g.fillRect(-16,-6,12,3);g.restore()}
 GCONE.sneezer=0;
-GART.sneezer=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,st=tv.st,walk=st===0?Math.sin(t*9):0,stuck=st===2;g.save();g.translate(x,y-(stuck?Math.abs(Math.sin(t*12))*10:0));g.scale(fl,1);
+GART.sneezer=(g,tv,t)=>{if(drawPNPC(g,tv,t,'sneezer'))return;const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,st=tv.st,walk=st===0?Math.sin(t*9):0,stuck=st===2;g.save();g.translate(x,y-(stuck?Math.abs(Math.sin(t*12))*10:0));g.scale(fl,1);
   g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,0,32,9,0,0,7);g.fill();g.lineCap='round';
   for(const [lx,sg] of [[-9,walk],[9,-walk]]){g.strokeStyle=OUT;g.lineWidth=11;g.beginPath();g.moveTo(lx,-48);g.lineTo(lx+sg*5,-6);g.stroke();g.strokeStyle=SKIN;g.lineWidth=7;g.stroke();g.beginPath();g.ellipse(lx+4+sg*5,-4,11,6,0,0,7);sh(g,'#7a5a9a',2)}
   g.beginPath();g.moveTo(-24,-114);g.lineTo(24,-114);g.lineTo(30,-44);g.lineTo(-30,-44);g.closePath();sh(g,'#cfe6ff');g.fillStyle='#7fb3ff';for(let yy=-108;yy<-48;yy+=12)g.fillRect(-26,yy,52,5);g.beginPath();g.moveTo(-24,-114);g.lineTo(24,-114);g.lineTo(30,-44);g.lineTo(-30,-44);g.closePath();g.lineWidth=3;g.strokeStyle=OUT;g.stroke();
@@ -2308,7 +2308,7 @@ GART.sneezer=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,st=tv.st,wa
   g.fillStyle=OUT;if(st===1){g.lineWidth=2.5;g.strokeStyle=OUT;g.beginPath();g.moveTo(-12,-2);g.lineTo(-4,2);g.moveTo(12,-2);g.lineTo(4,2);g.stroke();g.beginPath();g.ellipse(2,12,7,8,0,0,7);g.fill()}else{g.beginPath();g.arc(-7,0,3,0,7);g.arc(9,0,3,0,7);g.fill();g.strokeStyle='#bbb';g.lineWidth=3;g.beginPath();g.moveTo(4,12);g.lineTo(24,18);g.stroke();g.fillStyle='#e8412c';g.beginPath();g.arc(24,18,2.5,0,7);g.fill()}
   g.fillStyle='#ff5a5a';g.beginPath();g.arc(3,6,6,0,7);g.fill();g.fillStyle='rgba(150,220,90,.9)';g.beginPath();g.ellipse(2,13+Math.sin(t*3)*2,2.5,5,0,0,7);g.fill();g.restore();
   g.restore();guardMark(g,x,y-200,st)};
-GART.grandpa=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1;g.save();g.translate(x,y);g.scale(fl,1);
+GART.grandpa=(g,tv,t)=>{if(drawPNPC(g,tv,t,'grandpa'))return;const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1;g.save();g.translate(x,y);g.scale(fl,1);
   g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,8,84,15,0,0,7);g.fill();
   for(const wx of [-62,62]){g.beginPath();g.arc(wx,0,9,0,7);sh(g,'#3a3a44',2)}g.strokeStyle='#8c96a3';g.lineWidth=5;for(const wx of [-62,62]){g.beginPath();g.moveTo(wx,-4);g.lineTo(wx,-40);g.stroke()}
   rr(g,-80,-56,160,20,6);sh(g,'#cfd8e2',3);rr(g,-76,-70,152,18,8);sh(g,'#fff',2.5);
@@ -2340,7 +2340,7 @@ function paintNurse(g,f,st){const walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=walk
   else{g.beginPath();g.arc(-8,hy+1,3,0,7);g.arc(8,hy+1,3,0,7);g.fill();if(st===1){g.lineWidth=2.5;g.strokeStyle=OUT;g.beginPath();g.moveTo(-13,hy-7);g.lineTo(-4,hy-4);g.moveTo(13,hy-7);g.lineTo(4,hy-4);g.stroke()}}
   g.fillStyle='#ff8fa3';g.beginPath();g.arc(-13,hy+8,4,0,7);g.arc(13,hy+8,4,0,7);g.fill();
   g.strokeStyle=OUT;g.lineWidth=2.5;g.beginPath();if(st===1)g.arc(0,hy+13,6,Math.PI*1.1,Math.PI*1.9,false);else g.arc(0,hy+9,6,.2,Math.PI-.2);g.stroke();g.restore()}
-GART.nurse=(g,tv,t)=>drawGuardSprite(g,tv,t,'nurse',paintNurse,-178);
+GART.nurse=(g,tv,t)=>{if(!drawPNPC(g,tv,t,'nurse'))drawGuardSprite(g,tv,t,'nurse',paintNurse,-178)};
 function drawLolly(g,x,y,s,t){g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='rgba(0,0,0,.18)';g.beginPath();g.ellipse(0,4,16,5,0,0,7);g.fill();
   g.strokeStyle='#fff';g.lineWidth=5;g.beginPath();g.moveTo(0,2);g.lineTo(0,-30);g.stroke();g.strokeStyle=OUT;g.lineWidth=1.5;g.stroke();
   g.beginPath();g.arc(0,-44,17,0,7);sh(g,'#ff5fa2',2.5);g.strokeStyle='#fff';g.lineWidth=4;g.beginPath();for(let a=0;a<12;a+=.3){const r=a*1.3;g.lineTo(Math.cos(a+t*2)*r,-44+Math.sin(a+t*2)*r)}g.stroke();g.restore()}

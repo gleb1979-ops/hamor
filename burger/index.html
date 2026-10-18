@@ -780,7 +780,7 @@ function drawCageFront(g,t,cx,cy){const x=cx??CAGE.x,y=cy??CAGE.y;
   rr(g,x-44,y-174,88,30,8);g.fillStyle='#8a5a32';g.fill();g.lineWidth=3;g.strokeStyle=OUT;g.stroke();g.font='900 20px Rubik, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffe08a';g.fillText('JAIL',x,y-159);g.textBaseline='alphabetic'}
 const BGDINER=new Image();BGDINER.src='img/bg_diner.webp';
 const BGSCHOOL=new Image();BGSCHOOL.src='img/bg_school.webp';const BGSOC={};for(const k of ['soc1','soc2','socb','socb2']){BGSOC[k]=new Image();BGSOC[k].src='img/bg_'+k+'.webp'}
-const BGBOX=new Image();BGBOX.src='img/bg_box.webp';const BGVIL={park:new Image(),space:new Image()};BGVIL.park.src='img/bg_vpark.webp';BGVIL.space.src='img/bg_vspace.webp';const BGMAPS={};for(const k of ['balloon_fair','balloon_roof','train_west','train_farm','dino_museum','dino_jungle','ghost_hall','ghost_crypt','pirate_beach','pirate_jungle','pizza_kitchen','pizza_cellar']){BGMAPS[k]=new Image();BGMAPS[k].src='img/bg_'+k+'.webp'}
+const BGBOX=new Image();BGBOX.src='img/bg_box.webp';const BGVIL={park:new Image(),space:new Image()};BGVIL.park.src='img/bg_vpark.webp';BGVIL.space.src='img/bg_vspace.webp';const BGMAPS={};for(const k of ['balloon_fair','balloon_roof','train_west','train_farm','dino_museum','dino_jungle','ghost_hall','ghost_crypt','pirate_beach','pirate_jungle','pizza_kitchen','pizza_cellar','hospital_office','hospital_ward','sniper_city','sniper_forest']){BGMAPS[k]=new Image();BGMAPS[k].src='img/bg_'+k+'.webp'}
 function bgModeExtras(f){if(LOC==='pizza'&&!PZC()&&TM==='ffa'){f.beginPath();f.arc(PZ_T.x,PZ_T.y,PZ_T.r*.55,Math.PI,0);f.closePath();f.fillStyle='#2b1b30';f.fill();f.fillStyle='#ff8a2a';f.beginPath();f.arc(PZ_T.x,PZ_T.y-6,18,Math.PI,0);f.fill()}}
 function drawFloor(g){{const bm=BGMAPS[LOC+'_'+mapOf()];if(bm&&bm.complete&&bm.naturalWidth){g.drawImage(bm,0,0,AW,AH);bgModeExtras(g);return}}if(LOC==='villain'&&!GM()){const vi=BGVIL[VM==='space'?'space':'park'];if(vi.complete&&vi.naturalWidth){g.drawImage(vi,0,0,AW,AH);return}}if(LOC==='box'&&!GM()&&BGBOX.complete&&BGBOX.naturalWidth){g.drawImage(BGBOX,0,0,AW,AH);return}if(LOC==='snow'&&!GM()&&BGSNOW.complete&&BGSNOW.naturalWidth){g.drawImage(BGSNOW,0,0,AW,AH);return}if(LOC==='soccer'&&!GM()){const two=SM==='m22'||SM==='m33',bch=mapOf('soccer')==='beach',im=bch?(two?BGSOC.socb2:BGSOC.socb):BGSOC[two?'soc2':'soc1'];if(im&&im.complete&&im.naturalWidth){g.drawImage(im,0,0,AW,AH);return}}if(LOC==='diner'&&!GM()&&BGDINER.complete&&BGDINER.naturalWidth){g.drawImage(BGDINER,0,0,AW,AH);return}if(LOC==='school'&&!GM()&&BGSCHOOL.complete&&BGSCHOOL.naturalWidth){g.drawImage(BGSCHOOL,0,0,AW,AH);g.save();g.globalAlpha=.88;g.fillStyle='#fff';g.font='700 42px Rubik, Arial, sans-serif';g.textAlign='center';g.textBaseline='middle';g.direction='ltr';g.fillText('2 + 2 = 5 ?',AW/2-110,62);g.strokeStyle='#fff';g.lineWidth=4;g.beginPath();g.arc(AW/2+200,62,30,0,7);g.stroke();g.beginPath();g.arc(AW/2+200,66,17,.3,Math.PI-.3);g.stroke();g.fillRect(AW/2+188,48,6,8);g.fillRect(AW/2+206,48,6,8);g.restore();return}const FK=GM()?LOC+TM+mapOf():LOC==='villain'?LOC+VM:LOC==='train'?LOC+TM+mapOf():LOC;if(!floorCaches[FK]){const fc=floorCaches[FK]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='villain'){if(VM==='space')paintSpace(f);else paintPark(f)}else if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else if(LOC==='snow')paintSnow(f);else if(LOC==='box')paintBox(f);else if(GM())GM().paint(f);else if(LOC==='train')paintTrain(f);else if(LOC==='diner'&&PIX.ready)paintDiner(f);else{
   const tile=75;for(let y=0;y<AH;y+=tile)for(let x=0;x<AW;x+=tile){f.fillStyle=((x+y)/tile)%2?'#efe6d6':'#d9cbb3';f.fillRect(x,y,tile,tile)}
@@ -2050,7 +2050,7 @@ GMS.pizza={paint:f=>PZC()?paintCellar(f):paintPizzaMap(f),maps:['kitchen','cella
 
 /* ================= Night Sniper ================= */
 const SN={city:{s:[[170,320,'bin'],[470,320,'wall'],[800,320,'box'],[1080,320,'wall'],[1340,320,'bin'],[300,535,'car'],[730,535,'car'],[1160,535,'car'],[160,765,'box'],[520,765,'wall'],[930,765,'bin'],[1320,765,'box']],
-  L:[[620,300,170],[990,690,170],[150,410,130]],dk:'rgba(3,5,16,.965)'},
+  L:[[770,300,165],[1150,720,165],[210,300,130]],dk:'rgba(3,5,16,.965)'},
  forest:{s:[[190,330,'bush'],[500,330,'rock'],[810,330,'bush'],[1110,330,'log'],[1350,330,'bush'],[330,545,'log'],[730,545,'bush'],[1170,545,'rock'],[170,765,'rock'],[540,765,'bush'],[950,765,'log'],[1330,765,'bush']],
   L:[[650,440,150],[1060,670,140]],dk:'rgba(2,7,8,.965)'}};
 const snM=()=>SN[mapOf('sniper')]||SN.city,snS=()=>snM().s;
@@ -2285,11 +2285,11 @@ GMS.race={rejoin(b){const o=Object.values(G.P).filter(p=>p!==b&&p.prog!=null).so
 
 
 /* ================= Hospital (part 16) ================= */
-const HOS={office:{t:[{x:430,y:650,r:34},{x:1070,y:650,r:34}],r:[{x:620,y:130,w:260,h:80},{x:0,y:320,w:118,h:210},{x:1382,y:320,w:118,h:210}],lanes:[560,760],
+const HOS={office:{t:[{x:512,y:530,r:38},{x:1066,y:528,r:40},{x:86,y:578,r:24},{x:258,y:756,r:30}],r:[{x:665,y:140,w:270,h:110},{x:0,y:230,w:140,h:310},{x:150,y:265,w:65,h:135},{x:1350,y:260,w:150,h:280},{x:15,y:680,w:205,h:130}],lanes:[560,760],
     spots:[[300,300],[1200,300],[300,800],[1200,800],[750,470],[750,800],[560,600],[940,600]]},
-  ward:{t:[{x:470,y:500,r:24},{x:1440,y:770,r:28}],r:[{x:150,y:120,w:150,h:90},{x:400,y:120,w:150,h:90},{x:820,y:120,w:150,h:90},{x:150,y:760,w:150,h:100},{x:400,y:760,w:150,h:100},{x:820,y:760,w:150,h:100},
-    {x:1250,y:362,w:250,h:22,wall:1},{x:1250,y:618,w:250,h:22,wall:1},{x:1250,y:362,w:22,h:82,wall:1},{x:1250,y:556,w:22,h:84,wall:1}],lanes:[690,1060],
-    pans:[[225,262],[475,262],[895,262],[225,712],[475,712],[895,712]],toi:{x:1385,y:500},door:{x:1205,y:500}}};
+  ward:{t:[{x:372,y:482,r:26},{x:1420,y:770,r:30}],r:[{x:60,y:160,w:175,h:175},{x:388,y:160,w:160,h:175},{x:800,y:160,w:168,h:175},{x:60,y:690,w:175,h:170},{x:385,y:690,w:178,h:170},{x:800,y:690,w:168,h:170},
+    {x:1185,y:300,w:315,h:22,wall:1},{x:1185,y:635,w:315,h:22,wall:1},{x:1185,y:300,w:22,h:130,wall:1},{x:1185,y:560,w:22,h:97,wall:1}],lanes:[690,1060],
+    pans:[[147,370],[468,370],[884,370],[147,650],[468,650],[884,650]],toi:{x:1385,y:480},door:{x:1150,y:495}}};
 const HC=()=>HOS[mapOf('hospital')],HW=()=>mapOf('hospital')==='ward';GCONE.nurse=260;GCONE.grandpa=0;
 const GPW=[[300,330],[1000,330],[1000,670],[300,670]],SNW=[[330,450],[1170,450],[1170,700],[330,700]];
 function drawPatch(g,x,y,s,a){g.save();g.translate(x,y);g.scale(s,s*.55);for(const r of [a||.6,-(a||.6)]){g.save();g.rotate(r);E_rr(g,-34,-10,68,20,8);g.fillStyle='#f3c99a';g.fill();g.lineWidth=2.5;g.strokeStyle=OUT;g.stroke();g.fillStyle='#e0a877';g.fillRect(-9,-8,18,16);g.fillStyle='rgba(120,70,30,.35)';for(const dx of [-24,-17,17,24])for(const dy of [-4,3]){g.beginPath();g.arc(dx,dy,1.4,0,7);g.fill()}g.restore()}g.restore()}
@@ -2445,7 +2445,7 @@ function hosBot(b,dt,brain){const P=G.P;if(b.stun>0)return [0,0];const now=hNow(
   if((b.dzU||0)>now){brain.wob+=dt*5;return [Math.cos(brain.wob)*.55,Math.sin(brain.wob*1.4)*.55]}
   if(b.pl>0&&Math.random()<dt*.7){let near=false;for(const id in P){const o=P[id];if(o!==b&&TM!=='team'&&Math.hypot(o.x-b.x,o.y-b.y)<260)near=true}for(const T of G.TC)if(Math.hypot(T.x-b.x,T.y-b.y)<260)near=true;if(near)hLow(b.id)}
   if(G.pp&&!b.bag&&Math.hypot(G.pp.x-b.x,G.pp.y-b.y)<320){let dx=G.pp.x-b.x,dy=G.pp.y-b.y;[dx,dy]=hAvoid(b,dx/300,dy/300);[dx,dy]=steer(b,dx,dy);const l=Math.hypot(dx,dy)||1;return [dx/l*.62,dy/l*.62]}
-  if(HW()){let [dx,dy]=carryBot(b,dt,brain,{home:b=>b.x<1290&&Math.abs(b.y-HC().door.y)>34?[HC().door.x,HC().door.y]:[HC().toi.x-20,HC().toi.y],cage:{x:-9999,y:-9999}});
+  if(HW()){let [dx,dy]=carryBot(b,dt,brain,{home:b=>b.x<1215&&Math.abs(b.y-HC().door.y)>34?[HC().door.x,HC().door.y]:[HC().toi.x-20,HC().toi.y],cage:{x:-9999,y:-9999}});
     if(TM==='team'&&Math.random()<dt*1.5){for(const h of G.H)if((h.k===3||h.k===4)&&Math.hypot(h.x-b.x,h.y-b.y)<CH[b.c].r+80){hostPush(b.id);break}}
     [dx,dy]=hAvoid(b,dx*2,dy*2);const l=Math.hypot(dx,dy);return l<.05?[0,0]:[dx/l*.62,dy/l*.62]}
   if(brain.react<=0){brain.react=.35+Math.random()*.5;let best=null,bd=1e9;for(const g of G.B){const d=Math.hypot(g.x-b.x,g.y-b.y)+Math.random()*120;if(d<bd){bd=d;best=g}}brain.target=best}

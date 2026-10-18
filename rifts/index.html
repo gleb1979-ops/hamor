@@ -854,6 +854,22 @@ function lanternBoom(e){e.dead=true;addFx({type:'ring',x:e.x,y:e.y,r:0,maxR:110,
  for(const p of players)if(!p.down&&Math.hypot(p.x-e.x,p.y-e.y)<92)hurtPlayer(p,15,'boom');
  for(const o of enemies)if(o!==e&&!o.dead&&o.spawn<=0&&Math.hypot(o.x-e.x,o.y-e.y)<92)damageEnemy(o,25,null,(o.x-e.x)*3,(o.y-e.y)*3)}
 // --- drawing new enemies
+// painted melee monsters per world (user's art): frames 0-3 walk, 4 wind-up, 5 strike
+const MO={demon:{cw:200,ch:230,ax:0.417,bh:0.835,g:'#ff2d75'},wolf:{cw:165,ch:230,ax:0.421,bh:0.784,g:'#facc15'},fish:{cw:227,ch:230,ax:0.402,bh:0.739,g:'#5eead4'},imp:{cw:188,ch:230,ax:0.537,bh:0.822,g:'#ff7a1a'}},MOW=['demon','wolf','fish','imp'],STW={0:0,10:0,2:0,1:1,8:1,9:1,4:1,6:1,7:1,5:2,3:3};
+const MOI={};function moImg(n){if(!MOI[n]){const im=new Image();im.src='img/mo_'+n+'.webp?v=1';MOI[n]=im}return MOI[n]}
+function moKind(){return MOW[LV>=0&&CAMP[LV]?CAMP[LV].w:(STW[stageIdx]||0)]}
+function drawMonster(e){const n=moKind(),D=MO[n],im=moImg(n);if(!im.complete||!im.naturalWidth)return false;const c=ctx;
+ const mv=Math.hypot(e.vx||0,e.vy||0)>20,face=Math.cos(e.st==='wind'||e.st==='atk'?(e.dashA||0):(mv?Math.atan2(e.vy,e.vx):(e.dir||0)))>=0?1:-1;
+ let f=mv?Math.floor((e.t+e.phase)*8)%4:Math.floor((e.t+e.phase)*3)%2;if(e.st==='wind')f=4;else if(e.st==='atk')f=5;
+ const H=82/D.bh*(e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1),W=H*D.cw/D.ch;
+ c.fillStyle='rgba(0,0,0,0.42)';c.beginPath();c.ellipse(e.x,e.y,W*0.28,9,0,0,TAU);c.fill();
+ c.save();c.globalCompositeOperation='lighter';glow(c,e.x,e.y-H*0.5,H*0.5,D.g,0.1+0.05*Math.sin(e.t*5+e.phase));c.restore();
+ if(e.st==='wind'){c.strokeStyle=`rgba(255,60,60,${0.35+0.3*Math.sin(time*30)})`;c.lineWidth=3;c.beginPath();c.arc(e.x,e.y-18,70,(e.dashA||0)-1.1,(e.dashA||0)+1.1);c.stroke()}
+ c.save();c.translate(e.x,e.y+2);if(face<0)c.scale(-1,1);c.drawImage(im,f*D.cw,0,D.cw,D.ch,-W*D.ax,-H,W,H);
+ if(e.flash>0){c.globalCompositeOperation='lighter';c.globalAlpha=0.5;c.drawImage(im,f*D.cw,0,D.cw,D.ch,-W*D.ax,-H,W,H)}c.restore();
+ if(e.stun>0){c.fillStyle='#fde68a';for(let i=0;i<3;i++){const a=time*5+i/3*TAU;c.beginPath();c.arc(e.x+Math.cos(a)*16,e.y-H*0.95+Math.sin(a)*4,2.5,0,TAU);c.fill()}}
+ if(e.hp<e.max&&e.spawn<=0){const w=44;c.fillStyle='rgba(0,0,0,0.6)';c.fillRect(e.x-w/2,e.y-H*0.92-8,w,4);c.fillStyle='#ef4444';c.fillRect(e.x-w/2,e.y-H*0.92-8,w*Math.max(0,e.hp/e.max),4)}
+ e.ex=e.x;e.ey=e.y-H*0.6;return true}
 // small melee monsters on hand-made maps: painted creatures (not this stage's mini-boss kinds)
 const ONI_POOL=['goblin','devil','caveman','shaman','viking','boar'];
 function mapOniKind(e){const mini=STAGE_MINI[stageIdx]||[],pool=ONI_POOL.filter(n=>!mini.includes(n)),L=Math.max(0,LV);return pool[(L*2+((e.v||0)%2)*3)%pool.length]}
@@ -871,7 +887,7 @@ function drawMapOni(e){const c=ctx,n=mapOniKind(e);if(!mbImg(n).complete||!mbImg
  e.ex=e.x;e.ey=e.y-50;return true}
 function drawEnemyL1(e){
  const c=ctx,T=e.type;if(T!=='oni'&&T!=='skel'&&T!=='ninja'&&T!=='lantern')return false;
- if(T==='oni'&&S.map&&drawMapOni(e))return true;
+ if(T==='oni'&&(S.map&&(e.v||0)%3===2?drawMapOni(e):drawMonster(e)))return true;
  {const skn=skinStage(e);if(skn!==0)return drawSkin(e,skn)}
  const sc=e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1;const face=Math.cos(e.dir||0)>=0?1:-1,mv=Math.hypot(e.vx||0,e.vy||0)>25;
  c.save();c.translate(e.x,e.y);c.fillStyle='rgba(0,0,0,0.38)';c.beginPath();c.ellipse(0,0,e.r*1.15,e.r*0.42,0,0,TAU);c.fill();c.scale(sc,sc);
@@ -2273,7 +2289,7 @@ const HOME_URL=NET_OK?'../?lang=ru':'';
 if(NET_OK){const rq=new URLSearchParams(location.search).get('room');if(rq&&/^[A-Za-z0-9]{4}$/.test(rq))guestJoin(rq.toUpperCase())}
 let last=performance.now();
 const bPEl=document.getElementById('bP');
-let artT=0;function preloadArt(){try{if(S&&S.map)for(const n of ONI_POOL)mbImg(n);for(const p of players){if(!HSP[p.hero])continue;for(const k of ['i','r1','r2','a','s'].concat(HSP[p.hero].run?[...Array(HSP[p.hero].run).keys()].map(i=>'w'+i):[])){const im=hsImg(p.hero,k,0);if(p.skin&&im.complete&&im.naturalWidth&&!hsImg(p.hero,k,p.skin)){hsImg(p.hero,k,p.skin,1);return}}}
+let artT=0;function preloadArt(){try{moImg(moKind());if(S&&S.map)for(const n of ONI_POOL)mbImg(n);for(const p of players){if(!HSP[p.hero])continue;for(const k of ['i','r1','r2','a','s'].concat(HSP[p.hero].run?[...Array(HSP[p.hero].run).keys()].map(i=>'w'+i):[])){const im=hsImg(p.hero,k,0);if(p.skin&&im.complete&&im.naturalWidth&&!hsImg(p.hero,k,p.skin)){hsImg(p.hero,k,p.skin,1);return}}}
  const k=S&&S.boss&&S.boss.kind,D=BSP[k];if(D&&(state==='play'))for(const ps of ['i','a','f'])if(D[ps])bsImg(k,ps)}catch(e){}}
 function frame(now){const dt=Math.min(0.033,Math.max(0,(now-last)/1000));last=now;if((artT-=dt)<=0){artT=0.3;preloadArt()}pollInput();update(dt);render();if(touch.on){const h=!(state==='play'||state==='gameover'||state==='victory')||pauseOpen;if(bPEl.hidden!==h)bPEl.hidden=h}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);

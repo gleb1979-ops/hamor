@@ -855,17 +855,18 @@ function lanternBoom(e){e.dead=true;addFx({type:'ring',x:e.x,y:e.y,r:0,maxR:110,
  for(const o of enemies)if(o!==e&&!o.dead&&o.spawn<=0&&Math.hypot(o.x-e.x,o.y-e.y)<92)damageEnemy(o,25,null,(o.x-e.x)*3,(o.y-e.y)*3)}
 // --- drawing new enemies
 // painted melee monsters per world (user's art): frames 0-3 walk, 4 wind-up, 5 strike
-const MO={demon:{cw:200,ch:230,ax:0.417,bh:0.835,g:'#ff2d75'},wolf:{cw:165,ch:230,ax:0.421,bh:0.784,g:'#facc15'},fish:{cw:227,ch:230,ax:0.402,bh:0.739,g:'#5eead4'},imp:{cw:188,ch:230,ax:0.537,bh:0.822,g:'#ff7a1a'}},MOW=['demon','wolf','fish','imp'],STW={0:0,10:0,2:0,1:1,8:1,9:1,4:1,6:1,7:1,5:2,3:3};
-const MOI={};function moImg(n){if(!MOI[n]){const im=new Image();im.src='img/mo_'+n+'.webp?v=1';MOI[n]=im}return MOI[n]}
-function moKind(){return MOW[LV>=0&&CAMP[LV]?CAMP[LV].w:(STW[stageIdx]||0)]}
-function drawMonster(e){const n=moKind(),D=MO[n],im=moImg(n);if(!im.complete||!im.naturalWidth)return false;const c=ctx;
+const MO={hound:{cw:273,ch:230,ax:0.418,bh:0.715,g:'#f97316'},lhound:{cw:275,ch:230,ax:0.468,bh:0.738,g:'#ff7a1a'},spider:{cw:313,ch:230,ax:0.481,bh:0.718,g:'#818cf8'},toad:{cw:263,ch:230,ax:0.377,bh:0.705,g:'#a3e635'},raven:{cw:164,ch:230,ax:0.502,bh:0.767,g:'#84cc16',fly:1},garg:{cw:212,ch:230,ax:0.555,bh:0.841,g:'#ff6a00',fly:1},jelly:{cw:241,ch:230,ax:0.436,bh:0.973,g:'#22d3ee',fly:1},cbat:{cw:186,ch:230,ax:0.649,bh:0.803,g:'#e879f9',fly:1},demon:{cw:200,ch:230,ax:0.417,bh:0.835,g:'#ff2d75'},wolf:{cw:165,ch:230,ax:0.421,bh:0.784,g:'#facc15'},fish:{cw:227,ch:230,ax:0.402,bh:0.739,g:'#5eead4'},imp:{cw:188,ch:230,ax:0.537,bh:0.822,g:'#ff7a1a'}},MOW=['demon','wolf','fish','imp'],STW={0:0,10:0,2:0,1:1,8:1,9:1,4:1,6:1,7:1,5:2,3:3};
+const MOB=['spider','hound','toad','lhound'],MOF=['cbat','raven','jelly','garg'];const MOI={};function moImg(n){if(!MOI[n]){const im=new Image();im.src='img/mo_'+n+'.webp?v=1';MOI[n]=im}return MOI[n]}
+function moWorld(){return LV>=0&&CAMP[LV]?CAMP[LV].w:(STW[stageIdx]||0)}function moKind(T){const w=moWorld();return T==='ninja'||T==='grunt'||T==='brute'?MOB[w]:T==='lantern'||T==='shooter'?MOF[w]:MOW[w]}
+function drawMonster(e){const n=moKind(e.type),D=MO[n],im=moImg(n);if(!im.complete||!im.naturalWidth)return false;const c=ctx;
  const mv=Math.hypot(e.vx||0,e.vy||0)>20,face=Math.cos(e.st==='wind'||e.st==='atk'?(e.dashA||0):(mv?Math.atan2(e.vy,e.vx):(e.dir||0)))>=0?1:-1;
- let f=mv?Math.floor((e.t+e.phase)*8)%4:Math.floor((e.t+e.phase)*3)%2;if(e.st==='wind')f=4;else if(e.st==='atk')f=5;
- const H=82/D.bh*(e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1),W=H*D.cw/D.ch;
+ let f=(mv||D.fly)?Math.floor((e.t+e.phase)*(D.fly?9:8))%4:Math.floor((e.t+e.phase)*3)%2;if(e.st==='wind'||e.st==='throwW'||e.st==='cwind'||e.st==='fuse')f=4;else if(e.st==='atk'||e.st==='throw'||e.st==='dash')f=5;
+ const fy=D.fly?16+Math.sin(e.t*3+e.phase)*6:0,SZ=e.type==='brute'?1.35:e.type==='lantern'?0.8:D.fly?0.9:1;
+ const H=SZ*82/D.bh*(e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1),W=H*D.cw/D.ch;
  c.fillStyle='rgba(0,0,0,0.42)';c.beginPath();c.ellipse(e.x,e.y,W*0.28,9,0,0,TAU);c.fill();
  c.save();c.globalCompositeOperation='lighter';glow(c,e.x,e.y-H*0.5,H*0.5,D.g,0.1+0.05*Math.sin(e.t*5+e.phase));c.restore();
  if(e.st==='wind'){c.strokeStyle=`rgba(255,60,60,${0.35+0.3*Math.sin(time*30)})`;c.lineWidth=3;c.beginPath();c.arc(e.x,e.y-18,70,(e.dashA||0)-1.1,(e.dashA||0)+1.1);c.stroke()}
- c.save();c.translate(e.x,e.y+2);if(face<0)c.scale(-1,1);c.drawImage(im,f*D.cw,0,D.cw,D.ch,-W*D.ax,-H,W,H);
+ c.save();c.translate(e.x,e.y+2-fy);if(face<0)c.scale(-1,1);c.drawImage(im,f*D.cw,0,D.cw,D.ch,-W*D.ax,-H,W,H);
  if(e.flash>0){c.globalCompositeOperation='lighter';c.globalAlpha=0.5;c.drawImage(im,f*D.cw,0,D.cw,D.ch,-W*D.ax,-H,W,H)}c.restore();
  if(e.stun>0){c.fillStyle='#fde68a';for(let i=0;i<3;i++){const a=time*5+i/3*TAU;c.beginPath();c.arc(e.x+Math.cos(a)*16,e.y-H*0.95+Math.sin(a)*4,2.5,0,TAU);c.fill()}}
  if(e.hp<e.max&&e.spawn<=0){const w=44;c.fillStyle='rgba(0,0,0,0.6)';c.fillRect(e.x-w/2,e.y-H*0.92-8,w,4);c.fillStyle='#ef4444';c.fillRect(e.x-w/2,e.y-H*0.92-8,w*Math.max(0,e.hp/e.max),4)}
@@ -888,6 +889,7 @@ function drawMapOni(e){const c=ctx,n=mapOniKind(e);if(!mbImg(n).complete||!mbImg
 function drawEnemyL1(e){
  const c=ctx,T=e.type;if(T!=='oni'&&T!=='skel'&&T!=='ninja'&&T!=='lantern')return false;
  if(T==='oni'&&(S.map&&(e.v||0)%3===2?drawMapOni(e):drawMonster(e)))return true;
+ if((T==='ninja'||T==='lantern')&&drawMonster(e))return true;
  {const skn=skinStage(e);if(skn!==0)return drawSkin(e,skn)}
  const sc=e.spawn>0?Math.max(0.2,1-e.spawn/0.7):1;const face=Math.cos(e.dir||0)>=0?1:-1,mv=Math.hypot(e.vx||0,e.vy||0)>25;
  c.save();c.translate(e.x,e.y);c.fillStyle='rgba(0,0,0,0.38)';c.beginPath();c.ellipse(0,0,e.r*1.15,e.r*0.42,0,0,TAU);c.fill();c.scale(sc,sc);
@@ -1820,6 +1822,7 @@ function drawPod(e){
 function drawEnemy(e){
  if(e.type==='pod'){drawPod(e);return}
  if(e.type==='mini'){drawMini(e);return}
+ if((e.type==='grunt'||e.type==='shooter'||e.type==='brute')&&drawMonster(e))return;
  if(drawEnemyL1(e))return;
  const c=ctx;if(e.spawn>0){const k=1-e.spawn/0.7;c.strokeStyle=hexA(S.ecol,1-k*0.5);c.lineWidth=3;c.beginPath();c.ellipse(e.x,e.y,e.r*2*(1-k)+e.r,(e.r*2*(1-k)+e.r)*0.45,0,0,TAU);c.stroke();if(k<0.5)return}
  const sc=e.spawn>0?1-e.spawn/0.7:1;c.save();c.translate(e.x,e.y);c.scale(sc,sc);
@@ -2289,7 +2292,7 @@ const HOME_URL=NET_OK?'../?lang=ru':'';
 if(NET_OK){const rq=new URLSearchParams(location.search).get('room');if(rq&&/^[A-Za-z0-9]{4}$/.test(rq))guestJoin(rq.toUpperCase())}
 let last=performance.now();
 const bPEl=document.getElementById('bP');
-let artT=0;function preloadArt(){try{moImg(moKind());if(S&&S.map)for(const n of ONI_POOL)mbImg(n);for(const p of players){if(!HSP[p.hero])continue;for(const k of ['i','r1','r2','a','s'].concat(HSP[p.hero].run?[...Array(HSP[p.hero].run).keys()].map(i=>'w'+i):[])){const im=hsImg(p.hero,k,0);if(p.skin&&im.complete&&im.naturalWidth&&!hsImg(p.hero,k,p.skin)){hsImg(p.hero,k,p.skin,1);return}}}
+let artT=0;function preloadArt(){try{for(const T of ['oni','ninja','lantern'])moImg(moKind(T));if(S&&S.map)for(const n of ONI_POOL)mbImg(n);for(const p of players){if(!HSP[p.hero])continue;for(const k of ['i','r1','r2','a','s'].concat(HSP[p.hero].run?[...Array(HSP[p.hero].run).keys()].map(i=>'w'+i):[])){const im=hsImg(p.hero,k,0);if(p.skin&&im.complete&&im.naturalWidth&&!hsImg(p.hero,k,p.skin)){hsImg(p.hero,k,p.skin,1);return}}}
  const k=S&&S.boss&&S.boss.kind,D=BSP[k];if(D&&(state==='play'))for(const ps of ['i','a','f'])if(D[ps])bsImg(k,ps)}catch(e){}}
 function frame(now){const dt=Math.min(0.033,Math.max(0,(now-last)/1000));last=now;if((artT-=dt)<=0){artT=0.3;preloadArt()}pollInput();update(dt);render();if(touch.on){const h=!(state==='play'||state==='gameover'||state==='victory')||pauseOpen;if(bPEl.hidden!==h)bPEl.hidden=h}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);

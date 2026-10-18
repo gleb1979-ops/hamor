@@ -604,7 +604,9 @@ function paintSoccer(f){const BEACH=mapOf('soccer')==='beach',M2=SM==='m22'||SM=
   if(M2){f.fillStyle=TCOL[1]+'55';f.fillRect(GL-60,MIDY-150,50,300);f.fillStyle=TCOL[0]+'55';f.fillRect(GX+10,MIDY-150,50,300)}
   f.strokeStyle='rgba(255,255,255,.4)';f.strokeRect(L,Tt,0,0);
 }
+const BALLIMG=new Image();BALLIMG.src='img/ball.webp';const GOALIMG=new Image();GOALIMG.src='img/goal.webp';
 function drawGoal(g,bulge){ // net + posts (drawn over field, under players)
+  if(GOALIMG.complete&&GOALIMG.naturalWidth){const top=MOUTH[0],bot=MOUTH[1],b=bulge||0;g.drawImage(GOALIMG,GX-16,top-24,AW-6-(GX-16)+b,bot-top+48);return}
   const top=MOUTH[0],bot=MOUTH[1],back=AW-18+(bulge||0);
   g.fillStyle='rgba(0,0,0,.18)';g.fillRect(GX,top,back-GX,bot-top);
   g.strokeStyle='rgba(255,255,255,.55)';g.lineWidth=2;
@@ -614,6 +616,7 @@ function drawGoal(g,bulge){ // net + posts (drawn over field, under players)
   g.strokeStyle='#ccc';g.lineWidth=5;g.beginPath();g.moveTo(back,top);g.lineTo(back,bot);g.stroke()}
 function drawBall(g,b){g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(b.x+3,b.y+6,BALL_R,BALL_R*.45,0,0,7);g.fill();
   const lift=b.h||0;g.save();g.translate(b.x,b.y-BALL_R-lift);g.rotate(b.rot||0);
+  if(BALLIMG.complete&&BALLIMG.naturalWidth){g.drawImage(BALLIMG,-BALL_R-2,-BALL_R-2,BALL_R*2+4,BALL_R*2+4);g.restore();return}
   g.fillStyle='#fff';g.beginPath();g.arc(0,0,BALL_R,0,7);g.fill();g.lineWidth=2.5;g.strokeStyle='#2b1b30';g.stroke();
   g.fillStyle='#2b1b30';g.beginPath();for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g.lineTo(Math.cos(a)*6.5,Math.sin(a)*6.5)}g.closePath();g.fill();
   for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g.beginPath();g.arc(Math.cos(a)*15,Math.sin(a)*15,4.2,0,7);g.fill();g.beginPath();g.moveTo(Math.cos(a)*6.5,Math.sin(a)*6.5);g.lineTo(Math.cos(a)*12,Math.sin(a)*12);g.lineWidth=1.8;g.stroke()}
@@ -768,8 +771,8 @@ function drawCageFront(g,t,cx,cy){const x=cx??CAGE.x,y=cy??CAGE.y;
   g.lineWidth=9;for(const by of [y-140,y-62]){g.beginPath();g.moveTo(x-86,by);g.lineTo(x+86,by);g.stroke()}
   rr(g,x-44,y-174,88,30,8);g.fillStyle='#8a5a32';g.fill();g.lineWidth=3;g.strokeStyle=OUT;g.stroke();g.font='900 20px Rubik, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffe08a';g.fillText('JAIL',x,y-159);g.textBaseline='alphabetic'}
 const BGDINER=new Image();BGDINER.src='img/bg_diner.webp';
-const BGSCHOOL=new Image();BGSCHOOL.src='img/bg_school.webp';
-function drawFloor(g){if(LOC==='diner'&&!GM()&&BGDINER.complete&&BGDINER.naturalWidth){g.drawImage(BGDINER,0,0,AW,AH);return}if(LOC==='school'&&!GM()&&BGSCHOOL.complete&&BGSCHOOL.naturalWidth){g.drawImage(BGSCHOOL,0,0,AW,AH);g.save();g.globalAlpha=.88;g.fillStyle='#fff';g.font='700 42px Rubik, Arial, sans-serif';g.textAlign='center';g.textBaseline='middle';g.direction='ltr';g.fillText('2 + 2 = 5 ?',AW/2-110,62);g.strokeStyle='#fff';g.lineWidth=4;g.beginPath();g.arc(AW/2+200,62,30,0,7);g.stroke();g.beginPath();g.arc(AW/2+200,66,17,.3,Math.PI-.3);g.stroke();g.fillRect(AW/2+188,48,6,8);g.fillRect(AW/2+206,48,6,8);g.restore();return}const FK=GM()?LOC+TM+mapOf():LOC==='villain'?LOC+VM:LOC==='train'?LOC+TM+mapOf():LOC;if(!floorCaches[FK]){const fc=floorCaches[FK]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='villain'){if(VM==='space')paintSpace(f);else paintPark(f)}else if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else if(LOC==='snow')paintSnow(f);else if(LOC==='box')paintBox(f);else if(GM())GM().paint(f);else if(LOC==='train')paintTrain(f);else if(LOC==='diner'&&PIX.ready)paintDiner(f);else{
+const BGSCHOOL=new Image();BGSCHOOL.src='img/bg_school.webp';const BGSOC={};for(const k of ['soc1','soc2','socb','socb2']){BGSOC[k]=new Image();BGSOC[k].src='img/bg_'+k+'.webp'}
+function drawFloor(g){if(LOC==='soccer'&&!GM()){const two=SM==='m22'||SM==='m33',bch=mapOf('soccer')==='beach',im=bch?(two?BGSOC.socb2:BGSOC.socb):BGSOC[two?'soc2':'soc1'];if(im&&im.complete&&im.naturalWidth){g.drawImage(im,0,0,AW,AH);return}}if(LOC==='diner'&&!GM()&&BGDINER.complete&&BGDINER.naturalWidth){g.drawImage(BGDINER,0,0,AW,AH);return}if(LOC==='school'&&!GM()&&BGSCHOOL.complete&&BGSCHOOL.naturalWidth){g.drawImage(BGSCHOOL,0,0,AW,AH);g.save();g.globalAlpha=.88;g.fillStyle='#fff';g.font='700 42px Rubik, Arial, sans-serif';g.textAlign='center';g.textBaseline='middle';g.direction='ltr';g.fillText('2 + 2 = 5 ?',AW/2-110,62);g.strokeStyle='#fff';g.lineWidth=4;g.beginPath();g.arc(AW/2+200,62,30,0,7);g.stroke();g.beginPath();g.arc(AW/2+200,66,17,.3,Math.PI-.3);g.stroke();g.fillRect(AW/2+188,48,6,8);g.fillRect(AW/2+206,48,6,8);g.restore();return}const FK=GM()?LOC+TM+mapOf():LOC==='villain'?LOC+VM:LOC==='train'?LOC+TM+mapOf():LOC;if(!floorCaches[FK]){const fc=floorCaches[FK]=document.createElement('canvas');fc.width=AW;fc.height=AH;const f=fc.getContext('2d');if(LOC==='villain'){if(VM==='space')paintSpace(f);else paintPark(f)}else if(LOC==='school')paintSchool(f);else if(LOC==='soccer')paintSoccer(f);else if(LOC==='snow')paintSnow(f);else if(LOC==='box')paintBox(f);else if(GM())GM().paint(f);else if(LOC==='train')paintTrain(f);else if(LOC==='diner'&&PIX.ready)paintDiner(f);else{
   const tile=75;for(let y=0;y<AH;y+=tile)for(let x=0;x<AW;x+=tile){f.fillStyle=((x+y)/tile)%2?'#efe6d6':'#d9cbb3';f.fillRect(x,y,tile,tile)}
   // counter
   f.fillStyle='#7a3b1d';f.fillRect(0,0,AW,TOP-24);f.fillStyle='#a8582c';f.fillRect(0,TOP-44,AW,20);f.fillStyle='#5e2c14';f.fillRect(0,TOP-24,AW,10);

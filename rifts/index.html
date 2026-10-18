@@ -1954,7 +1954,7 @@ function drawPlayWorld(){
  for(const k of pickups)glow(ctx,k.x,k.y-18,k.kind==='weapon'?44:30,k.kind==='heal'?'#4ade80':k.kind==='weapon'?'#fde68a':PW[k.kind].col,0.75);
  drawFX();drawParticles();ctx.globalCompositeOperation='source-over';
  // texts
- ctx.textAlign='center';for(const t of texts){const k=t.t/t.max;ctx.globalAlpha=Math.min(1,k*2.5);ctx.font=`${Math.round(22*t.scale)}px ${FONT_D}`;ctx.lineWidth=4;ctx.strokeStyle='rgba(0,0,0,0.75)';ctx.strokeText(t.s,t.x,t.y);ctx.fillStyle=t.col;ctx.fillText(t.s,t.x,t.y)}ctx.globalAlpha=1;
+ ctx.textAlign='center';for(const t of texts){const k=t.t/t.max;ctx.globalAlpha=Math.min(1,k*2.5);ctx.font=`${Math.round(20*Math.min(1.1,t.scale))}px ${FONT_D}`;ctx.lineWidth=4;ctx.strokeStyle='rgba(0,0,0,0.75)';ctx.strokeText(t.s,t.x,t.y);ctx.fillStyle=t.col;ctx.fillText(t.s,t.x,t.y)}ctx.globalAlpha=1;
  drawAmbient();ctx.drawImage(VIGNETTE,0,0);
 }
 function drawFX(){
@@ -2011,9 +2011,9 @@ function drawHUD(){
 }
 function drawBanner(){
  if(!banner)return;const u=touch.on?1.35:1,Wu=W/u,Hu=H/u;const k=banner.t/banner.max,a=Math.min(1,(1-k)*5,k*3);ctx.setTransform(u,0,0,u,0,0);ctx.globalAlpha=a;ctx.textAlign='center';
- const cy=Hu*0.4;const g=ctx.createLinearGradient(0,cy-80,0,cy+40);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(0.5,'rgba(0,0,0,0.55)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,cy-90,Wu,150);
- const sc=1+(1-Math.min(1,(1-k)*4))*0.15;ctx.save();ctx.translate(Wu/2,cy-6);ctx.scale(sc,sc);ctx.font=`60px ${FONT_D}`;ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillText(banner.big,3,4);const tg=ctx.createLinearGradient(-200,0,200,0);tg.addColorStop(0,'#ffffff');tg.addColorStop(1,S.accent);ctx.fillStyle=tg;ctx.fillText(banner.big,0,0);ctx.restore();
- ctx.font=`600 24px ${FONT_B}`;ctx.fillStyle='#e9e5ff';ctx.fillText(banner.small,Wu/2,cy+34);ctx.globalAlpha=1;
+ const cy=Math.max(118,Hu*0.17);ctx.font=`24px ${FONT_D}`;const bw=Math.max(ctx.measureText(banner.big).width,banner.small?ctx.measureText(banner.small).width*0.62:0)+44;ctx.fillStyle='rgba(8,6,20,0.55)';ctx.beginPath();ctx.roundRect?ctx.roundRect(Wu/2-bw/2,cy-30,bw,banner.small?58:40,14):ctx.rect(Wu/2-bw/2,cy-30,bw,banner.small?58:40);ctx.fill();
+ const sc=1;ctx.save();ctx.translate(Wu/2,cy-2);ctx.scale(sc,sc);ctx.font=`24px ${FONT_D}`;ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillText(banner.big,1,2);const tg=ctx.createLinearGradient(-200,0,200,0);tg.addColorStop(0,'#ffffff');tg.addColorStop(1,S.accent);ctx.fillStyle=tg;ctx.fillText(banner.big,0,0);ctx.restore();
+ ctx.font=`600 15px ${FONT_B}`;ctx.fillStyle='#e9e5ff';ctx.fillText(banner.small,Wu/2,cy+20);ctx.globalAlpha=1;
 }
 function drawTitle(){
  drawMenuWorld();const u=touch.on?1.3:1,Wu=W/u,Hu=H/u;ctx.setTransform(u,0,0,u,0,0);

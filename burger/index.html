@@ -450,7 +450,7 @@ function drawHeroPainted(g,v,t,pim){const m=RUNM[v.c],u=RUNH[v.c]/292;const now=
   if(v.hat){const R=Math.min(hr*u,23);g.save();g.translate(hx*u,0);drawHatAt(g,v.hat,-hy*u-(pk<1?0:lift)+R*1.15,R);g.restore()}
   if(v.stun){g.fillStyle='#ffe14d';g.strokeStyle=OUT;g.lineWidth=1.5;const y=-hy*u-8;for(let i=0;i<3;i++){const a=t*6+i*2.1;star(g,hx*u+Math.cos(a)*24,y+Math.sin(a)*6,6);g.stroke()}}
   g.restore()}
-const BOXM={"donkey":{"top":[330,318,259]},"kid":{"top":[330,327,207]}},BOXI={};for(const k in BOXM){const i=new Image();i.src='img/b_'+k+'.webp';BOXI[k]=i}
+const BOXM={"donkey":{"top":[330,318,259]},"kid":{"top":[330,327,207]},"nerd":{"top":[330,329,205]},"tall":{"top":[330,324,192]},"fat":{"top":[330,327,212]},"girl":{"top":[330,323,214]}},BOXI={};for(const k in BOXM){const i=new Image();i.src='img/b_'+k+'.webp';BOXI[k]=i}
 function drawBoxer(g,v,t,im){const m=BOXM[v.c],u=(RUNH[v.c]||130)/330;let fi=0;const pk=v.id&&PUNCH[v.id]&&!v.stun?(performance.now()-PUNCH[v.id][0])/320:9;if(pk<1)fi=PUNCH[v.id][1]?2:1;
   g.save();g.translate(v.x,v.y);g.fillStyle='rgba(0,0,0,.22)';g.beginPath();g.ellipse(0,0,34,10,0,0,7);g.fill();if(v.face<0)g.scale(-1,1);
   if(v.score<=0){g.rotate(-Math.PI/2*.92);g.translate(-40,30)}else if(v.stun)g.rotate(Math.sin(t*9)*.09);else{const b=v.moving?Math.abs(Math.sin(t*9))*4:Math.sin(t*3+(v.x||0)*.01)*1.5;g.translate(0,-b)}

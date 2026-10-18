@@ -2529,7 +2529,8 @@ function bkInMud(x,y){for(const q of bkObs()){if(q.k!=='mud'&&q.k!=='puddle')con
 function bkHopH(b,now){const u=b.hopU||0;if(u<=now)return 0;const d=b.hopD||650,k=1-(u-now)/d;return Math.sin(clamp(k,0,1)*Math.PI)*(b.hopS||48)}
 function bkWater(x,y){y=BKM(y);return y>BK_WY0&&y<BK_WY1&&!BK_BR.some(([a,b])=>x>a+14&&x<b-14)}
 // fwd: stick toward the finish (up the screen); side: left/right
-function bkRide(b,side,fwd,dt,fin){const now=performance.now(),hop=bkHopH(b,now)>6;let tv=(b.hat==='cap'?236:224)*(1+.5*clamp(fwd,-1,1));const off0=bkOff(b.y),offr=!fin&&(b.x<BK_X0||b.x>BK_X1);if(offr){tv*=.55;side+=Math.sin(now/70)*.35}
+function bkCatch(b){try{const L=(isHost&&G&&G.P?Object.values(G.P):Object.values(view||{})).filter(o=>o&&typeof o.y==='number');if(L.length<2)return 1;let ld=1e9;for(const o of L)if(o.y<ld)ld=o.y;const gap=b.y-ld;return 1+clamp((gap-500)/2000,0,1)*.15}catch(e){return 1}}
+function bkRide(b,side,fwd,dt,fin){const now=performance.now(),hop=bkHopH(b,now)>6;let tv=(b.hat==='cap'?236:224)*(1+.5*clamp(fwd,-1,1))*bkCatch(b);const off0=bkOff(b.y),offr=!fin&&(b.x<BK_X0||b.x>BK_X1);if(offr){tv*=.55;side+=Math.sin(now/70)*.35}
   if(fin){tv=BKM(b.y)<BK_POND+60?150:0;side=0}let wet=false,mud=false,hit=null,poo=false;
   if(!fin){for(const q of bkObs()){const ddx=b.x-q.x,ddy=b.y-q.y;if(Math.abs(ddy)>140)continue;
       if(bkIsPoop(q)){if(!hop&&(ddx*ddx)/(q.r*q.r*1.6)+(ddy*ddy)/(q.r*q.r)<1)poo=true;continue}

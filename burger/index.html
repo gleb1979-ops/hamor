@@ -448,7 +448,9 @@ function drawHeroBase(g,v,t){if(v.c==='donkey'&&v.id&&ACT[v.id]&&LOC!=='box'){co
     if(ext>.5){g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=3;for(let i=-1;i<=1;i++){g.beginPath();g.moveTo(hx-26-ext*10,hy+i*9);g.lineTo(hx-12,hy+i*9);g.stroke()}g.fillStyle='#ffe14d';star(g,hx+26,hy-6,9*ext);g.fill()}}}
   if(v.stun){g.fillStyle='#ffe14d';g.strokeStyle=OUT;g.lineWidth=1.5;const y=headTop(v.c,v.hat)-8;for(let i=0;i<3;i++){const a=t*6+i*2.1;star(g,Math.cos(a)*24,y+Math.sin(a)*6,6);g.stroke()}}
   g.restore()}
-function charThumb(c,hat){const cv=document.createElement('canvas');cv.width=144;cv.height=168;const g=cv.getContext('2d');g.translate(72,162);const s=Math.min(1.05,150/(-headTop(c,hat)+8));g.scale(s,s);paintChar(g,c,bxHat(hat),0,false);return cv}
+const PORT={},PORTS=['girl','fat','tall','nerd','donkey','kid'];function portImg(c){if(!PORT[c]){const i=new Image();i.src='img/p_'+c+'.webp';PORT[c]=i}return PORT[c]}PORTS.forEach(portImg);
+function charThumb(c,hat){if(!hat&&PORTS.includes(c)){const cv=document.createElement('canvas');cv.width=288;cv.height=336;const g=cv.getContext('2d'),im=portImg(c),dr=()=>{g.clearRect(0,0,288,336);const s=Math.min(320/im.naturalHeight,280/im.naturalWidth),w=im.naturalWidth*s,h=im.naturalHeight*s;g.drawImage(im,(288-w)/2,330-h,w,h)};if(im.complete&&im.naturalWidth)dr();else{im.addEventListener('load',dr);im.addEventListener('error',()=>{g.setTransform(2,0,0,2,0,0);g.translate(72,162);const s=Math.min(1.05,150/(-headTop(c,hat)+8));g.scale(s,s);paintChar(g,c,null,0,false)})}return cv}return charThumbP(c,hat)}
+function charThumbP(c,hat){const cv=document.createElement('canvas');cv.width=144;cv.height=168;const g=cv.getContext('2d');g.translate(72,162);const s=Math.min(1.05,150/(-headTop(c,hat)+8));g.scale(s,s);paintChar(g,c,bxHat(hat),0,false);return cv}
 
 const burgerSprite=(()=>{const cv=document.createElement('canvas');cv.width=cv.height=96;const g=cv.getContext('2d');
   g.fillStyle='#d98c3a';g.beginPath();g.roundRect?g.roundRect(14,62,68,16,8):g.rect(14,62,68,16);g.fill();
@@ -887,7 +889,7 @@ function home(){redraw=home;if(!navNm){navNm=true;if(NAV.get('nm'))me.name=NAV.g
   app.innerHTML=`${anyJ?'':'<div class="row" id="heroes"></div>'}<h1>${anyJ?'🔑 '+T('joinRoom'):T('mt')[FIXED]}</h1><p>${anyJ?T('joinRoomP'):T('mtag')[FIXED]}</p>${joinCode?`<div class="code">${esc(joinCode)}</div><div id="appb"></div>`:''}
   <input id="nm" maxlength="14" placeholder="${T('name')}" value="${esc(me.name)}" autocomplete="off">
   ${medals()?`<p class="status" style="color:var(--mustard);font-size:16px">${T('medalHave')(medals())}</p>`:''}<button id="go">${joinCode?T('join'):T('create')}</button>${joinCode?`<button class="ghost" id="own">${T('createOwn')}</button>`:''}<p class="status err" id="msg"></p><a class="btn ghost" href="../?lang=${lang}" style="font-size:15px;padding:10px 20px">${T('allGames')}</a>`;app.insertAdjacentHTML('beforeend',riftsPromo());
-  const h=document.getElementById('heroes');if(h)CAST().forEach(c=>{const cv=charThumb(c);cv.style.width='54px';cv.style.height='63px';h.appendChild(cv)});
+  const h=document.getElementById('heroes');if(h){h.style.gap='6px';h.style.flexWrap='nowrap'}if(h)CAST().forEach(c=>{const cv=charThumb(c);cv.style.width='48px';cv.style.height='56px';h.appendChild(cv)});
   const nm=document.getElementById('nm');autoStart('loc='+FIXED+'&');
   const ob=document.getElementById('own');if(ob)ob.onclick=()=>{joinCode='';history.replaceState(null,'',location.pathname+'?lang='+lang);home()};
   if(params.get('create')==='1'&&!autoCreated&&me.name){autoCreated=true;history.replaceState(null,'',location.pathname+'?lang='+lang);setTimeout(()=>document.getElementById('go')?.click(),60)}

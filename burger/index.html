@@ -1714,7 +1714,9 @@ function paintDino(g,f,st,col){const walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=w
   g.strokeStyle=OUT;g.lineWidth=3;g.beginPath();g.moveTo(31,-154);g.lineTo(52,-150+(st===1?6:0));g.stroke();g.fillStyle=OUT;g.beginPath();g.arc(70,-130,2.5,0,7);g.fill();
   g.strokeStyle=OUT;g.lineWidth=8;g.lineCap='round';g.beginPath();g.moveTo(26,-84);g.lineTo(41,-72);g.stroke();g.strokeStyle=C;g.lineWidth=4;g.stroke();
   if(col){g.beginPath();g.ellipse(14,-106,17,8,.5,0,7);sh(g,col,2.5);g.fillStyle='#ffc531';g.beginPath();g.arc(21,-99,4,0,7);g.fill()}g.restore()}
-GART.dino=(g,tv,t)=>drawGuardSprite(g,tv,t,'dino',paintDino,-170,260,220,200);
+const PNPC={dino:{u:.6,m:185},ghost:{u:.46,m:165,fl:1},hog:{u:.5,m:130}},PNI={};for(const k in PNPC){const i=new Image();i.src='img/n_'+k+'.webp';PNI[k]=i}
+function drawPNPC(g,tv,t,k,alpha){const im=PNI[k];if(!im||!im.complete||!im.naturalWidth)return false;const P=PNPC[k],u=P.u,fi=tv.st===2?6:tv.st===1?5:tv.moving===false?0:1+Math.floor(t*(k==='ghost'?5:8))%4;g.save();g.translate(tv.x,tv.y);if(alpha!=null)g.globalAlpha=alpha;if(P.fl)g.translate(0,-10-Math.sin(t*3+tv.x*.01)*6);if(Math.cos(tv.a||0)<0)g.scale(-1,1);g.drawImage(im,fi*400,0,400,360,-200*u,-350*u,400*u,360*u);g.restore();if(alpha==null||alpha>.4)guardMark(g,tv.x,tv.y-P.m,tv.st===1?1:tv.st===2?2:0);return true}
+GART.dino=(g,tv,t)=>{if(!drawPNPC(g,tv,t,'dino'))drawGuardSprite(g,tv,t,'dino',paintDino,-170,260,220,200)};
 function drawPDino(g,v,t){const f=v.moving?1+Math.floor((t*11)%6):0,col=CH[v.c].col;g.save();g.translate(v.x,v.y);if(v.face<0)g.scale(-1,1);g.drawImage(artSprite('dino'+col,0,f,(gg,ff,ss)=>paintDino(gg,ff,ss,col),260,220,200),-130,-200,260,220);g.restore()}
 function drawIce(g,v){const top=headTop(v.c,v.hat);g.save();g.globalAlpha=.5;rr(g,v.x-46,v.y+top-12,92,-top+20,18);g.fillStyle='#bfe9ff';g.fill();g.globalAlpha=.95;g.lineWidth=3;g.strokeStyle='#ffffff';g.stroke();g.globalAlpha=.75;g.fillStyle='#fff';g.fillRect(v.x-32,v.y+top+6,8,46);g.fillRect(v.x-18,v.y+top+6,4,22);g.restore()}
 function drawBone(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='rgba(0,0,0,.2)';g.beginPath();g.ellipse(2,16,24,6,0,0,7);g.fill();g.rotate(-.35);g.fillStyle='#f4efe0';g.strokeStyle=OUT;g.lineWidth=3;
@@ -1790,7 +1792,7 @@ function paintHog(g,f,st){const walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0,step=walk?M
   g.beginPath();g.ellipse(24,-28,22,18,0,0,7);sh(g,'#e8c9a0',3);g.fillStyle=OUT;g.beginPath();g.arc(45,-30,5,0,7);g.fill();
   g.beginPath();g.ellipse(27,-36,4.5,5.5,0,0,7);sh(g,'#fff',1.5);g.fillStyle=OUT;g.beginPath();g.arc(28.5,-35,2.6,0,7);g.fill();
   if(st===1){g.strokeStyle=OUT;g.lineWidth=2.5;g.beginPath();g.moveTo(19,-46);g.lineTo(34,-42);g.stroke()}g.strokeStyle=OUT;g.lineWidth=2;g.beginPath();g.arc(33,-22,6,.2,1.6);g.stroke()}
-GART.hog=(g,tv,t)=>drawGuardSprite(g,tv,t,'hog',paintHog,-90,150,120,110);
+GART.hog=(g,tv,t)=>{if(!drawPNPC(g,tv,t,'hog'))drawGuardSprite(g,tv,t,'hog',paintHog,-90,150,120,110)};
 function drawBalloons(g,v,t){const n=Math.max(0,v.score|0);if(!n)return;const top=v.y+headTop(v.c,v.hat)-30,hx=v.x-(v.face||1)*16,hy=v.y-72,col=CH[v.c].col;
   for(let i=0;i<n;i++){const off=(i-(n-1)/2)*28,bx=v.x-(v.face||1)*12+off+Math.sin(t*2+i)*3,by=top-34-Math.abs(off)*.25+Math.cos(t*2.4+i)*3;
     g.strokeStyle='rgba(60,40,60,.65)';g.lineWidth=1.6;g.beginPath();g.moveTo(hx,hy);g.quadraticCurveTo((hx+bx)/2+6,(hy+by)/2+10,bx,by+22);g.stroke();
@@ -1861,7 +1863,7 @@ function drawGhostShape(g,x,y,t,a,face,bow){if(a<=.02)return;g.save();g.globalAl
   g.fillStyle='#fff';g.beginPath();g.arc(-8,-84,2.5,0,7);g.arc(17,-84,2.5,0,7);g.fill();
   if(bow){g.fillStyle=bow;g.beginPath();g.moveTo(-6,-126);g.lineTo(-24,-140);g.lineTo(-24,-114);g.closePath();g.moveTo(6,-126);g.lineTo(24,-140);g.lineTo(24,-114);g.closePath();g.fill();g.strokeStyle='#2b1b30';g.lineWidth=2;g.stroke();g.beginPath();g.arc(0,-126,5,0,7);g.fill()}g.restore()}
 function ghostAlpha(x,y){if(!mine||!view[me.id])return .5;let d=1e9;for(const id in view){const v=view[id];if(v.bag===1)continue;d=Math.min(d,Math.hypot(v.x-x,v.y-y))}return clamp((240-d)/120,0,1)}
-GART.ghost=(g,tv,t)=>{let a=ghostAlpha(tv.x,tv.y);if(tv.st===2)a=Math.min(a,.3);drawGhostShape(g,tv.x,tv.y,t,a,Math.cos(tv.a)<0?-1:1);if(a>.4)guardMark(g,tv.x,tv.y-160,tv.st===1?1:tv.st===2?2:0)};
+GART.ghost=(g,tv,t)=>{let a=ghostAlpha(tv.x,tv.y);if(tv.st===2)a=Math.min(a,.3);if(drawPNPC(g,tv,t,'ghost',a))return;drawGhostShape(g,tv.x,tv.y,t,a,Math.cos(tv.a)<0?-1:1);if(a>.4)guardMark(g,tv.x,tv.y-160,tv.st===1?1:tv.st===2?2:0)};
 function drawCandle(g,x,y,t){g.fillStyle='rgba(0,0,0,.2)';g.beginPath();g.ellipse(x,y+2,16,5,0,0,7);g.fill();rr(g,x-14,y-6,28,8,3);sh(g,'#c9a24a',2);rr(g,x-7,y-40,14,36,3);sh(g,'#fff6dc',2.5);g.strokeStyle=OUT;g.lineWidth=2;g.beginPath();g.moveTo(x,y-40);g.lineTo(x,y-46);g.stroke();
   const fl=Math.sin(t*12+x)*1.5;g.fillStyle='#ffb02e';g.beginPath();g.ellipse(x+fl*.3,y-54,6,11,0,0,7);g.fill();g.fillStyle='#fff3a0';g.beginPath();g.ellipse(x+fl*.3,y-52,3,6,0,0,7);g.fill()}
 function paintGhostMap(f){const M=mapOf('ghost'),C=GHMAP[M];

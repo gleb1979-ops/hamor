@@ -334,6 +334,7 @@ setInterval(()=>{if(isHost&&client)send({t:'hb'})},3000);
 home();
 })();
 </script>
-<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));addEventListener('contextmenu',e=>{if(!e.target.closest('a,input,textarea'))e.preventDefault()});
+</script>
 </body>
 </html>

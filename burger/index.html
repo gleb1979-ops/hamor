@@ -2173,7 +2173,7 @@ GMS.sniper={icons:['🎯','💣','snGren'],paint:paintSniper,maps:['city','fores
   state(){return TM==='team'?{s:G.ts,g:G.goal}:{}},apply(x){gmV=x}};
 addEventListener('pointermove',e=>{if(LOC!=='sniper'||phase!=='play'||e.pointerType!=='mouse')return;const r=cv.getBoundingClientRect();snA.x=clamp((e.clientX-r.left-OX)/SC,30,AW-30);snA.y=clamp((e.clientY-r.top-OY)/SC,TOP+6,AH-14);if(mine&&mine.stun<=0)mine.face=snA.x<mine.x?-1:1});
 addEventListener('pointerdown',e=>{if(LOC!=='sniper'||phase!=='play'||e.pointerType!=='mouse'||e.target.closest('button,#push,#low,a,input'))return;if(e.button===2)doLowLocal();else if(e.button===0)doPushLocal()});
-addEventListener('contextmenu',e=>{if(LOC==='sniper'&&phase==='play')e.preventDefault()});
+addEventListener('contextmenu',e=>{if(phase==='play'&&!e.target.closest('a,input,textarea'))e.preventDefault()});addEventListener('pointerdown',e=>{if(LOC==='sniper'||phase!=='play'||e.pointerType!=='mouse'||e.button!==2||e.target.closest('button,#push,#low,a,input'))return;e.preventDefault();doPushLocal()});
 
 
 /* ================= Night Race ================= */

@@ -52,10 +52,11 @@ const SFX={hit(){noise(.12,900,.5)},heavy(){noise(.22,500,.7);tone(90,.2,'sine',
 
 /* ---------- data ---------- */
 const HEROES=[
- {id:'star',name:'Старший',desc:'Кожанка, кепка. Сильный удар',hp:110,spd:205,pow:1.15,rate:1,jacket:'#3a2a22',pants:'#22252e',cap:'#2b2b30',hair:'#3a2616',skin:'#e7b48c',acc:'#8a6a3a'},
- {id:'shust',name:'Шустрый',desc:'Спортивка. Быстрый, подсечки',hp:90,spd:250,pow:.9,rate:1.25,jacket:'#1f3f8f',pants:'#1f3f8f',stripe:'#f2f2f2',hair:'#2a1a10',skin:'#e9bd96'},
- {id:'zdor',name:'Здоровый',desc:'Тельняшка. Медленный, крепкий',hp:150,spd:170,pow:1.35,rate:.8,jacket:'#e8e8ee',vest:1,pants:'#2c2f3a',hair:'#6a4a2a',skin:'#dfa47e',big:1},
- {id:'skor',name:'Скорлупа',desc:'Мелкий в огромной шапке. Юркий',hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1}];
+ {id:'star',name:'Старший',desc:'Ушанка. Сильный удар',hp:110,spd:205,pow:1.15,rate:1,jacket:'#3a2a22',pants:'#22252e',cap:'#2b2b30',hair:'#3a2616',skin:'#e7b48c',acc:'#8a6a3a'},
+ {id:'shust',name:'Шустрый',desc:'Шапка, спортивка. Быстрый',hp:90,spd:250,pow:.9,rate:1.25,jacket:'#1f3f8f',pants:'#1f3f8f',stripe:'#f2f2f2',hair:'#2a1a10',skin:'#e9bd96'},
+ {id:'zdor',name:'Здоровый',desc:'Лысый. Медленный, крепкий',hp:150,spd:170,pow:1.35,rate:.8,jacket:'#e8e8ee',vest:1,pants:'#2c2f3a',hair:'#6a4a2a',skin:'#dfa47e',big:1},
+ {id:'skor',name:'Скорлупа',desc:'Кудрявый мелкий. Юркий',hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1}];
+const PZMAP=[1,0,2,3],PZTOP0=[47,58,89,98],PZI=[],PZTOP=[];for(let h=0;h<4;h++){const i=new Image();i.src='img/pz'+PZMAP[h]+'.webp';PZI[h]=i;PZTOP[h]=PZTOP0[PZMAP[h]];i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
 const ENEMY_COL=['#4a6a2a','#5a2a6a','#6a4a1a','#2a5a6a'];
 const WEAPONS={
  fist:{name:'Кулаки',dmg:7,range:58,cd:.32,knock:120,dur:0},
@@ -107,10 +108,23 @@ function drawObst(g,o){const {x,y,w,h}=o;g.save();g.fillStyle='rgba(0,0,0,.35)';
 
 /* ---------- fighter drawing ---------- */
 function drawFighter(g,f,t){const H0=HEROES[f.hero],big=H0.big?1.15:H0.small?.86:1;g.save();g.translate(f.x,f.y);
- g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(0,0,34*big,9,0,0,TAU);g.fill();
+ g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(0,0,34*big,9,0,0,TAU);g.fill();if(!f.noHud&&f.state!=='ko'){g.strokeStyle=!f.bot?'#5ad05a':(f.ally?'#4a8aff':'#e0303a');g.lineWidth=3;g.beginPath();g.ellipse(0,0,36*big,10,0,0,TAU);g.stroke()}
  const zz=f.z||0;if(f.onBoard&&f.state!=='down'&&f.state!=='ko'){drawBoard(g,f,zz);g.translate(0,-zz-10)}
  if(f.state==='down'||f.state==='ko'){g.rotate(f.face*Math.PI/2*Math.min(1,(f.downT||0)*6));g.translate(f.face*10,-14)}
  g.scale(f.face*big,big);
+ const SP=PZI[f.hero];
+ if(SP&&SP.complete&&SP.naturalWidth){const top=PZTOP[f.hero],u=150/(350-top);
+  const walking=f.state==='walk'&&!f.onBoard,fi=f.air>0?4:f.kickT>0?2:f.atkT>0?3:walking?((f.anim*7|0)%2?1:0):0;
+  g.save();if(f.state==='hurt'&&f.hurtT>.12)g.translate(-6,0);g.drawImage(SP,fi*400,0,400,360,-200*u,-350*u,400*u,360*u);
+  if(f.hurtT>.1){g.globalCompositeOperation='source-atop';g.fillStyle='rgba(255,40,40,.35)';g.fillRect(-120,-170,240,180);g.globalCompositeOperation='source-over'}
+  const dmg=1-f.hp/f.max;if(BLOOD&&dmg>.45&&f.state!=='ko'){g.fillStyle='#9a0e16';g.beginPath();g.arc(14,-118,3.5,0,TAU);g.fill();g.fillRect(12,-114,3,9)}
+  if(f.weapon){const w=WEAPONS[f.weapon],atk=f.atkT>0?f.atkT/f.atkDur:0;const hx=fi===3?62:fi===2?30:34,hy=fi===3?-88:-78;g.translate(hx,hy);
+   if(w.len){g.rotate(f.atkT>0?(1-atk)*2.4-2.2:-1.2);if(w.chain){g.strokeStyle=w.col;g.lineWidth=3;g.setLineDash([5,3]);g.beginPath();g.moveTo(0,0);g.quadraticCurveTo(w.len*.5,18*Math.sin(t*20),w.len,0);g.stroke();g.setLineDash([])}else{g.strokeStyle='#0d0b10';g.lineWidth=w.w+4;g.beginPath();g.moveTo(-6,0);g.lineTo(w.len,0);g.stroke();g.strokeStyle=w.col;g.lineWidth=w.w;g.beginPath();g.moveTo(-6,0);g.lineTo(w.len,0);g.stroke();if(BLOOD&&f.bloody){g.strokeStyle='#8a0c14';g.lineWidth=w.w-1;g.beginPath();g.moveTo(w.len*.6,0);g.lineTo(w.len,0);g.stroke()}}}
+   else if(w.gun){g.fillStyle=w.col;g.fillRect(0,-5,26,9);g.fillRect(0,0,8,14);if(f.flash>0){g.fillStyle='#ffe28a';g.beginPath();g.arc(32,-1,9,0,TAU);g.fill()}}
+   else if(f.weapon==='knux'){g.fillStyle=w.col;g.fillRect(-7,-4,14,7)}
+   else if(w.stab){g.rotate(f.atkT>0?-.1:-.6);drawStab(g,f.weapon,f.bloody)}}
+  g.restore()}
+ else{
  const walk=f.onBoard?0:(f.state==='walk'?Math.sin(f.anim*12):0),hurt=f.state==='hurt';
  const jacket=f.team!=null&&f.team!==0&&f.bot&&!f.ally?ENEMY_COL[f.idx%4]:H0.jacket;
  // legs
@@ -154,6 +168,7 @@ function drawFighter(g,f,t){const H0=HEROES[f.hero],big=H0.big?1.15:H0.small?.86
  g.restore();
  if(f.kickT>0){g.strokeStyle=H0.pants;g.lineWidth=13;g.beginPath();g.moveTo(6,-50);g.lineTo(42,-40);g.stroke();g.fillStyle='#141416';g.beginPath();g.ellipse(46,-40,10,6,0,0,TAU);g.fill()}
  if(hurt&&f.hurtT>.1){g.globalCompositeOperation='lighter';g.fillStyle='rgba(255,60,60,.25)';g.fillRect(-26,-150,52,150);g.globalCompositeOperation='source-over'}
+ }
  g.restore();
  // name + hp
  if(f.state!=='ko'&&!f.noHud){const y=f.y-170*big;g.fillStyle='rgba(0,0,0,.55)';g.fillRect(f.x-30,y,60,7);g.fillStyle=f.hp/f.max>.4?(f.bot?'#d8a040':'#5ad05a'):'#e0303a';g.fillRect(f.x-30,y,60*Math.max(0,f.hp/f.max),7);

@@ -115,12 +115,12 @@ function icon(t){g.save();g.scale(2.2,2.2);pizza(0,40,80,t,1);E.r3Body(g,'ratp',
 const caps=[[.3,5.4,'c1'],[5.6,10.9,'c2'],[11.1,14.9,'c3'],[15.1,18.9,'c4'],[19.1,22.9,'c5'],[23.1,26.4,'c6']];
 return {len:h.LEN,endAt:T5,render:t=>h.render(t,scenes,caps,icon,[T1,11,T3,T4,T5])}};
 (window.EPISODE_TXT=window.EPISODE_TXT||{}).rifts3={
- ru:{c1:'Мокрые после пруда… и тут открылся разлом! 🌀',c2:'Ящики «?» — резиновая курица и сковородка!',c3:'Проводники кидаются чемоданами!',c4:'Ослик лягнул Главного проводника… 👖',c5:'Крысиный Король на пицце и полчища крыс! 🐀',c6:'Мир, дружба, пицца! 🍕',
+ ru:{c1:'Дракон утащил всех в воду… а там разлом! 🌀',c2:'Ящики «?» — резиновая курица и сковородка!',c3:'Проводники кидаются чемоданами!',c4:'Ослик лягнул Главного проводника… 👖',c5:'Крысиный Король на пицце и полчища крыс! 🐀',c6:'Мир, дружба, пицца! 🍕',
   rift:'РАЗЛОМ!',wet:'БРР! МОКРЫЕ!',aaa:'А-А-А-А!',qbox:'?!',bong:'БОНГ!',squeak:'ПИ-И-И!',mega:'МЕГА-ДЕДУЛЯ!',fuu:'ФУ-У-У!',fart:'ПУ-У-УК!',tickets:'БИЛЕТИКИ!',ouch:'ОЙ-ОЙ!',ia:'И-А!',pants:'МОИ ШТАНЫ!',haha:'ХА-ХА-ХА!',king:'Я — КОРОЛЬ!',rats:'ПИ-ПИ-ПИ!',nyam:'НЯМ!',peace:'МИР? ПИЦЦА!',tease:'ТРИ РАЗЛОМА',
-  next:'Продолжение следует… 🌀',tag:'🌀 Серия 18 · Три разлома: Мини',title:'Три разлома',cta:'Играй с друзьями — бесплатно, без скачивания!',url:'games.tagshim.com'},
- en:{c1:'Still wet from the pond… and a rift opens! 🌀',c2:'“?” crates — a rubber chicken and a frying pan!',c3:'The train guards throw suitcases!',c4:'The Donkey kicked the Chief Conductor… 👖',c5:'The Rat King on a pizza with a swarm of rats! 🐀',c6:'Peace, friendship, pizza! 🍕',
+  next:'Продолжение следует… 🌀',tag:'🌀 Серия 19 · Три разлома: Мини',title:'Три разлома',cta:'Играй с друзьями — бесплатно, без скачивания!',url:'games.tagshim.com'},
+ en:{c1:'The dragon dragged us under… into a rift! 🌀',c2:'“?” crates — a rubber chicken and a frying pan!',c3:'The train guards throw suitcases!',c4:'The Donkey kicked the Chief Conductor… 👖',c5:'The Rat King on a pizza with a swarm of rats! 🐀',c6:'Peace, friendship, pizza! 🍕',
   rift:'A RIFT!',wet:'BRR! SOAKED!',aaa:'AAAAH!',qbox:'?!',bong:'BONG!',squeak:'SQUEEEAK!',mega:'MEGA-GRANDPA!',fuu:'EWWW!',fart:'PFFFT!',tickets:'TICKETS!',ouch:'OUCH!',ia:'HEE-HAW!',pants:'MY PANTS!',haha:'HA-HA-HA!',king:'I AM THE KING!',rats:'SQUEAK-SQUEAK!',nyam:'YUM!',peace:'PEACE? PIZZA!',tease:'THREE RIFTS',
-  next:'To be continued… 🌀',tag:'🌀 Episode 18 · Three Rifts: Mini',title:'Three Rifts',cta:'Play with friends — free, no download!',url:'games.tagshim.com'},
- he:{c1:'רטובים מהבריכה… ופתאום נפתח סדק! 🌀',c2:'ארגזי «?» — תרנגולת גומי ומחבת!',c3:'הכרטיסנים זורקים מזוודות!',c4:'החמור בעט בכרטיסן הראשי… 👖',c5:'מלך העכברושים על פיצה ועדת עכברושים! 🐀',c6:'שלום, חברות, פיצה! 🍕',
+  next:'To be continued… 🌀',tag:'🌀 Episode 19 · Three Rifts: Mini',title:'Three Rifts',cta:'Play with friends — free, no download!',url:'games.tagshim.com'},
+ he:{c1:'הדרקון משך אותנו למים… ושם נפתח סדק! 🌀',c2:'ארגזי «?» — תרנגולת גומי ומחבת!',c3:'הכרטיסנים זורקים מזוודות!',c4:'החמור בעט בכרטיסן הראשי… 👖',c5:'מלך העכברושים על פיצה ועדת עכברושים! 🐀',c6:'שלום, חברות, פיצה! 🍕',
   rift:'סדק!',wet:'ברר! רטובים!',aaa:'אההה!',qbox:'?!',bong:'בוֹנג!',squeak:'צִיִיק!',mega:'מגה-סבא!',fuu:'איכס!',fart:'פּוּק!',tickets:'כרטיסים!',ouch:'אוי-אוי!',ia:'אִי-אָה!',pants:'המכנסיים שלי!',haha:'חה-חה-חה!',king:'אני המלך!',rats:'צִיף-צִיף!',nyam:'יאמי!',peace:'שלום? פיצה!',tease:'שלושה סדקים',
-  next:'המשך יבוא… 🌀',tag:'🌀 פרק 18 · שלושה סדקים: מיני',title:'שלושה סדקים',cta:'שחקו עם חברים — בחינם, בלי הורדה!',url:'games.tagshim.com'}};
+  next:'המשך יבוא… 🌀',tag:'🌀 פרק 19 · שלושה סדקים: מיני',title:'שלושה סדקים',cta:'שחקו עם חברים — בחינם, בלי הורדה!',url:'games.tagshim.com'}};

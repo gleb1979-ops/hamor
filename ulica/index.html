@@ -76,7 +76,7 @@ const bg=document.createElement('canvas');bg.width=W;bg.height=H;
 const decal=document.createElement('canvas');decal.width=W;decal.height=H;const dctx=decal.getContext('2d');
 const OBST_F=[{x:250,y:440,w:150,h:46,k:'car'},{x:1020,y:560,w:60,h:30,k:'barrel'},{x:640,y:395,w:70,h:24,k:'bench'}];
 const OBST_S=[{x:1120,y:420,w:60,h:30,k:'barrel'}],RAMPS=[{x:330,y:470,w:110,h:56},{x:780,y:590,w:110,h:56}],HOLES=[{x:600,y:430,r:30},{x:1000,y:620,r:30}];
-let OBST=OBST_F;
+let OBST=OBST_F;const SCROLL=300,BIKE_T=60;const ride=()=>mode==='skate'||mode==='bike';function rampsNow(){return mode==='bike'?G.RM:RAMPS}function holesNow(){return mode==='bike'?G.HL:HOLES}
 function paintBG(){const g=bg.getContext('2d');
  const sk=g.createLinearGradient(0,0,0,260);sk.addColorStop(0,'#05040a');sk.addColorStop(1,'#1d1626');g.fillStyle=sk;g.fillRect(0,0,W,H);
  g.fillStyle='#e8e0c0';g.beginPath();g.arc(1110,70,26,0,TAU);g.fill();
@@ -100,6 +100,14 @@ function paintBG(){const g=bg.getContext('2d');
 function drawRamp(g,r){g.save();g.fillStyle='rgba(0,0,0,.35)';g.fillRect(r.x+6,r.y+r.h-6,r.w,12);g.fillStyle='#6a5a48';g.beginPath();g.moveTo(r.x,r.y+r.h);g.lineTo(r.x+r.w,r.y+r.h);g.lineTo(r.x+r.w,r.y+6);g.closePath();g.fill();g.fillStyle='#8a7860';g.beginPath();g.moveTo(r.x,r.y+r.h);g.lineTo(r.x+r.w,r.y+6);g.lineTo(r.x+r.w,r.y+16);g.lineTo(r.x+8,r.y+r.h);g.closePath();g.fill();g.strokeStyle='#2a2018';g.lineWidth=3;g.strokeRect(r.x+r.w-6,r.y+6,6,r.h-6);g.fillStyle='#e8b23a';g.font='bold 12px sans-serif';g.fillText('▲',r.x+r.w-22,r.y+r.h-6);g.restore()}
 function drawHole(g,h){g.save();g.fillStyle='#0a0a0c';g.beginPath();g.ellipse(h.x,h.y,h.r,h.r*.45,0,0,TAU);g.fill();g.strokeStyle='#4a4a4a';g.lineWidth=4;g.stroke();g.fillStyle='#3a3a3e';g.beginPath();g.ellipse(h.x+h.r+18,h.y+4,h.r*.9,h.r*.38,.2,0,TAU);g.fill();g.strokeStyle='#222';g.lineWidth=2;g.stroke();g.restore()}
 function drawBoard(g,f,z){g.save();g.translate(0,-z);g.rotate(f.air>0?-.25:0);g.fillStyle='#c8202a';g.strokeStyle='#0d0b10';g.lineWidth=3;g.beginPath();g.roundRect?g.roundRect(-32,-8,64,9,4):g.rect(-32,-8,64,9);g.fill();g.stroke();g.fillStyle='#e8e0c0';g.font='bold 7px sans-serif';g.fillText('УЛИЦА',-16,-1);g.fillStyle='#222';for(const wx of[-20,20]){g.beginPath();g.arc(wx,3,5,0,TAU);g.fill()}g.restore()}
+function drawBike(g,f,z,t){g.save();g.translate(0,-z);if(f.air>0)g.rotate(-.2*(f.face||1));const sp=t*14;g.strokeStyle='#0d0b10';g.lineWidth=4;
+ for(const wx of[-30,30]){g.beginPath();g.arc(wx,-14,16,0,TAU);g.stroke();g.strokeStyle='#777';g.lineWidth=1.5;for(let k=0;k<3;k++){const a=sp+k*2.1;g.beginPath();g.moveTo(wx,-14);g.lineTo(wx+Math.cos(a)*15,-14+Math.sin(a)*15);g.stroke()}g.strokeStyle='#0d0b10';g.lineWidth=4}
+ g.strokeStyle='#b02020';g.lineWidth=5;g.beginPath();g.moveTo(-30,-14);g.lineTo(-6,-40);g.lineTo(22,-40);g.lineTo(30,-14);g.moveTo(-6,-40);g.lineTo(2,-14);g.lineTo(-30,-14);g.moveTo(22,-40);g.lineTo(26,-54);g.stroke();
+ g.fillStyle='#222';g.fillRect(-14,-46,18,6);g.strokeStyle='#ccc';g.lineWidth=3;g.beginPath();g.moveTo(20,-56);g.lineTo(32,-56);g.stroke();g.restore()}
+function drawCop(g,y,t){g.save();g.translate(0,y);g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(70,4,90,14,0,0,TAU);g.fill();
+ g.fillStyle='#e8e2c8';g.fillRect(-30,-70,180,62);g.fillStyle='#1f3f8f';g.fillRect(-30,-46,180,12);g.fillStyle='#2a3a44';g.fillRect(40,-100,90,34);g.fillStyle='#9fc0d8';g.fillRect(48,-96,34,24);g.fillRect(88,-96,36,24);
+ g.fillStyle='#111';for(const wx of[0,120]){g.beginPath();g.arc(wx,-6,18,0,TAU);g.fill()}g.fillStyle='#fff';g.font='bold 14px sans-serif';g.fillText('МИЛИЦИЯ',10,-50);
+ const on=(t*6|0)%2;g.fillStyle=on?'#ff2a2a':'#3a6aff';g.fillRect(70,-110,26,10);g.fillStyle=on?'rgba(255,40,40,.25)':'rgba(60,110,255,.25)';g.beginPath();g.arc(83,-105,46,0,TAU);g.fill();g.restore()}
 function drawObst(g,o){const {x,y,w,h}=o;g.save();g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x+w/2,y+h,w*.6,10,0,0,TAU);g.fill();
  if(o.k==='car'){g.fillStyle='#7a3a26';g.fillRect(x,y-40,w,50);g.fillStyle='#5a2a1a';g.fillRect(x+30,y-70,w-60,32);g.fillStyle='#1d2a33';g.fillRect(x+36,y-66,36,24);g.fillRect(x+78,y-66,36,24);g.fillStyle='#111';for(const wx of [x+28,x+w-28]){g.beginPath();g.arc(wx,y+10,15,0,TAU);g.fill()}g.fillStyle='rgba(120,60,20,.5)';g.fillRect(x+10,y-30,40,14);g.fillStyle='#ddd';g.font='bold 11px sans-serif';g.fillText('ВАЗ',x+w-40,y-8)}
  else if(o.k==='barrel'){g.fillStyle='#3a5a6a';g.fillRect(x,y-60,w,62);g.fillStyle='#2a4a5a';g.fillRect(x,y-44,w,5);g.fillRect(x,y-18,w,5);g.fillStyle='rgba(255,140,40,.8)';g.beginPath();g.ellipse(x+w/2,y-62,w/2-4,7,0,0,TAU);g.fill()}
@@ -109,7 +117,7 @@ function drawObst(g,o){const {x,y,w,h}=o;g.save();g.fillStyle='rgba(0,0,0,.35)';
 /* ---------- fighter drawing ---------- */
 function drawFighter(g,f,t){const H0=HEROES[f.hero],big=H0.big?1.15:H0.small?.86:1;g.save();g.translate(f.x,f.y);
  g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(0,0,34*big,9,0,0,TAU);g.fill();if(!f.noHud&&f.state!=='ko'){g.strokeStyle=!f.bot?'#5ad05a':(f.ally?'#4a8aff':'#e0303a');g.lineWidth=3;g.beginPath();g.ellipse(0,0,36*big,10,0,0,TAU);g.stroke()}
- const zz=f.z||0;if(f.onBoard&&f.state!=='down'&&f.state!=='ko'){drawBoard(g,f,zz);g.translate(0,-zz-10)}
+ const zz=f.z||0;if(f.onBoard&&f.state!=='down'&&f.state!=='ko'){if(mode==='bike'){drawBike(g,f,zz,t);g.translate(0,-zz-30)}else{drawBoard(g,f,zz);g.translate(0,-zz-10)}}
  const sprOK=PZI[f.hero]&&PZI[f.hero].complete&&PZI[f.hero].naturalWidth;
  if(!sprOK&&(f.state==='down'||f.state==='ko')){g.rotate(f.face*Math.PI/2*Math.min(1,(f.downT||0)*6));g.translate(f.face*10,-14)}
  g.scale(f.face*big,big);
@@ -190,16 +198,17 @@ function drawPickup(g,p,t){const w=WEAPONS[p.k],bob=Math.sin(t*4+p.x)*3;g.save()
 /* ---------- game state ---------- */
 let G=null,state='age',myHero=LS.get('hero',0),mode=LS.get('mode','ffa'),last=0,shake=0;
 const keys={},pad={mx:0,my:0,a:false,b:false};
-function newFighter(i,hero,bot,team){const H0=HEROES[hero];return {idx:i,hero,bot,team,ally:false,name:bot?['Турбо','Зима','Кащей','Сутулый','Ералаш','Пальто'][(i+hero)%6]:'Ты',x:i===0?260:rnd(560,1120),y:rnd(450,640),vx:0,vy:0,face:i===0?1:-1,hp:H0.hp,max:H0.hp,state:'idle',anim:0,atkT:0,atkDur:.3,cd:0,kickT:0,kcd:0,hurtT:0,stun:0,downT:0,weapon:null,dur:0,ammo:0,flash:0,bloody:false,ai:{t:0,tgt:null},kills:0,lives:3,onBoard:mode==='skate',mvx:0,mvy:0,air:0,z:0}}
+function newFighter(i,hero,bot,team){const H0=HEROES[hero];return {idx:i,hero,bot,team,ally:false,name:bot?['Турбо','Зима','Кащей','Сутулый','Ералаш','Пальто'][(i+hero)%6]:'Ты',x:i===0?260:rnd(560,1120),y:rnd(450,640),vx:0,vy:0,face:i===0?1:-1,hp:H0.hp,max:H0.hp,state:'idle',anim:0,atkT:0,atkDur:.3,cd:0,kickT:0,kcd:0,hurtT:0,stun:0,downT:0,weapon:null,dur:0,ammo:0,flash:0,bloody:false,ai:{t:0,tgt:null},kills:0,lives:mode==='bike'?99:3,onBoard:ride(),mvx:0,mvy:0,air:0,z:0}}
 function newRound(){const n=4,F=[];
  F.push(newFighter(0,myHero,false,0));
  const others=[0,1,2,3].filter(h=>h!==myHero);
  for(let i=1;i<n;i++){const team=mode==='team'?(i===1?0:1):i;const f=newFighter(i,others[(i-1)%3],true,team);if(mode==='team'&&team===0){f.ally=true;f.name='Свой'}F.push(f)}
+ if(mode==='bike'){F.forEach((f,i)=>{f.x=420+i*90;f.y=420+i*70;f.face=1})}
  if(mode==='team'){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
- dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:OBST_F;
- G={F,P:[],B:[],FX:[],t:0,dropT:2,round:(G?G.round:0)+1,wins:G?G.wins:{},over:0,msg:'',msgT:0};
+ dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:mode==='bike'?[]:OBST_F;
+ G={F,P:[],B:[],FX:[],RM:[],HL:[],BX:[],dist:0,hzT:1.5,copY:520,t:0,dropT:2,round:(G?G.round:0)+1,wins:G?G.wins:{},over:0,msg:'',msgT:0};
  for(let i=0;i<3;i++)spawnDrop(i===0?'stick':null);SFX.bell();G.msg='РАУНД '+G.round;G.msgT=1.6}
-function spawnDrop(k){k=k||DROP_TABLE[Math.random()*DROP_TABLE.length|0];if(k==='pistol'&&G.P.some(p=>p.k==='pistol'))k='bat';let x,y,tries=0;do{x=rnd(80,W-80);y=rnd(FLOOR0+60,FLOOR1-20);tries++}while(tries<20&&[...OBST,...(mode==='skate'?RAMPS:[])].some(o=>x>o.x-30&&x<o.x+o.w+30&&y>o.y-40&&y<o.y+o.h+30));G.P.push({k,x,y,t:0})}
+function spawnDrop(k){k=k||DROP_TABLE[Math.random()*DROP_TABLE.length|0];if(k==='pistol'&&G.P.some(p=>p.k==='pistol'))k='bat';let x,y,tries=0;do{x=rnd(80,W-80);y=rnd(FLOOR0+60,FLOOR1-20);if(mode==='bike')x=W+30;tries++}while(mode!=='bike'&&tries<20&&[...OBST,...(mode==='skate'?RAMPS:[])].some(o=>x>o.x-30&&x<o.x+o.w+30&&y>o.y-40&&y<o.y+o.h+30));G.P.push({k,x,y,t:0})}
 function alive(){return G.F.filter(f=>f.state!=='ko')}
 function sideOf(f){return mode==='team'?f.team:f.idx}
 
@@ -209,7 +218,7 @@ function blood(x,y,n,dir){if(!BLOOD){for(let i=0;i<n/2;i++)G.FX.push({x,y,vx:rnd
 function decalBlood(x,y,r){if(!BLOOD)return;dctx.fillStyle=`rgba(${110+rnd(0,40)|0},8,14,${rnd(.5,.85)})`;dctx.beginPath();dctx.ellipse(x,y,r,r*.4,0,0,TAU);dctx.fill()}
 function hitBox(a,w){return G.F.filter(b=>b!==a&&b.state!=='ko'&&sideOf(b)!==sideOf(a)&&Math.abs(b.y-a.y)<30&&(b.x-a.x)*a.face>-10&&(b.x-a.x)*a.face<w.range+(HEROES[b.hero].big?14:0))}
 function bail(b,why){if(!b.onBoard||b.state==='ko')return;b.onBoard=false;b.lives--;b.state='down';b.downT=0;b.stun=1.4;b.vx=b.mvx*.6;b.mvx=b.mvy=0;SFX.heavy();shake=Math.max(shake,8);G.FX.push({x:b.x,y:b.y-150,t:0,life:.9,txt:why||'СБИТ!',c:'#ff7a3a'});for(let i=0;i<4;i++)G.FX.push({x:b.x,y:b.y-20,vx:rnd(-200,200),vy:rnd(-300,-120),life:.7,t:0,c:'#c8202a',s:6});blood(b.x,b.y-60,8,1);if(b.lives<=0){b.state='ko';b.hp=0;G.FX.push({x:b.x,y:b.y-175,t:0,life:1.1,txt:'ВЫБЫЛ',c:'#ffffff',big:1})}}
-function damage(a,b,dmg,knock,heavy){if(b.state==='ko')return;if(mode==='skate'){if(b.air>0||!b.onBoard)return;if(b.onBoard&&(heavy||(a.weapon&&!WEAPONS[a.weapon].gun)||Math.random()<.4)){b.hp=Math.max(1,b.hp-Math.round(dmg*.5));bail(b);if(BLOOD&&Math.random()<.6)decalBlood(b.x,b.y,rnd(8,16));if(b.state==='ko')a.kills++;return}}const pw=HEROES[a.hero].pow;dmg=Math.round(dmg*pw);b.hp-=dmg;b.hurtT=.25;b.state='hurt';b.vx=a.face*knock*(heavy?1.4:1);shake=Math.max(shake,heavy?10:5);
+function damage(a,b,dmg,knock,heavy){if(b.state==='ko')return;if(ride()){if(b.air>0||!b.onBoard)return;if(b.onBoard&&(heavy||(a.weapon&&!WEAPONS[a.weapon].gun)||Math.random()<.4)){b.hp=Math.max(1,b.hp-Math.round(dmg*.5));bail(b);if(BLOOD&&Math.random()<.6)decalBlood(b.x,b.y,rnd(8,16));if(b.state==='ko')a.kills++;return}}const pw=HEROES[a.hero].pow;dmg=Math.round(dmg*pw);b.hp-=dmg;b.hurtT=.25;b.state='hurt';b.vx=a.face*knock*(heavy?1.4:1);shake=Math.max(shake,heavy?10:5);
  blood(b.x,b.y-110,heavy?14:7,a.face);if(BLOOD&&Math.random()<.5)decalBlood(b.x+a.face*rnd(10,40),b.y+rnd(-6,8),rnd(5,14));
  G.FX.push({x:b.x,y:b.y-150,t:0,life:.6,txt:'-'+dmg,c:heavy?'#ff4a4a':'#ffd23f'});
  heavy?SFX.heavy():SFX.hit();
@@ -237,6 +246,7 @@ function botThink(f,dt){const A=f.ai;A.t-=dt;let mx=0,my=0;
  if(isT){if(Math.abs(dx)>want+10)mx=Math.sign(dx);else if(Math.abs(dx)<want-30&&!w.gun)mx=-Math.sign(dx)*.4;if(Math.abs(dy)>12)my=Math.sign(dy)}
  else{const d=Math.hypot(dx,dy)||1;mx=dx/d;my=dy/d}
  if(isT){f.face=dx>=0?1:-1;if(Math.abs(dy)<26&&Math.abs(dx)<w.range+10&&Math.random()<dt*2.6)attack(f);if(Math.abs(dy)<26&&Math.abs(dx)<70&&Math.random()<dt*.5)kick(f)}
+ if(mode==='bike'&&f.onBoard){if(f.x<360)mx=1;else if(f.x>1080)mx=-.5;for(const o of [...G.BX,...G.HL]){const ox=o.x+(o.w||0)/2,oy=o.y+(o.h||0)/2;if(ox>f.x&&ox-f.x<220&&Math.abs(oy-f.y)<46){my=oy>f.y?-1:1;break}}}
  return [mx,my]}
 
 /* ---------- update ---------- */
@@ -244,7 +254,7 @@ function update(dt){G.t+=dt;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
  for(const f of G.F){f.cd-=dt;f.kcd-=dt;f.atkT-=dt;f.kickT-=dt;f.flash-=dt;f.anim+=dt;if(f.hurtT>0)f.hurtT-=dt;if(f.stun>0)f.stun-=dt;
   if(f.state==='ko'){f.downT+=dt;continue}
-  if(f.state==='down'){f.downT+=dt;f.vx*=Math.pow(.02,dt);f.x+=f.vx*dt;if(f.stun<=0){f.state='idle';f.downT=0;if(mode==='skate'&&f.lives>0)f.onBoard=true}continue}
+  if(f.state==='down'){f.downT+=dt;f.vx*=Math.pow(.02,dt);f.x+=f.vx*dt;if(mode==='bike'&&!G.over)f.x-=SCROLL*.55*dt;if(f.stun<=0){f.state='idle';f.downT=0;if(ride()&&f.lives>0)f.onBoard=true}continue}
   let mx=0,my=0;
   if(G.over){}
   else if(f.bot)[mx,my]=botThink(f,dt);
@@ -253,21 +263,28 @@ function update(dt){G.t+=dt;if(G.msgT>0)G.msgT-=dt;
   if(f.onBoard){const top=HEROES[f.hero].spd*1.7;f.mvx+=mx*820*dt;f.mvy+=my*520*dt;f.mvx*=Math.pow(.55,dt);f.mvy*=Math.pow(.25,dt);const v=Math.hypot(f.mvx,f.mvy);if(v>top){f.mvx*=top/v;f.mvy*=top/v}
    f.x+=(f.mvx+f.vx)*dt;f.y+=f.mvy*.62*dt;f.vx*=Math.pow(.004,dt);if(Math.abs(f.mvx)>40&&f.atkT<=0)f.face=f.mvx>0?1:-1;
    if(f.air>0){f.air-=dt;f.z=Math.sin(Math.PI*Math.max(0,f.air)/.7)*90;if(f.air<=0){f.z=0;SFX.hit();for(const b of G.F)if(b!==f&&b.state!=='ko'&&sideOf(b)!==sideOf(f)&&Math.hypot(b.x-f.x,(b.y-f.y)*1.6)<70){bail(b,'С ПРЫЖКА!');if(b.state==='ko')f.kills++}}}
-   else{for(const r of RAMPS)if(f.x>r.x+r.w*.5&&f.x<r.x+r.w+10&&f.y>r.y&&f.y<r.y+r.h&&Math.abs(f.mvx)>150){f.air=.7;f.mvx*=1.15;SFX.whoosh();G.FX.push({x:f.x,y:f.y-150,t:0,life:.6,txt:'ОЛЛИ!',c:'#e8b23a'})}
-    for(const h of HOLES)if(Math.hypot(f.x-h.x,(f.y-h.y)*2)<h.r){bail(f,'В ЛЮК!');f.x+=f.face*50}}
+   else{for(const r of rampsNow())if(f.x>r.x+r.w*.5&&f.x<r.x+r.w+10&&f.y>r.y&&f.y<r.y+r.h&&Math.abs(f.mvx)>150){f.air=.7;f.mvx*=1.15;SFX.whoosh();G.FX.push({x:f.x,y:f.y-150,t:0,life:.6,txt:'ОЛЛИ!',c:'#e8b23a'})}
+    if(mode==='bike')for(const o of G.BX)if(f.x>o.x-10&&f.x<o.x+o.w+10&&f.y>o.y-8&&f.y<o.y+o.h+8){bail(f,o.k==='car'?'В МАШИНУ!':'ВРЕЗАЛСЯ!');f.x-=40}
+    for(const h of holesNow())if(Math.hypot(f.x-h.x,(f.y-h.y)*2)<h.r){bail(f,mode==='bike'?'В ЯМУ!':'В ЛЮК!');if(mode!=='bike')f.x+=f.face*50}}
    if(f.x<42||f.x>W-42)f.mvx*=-.5;if(f.y<FLOOR0+52||f.y>FLOOR1-2)f.mvy*=-.5}
   else{f.x+=(mx*sp+f.vx)*dt;f.y+=my*sp*.62*dt;f.vx*=Math.pow(.004,dt)}
   if(!f.bot&&!f.onBoard&&Math.abs(mx)>.2&&f.atkT<=0)f.face=mx>0?1:-1;
-  f.x=clamp(f.x,40,W-40);f.y=clamp(f.y,FLOOR0+50,FLOOR1);
+  f.x=clamp(f.x,mode==='bike'?-20:40,W-40);f.y=clamp(f.y,FLOOR0+50,FLOOR1);
   for(const o of OBST){if(f.x>o.x-14&&f.x<o.x+o.w+14&&f.y>o.y-6&&f.y<o.y+o.h+6){const dl=f.x-(o.x-14),dr=o.x+o.w+14-f.x,du=f.y-(o.y-6),dd=o.y+o.h+6-f.y,m=Math.min(dl,dr,du,dd);if(m===dl)f.x=o.x-14;else if(m===dr)f.x=o.x+o.w+14;else if(m===du)f.y=o.y-6;else f.y=o.y+o.h+6}}
+  if(f.state==='down'||f.state==='ko')continue;
   if(f.state!=='hurt'||f.hurtT<=0)f.state=Math.abs(mx)+Math.abs(my)>.2?'walk':'idle';
   pickupNear(f)}
  // separation
- for(let i=0;i<G.F.length;i++)for(let j=i+1;j<G.F.length;j++){const a=G.F[i],b=G.F[j];if(a.state==='ko'||b.state==='ko')continue;const dx=b.x-a.x,dy=(b.y-a.y)*2,d=Math.hypot(dx,dy);if(d<36&&d>0){const p=(36-d)/2;a.x-=dx/d*p;b.x+=dx/d*p;if(mode==='skate'&&a.onBoard&&b.onBoard&&a.air<=0&&b.air<=0&&sideOf(a)!==sideOf(b)){const rv=Math.hypot(a.mvx-b.mvx,a.mvy-b.mvy);if(rv>260){const va=Math.hypot(a.mvx,a.mvy),vb=Math.hypot(b.mvx,b.mvy);bail(va<vb?a:b,'ТАРАН!')}}}}
+ for(let i=0;i<G.F.length;i++)for(let j=i+1;j<G.F.length;j++){const a=G.F[i],b=G.F[j];if(a.state==='ko'||b.state==='ko')continue;const dx=b.x-a.x,dy=(b.y-a.y)*2,d=Math.hypot(dx,dy);if(d<36&&d>0){const p=(36-d)/2;a.x-=dx/d*p;b.x+=dx/d*p;if(ride()&&a.onBoard&&b.onBoard&&a.air<=0&&b.air<=0&&sideOf(a)!==sideOf(b)){const rv=Math.hypot(a.mvx-b.mvx,a.mvy-b.mvy);if(rv>260){const va=Math.hypot(a.mvx,a.mvy),vb=Math.hypot(b.mvx,b.mvy);bail(va<vb?a:b,'ТАРАН!')}}}}
  // bullets
  for(let i=G.B.length-1;i>=0;i--){const b=G.B[i];b.x+=b.vx*dt;b.life-=dt;let hit=false;
   for(const f of G.F){if(f===b.o||f.state==='ko'||sideOf(f)===sideOf(b.o))continue;if(Math.abs(f.x-b.x)<22&&Math.abs(f.y-b.yy)<34){damage(b.o,f,WEAPONS.pistol.dmg,WEAPONS.pistol.knock,true);if(BLOOD)decalBlood(f.x+Math.sign(b.vx)*50,f.y,18);hit=true;break}}
   if(hit||b.life<=0||b.x<0||b.x>W)G.B.splice(i,1)}
+ // bike: scrolling street, hazards, police
+ if(mode==='bike'&&!G.over){const d=SCROLL*dt;G.dist+=d;for(const L of [G.RM,G.HL,G.BX,G.P])for(let i=L.length-1;i>=0;i--){L[i].x-=d;if(L[i].x<-200)L.splice(i,1)}
+  G.hzT-=dt;if(G.hzT<=0&&G.t<BIKE_T-3){G.hzT=rnd(.9,1.7);const y=rnd(FLOOR0+70,FLOOR1-30),r=Math.random();if(r<.35)G.HL.push({x:W+60,y,r:28});else if(r<.65)G.BX.push({x:W+40,y:y-14,w:44,h:28,k:'barrel'});else if(r<.75&&!G.BX.some(o=>o.k==='car'&&o.x>W-400))G.BX.push({x:W+40,y:y-20,w:150,h:46,k:'car'});else G.RM.push({x:W+40,y:y-40,w:110,h:56})}
+  const near=alive().sort((a,b)=>a.x-b.x)[0];if(near)G.copY+=(near.y-G.copY)*Math.min(1,dt*2);
+  for(const f of G.F)if(f.state!=='ko'&&f.x<120){f.state='ko';f.hp=0;f.onBoard=false;f.downT=0;SFX.ko();G.FX.push({x:Math.max(80,f.x),y:f.y-170,t:0,life:1.2,txt:'ПРИНЯЛИ!',c:'#4a8aff',big:1})}}
  // drops
  G.dropT-=dt;if(G.dropT<=0&&G.P.length<5){spawnDrop();G.dropT=rnd(4,7)}
  // particles
@@ -275,7 +292,7 @@ function update(dt){G.t+=dt;if(G.msgT>0)G.msgT-=dt;
  if(shake>0)shake=Math.max(0,shake-dt*30);
  // round end
  if(!G.over){const sides=new Set(alive().map(sideOf));const meDead=me.state==='ko'&&mode==='ffa';
-  if(sides.size<=1||meDead){G.over=1;G.overT=0;const w=alive()[0];const winSide=sides.size===1?[...sides][0]:null;
+  const fin=mode==='bike'&&G.t>=BIKE_T;if(sides.size<=1||meDead||fin){G.over=1;G.overT=0;let winSide=sides.size===1?[...sides][0]:null;if(fin&&sides.size>1){const lead=alive().sort((a,b)=>b.x-a.x)[0];winSide=sideOf(lead);G.FX.push({x:lead.x,y:lead.y-180,t:0,life:2,txt:'ПЕРВЫЙ!',c:'#e8b23a',big:1})}
    G.win=winSide!=null&&winSide===sideOf(me);G.wins[G.win?'me':'them']=(G.wins[G.win?'me':'them']||0)+1;
    G.msg=G.win?'УЛИЦА ЗА ТОБОЙ':'ТЕБЯ ОТШИЛИ';G.msgT=99;SFX.bell()}}
  else{G.overT+=dt;if(G.overT>2.6)roundEnd()}}
@@ -283,8 +300,9 @@ function update(dt){G.t+=dt;if(G.msgT>0)G.msgT-=dt;
 /* ---------- render ---------- */
 function render(t){ctx.save();if(shake>0)ctx.translate(rnd(-shake,shake),rnd(-shake,shake));
  ctx.drawImage(bg,0,0);ctx.drawImage(decal,0,0);
- if(mode==='skate'){HOLES.forEach(h=>drawHole(ctx,h))}
- const items=[...(mode==='skate'?RAMPS.map(r=>({y:r.y+r.h-20,d:()=>drawRamp(ctx,r)})):[]),...OBST.map(o=>({y:o.y+o.h,d:()=>drawObst(ctx,o)})),...G.P.map(p=>({y:p.y,d:()=>drawPickup(ctx,p,t)})),...G.F.map(f=>({y:f.y+(f.state==='ko'?-40:0),d:()=>drawFighter(ctx,f,t)}))];
+ if(mode==='bike'){const off=G.dist%160;ctx.fillStyle='rgba(230,220,180,.55)';for(let x=-off;x<W;x+=160){ctx.fillRect(x,505,80,6)}ctx.fillStyle='rgba(0,0,0,.25)';for(let x=-(G.dist*.5%400);x<W;x+=400)ctx.fillRect(x,FLOOR0+40,6,40)}
+ if(ride()){holesNow().forEach(h=>drawHole(ctx,h))}
+ const items=[...(ride()?rampsNow().map(r=>({y:r.y+r.h-20,d:()=>drawRamp(ctx,r)})):[]),...(mode==='bike'?G.BX.map(o=>({y:o.y+o.h,d:()=>drawObst(ctx,o)})):[]),...(mode==='bike'?[{y:G.copY+1,d:()=>drawCop(ctx,G.copY,t)}]:[]),...OBST.map(o=>({y:o.y+o.h,d:()=>drawObst(ctx,o)})),...G.P.map(p=>({y:p.y,d:()=>drawPickup(ctx,p,t)})),...G.F.map(f=>({y:f.y+(f.state==='ko'?-40:0),d:()=>drawFighter(ctx,f,t)}))];
  items.sort((a,b)=>a.y-b.y).forEach(i=>i.d());
  for(const b of G.B){ctx.strokeStyle='#ffe28a';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x-Math.sign(b.vx)*30,b.y);ctx.stroke()}
  for(const p of G.FX){const k=p.t/p.life;if(p.txt){ctx.globalAlpha=1-k;ctx.font=`900 ${p.big?40:22}px Impact,'Arial Black',sans-serif`;ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(p.txt,p.x,p.y-k*40);ctx.fillStyle=p.c;ctx.fillText(p.txt,p.x,p.y-k*40);ctx.globalAlpha=1}else{ctx.fillStyle=p.c;ctx.globalAlpha=1-k*.6;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,TAU);ctx.fill();ctx.globalAlpha=1}}
@@ -294,6 +312,7 @@ function render(t){ctx.save();if(shake>0)ctx.translate(rnd(-shake,shake),rnd(-sh
  ctx.fillStyle='#331';ctx.fillRect(28,46,200,12);ctx.fillStyle=me.hp/me.max>.4?'#5ad05a':'#e0303a';ctx.fillRect(28,46,200*me.hp/me.max,12);
  ctx.font='bold 14px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(me.weapon?(WEAPONS[me.weapon].name+(me.weapon==='pistol'?' ×'+me.ammo:'')):'Кулаки',236,57);
  if(mode==='skate'){for(let i=0;i<3;i++){ctx.globalAlpha=i<me.lives?1:.25;ctx.save();ctx.translate(46+i*58,90);drawBoard(ctx,{air:0},0);ctx.restore();ctx.globalAlpha=1}}
+ if(mode==='bike'){const k=Math.min(1,G.t/BIKE_T);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W/2-200,18,400,22);ctx.fillStyle='#e8b23a';ctx.fillRect(W/2-196,22,392*k,14);ctx.fillStyle='#f3e9dc';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('до гаражей '+Math.max(0,Math.ceil(BIKE_T-G.t))+' с · не отставай — милиция!',W/2,58)}
  ctx.textAlign='right';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W-216,14,200,40);ctx.fillStyle='#f3e9dc';ctx.font='900 20px Impact,sans-serif';ctx.fillText(`РАУНД ${G.round} · ${G.wins.me||0}:${G.wins.them||0}`,W-28,42);
  if(G.msgT>0&&G.msg){ctx.textAlign='center';ctx.font='900 46px Impact,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(G.msg,W/2,120);ctx.fillStyle=G.over?(G.win?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(G.msg,W/2,120)}}
 
@@ -305,7 +324,7 @@ function showAge(){state='age';$ui.hidden=false;$ui.innerHTML=`<div class="card"
  <div class="row"><button class="pri" id="y18">Мне есть 18</button><button id="n18">Мне нет 18</button></div></div>`;
  document.getElementById('y18').onclick=()=>{au();LS.set('age',1);showMenu()};document.getElementById('n18').onclick=()=>{location.href='https://games.tagshim.com/'}}
 function showMenu(){state='menu';$ui.hidden=false;$ui.innerHTML=`<div class="card"><h1>УЛИЦА</h1><h2 style="color:#c8202a">КРОВЬ НА АСФАЛЬТЕ</h2><p class="sub">Выбери пацана</p><div class="heroes" id="hs"></div>
- <div class="row"><button class="mb ${mode==='ffa'?'on':''}" data-m="ffa">Без правил · каждый сам</button><button class="mb ${mode==='team'?'on':''}" data-m="team">Стенка · 2 на 2</button><button class="mb ${mode==='skate'?'on':''}" data-m="skate">Скейты · сбей с доски</button></div>
+ <div class="row"><button class="mb ${mode==='ffa'?'on':''}" data-m="ffa">Без правил · каждый сам</button><button class="mb ${mode==='team'?'on':''}" data-m="team">Стенка · 2 на 2</button><button class="mb ${mode==='skate'?'on':''}" data-m="skate">Скейты · сбей с доски</button><button class="mb ${mode==='bike'?'on':''}" data-m="bike">Велики · уйди от ментов</button></div>
  <div class="row"><button id="bl" class="${BLOOD?'on':''}">Кровь: ${BLOOD?'вкл':'выкл'}</button><button class="pri" id="go">В БОЙ</button></div>
  <p class="sub" style="margin-top:14px;font-size:13px">Компьютер: WASD или стрелки · удар — F или левая кнопка мыши · пинок — G или правая кнопка. Оружие подбирается само.</p></div>`;
  const hs=document.getElementById('hs');HEROES.forEach((h,i)=>{const b=document.createElement('button');b.className='hb'+(i===myHero?' on':'');b.appendChild(heroCanvas(i));b.insertAdjacentHTML('beforeend',`<b>${h.name}</b><small>${h.desc}</small>`);b.onclick=()=>{myHero=i;LS.set('hero',i);showMenu()};hs.appendChild(b)});

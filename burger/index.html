@@ -3508,7 +3508,7 @@ function r3HitEnemy(E,dmg,A,kx,ky){if(E.hp<=0)return;const vul=E.st==='sleep'||E
     evq.push(['RK',Math.round(E.x),Math.round(E.y),E.boss?1:0,g]);
     if(E.boss){for(const b of Object.values(G.P))b.score+=5;if(A)A.score+=5;G.boss=0;if(G.stg>=2)G.bwin=2.2;else G.trans=3}else{if(A)A.score++;G.kills++;if(TM==='team')G.team++}}
   else if(!vul&&E.st!=='dash'){if(!E.boss&&Math.random()<.33)r3Gag(E,[1,2,3][Math.random()*3|0],1.3);else if(E.boss&&Math.random()<.07)r3Gag(E,Math.random()<.5?1:3,1.1)}}
-function r3Next(){G.stg++;G.kills=0;G.EN=[];G.PR=[];G.PD=[];G.boss=0;G.spT=1.2;r3SetStage(G.stg);r3Traps(G.stg);const L=Object.values(G.P);L.forEach((b,i)=>{trainHit(b.id,.6,180,TOP+200+i*120);if((b.hp|0)<=0){b.hp=60;b.dn=0}else b.hp=Math.min(R3_HP,b.hp+30)});evq.push(['RL',G.stg])}
+function r3Next(){G.stg++;G.trans=0;G.kills=0;G.EN=[];G.PR=[];G.PD=[];G.boss=0;G.spT=1.2;r3SetStage(G.stg);r3Traps(G.stg);const L=Object.values(G.P);L.forEach((b,i)=>{trainHit(b.id,.6,180,TOP+200+i*120);if((b.hp|0)<=0){b.hp=60;b.dn=0}else b.hp=Math.min(R3_HP,b.hp+30)});evq.push(['RL',G.stg])}
 function r3Low(aid){const A=G&&G.P[aid];if(!A||(A.hp|0)<=0||A.stun>0||matchPhase!=='play')return;const now=performance.now();if((A.scd||0)>now)return;A.scd=now+(A.hat==='crown'?5000:6500);
   for(const E of G.EN){const dx=E.x-A.x,dy=E.y-A.y,d=Math.hypot(dx,dy)||1;if(d<(E.boss?240:190))r3HitEnemy(E,Math.round((E.boss?20:24)*CH[A.c].pw),A,dx/d*(E.boss?10:90),dy/d*(E.boss?10:90))}
   for(let i=G.PR.length-1;i>=0;i--)if(Math.hypot(G.PR[i].x-A.x,G.PR[i].y-A.y)<220)G.PR.splice(i,1);r3CratesNear(A,230);evq.push(['RS',aid,Math.round(A.x),Math.round(A.y)])}
@@ -3636,8 +3636,8 @@ function r3WAttack(A,aid,w){let best=null,bd=1e9;
   else if(w===4){const L=Math.min(320,best?bd+30:320),tx=clamp(A.x+Math.cos(ang)*L,80,AW-80),ty=clamp(A.y+Math.sin(ang)*L,TOP+60,AH-40);G.WJ.push({x:A.x,y:A.y-60,sx:A.x,sy:A.y-60,tx,ty,t:0,d:.6,k:'w',o:aid})}
   else if(w===5){G.WJ.push({x:A.x+Math.cos(ang)*40,y:A.y-40,vx:Math.cos(ang)*720,vy:Math.sin(ang)*720,life:.75,k:'b',o:aid})}}
 function r3XTick(dt){const now=performance.now(),al=r3Alive();
-  G.cT-=dt;if(G.cT<=0&&!G.trans&&!G.bwin){const ks=R3_CRK[G.stg]||['q'],add=Math.min(5+(Math.random()<.5?1:0),11-G.CR.length);for(let i=0;i<add;i++){const [x,y]=r3Free(80);G.CR.push({id:G.nid++,k:ks[Math.random()*ks.length|0],x,y,hp:2})}if(add>0)evq.push(['RCB',add]);G.cT=add>0?8+Math.random()*3:3}
-  G.tT-=dt;if(G.tT<=0&&!G.trans&&!G.bwin){const L=Math.random()<.5,y=TOP+120+Math.random()*(AH-TOP-200);G.TP.push({id:G.nid++,k:R3_RTK[G.stg]||1,x:L?40:AW-40,y,arm:.9,vx:L?430:-430,mv:1,hid:{},ph:0});G.tT=7+Math.random()*5}
+  G.cT-=dt;if(G.cT<=0&&!(G.trans>0)&&!(G.bwin>0)){const ks=R3_CRK[G.stg]||['q'],add=Math.min(5+(Math.random()<.5?1:0),11-G.CR.length);for(let i=0;i<add;i++){const [x,y]=r3Free(80);G.CR.push({id:G.nid++,k:ks[Math.random()*ks.length|0],x,y,hp:2})}if(add>0)evq.push(['RCB',add]);G.cT=add>0?8+Math.random()*3:3}
+  G.tT-=dt;if(G.tT<=0&&!(G.trans>0)&&!(G.bwin>0)){const L=Math.random()<.5,y=TOP+120+Math.random()*(AH-TOP-200);G.TP.push({id:G.nid++,k:R3_RTK[G.stg]||1,x:L?40:AW-40,y,arm:.9,vx:L?430:-430,mv:1,hid:{},ph:0});G.tT=7+Math.random()*5}
   for(let i=G.IT.length-1;i>=0;i--){const it=G.IT[i];it.life-=dt;let took=false;for(const p of al)if(Math.hypot(p.x-it.x,p.y-it.y)<CH[p.c].r+46){took=true;if(it.t==='w'){G.WP[p.id]={w:it.w,u:now+R3_WDUR+(p.hat==='crown'?4000:0)};evq.push(['RW',p.id,Math.round(p.x),Math.round(p.y),it.w])}else{p.hp=Math.min(R3_HP,(p.hp|0)+35);evq.push(['RM',p.id,Math.round(p.x),Math.round(p.y)])}break}if(took||it.life<=0)G.IT.splice(i,1)}
   const slip=p=>{if((p.slip||0)<now){p.slip=now+1800;trainHit(p.id,.8);evq.push(['RP',p.id,Math.round(p.x),Math.round(p.y)])}};
   for(let i=G.TP.length-1;i>=0;i--){const q=G.TP[i];

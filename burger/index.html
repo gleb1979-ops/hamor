@@ -2505,14 +2505,14 @@ const BK_Z=1.3,BK_LEN=10600,BK_X0=360,BK_X1=1140,BK_FIN=9850,BK_POND=9960,BK_PTS
 function bkRng(s){return()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const BKM=y=>BK_LEN-y;let BKO=null,bkCam=0,bkFx=[],bkTiles={},bkLV={F:{},C:{}},bkLT=0;
 function bkObs(){if(BKO)return BKO;const R=bkRng(1717),o=[],rnd=(a,b)=>a+R()*(b-a);
-  for(let y=1150;y<3400;y+=rnd(330,460)){const gap=rnd(BK_X0+110,BK_X1-110);for(let x=BK_X0+36;x<BK_X1-14;x+=66){if(Math.abs(x-gap)<115)continue;if(R()<.6)o.push({k:'cone',x:Math.round(x),y:Math.round(y+rnd(-18,18)),r:15})}}
+  for(let y=1150;y<3400;y+=rnd(280,390)){const gap=rnd(BK_X0+110,BK_X1-110);for(let x=BK_X0+36;x<BK_X1-14;x+=66){if(Math.abs(x-gap)<115)continue;if(R()<.6)o.push({k:'cone',x:Math.round(x),y:Math.round(y+rnd(-18,18)),r:15})}}
   for(const [x,y] of [[BK_X1-90,1900],[BK_X0+100,3050],[BK_X0+260,2500]])o.push({k:'puddle',x,y,r:62});
-  for(let y=3800;y<5300;y+=rnd(260,360)){const t=R(),x=rnd(BK_X0+60,BK_X1-60);o.push(t<.45?{k:'tree',x,y,r:30}:t<.75?{k:'bench',x,y,r:16}:{k:'bed',x,y,r:40});
+  for(let y=3800;y<5300;y+=rnd(215,300)){const t=R(),x=rnd(BK_X0+60,BK_X1-60);o.push(t<.45?{k:'tree',x,y,r:30}:t<.75?{k:'bench',x,y,r:16}:{k:'bed',x,y,r:40});
     if(R()<.4){const x2=clamp(x+(x<750?1:-1)*rnd(220,320),BK_X0+60,BK_X1-60);o.push({k:'tree',x:x2,y:y+rnd(-50,50),r:30})}}
-  for(let y=5600;y<7450;y+=rnd(220,310)){const t=R(),x=rnd(BK_X0+40,BK_X1-40);
+  for(let y=5600;y<7450;y+=rnd(185,260)){const t=R(),x=rnd(BK_X0+40,BK_X1-40);
     o.push(t<.28?{k:'rock',x,y,r:Math.round(rnd(24,32))}:t<.46?{k:'log',x,y,r:17}:t<.64?{k:'puddle',x,y,r:Math.round(rnd(55,78))}:t<.82?{k:'mud',x,y,r:Math.round(rnd(60,80))}:{k:'bump',x,y,r:44});
     if(R()<.55){const x2=clamp(x+(x<750?1:-1)*rnd(190,280),BK_X0+40,BK_X1-40),r2=R();o.push(r2<.5?{k:'rock',x:x2,y:y+rnd(-40,40),r:28}:{k:'puddle',x:x2,y:y+rnd(-40,40),r:60})}}
-  for(let y=8100;y<9650;y+=rnd(300,420)){const t=R(),x=rnd(BK_X0+50,BK_X1-50);o.push(t<.4?{k:'hay',x,y,r:30}:t<.7?{k:'bump',x,y,r:44}:{k:'rock',x,y,r:26})}
+  for(let y=8100;y<9650;y+=rnd(245,340)){const t=R(),x=rnd(BK_X0+50,BK_X1-50);o.push(t<.4?{k:'hay',x,y,r:30}:t<.7?{k:'bump',x,y,r:44}:{k:'rock',x,y,r:26})}
   // poop piles: dog poop in the city and park, cow pats off-road and on the meadow
   let pid=0;const pp=(y0,y1,n,k,r)=>{for(let j=0,tr=0;j<n&&tr<400;tr++){const x=rnd(BK_X0+50,BK_X1-50),y=rnd(y0,y1);if(o.some(q=>Math.hypot(q.x-x,q.y-y)<(q.r||30)+r+70))continue;o.push({k,x:Math.round(x),y:Math.round(y),r,pid:pid++});j++}};
   pp(1300,3350,7,'dpoop',20);pp(3850,5250,6,'dpoop',20);pp(5650,7400,6,'cpoop',27);pp(8150,9600,8,'cpoop',27);
@@ -2523,7 +2523,7 @@ function bkInMud(x,y){for(const q of bkObs()){if(q.k!=='mud'&&q.k!=='puddle')con
 function bkHopH(b,now){const u=b.hopU||0;if(u<=now)return 0;const d=b.hopD||650,k=1-(u-now)/d;return Math.sin(clamp(k,0,1)*Math.PI)*(b.hopS||48)}
 function bkWater(x,y){y=BKM(y);return y>BK_WY0&&y<BK_WY1&&!BK_BR.some(([a,b])=>x>a+14&&x<b-14)}
 // fwd: stick toward the finish (up the screen); side: left/right
-function bkRide(b,side,fwd,dt,fin){const now=performance.now(),hop=bkHopH(b,now)>6;let tv=(b.hat==='cap'?196:186)*(1+.42*clamp(fwd,-1,1));
+function bkRide(b,side,fwd,dt,fin){const now=performance.now(),hop=bkHopH(b,now)>6;let tv=(b.hat==='cap'?236:224)*(1+.5*clamp(fwd,-1,1));
   if(fin){tv=BKM(b.y)<BK_POND+60?150:0;side=0}let wet=false,mud=false,hit=null,poo=false;
   if(!fin){for(const q of bkObs()){const ddx=b.x-q.x,ddy=b.y-q.y;if(Math.abs(ddy)>140)continue;
       if(bkIsPoop(q)){if(!hop&&(ddx*ddx)/(q.r*q.r*1.6)+(ddy*ddy)/(q.r*q.r)<1)poo=true;continue}
@@ -2534,8 +2534,8 @@ function bkRide(b,side,fwd,dt,fin){const now=performance.now(),hop=bkHopH(b,now)
   if(wet)tv*=bkWater(b.x,b.y)?.32:.5;if(mud)tv*=.42;if(poo){tv*=.78;b.trkU=now+4000}
   if((b.splU||0)>now&&!fin){tv*=.74;side+=Math.sin(now/85)*.45}
   if(b.stun>0)b.v=(b.v||0)*Math.pow(.05,dt);else b.v=(b.v||0)+(tv-(b.v||0))*Math.min(1,dt*(tv<(b.v||0)?3:1.6));
-  if(hit&&!(b.stun>0)){b.stun=b.hat==='ushanka'?.45:.75;b.v=0;b.y+=26}
-  b.y-=b.v*dt;if(!(b.stun>0))b.x+=side*270*dt;b.x=clamp(b.x,BK_X0,BK_X1);b.y=clamp(b.y,60,BK_LEN-40);b.moving=b.v>20;if(Math.abs(side)>.2)b.face=side<0?-1:1;b.wet=wet||mud;b.mud=mud;return hit}
+  if(hit&&!(b.stun>0)){b.stun=b.hat==='ushanka'?.55:.9;b.sv=0;b.v=0;b.y+=26}
+  b.sv=(b.sv||0)+((b.stun>0?0:side*330)-(b.sv||0))*Math.min(1,dt*5.5);b.y-=b.v*dt;b.x+=b.sv*dt;b.x=clamp(b.x,BK_X0,BK_X1);b.y=clamp(b.y,60,BK_LEN-40);b.moving=b.v>20;if(Math.abs(side)>.2)b.face=side<0?-1:1;b.wet=wet||mud;b.mud=mud;return hit}
 function bkStart(i){return [560+(i%4)*130,BKM(330)+Math.floor(i/4)*90]}
 function bkUF(f,x,y){if(f.getTransform().d<0){f.translate(x,y);f.scale(1,-1);f.translate(-x,-y)}}
 function bkEmo(f,s,x,y){f.save();bkUF(f,x,y);f.fillText(s,x,y);f.restore()}

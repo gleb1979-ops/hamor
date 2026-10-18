@@ -245,7 +245,7 @@ let amb=[],prevCam={x:0,y:0};
 
 // ================= Stage build =================
 function buildStage(i){
- S=STAGES[i];S.map=AREA_OPT.map||null;const rng=mulberry(i*977+13+(AREA_OPT.seed||0)*7919);obstacles=[];if(S.map){if(/^(fire|sunk|vill)\d/.test(S.map)){const C=genMap(S.map);MAPIMG[S.map]=C.im;MAPOBS[S.map]=C.obs}else if(S.map.startsWith('ncity')){const C=cityMap(S.map);MAPIMG[S.map]=C.im;MAPOBS[S.map]=C.obs}mapImg(S.map);obstacles=MAPOBS[S.map].map(([x,y,r])=>({x,y,r,h:10,inv:1,seed:0,neon:S.accent,pts:[],veins:[]}))}buildReach();
+ S=STAGES[i];S.map=AREA_OPT.map||null;const rng=mulberry(i*977+13+(AREA_OPT.seed||0)*7919);obstacles=[];if(S.map){if(/^(fire|sunk|vill)\d/.test(S.map)){const C=genMap(S.map);MAPIMG[S.map]=C.im;MAPOBS[S.map]=C.obs}else if(S.map.startsWith('ncity')){const C=cityMap(S.map);MAPIMG[S.map]=C.im;MAPOBS[S.map]=C.obs}mapImg(S.map);obstacles=MAPOBS[S.map].map(([x,y,r,lw])=>({x,y,r,low:lw?1:0,h:10,inv:1,seed:0,neon:S.accent,pts:[],veins:[]}))}buildReach();
  let tries=0;while(!S.map&&obstacles.length<S.obstacles&&tries<2000){tries++;
   const r=28+rng()*20,x=140+rng()*(WW-280),y=160+rng()*(WH-300);
   if(Math.hypot(x-WW/2,y-WH/2)<340)continue;
@@ -497,7 +497,7 @@ function updatePlayer(p,dt){
 }
 function physics(e,dt){
  e.x+=e.vx*dt;e.y+=e.vy*dt;
- for(const o of obstacles){const dx=e.x-o.x,dy=e.y-o.y,d=Math.hypot(dx,dy),m=o.r+e.r;if(d<m){if(d<0.01){e.x+=m;continue}e.x=o.x+dx/d*m;e.y=o.y+dy/d*m}}
+ const fly=e.type==='lantern'||e.type==='shooter'||(e.alt||0)>20;for(const o of obstacles){if(fly&&o.low)continue;const dx=e.x-o.x,dy=e.y-o.y,d=Math.hypot(dx,dy),m=o.r+e.r;if(d<m){if(d<0.01){e.x+=m;continue}e.x=o.x+dx/d*m;e.y=o.y+dy/d*m}}
  e.x=clamp(e.x,60+e.r,WW-60-e.r);e.y=clamp(e.y,70+e.r,WH-50-e.r);
 }
 function updateEnemy(e,dt){
@@ -559,7 +559,7 @@ function updatePlay(dt){
  const hw=W/2/ZMIN-50,hh=H/2/ZMIN-60;for(const p of players){p.x=clamp(p.x,cam.x-hw,cam.x+hw);p.y=clamp(p.y,cam.y-hh,cam.y+hh)}
  // bullets
  bullets=bullets.filter(b=>{if(b.ret!=null){b.ret-=dt;if(b.ret<=0){b.vx*=-1.05;b.vy*=-1.05;b.ret=null}}b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;if(b.life<=0||b.x<0||b.y<0||b.x>WW||b.y>WH)return false;
-  for(const o of obstacles)if(Math.hypot(b.x-o.x,b.y-o.y+o.r*0.4)<o.r){sparks(b.x,b.y,b.col,4,200);return false}
+  for(const o of obstacles)if(!o.low&&Math.hypot(b.x-o.x,b.y-o.y+o.r*0.4)<o.r){sparks(b.x,b.y,b.col,4,200);return false}
   for(const p of players){if(p.down)continue;if(Math.hypot(b.x-p.x,b.y-(p.y-26))<b.r+p.r-2){if(p.hero===1&&p.anim>0){sparks(b.x,b.y,'#ffffff',8);text(b.x,b.y-14,'гаснет','#fde68a',0.8);return false}if(hurtPlayer(p,b.dmg,'bullet')){sparks(b.x,b.y,b.col,6);return false}}}
   return true});
  pshots=pshots.filter(s=>{if(s.homing){let best=null,bd=520;for(const e of targets()){const d=Math.hypot(e.x-s.x,e.y-e.r-s.y);if(d<bd){bd=d;best=e}}if(best){const a=Math.atan2(best.y-best.r-s.y,best.x-s.x),cur=Math.atan2(s.vy,s.vx),na=cur+clamp(angDiff(cur,a),-7*dt,7*dt),sp=Math.hypot(s.vx,s.vy);s.vx=Math.cos(na)*sp;s.vy=Math.sin(na)*sp}}
@@ -1622,7 +1622,7 @@ function genMap(key){if(CITY[key])return CITY[key];const kind=key.replace(/\d+/,
  let band=null;const lakes=[];const LT={fire:['v','ring','lakes','diag'],sunk:['ring','v2','lakes','h'],vill:['diag','ring','v']}[kind]||['h'];const lt=LT[(seed-1)%LT.length];
  const W0=kind==='fire'?118:kind==='sunk'?150:110;
  if(lt==='lakes'){const n=kind==='vill'?3:4;for(let t=0;t<200&&lakes.length<n;t++){const rx=rnd(150,230),ry=rx*rnd(0.55,0.75),x=rnd(rx+80,WW-rx-80),y=rnd(ry+120,WH-ry-80);if(Math.hypot(x-WW/2,(y-WH/2)*1.4)<rx+330)continue;if(lakes.some(L=>Math.hypot(L[0]-x,L[1]-y)<L[2]+rx+140))continue;lakes.push([x,y,rx,ry]);take(x-rx-20,y-ry-20,rx*2+40,ry*2+40);
-   for(let yy=-ry+30;yy<=ry-30;yy+=48)for(let xx=-rx+30;xx<=rx-30;xx+=48)if((xx*xx)/(rx*rx)+(yy*yy)/(ry*ry)<0.82)obs.push([x+xx,y+yy,36])}}
+   for(let yy=-ry+30;yy<=ry-30;yy+=48)for(let xx=-rx+30;xx<=rx-30;xx+=48)if((xx*xx)/(rx*rx)+(yy*yy)/(ry*ry)<0.82)obs.push([x+xx,y+yy,36,1])}}
  else{const paths=[],w=W0;const wob=(t,ph,a)=>Math.sin(t*Math.PI*2*0.9+ph)*a;
   if(lt==='h'){const ph=rnd(0,6),amp=rnd(140,220),base=rnd(600,800),p=[];for(let x=-40;x<=WW+40;x+=40)p.push([x,base+wob(x/WW,ph,amp)]);paths.push(p)}
   else if(lt==='v'){const ph=rnd(0,6),amp=rnd(140,220),base=rnd(900,1500),p=[];for(let y=-40;y<=WH+40;y+=40)p.push([base+wob(y/WH,ph,amp),y]);paths.push(p)}
@@ -1631,7 +1631,7 @@ function genMap(key){if(CITY[key])return CITY[key];const kind=key.replace(/\d+/,
   else{const ph=rnd(0,6),p=[];for(let k=0;k<=96;k++){const a=k/96*TAU,rr=1+Math.sin(a*3+ph)*0.08;p.push([WW/2+Math.cos(a)*560*rr,WH/2+Math.sin(a)*390*rr])}paths.push(p);paths.ring=1}
   const cross=[];for(const p of paths){const fr=paths.ring?[0.07,0.32,0.57,0.82]:paths.length>1?[0.3,0.72]:[0.2,0.5,0.8];for(const f of fr){const k=Math.max(1,Math.min(p.length-2,Math.round(f*(p.length-1))));const [x,y]=p[k],a=Math.atan2(p[k+1][1]-p[k-1][1],p[k+1][0]-p[k-1][0]);cross.push({x,y,a})}}
   band={paths,w,cross,ring:!!paths.ring};
-  for(const p of paths)for(let k=0;k<p.length;k++){const [x,y]=p[k];if(k%4===0)rects.push([x-w/2-40,y-w/2-40,w+80,w+80]);if(cross.some(q=>Math.hypot(q.x-x,q.y-y)<95))continue;obs.push([x,y,w*0.52])}
+  for(const p of paths)for(let k=0;k<p.length;k++){const [x,y]=p[k];if(k%4===0)rects.push([x-w/2-40,y-w/2-40,w+80,w+80]);if(cross.some(q=>Math.hypot(q.x-x,q.y-y)<95))continue;obs.push([x,y,w*0.52,1])}
   for(const q of cross)take(q.x-100,q.y-100,200,200)}
  const bandPts=band?band.paths.flat():[];
  const S={},mid=()=>{if(!band||band.ring)return[WW/2,WH/2];let best=null,bs=-1e9;for(let x=600;x<=1800;x+=60)for(let y=360;y<=1040;y+=40){let d=1e9;for(const q of bandPts)d=Math.min(d,Math.hypot(q[0]-x,q[1]-y));if(d<band.w/2+230)continue;const sc=-Math.hypot(x-WW/2,y-WH/2);if(sc>bs){bs=sc;best=[x,y]}}return best||[WW/2,WH/2]};{const M=mid();take(M[0]-190,M[1]-160,380,320)}
@@ -1639,7 +1639,7 @@ function genMap(key){if(CITY[key])return CITY[key];const kind=key.replace(/\d+/,
   // fortress wall across the top with towers and a gate
   const wallY=40;S.wall=[];for(let x=0;x<WW;x+=300){if(Math.abs(x+150-WW/2)<200)continue;S.wall.push(x)}take(0,0,WW,190);for(const x of S.wall)rectObs(x,wallY,300,120);
   S.houses=[];for(let n=0;n<11;n++){const w=rnd(170,250),h=rnd(170,230),p=place(w,h,70,80,centreClear);if(!p)continue;S.houses.push([p[0],p[1],w,h,R()]);rectObs(p[0],p[1],w,h)}
-  S.pools=[];for(let n=0;n<4;n++){const rx=rnd(70,120),ry=rx*0.6,p=place(rx*2,ry*2,60,60,centreClear);if(!p)continue;S.pools.push([p[0]+rx,p[1]+ry,rx,ry]);obs.push([p[0]+rx,p[1]+ry,Math.min(rx,ry)*1.25]);spot(p[0]+rx,p[1]+ry,rx*1.6,'#ff6a00')}
+  S.pools=[];for(let n=0;n<4;n++){const rx=rnd(70,120),ry=rx*0.6,p=place(rx*2,ry*2,60,60,centreClear);if(!p)continue;S.pools.push([p[0]+rx,p[1]+ry,rx,ry]);obs.push([p[0]+rx,p[1]+ry,Math.min(rx,ry)*1.25,1]);spot(p[0]+rx,p[1]+ry,rx*1.6,'#ff6a00')}
   S.spires=[];for(let n=0;n<16;n++){const p=place(60,70,30,40,centreClear);if(!p)continue;S.spires.push([p[0]+30,p[1]+60,rnd(0.8,1.3)]);obs.push([p[0]+30,p[1]+52,24])}
   S.braz=[];for(let n=0;n<14;n++){const p=place(30,30,40,40);if(!p)continue;S.braz.push([p[0]+15,p[1]+25]);obs.push([p[0]+15,p[1]+20,14]);spot(p[0]+15,p[1]+10,90,'#ffb020')}
   bandPts.forEach((q,k)=>{if(k%3===0)spot(q[0],q[1],150,'#ff6a00')});for(const L of lakes)spot(L[0],L[1],L[2]*1.5,'#ff6a00');
@@ -1659,7 +1659,7 @@ function genMap(key){if(CITY[key])return CITY[key];const kind=key.replace(/\d+/,
    const gx=p[0]+w/2;for(let k=obs.length-1;k>=obs.length-40&&k>=0;k--){const o=obs[k];if(Math.abs(o[0]-gx)<40&&Math.abs(o[1]-(p[1]+h+4))<6)obs.splice(k,1)}}
   S.trees=[];for(let n=0;n<34;n++){const p=place(80,90,24,30,centreClear);if(!p)continue;S.trees.push([p[0]+40,p[1]+88,pick(['treeM','treeS','treeM'])]);obs.push([p[0]+40,p[1]+70,28])}
   S.small=[];for(let n=0;n<22;n++){const p=place(50,50,20,30);if(!p)continue;const k=pick(['well','cart','barrel','bushL','bushS','campfire','chest','rock1','bannerR','flag']);S.small.push([p[0]+25,p[1]+48,k]);if(k!=='bushS')obs.push([p[0]+25,p[1]+38,k==='cart'||k==='well'?40:20]);if(k==='campfire')spot(p[0]+25,p[1]+30,70,'#ffb020')}
-  S.pond=mid();obs.push([S.pond[0],S.pond[1],100])}
+  S.pond=mid();obs.push([S.pond[0],S.pond[1],100,1])}
  const cv=document.createElement('canvas');cv.width=WW;cv.height=WH;cv.complete=false;cv.naturalWidth=0;
  const C={im:cv,obs,spots,day:kind==='vill'};
  C.paint=()=>{if(cv.complete)return true;const need=kind==='sunk'?[RFIMG]:kind==='vill'?[P2IMG,GRIMG]:[STIMG];if(need.some(i=>!i.complete||!i.naturalWidth))return false;

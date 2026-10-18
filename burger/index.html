@@ -2820,7 +2820,7 @@ function fsCast(A,aid,F){const sg=G.sg,p=fsAimPt(A.x,A.y,A.face,A.ax,A.ay,G.UP[a
   const [bx,by]=p,sp=G.SP.some(s=>Math.hypot(s.x-bx,s.y-by)<85);F.st=1;F.bx=bx;F.by=by;F.cx=A.x;F.cy=A.y;F.ct=performance.now();F.sp=sp;F.dp=clamp((FS_WY[sg]-by)/260,0,1);F.t=(1.4+Math.random()*2.6)*(sp?.55:1);F.prog=0;F.ten=0;F.f=-1;
   evq.push(['CA',aid,Math.round(bx),Math.round(by)])}
 function fsTap(A,aid,F){F.lt=performance.now();const L=1+.45*fsLv(aid,'l'),S=1+.3*fsLv(aid,'s');
-  if(F.f===FS_DRG){if(G.DR&&G.DR.st===2)G.DR.prog+=.05*S;F.ten+=.1/L}else{const ft=FS_FT[F.f];F.prog+=.13*S/ft.h;F.ten+=.15*ft.h/L}}
+  if(F.f===FS_DRG){if(G.DR&&G.DR.st===2)G.DR.prog+=.07*S;F.ten+=.07/L}else{const ft=FS_FT[F.f];F.prog+=.21*S/ft.h;F.ten+=.09*ft.h/L}}
 function fsShoo(A,aid){let hit=false;const R=A.hat==='crown'?175:145;
   for(const q of G.GL){if(Math.hypot(q.x-A.x,q.y-A.y)>R)continue;if(q.st===0){q.st=1;q.face=q.x<A.x?-1:1;hit=true;evq.push(['GS',aid,Math.round(q.x),Math.round(q.y)])}else if(q.f>=0&&q.y>A.y-160){fsGive(aid,q.f);evq.push(['GD',aid,Math.round(q.x),Math.round(q.y),q.f]);q.f=-1;hit=true}}
   for(const c of G.CT){if(Math.hypot(c.x-A.x,c.y-A.y)>R-15)continue;
@@ -2991,12 +2991,12 @@ GMS.fish={rejoin(b){const n=Object.keys(G.P).length,[x,y]=fsStart(n%6,G.sg|0);b.
   tick(dt){const P=G.P,now=performance.now();if(!G.sg&&G.t<=FS_HALF)fsStageSwitch();const sg=G.sg;
     G.spT-=dt;if(G.spT<=0){G.spT=10+Math.random()*4;G.SP=[fsSpot(sg),fsSpot(sg)]}
     for(const id in P){const b=P[id],F=fsF(id);
-      if(F.st&&(b.stun>0||Math.hypot(b.x-F.cx,b.y-F.cy)>48)){if(F.st===3)evq.push(['LS',id,Math.round(b.x),Math.round(b.y)]);F.st=0}
+      if(F.st&&(b.stun>0||Math.hypot(b.x-F.cx,b.y-F.cy)>95)){if(F.st===3)evq.push(['LS',id,Math.round(b.x),Math.round(b.y)]);F.st=0}
       if(F.st===1){F.t-=dt;if(sg&&G.DR.st===2&&Math.hypot(F.bx-G.DR.x,F.by-G.DR.y)<230)fsHookDragon(id,F);
-        else if(F.t<=0){F.st=2;F.t=.95;F.f=fsPick(sg,F.dp,F.sp,b.hat==='crown');evq.push(['BT',id,Math.round(F.bx),Math.round(F.by)])}}
+        else if(F.t<=0){F.st=2;F.t=1.8;F.f=fsPick(sg,F.dp,F.sp,b.hat==='crown');evq.push(['BT',id,Math.round(F.bx),Math.round(F.by)])}}
       else if(F.st===2){F.t-=dt;if(F.t<=0){F.st=1;F.t=1.2+Math.random()*2.2;evq.push(['MI',id,Math.round(F.bx),Math.round(F.by)])}}
-      else if(F.st===3){F.ten=Math.max(0,F.ten-.6*dt);
-        if(F.f===FS_DRG){if(G.DR.st!==2)F.st=0}else{F.prog-=FS_FT[F.f].p*.1*dt;if(now-F.lt>2500)F.prog-=.35*dt}
+      else if(F.st===3){F.ten=Math.max(0,F.ten-1.05*dt);
+        if(F.f===FS_DRG){if(G.DR.st!==2)F.st=0}else{F.prog-=FS_FT[F.f].p*.1*dt;if(now-F.lt>4000)F.prog-=.2*dt}
         if(F.st===3&&F.ten>=1){F.st=0;evq.push(['SN',id,Math.round(F.bx),Math.round(F.by)])}
         else if(F.st===3&&F.f!==FS_DRG){if(F.prog>=1){F.st=0;fsGive(id,F.f);evq.push(['CT',id,F.f,Math.round(b.x),Math.round(b.y),Math.round(F.bx),Math.round(F.by)])}else if(F.prog<=0){F.st=0;evq.push(['ES',id,Math.round(F.bx),Math.round(F.by)])}}}
       b.bag=((b.pooU||0)>now?1:0)|(fsLv(id,'h')?2:0)|(fsLv(id,'c')?4:0)}

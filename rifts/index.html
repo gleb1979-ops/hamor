@@ -709,13 +709,15 @@ function drawHeroSprite(c,h,o){const D=HSP[h];if(!D)return false;const mv=o.movi
  const side=Math.cos(o.face)>=0?1:-1,isW=k[0]==='w',W=isW?D.RW:D.W,Hh=W*(isW?D.RR:D.R),AX=isW?D.rax:D.ax,AY=isW?D.ray:D.ay,heavy=h===6||h===4;
  let dx=0,dy=0,sx=1,sy=1,rot=0;
  if(k==='i'){const br=Math.sin(t*3);sy=1+br*0.018;sx=1-br*0.008}
- else if(isW){rot=heavy?0.01:0.02}
+ else if(isW){const ph2=t*RFPS[h]/D.run*TAU*2;dy=-Math.abs(Math.sin(ph2/2))*(heavy?1.5:2.2);rot=(heavy?0.01:0.02)+Math.sin(ph2)*0.006}
  else if(k==='r1'||k==='r2'){const up=Math.sin(u*Math.PI);dy=-up*(heavy?5:7);const land=Math.max(0,1-u*4);sy=1-land*(heavy?0.07:0.05);sx=1+land*(heavy?0.05:0.03);rot=(heavy?0.03:0.06)+Math.sin(ph*Math.PI)*0.015}
  else if(k==='a'){const q=o.animMax?1-o.anim/o.animMax:1,lu=Math.sin(Math.min(1,q*1.6)*Math.PI);dx=lu*8;sx=1+lu*0.05;rot=lu*0.05}
  else if(k==='s'&&!o.dash){sy=1+Math.sin(time*18)*0.012;dy=-2}
  c.save();if(side<0)c.scale(-1,1);c.translate(dx,dy);c.rotate(rot);c.scale(sx,sy);
  if(o.berserk){c.save();c.globalCompositeOperation='lighter';glow(c,0,-Hh*0.45,W*0.55,'#c026d3',0.35+0.15*Math.sin(t*10));c.restore()}
- c.drawImage(im,-W*AX,-Hh*AY+2,W,Hh);c.restore();o.hx=side*W*0.3;o.hy=-Hh*0.5;return true}
+ c.drawImage(im,-W*AX,-Hh*AY+2,W,Hh);
+ if(isW){const fp=t*RFPS[h],fr=fp-Math.floor(fp);if(fr>0.45){const nk='w'+((Math.floor(fp)+1)%D.run),im2=(o.skin&&hsImg(h,nk,o.skin))||hsImg(h,nk,0);if(im2&&im2.complete&&im2.naturalWidth){const a=(fr-0.45)/0.55;c.globalAlpha*=a*a*(3-2*a);c.drawImage(im2,-W*AX,-Hh*AY+2,W,Hh)}}}
+ c.restore();o.hx=side*W*0.3;o.hy=-Hh*0.5;return true}
 function drawHero(c,h,x,y,o){
  const s=o.scale||1,wt=o.wt||1;c.save();c.translate(x,y);c.scale(s,s);if(o.alpha!=null)c.globalAlpha=o.alpha;
  c.fillStyle='rgba(0,0,0,0.38)';c.beginPath();c.ellipse(0,0,18,6.5,0,0,TAU);c.fill();

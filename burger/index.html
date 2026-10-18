@@ -1060,7 +1060,7 @@ function stickMove(e){if(!stickC){const r=stick.getBoundingClientRect();stickC=[
   if(d>max){dx=dx/d*max;dy=dy/d*max}knob.style.transform=`translate(${dx}px,${dy}px)`;const m=Math.min(d,max)/max,k=m<.12?0:Math.min(1,(m-.12)/.55);input.dx=d?dx/Math.min(d,max)*k:0;input.dy=d?dy/Math.min(d,max)*k:0}
 function stickStart(e,el,floating){if(stickId!==null)return;stickId=e.pointerId;try{el.setPointerCapture(e.pointerId)}catch(_){}
   if(floating){stick.style.transition='none';stick.style.transform='';const r=stick.getBoundingClientRect(),hx=r.left+r.width/2,hy=r.top+r.height/2;stickC=[e.clientX,e.clientY];stick.style.transform=`translate(${e.clientX-hx}px,${e.clientY-hy}px)`}else stickC=null;stickMove(e)}
-stick.addEventListener('pointerdown',e=>stickStart(e,stick,false));zone.addEventListener('pointerdown',e=>{e.preventDefault();stickStart(e,zone,true)});
+stick.addEventListener('pointerdown',e=>stickStart(e,stick,false));zone.addEventListener('pointerdown',e=>{e.preventDefault();if(e.pointerType==='mouse')return;stickStart(e,zone,true)});
 for(const el of [stick,zone])el.addEventListener('pointermove',e=>{if(e.pointerId===stickId)stickMove(e)});
 const stickEnd=e=>{if(e.pointerId!==stickId)return;stickId=null;stickC=null;knob.style.transform='';stick.style.transition='';stick.style.transform='';input.dx=input.dy=0};
 for(const el of [stick,zone]){el.addEventListener('pointerup',stickEnd);el.addEventListener('pointercancel',stickEnd)}
@@ -2173,7 +2173,7 @@ GMS.sniper={icons:['🎯','💣','snGren'],paint:paintSniper,maps:['city','fores
   state(){return TM==='team'?{s:G.ts,g:G.goal}:{}},apply(x){gmV=x}};
 addEventListener('pointermove',e=>{if(LOC!=='sniper'||phase!=='play'||e.pointerType!=='mouse')return;const r=cv.getBoundingClientRect();snA.x=clamp((e.clientX-r.left-OX)/SC,30,AW-30);snA.y=clamp((e.clientY-r.top-OY)/SC,TOP+6,AH-14);if(mine&&mine.stun<=0)mine.face=snA.x<mine.x?-1:1});
 addEventListener('pointerdown',e=>{if(LOC!=='sniper'||phase!=='play'||e.pointerType!=='mouse'||e.target.closest('button,#push,#low,a,input'))return;if(e.button===2)doLowLocal();else if(e.button===0)doPushLocal()});
-addEventListener('contextmenu',e=>{if(phase==='play'&&!e.target.closest('a,input,textarea'))e.preventDefault()});addEventListener('pointerdown',e=>{if(LOC==='sniper'||phase!=='play'||e.pointerType!=='mouse'||e.button!==2||e.target.closest('button,#push,#low,a,input'))return;e.preventDefault();doPushLocal()});
+addEventListener('contextmenu',e=>{if(phase==='play'&&!e.target.closest('a,input,textarea'))e.preventDefault()});addEventListener('pointerdown',e=>{if(LOC==='sniper'||phase!=='play'||e.pointerType!=='mouse'||e.button!==0||e.target.closest('button,#push,#low,#stick,a,input,select,textarea,label'))return;e.preventDefault();doPushLocal()});
 
 
 /* ================= Night Race ================= */

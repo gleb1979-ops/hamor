@@ -89,7 +89,7 @@ body.touch #wrap{width:100%;height:100%;max-width:none;aspect-ratio:auto;border-
 </div>
 <div id="bar">
   <div class="keys">
-    <span><b>Игрок 1:</b> WASD · удар F или правая кнопка мыши · супер G</span>
+    <span><b>Игрок 1:</b> WASD · удар F или левая кнопка мыши · супер G</span>
     <span><b>Игрок 2:</b> IJKL · удар O · супер P</span>
     <span><b>Игрок 3:</b> стрелки · удар . · супер /</span>
     <span><b>Игрок 4:</b> нампад 8456 · удар 0 · супер ,</span>
@@ -178,7 +178,7 @@ const KEYMAP=[
  {up:['ArrowUp'],down:['ArrowDown'],left:['ArrowLeft'],right:['ArrowRight'],atk:['Period'],sp:['Slash']},
  {up:['Numpad8'],down:['Numpad5'],left:['Numpad4'],right:['Numpad6'],atk:['Numpad0'],sp:['NumpadDecimal']}
 ];
-const KEYLABEL=[{move:'WASD',atk:'F / ПКМ',sp:'G'},{move:'IJKL',atk:'O',sp:'P'},{move:'стрелки',atk:'.',sp:'/'},{move:'нампад 8456',atk:'0',sp:','}];
+const KEYLABEL=[{move:'WASD',atk:'F / ЛКМ',sp:'G'},{move:'IJKL',atk:'O',sp:'P'},{move:'стрелки',atk:'.',sp:'/'},{move:'нампад 8456',atk:'0',sp:','}];
 const GAMEKEYS=new Set(['Enter','Escape','Space']);KEYMAP.forEach(m=>Object.values(m).forEach(a=>a.forEach(k=>GAMEKEYS.add(k))));
 
 // ================= Audio =================
@@ -202,7 +202,7 @@ const THROTTLE={hit:45,shoot:70,die:40,laser:60};
 function sfx(n,a){rec(['a',n,a==null?0:a]);if(!AC||!soundOn)return;if(AC.state==='suspended')AC.resume();const now=performance.now();if(THROTTLE[n]){if(now-(lastS[n]||0)<THROTTLE[n])return;lastS[n]=now}try{SFX[n](a)}catch(e){}}
 
 // ================= Input =================
-const keys={};const MOUSE={a:false};{const cv=document.getElementById('game');if(cv){cv.addEventListener('mousedown',e=>{if(e.button===2){e.preventDefault();MOUSE.a=true;initAudio()}});cv.addEventListener('contextmenu',e=>e.preventDefault())}addEventListener('mouseup',e=>{if(e.button===2)MOUSE.a=false});addEventListener('blur',()=>{MOUSE.a=false})}
+const keys={};const MOUSE={a:false};{const cv=document.getElementById('game');if(cv){cv.addEventListener('mousedown',e=>{if(e.button===0&&state==='play'){e.preventDefault();MOUSE.a=true;initAudio()}});cv.addEventListener('contextmenu',e=>e.preventDefault())}addEventListener('mouseup',e=>{if(e.button===0)MOUSE.a=false});addEventListener('blur',()=>{MOUSE.a=false})}
 addEventListener('keydown',e=>{if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON'&&e.code==='Enter'))return;if(GAMEKEYS.has(e.code))e.preventDefault();keys[e.code]=true;initAudio()});
 addEventListener('keyup',e=>{keys[e.code]=false});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
@@ -222,7 +222,7 @@ function pollInput(){
   for(const mm of maps){const ax=(kd(mm.right)?1:0)-(kd(mm.left)?1:0),ay=(kd(mm.down)?1:0)-(kd(mm.up)?1:0);if(ax||ay){mx=ax;my=ay}atk=atk||kd(mm.atk);sp=sp||kd(mm.sp)}
   for(const p of ps)if(NET.on?i===0:padMap[p.idx]===i){if(p.mx||p.my){mx=p.mx;my=p.my}atk=atk||p.a;sp=sp||p.s}
   if(REMOTE[i]){const r=REMOTE[i];if(r.mx||r.my){mx=+r.mx||0;my=+r.my||0}atk=atk||!!r.atk;sp=sp||!!r.sp}
-  if(i===0&&MOUSE.a)atk=true;
+  if(i===0&&MOUSE.a&&state==='play')atk=true;
   if(i===0&&touch.on){if(touch.mx||touch.my){mx=touch.mx;my=touch.my}atk=atk||touch.a;sp=sp||touch.b}
   const l=Math.hypot(mx,my);if(l>1){mx/=l;my/=l}
   I.atkP=atk&&!I.atk;I.spP=sp&&!I.sp;const L=mx<-0.5,R=mx>0.5;I.leftP=L&&!I.pl;I.rightP=R&&!I.pr;I.pl=L;I.pr=R;I.mx=mx;I.my=my;I.atk=atk;I.sp=sp}

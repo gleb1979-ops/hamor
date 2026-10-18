@@ -3487,6 +3487,7 @@ const R3BG={};
 let r3Stg=-1;function r3SetStage(s){if(s===r3Stg)return;r3Stg=s;TABLES=R3M[s]?R3M[s].t:[]}
 function r3Bed(f,x,y){f.fillStyle='rgba(0,0,0,.2)';f.beginPath();f.ellipse(x+6,y+30,80,18,0,0,7);f.fill();rr(f,x-74,y-30,148,62,10);sh(f,'#e3eef5',3);rr(f,x-74,y-30,40,62,10);sh(f,'#fff',2.5);rr(f,x-30,y-26,100,54,8);sh(f,'#9fd3f0',2.5);f.fillStyle='rgba(255,255,255,.4)';f.fillRect(x-24,y-20,88,6);rr(f,x-80,y-46,10,84,4);sh(f,'#8c96a3',2);rr(f,x+70,y-40,10,78,4);sh(f,'#8c96a3',2)}
 function r3Paint(s){if(R3BG[s]&&R3BG[s].ok)return R3BG[s];const cv=R3BG[s]||document.createElement('canvas');R3BG[s]=cv;cv.width=AW;cv.height=AH;const f=cv.getContext('2d');cv.ok=true;
+  if(s===2){const im=BGMAPS.pizza_cellar;if(im&&im.complete&&im.naturalWidth){f.drawImage(im,0,0,AW,AH);return cv}cv.ok=false}
   if(s===0){const wg=f.createLinearGradient(0,0,0,TOP);wg.addColorStop(0,'#d4f0e4');wg.addColorStop(1,'#b8e2d0');f.fillStyle=wg;f.fillRect(0,0,AW,TOP);f.fillStyle='#9fd0b8';f.fillRect(0,TOP-40,AW,26);
     for(let y=TOP-14;y<AH;y+=50)for(let x=0;x<AW;x+=50){f.fillStyle=((x+y)/50)%2?'#f2f7fb':'#dde9f2';f.fillRect(x,y,50,50)}
     rr(f,120,22,140,96,8);sh(f,'#fff',3);f.fillStyle=OUT;f.textAlign='center';[['E',30],['F P',20],['T O Z',14],['L P E D',10]].forEach(([q,z],i)=>{f.font=`900 ${z}px Rubik, sans-serif`;f.fillText(q,190,48+i*20)});

@@ -1739,20 +1739,26 @@ function krRam(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.k++;return}krRamCar
 function krNitroCar(c){if(c.out||c.fin||c.nitro<=0||c.boostT>0)return;c.nitro--;c.boostT=3;SFX.whoosh();if(c===K.c){K.msg='НИТРО!';K.msgT=.9}}
 function krRamCar(c){if(c.out||c.fin||c.ramCd>0)return;let best=null,bd=1e9;for(const p of K.cops){const d=Math.hypot(p.x-c.x,p.y-c.y);if(d<bd){bd=d;best=p}}
  c.ramD=best&&bd<200?Math.sign(best.x-c.x)||1:(c.steer||1)>0?1:-1;c.ramT=.28;c.ramCd=1;if(c===K.c)SFX.whoosh()}
+/* машина едет по дороге сама: при движении вперёд сдвигается вместе с изгибом, а борта не выпускают с асфальта */
+function krFollow(o,dy){const a=krRoad(o.y)[0];o.y-=dy;const b=krRoad(o.y)[0];o.x+=b-a}
+function krClampRoad(o,hw){const [rc,rh]=krRoad(o.y),lim=Math.max(6,rh-hw);const d=o.x-rc;if(Math.abs(d)>lim){o.x=rc+Math.sign(d)*lim;return Math.sign(d)}return 0}
+function krSlope(y){return Math.atan2(krRoad(y-30)[0]-krRoad(y+30)[0],60)}
 function krBox(ax,ay,aw,ah,bx,by,bw,bh){return Math.abs(ax-bx)<(aw+bw)/2&&Math.abs(ay-by)<(ah+bh)/2}
 /* ввод: свой — с клавиатуры/джойстика, чужой — из сети */
 function krInput(c){if(c===K.c){const st=clamp(((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,-1,1);return {st,gas:keys.ArrowUp||keys.KeyW||pad.my<-.35,brk:keys.ArrowDown||keys.KeyS||pad.my>.35}}
  const I=NETU.inp[c.rid]||{};if(I.a!==undefined&&I.a!==c._a){if(c._a!==undefined)krNitroCar(c);c._a=I.a}if(I.k!==undefined&&I.k!==c._k){if(c._k!==undefined)krRamCar(c);c._k=I.k}
  const my=+I.my||0;return {st:clamp(+I.mx||0,-1,1),gas:my<-.35,brk:my>.35}}
 function krCarTick(c,dt){const I=krInput(c);let st=I.st;const me=c===K.c;
- const [rc,rh]=krRoad(c.y),off=Math.abs(c.x-rc)>rh-KR.CW*.3;c.off=off;
- let tv=c.boostT>0?KR.NITRO:I.brk?KR.BRAKE:KR.GAS;if(off)tv=Math.min(tv,KR.OFF);if(c.slowT>0){tv*=.55;c.slowT-=dt}
+ let tv=c.boostT>0?KR.NITRO:I.brk?KR.BRAKE:KR.GAS;if(c.slowT>0){tv*=.55;c.slowT-=dt}
  c.v+=(tv-c.v)*Math.min(1,dt*(tv<c.v?3:1.6));if(c.boostT>0){c.boostT-=dt;if(Math.random()<.5)K.fx.push({x:c.x+rnd(-8,8),y:c.y+KR.CL/2,vx:rnd(-20,20),vy:60,t:0,life:.35,c:'#7cf0ff',s:rnd(3,6)})}
  if(c.oilT>0){c.oilT-=dt;st=c.oilD*.8;c.ang=c.oilD*.55*Math.sin((1-c.oilT/.9)*Math.PI)}else c.ang*=Math.pow(.02,dt);
- c.steer+=(st-c.steer)*Math.min(1,dt*13);let lat=c.steer*(150+c.v*.4);
+ c.steer+=(st-c.steer)*Math.min(1,dt*10);let lat=c.steer*(120+c.v*.35);
  if(c.ramT>0){c.ramT-=dt;lat=c.ramD*480}c.ramCd-=dt;
- c.x+=lat*dt;c.y-=c.v*dt;c.x=clamp(c.x,30,KRW-30);if(c.inv>0)c.inv-=dt;
- if(off&&c.v>40&&Math.random()<dt*8){if(me)K.shk=Math.max(K.shk,3);K.fx.push({x:c.x+rnd(-20,20),y:c.y+KR.CL/2,vx:rnd(-30,30),vy:40,t:0,life:.5,c:'#8a6a40',s:rnd(3,6)})}
+ krFollow(c,c.v*dt);c.x+=lat*dt;if(c.inv>0)c.inv-=dt;
+ const wall=krClampRoad(c,KR.CW*.5+4);c.off=!!wall;
+ if(wall){c.v*=Math.pow(.55,dt);if(c.ramT>0)c.ramT=0;if(c.oilT>0)c.oilT=0;if(Math.random()<dt*14)K.fx.push({x:c.x+wall*KR.CW*.5,y:c.y+rnd(-30,30),vx:-wall*rnd(20,90),vy:rnd(-40,60),t:0,life:.35,c:'#ffd27a',s:rnd(2,4)});
+  if(!c.wallT||c.wallT<=0){c.wallT=.8;if(c.v>90&&Math.abs(c.steer)>.4){krDmg(c,2,'БОРТ');if(me)K.shk=Math.max(K.shk,4)}}}
+ if(c.wallT>0)c.wallT-=dt;
  for(const o of K.O){if(o.hit===2)continue;const T=KOT[o.k],[ow,oh2]=krObSize(o);
   if(!krBox(c.x,c.y,KR.CW*.9,KR.CL*.85,o.x,o.y,ow*.8,oh2*.75))continue;
   if(T.pick){o.hit=2;if(me)SFX.pick();if(T.pick==='nitro'){c.nitro=Math.min(3,c.nitro+1);krTxt(c,'+НИТРО','#7cf0ff')}else{c.hp=Math.min(100,c.hp+35);krTxt(c,'ПОЧИНИЛ +35','#5ad05a')}continue}
@@ -1779,13 +1785,13 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
  const prog=clamp((KRH-260-lead.y)/(KRH-530),0,1),want=(K.nP>1?K.nP+1:2)+(prog>.4)+(prog>.75);
  if(act.length)while(K.cops.length<want){const yy=lowY+380,[cc]=krRoad(yy);K.cops.push(krCop(yy,cc+rnd(-30,30)));K.msg='ЕЩЁ ОДИН УАЗИК!';K.msgT=1.5}
  let near=0;
- for(const p of K.cops){p.wob+=dt;p.hitT-=dt;const [pc,ph]=krRoad(p.y),poff=Math.abs(p.x-pc)>ph-KR.UW*.3;
+ for(const p of K.cops){p.wob+=dt;p.hitT-=dt;const [pc,ph]=krRoad(p.y),poff=false;
   let tg=null,bd=1e9;for(const c of act){const d=Math.hypot(c.x-p.x,(c.y-p.y)*.7);if(d<bd){bd=d;tg=c}}
   const c=tg||lead,dy=p.y-c.y;
   if(p.stun>0){p.stun-=dt;p.v*=Math.pow(.25,dt);p.x+=Math.sin(p.wob*9)*40*dt}
   else{let tv=dy>90?Math.min(KR.GAS*1.3,c.v+34+dy*.05):dy<-160?KR.GAS*.65:c.v+(dy>0?16:-8);if(poff)tv=Math.min(tv,KR.OFF+8);if(!tg)tv=KR.CRUISE*.5;p.v+=(tv-p.v)*Math.min(1,dt*1.6);
    const tx=Math.abs(dy)<110?c.x:pc+Math.sin(p.wob)*ph*.3;p.x+=clamp(tx-p.x,-1,1)*Math.min(Math.abs(tx-p.x),(Math.abs(dy)<110?95:75))*dt*1.4}
-  p.y-=p.v*dt;p.x=clamp(p.x,30,KRW-30);if(Math.hypot(p.x-K.c.x,p.y-K.c.y)<260)near=1;
+  krFollow(p,p.v*dt);krClampRoad(p,KR.UW*.5+2);if(Math.hypot(p.x-K.c.x,p.y-K.c.y)<260)near=1;
   if(tg&&p.y>lowY+700){const yy=lowY+420,[cc]=krRoad(yy);p.y=yy;p.x=cc;p.v=c.v}
   for(const o of K.O)if(o.hit!==2&&KOT[o.k].solid&&!o.block&&krBox(p.x,p.y,KR.UW*.8,KR.UL*.8,o.x,o.y,...krObSize(o).map(v=>v*.7))&&p.stun<=0){p.stun=1.4;p.v*=.3;SFX.metal();if(KOT[o.k].br)o.hit=2}
   for(const c2 of act)if(krBox(c2.x,c2.y,KR.CW,KR.CL*.9,p.x,p.y,KR.UW,KR.UL*.9)){
@@ -1795,6 +1801,7 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
  for(let i=0;i<K.cops.length;i++)for(let j=i+1;j<K.cops.length;j++){const a=K.cops[i],b=K.cops[j];if(krBox(a.x,a.y,KR.UW,KR.UL,b.x,b.y,KR.UW,KR.UL)){const s=a.x>b.x?1:-1;a.x+=s*20*dt*10;b.x-=s*20*dt*10;if(a.y>b.y)a.y+=30*dt;else b.y+=30*dt}}
  // крузаки толкаются между собой
  for(let i=0;i<act.length;i++)for(let j=i+1;j<act.length;j++){const a=act[i],b=act[j];if(krBox(a.x,a.y,KR.CW,KR.CL*.9,b.x,b.y,KR.CW,KR.CL*.9)){const s=a.x>b.x?1:-1,p=(KR.CW-Math.abs(a.x-b.x))*.5+1;a.x+=s*p;b.x-=s*p;if(Math.abs(a.y-b.y)<KR.CL*.6){if(a.y>b.y)a.v*=.97;else b.v*=.97}}}
+ for(const c of act)krClampRoad(c,KR.CW*.5+4);for(const p of K.cops)krClampRoad(p,KR.UW*.5+2);
  if(near){K.sirT-=dt;if(K.sirT<=0){SFX.siren&&SFX.siren();K.sirT=1.6}}
  // конец
  const me=K.c;
@@ -1821,7 +1828,7 @@ function krPause(){if(!K||state!=='krz')return;
 /* ---- рисование ---- */
 function krCam(){const c=K.c;if((c.out||c.fin)&&K.nP>1){const a=K.cars.filter(x=>!x.out&&!x.fin);if(a.length)return a.reduce((p,q)=>p.y<q.y?p:q)}return c}
 function krDrawCar(c,S,t){const [sx,sy]=S(c.x,c.y),SC=KR.SC;if(sy<-300||sy>H+300)return;
- ctx.save();ctx.translate(sx,sy);ctx.rotate(c.steer*.2+c.ang);if(c.out)ctx.globalAlpha=.55;else if(c.inv>0&&((t*20)|0)%2)ctx.globalAlpha=.6;
+ ctx.save();ctx.translate(sx,sy);ctx.rotate(krSlope(c.y)+c.steer*.14+c.ang);if(c.out)ctx.globalAlpha=.55;else if(c.inv>0&&((t*20)|0)%2)ctx.globalAlpha=.6;
  {const sg=ctx.createRadialGradient(6,10,10,6,10,KR.CL*SC*.55);sg.addColorStop(0,'rgba(0,0,0,.55)');sg.addColorStop(1,'rgba(0,0,0,0)');ctx.save();ctx.scale(.62,1);ctx.fillStyle=sg;ctx.beginPath();ctx.arc(6/.62,10,KR.CL*SC*.55,0,TAU);ctx.fill();ctx.restore()}
  const fr=c.hp>66?0:c.hp>33?1:2,KC=KRCARS[c.col]||KRCARS.black;if(KC.complete&&KC.naturalWidth){const fw=KC.naturalWidth/3;ctx.drawImage(KC,fr*fw,0,fw,KC.naturalHeight,-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}else{ctx.fillStyle='#111';ctx.fillRect(-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}
  if(c.boostT>0){ctx.fillStyle='rgba(124,240,255,.55)';ctx.beginPath();ctx.moveTo(-14,KR.CL*SC/2);ctx.lineTo(0,KR.CL*SC/2+40+Math.random()*30);ctx.lineTo(14,KR.CL*SC/2);ctx.fill()}ctx.restore();
@@ -1833,7 +1840,7 @@ function krDraw(t){const cam=krCam(),SC=KR.SC,VW=W/SC,VH=H/SC;const camX=clamp(c
  for(const o of K.O){if(o.hit===2)continue;const [sx,sy]=S(o.x,o.y);if(sy<-200||sy>H+200)continue;const [ow,oh]=krObSize(o);
   if(o.k==='uaz'){ctx.save();ctx.translate(sx,sy);if(UAZI.complete&&UAZI.naturalWidth)ctx.drawImage(UAZI,-ow*SC/2,-oh*SC/2,ow*SC,oh*SC);krSiren(sx,sy,t,.8);ctx.restore();continue}
   const im=KROB[o.k];if(!im||!im.naturalWidth)continue;ctx.save();ctx.translate(sx,sy);if(KOT[o.k].flip)ctx.rotate(Math.PI);if(KOT[o.k].pick){const b=1+.08*Math.sin(t*6);ctx.scale(b,b)}ctx.drawImage(im,-ow*SC/2,-oh*SC/2,ow*SC,oh*SC);ctx.restore()}
- for(const p of K.cops){const [sx,sy]=S(p.x,p.y);if(sy<-300||sy>H+300)continue;ctx.save();ctx.translate(sx,sy);ctx.rotate(-Math.PI/2+(p.stun>0?Math.sin(p.wob*9)*.5:0));
+ for(const p of K.cops){const [sx,sy]=S(p.x,p.y);if(sy<-300||sy>H+300)continue;ctx.save();ctx.translate(sx,sy);ctx.rotate(-Math.PI/2+krSlope(p.y)+(p.stun>0?Math.sin(p.wob*9)*.5:0));
   {const sg=ctx.createRadialGradient(8,8,10,8,8,KR.UL*SC*.55);sg.addColorStop(0,'rgba(0,0,0,.5)');sg.addColorStop(1,'rgba(0,0,0,0)');ctx.save();ctx.scale(1,.6);ctx.fillStyle=sg;ctx.beginPath();ctx.arc(8,8/.6,KR.UL*SC*.55,0,TAU);ctx.fill();ctx.restore()}if(UAZI.complete&&UAZI.naturalWidth)ctx.drawImage(UAZI,-KR.UL*SC/2,-KR.UW*SC/2,KR.UL*SC,KR.UW*SC);ctx.restore();krSiren(sx,sy,t,1)}
  for(const c of K.cars)if(c!==K.c)krDrawCar(c,S,t);krDrawCar(K.c,S,t);
  for(const f of K.fx){const [sx,sy]=S(f.x,f.y),a=1-f.t/f.life;if(f.txt){ctx.globalAlpha=Math.max(0,a);ctx.font='900 26px Impact,sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(f.txt,sx,sy);ctx.fillStyle=f.c;ctx.fillText(f.txt,sx,sy);ctx.globalAlpha=1}else{ctx.fillStyle=f.c;ctx.globalAlpha=Math.max(0,a);ctx.fillRect(sx,sy,f.s*SC*.6,f.s*SC*.6);ctx.globalAlpha=1}}
@@ -1842,7 +1849,7 @@ function krSiren(sx,sy,t,k){const on=((t*4)|0)%2;ctx.save();ctx.globalCompositeO
 function krHUD(t){const c=K.c,ts=Math.floor(K.t);
  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(16,14,330,72);ctx.font='900 20px Impact,sans-serif';ctx.textAlign='left';ctx.fillStyle='#f3e9dc';ctx.fillText('КРУЗАК  '+'🔥'.repeat(c.nitro)+(c.nitro?'':'· нитро нет'),28,38);
  ctx.fillStyle='#331';ctx.fillRect(28,48,220,14);ctx.fillStyle=c.hp>50?'#5ad05a':c.hp>25?'#e8b23a':'#e0303a';ctx.fillRect(28,48,220*c.hp/100,14);ctx.font='bold 13px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(Math.round(c.hp)+'%',256,60);
- ctx.fillStyle='#9fd0ff';ctx.fillText(c.out?'ПРИНЯЛИ — смотришь за своими':c.fin?'В ГАРАЖЕ · '+c.fin+'-й':((c.v|0)+' · '+(c.off?'ОБОЧИНА!':'дорога')),28,78);
+ ctx.fillStyle='#9fd0ff';ctx.fillText(c.out?'ПРИНЯЛИ — смотришь за своими':c.fin?'В ГАРАЖЕ · '+c.fin+'-й':((c.v|0)+(c.off?' · У БОРТА!':'')),28,78);
  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-200,12,400,40);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`${ts/60|0}:${String(ts%60).padStart(2,'0')} · УАЗИКОВ ${K.cops.length} · ТАРАНОВ ${c.rams}`,W/2,40);
  if(K.nP>1){ctx.textAlign='left';ctx.font='bold 14px system-ui';K.cars.forEach((q,i)=>{const y=104+i*20;ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(16,y-15,200,19);ctx.fillStyle=q===c?'#7cf07c':'#f3e9dc';ctx.fillText((q.fin?'🏁'+q.fin+' ':q.out?'🚨 ':'🚙 ')+(q===c?'Ты':q.name)+' · '+Math.round(q.hp)+'%',22,y)})}
  const bx=W-34,by0=70,by1=H-110;ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(bx-8,by0-10,16,by1-by0+20);const P=y=>by0+(by1-by0)*clamp((y-270)/(KRH-530),0,1);

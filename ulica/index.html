@@ -272,7 +272,7 @@ function damage(a,b,dmg,knock,heavy){if(b.state==='ko')return;if(ride()){if(b.ai
  blood(b.x,b.y-110,heavy?14:7,a.face);if(BLOOD&&Math.random()<.5)decalBlood(b.x+a.face*rnd(10,40),b.y+rnd(-6,8),rnd(5,14));
  G.FX.push({x:b.x,y:b.y-150,t:0,life:.6,txt:'-'+dmg,c:heavy?'#ff4a4a':'#ffd23f'});
  heavy?SFX.heavy():SFX.hit();
- if(heavy&&Math.random()<.45){b.state='down';b.downT=0;b.stun=1.1}
+ if(heavy&&!(b.upT>0)&&Math.random()<(a.bot&&b===G.F[0]?.3:.45)){b.state='down';b.downT=0;b.stun=1.1}
  if(b.hp<=0){b.hp=0;b.state='ko';b.downT=0;a.kills++;SFX.ko();decalBlood(b.x,b.y,30);if(a===G.F[0])gainXP(b.npc==='dog'?10:25);G.FX.push({x:b.x,y:b.y-170,t:0,life:1.1,txt:'НОКАУТ',c:'#ffffff',big:1});if(b.npc==='dog'){b.flee=1;b.face=1;G.FX.push({x:b.x,y:b.y-130,t:0,life:1.2,txt:'СКУЛИТ И УДИРАЕТ',c:'#e8c08a'})}}
  if(b.carry&&(b.state==='down'||b.state==='ko'))dropCrate(b);if(mode==='zavod'&&((b.npc&&(b.hp>0||b.npc==='dog'))||(b.team===0&&a.npc)))raiseAlarm()}
 function attack(f){if(RMODE())return rHit(f,false);if(mode==='disko'&&G&&G.ph==='slow'){if(!f.bot)diskoPenalty(f);return}if(f.cd>0||f.stun>0||f.state==='down'||f.state==='ko')return;if(f.carry){dropCrate(f,true);return}if(!f.weapon&&HH(f).sling&&!f.carry){f.cd=.5/HH(f).rate;f.atkT=f.atkDur=.25;SFX.whoosh();G.B.push({x:f.x+f.face*36,y:f.y-108,vx:f.face*950,o:f,life:.75,yy:f.y,stone:1,sd:9});return}
@@ -282,15 +282,15 @@ function attack(f){if(RMODE())return rHit(f,false);if(mode==='disko'&&G&&G.ph===
  if(w.salt){f.flash=.12;SFX.shot();for(let k=0;k<5;k++)G.B.push({x:f.x+f.face*80,y:f.y-92,vx:f.face*rnd(650,850),vy:rnd(-60,60),o:f,life:.65,yy:f.y,salt:1});return}
  if(w.gun){if(f.ammo<=0){SFX.click();f.weapon=null;return}f.ammo--;f.flash=.08;SFX.shot();G.B.push({x:f.x+f.face*40,y:f.y-92,vx:f.face*1500,o:f,life:.7,yy:f.y,dmg:w.dmg});if(f.ammo<=0)setTimeout(()=>{if(f.weapon==='pistol')f.weapon=null},400);return}
  let cm=1;if(HH(f).combo&&!f.weapon){f.cmb=G.t-(f.cmbT||-9)<1.1?(f.cmb||0)+1:1;f.cmbT=G.t;if(f.cmb>=3){cm=2;f.cmb=0;G.FX.push({x:f.x+f.face*40,y:f.y-170,t:0,life:.7,txt:'СЕРИЯ!',c:'#ff9a5a',big:1})}}
- SFX.whoosh();const T=hitBox(f,w);for(const b of T){damage(f,b,(w.dmg+rnd(-2,3))*cm,w.knock*(HH(f).heavyFist&&!f.weapon?1.6:1),(!!w.len&&Math.random()<.35)||(HH(f).heavyFist&&!f.weapon&&Math.random()<.45));if(w.len||w.stab||f.weapon==='knux'){f.bloody=true;if(w.metal&&!w.stab)SFX.metal()}if(w.stab){blood(b.x,b.y-100,10,f.face);if(BLOOD)decalBlood(b.x,b.y+rnd(-4,6),rnd(8,16))}if(w.glass&&f.dur<=1)SFX.metal()}
+ SFX.whoosh();const T=hitBox(f,w);for(const b of T){damage(f,b,(w.dmg+rnd(-2,3))*cm,w.knock*(HH(f).heavyFist&&!f.weapon?1.6:1),(!!w.len&&Math.random()<.35)||(HH(f).heavyFist&&!f.weapon&&Math.random()<(f.bot?.18:.45)));if(w.len||w.stab||f.weapon==='knux'){f.bloody=true;if(w.metal&&!w.stab)SFX.metal()}if(w.stab){blood(b.x,b.y-100,10,f.face);if(BLOOD)decalBlood(b.x,b.y+rnd(-4,6),rnd(8,16))}if(w.glass&&f.dur<=1)SFX.metal()}
  if(T.length&&f.weapon&&w.dur){f.dur--;if(f.dur<=0){G.FX.push({x:f.x,y:f.y-150,t:0,life:.8,txt:'сломал!',c:'#c9a06a'});f.weapon=null}}}
 function kick(f){if(RMODE())return rHit(f,true);if(mode==='disko'&&G&&G.ph==='slow'){if(!f.bot)diskoPenalty(f);return}if(f.kcd>0||f.stun>0||f.state==='down'||f.state==='ko')return;f.kcd=1.1;f.kickT=.25;f.vx+=f.face*160;SFX.whoosh();
- for(const b of hitBox(f,{range:76})){damage(f,b,10*(HH(f).kickMul||1),320,true);if(HH(f).kickDown&&b.state!=='ko'&&!b.boss){b.state='down';b.downT=0;b.stun=1.1}}}
+ for(const b of hitBox(f,{range:76})){damage(f,b,10*(HH(f).kickMul||1),320,true);if(HH(f).kickDown&&b.state!=='ko'&&!b.boss&&!(b.upT>0)&&(!f.bot||Math.random()<.35)){b.state='down';b.downT=0;b.stun=1.1}}}
 function dropWeapon(f,loud){if(!f.weapon)return;const w=WEAPONS[f.weapon];if(!(w.gun&&f.ammo<=0)&&!(w.throw&&f.ammo<=0))G.P.push({k:f.weapon,x:clamp(f.x-f.face*38,40,W-40),y:f.y+6,t:0,dur:f.dur,ammo:f.ammo,by:f,byT:G.t});if(loud)G.FX.push({x:f.x,y:f.y-160,t:0,life:.6,txt:'бросил',c:'#c9a06a'});f.weapon=null;SFX.whoosh()}
 function nearWeapon(f){return G.P.some(p=>p.k!=='kefir'&&Math.hypot(p.x-f.x,(p.y-f.y)*1.6)<52)}
 function swapKey(){if(!G||state!=='play'||RMODE())return;const me=G.F[0];if(me.state==='ko'||me.state==='down'||me.carry)return;if(nearWeapon(me))me.swapT=.35;else if(me.weapon)dropWeapon(me,true)}
 function pickupNear(f){if(f.swapT>0)f.swapT-=1/60;if(f.npc)return;if(f.state==='ko'||f.state==='down')return;for(let i=G.P.length-1;i>=0;i--){const p=G.P[i];if(Math.hypot(p.x-f.x,(p.y-f.y)*1.6)<44){if(p.k==='kefir'){if(f.hp>=f.max)continue;f.hp=Math.min(f.max,f.hp+WEAPONS.kefir.heal);G.FX.push({x:f.x,y:f.y-160,t:0,life:.8,txt:'+35',c:'#7cf07c'});SFX.pick();G.P.splice(i,1);continue}
-  if(p.by===f&&G.t-p.byT<1.5)continue;if(f.weapon){if(!(f.swapT>0)&&!(f.bot&&(WEAPONS[p.k].dmg||0)>(WEAPONS[f.weapon].dmg||0)+4&&Math.random()<.01))continue;f.swapT=0;dropWeapon(f)}f.weapon=p.k;f.dur=p.dur!=null?p.dur:WEAPONS[p.k].dur||0;f.ammo=p.ammo!=null?p.ammo:WEAPONS[p.k].ammo||0;f.bloody=false;SFX.pick();G.P.splice(i,1);if(!f.bot)G.FX.push({x:f.x,y:f.y-170,t:0,life:.9,txt:WEAPONS[p.k].name,c:'#e8b23a'})}}}
+  if(p.by===f&&G.t-p.byT<1.5)continue;if(f.weapon){if(!(f.swapT>0)&&!(f.bot&&(WEAPONS[p.k].dmg||0)>(WEAPONS[f.weapon].dmg||0)+4&&Math.random()<.004))continue;f.swapT=0;dropWeapon(f)}f.weapon=p.k;f.dur=p.dur!=null?p.dur:WEAPONS[p.k].dur||0;f.ammo=p.ammo!=null?p.ammo:WEAPONS[p.k].ammo||0;f.bloody=false;SFX.pick();G.P.splice(i,1);if(!f.bot)G.FX.push({x:f.x,y:f.y-170,t:0,life:.9,txt:WEAPONS[p.k].name,c:'#e8b23a'})}}}
 
 /* ---------- AI ---------- */
 function botThink(f,dt){if(mode==='disko'&&G.ph==='slow')return diskoDance(f,dt);if(mode==='zavod')return f.npc?npcThink(f,dt):allyZavod(f,dt);if(mode==='salon')return salonThink(f,dt);const A=f.ai;A.t-=dt;let mx=0,my=0;
@@ -1382,9 +1382,9 @@ function showShop(msg){state='menu';$ui.hidden=false;document.getElementById('mb
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
- for(const f of G.F){f.cd-=dt;f.kcd-=dt;f.atkT-=dt;f.kickT-=dt;f.flash-=dt;f.anim+=dt;if(f.hurtT>0)f.hurtT-=dt;if(f.stun>0)f.stun-=dt;if(f===me)invTick(f,dt);
+ for(const f of G.F){f.cd-=dt;f.kcd-=dt;f.atkT-=dt;f.kickT-=dt;f.flash-=dt;f.anim+=dt;if(f.hurtT>0)f.hurtT-=dt;if(f.stun>0)f.stun-=dt;if(f.upT>0)f.upT-=dt;if(f===me)invTick(f,dt);
   if(f.state==='ko'){f.downT+=dt;continue}
-  if(f.state==='down'){f.downT+=dt;f.vx*=Math.pow(.02,dt);f.x+=f.vx*dt;if(mode==='bike'&&!G.over)f.x-=SCROLL*.55*dt;if(f.stun<=0){f.state='idle';f.downT=0;if(ride()&&f.lives>0)f.onBoard=true}continue}
+  if(f.state==='down'){f.downT+=dt;f.vx*=Math.pow(.02,dt);f.x+=f.vx*dt;if(mode!=='bike')f.x=clamp(f.x,30,W-30);if(mode==='bike'&&!G.over)f.x-=SCROLL*.55*dt;if(f.stun<=0){f.state='idle';f.downT=0;f.upT=.9;if(ride()&&f.lives>0)f.onBoard=true}continue}
   let mx=0,my=0;
   if(G.over){}
   else if(f.bot)[mx,my]=botThink(f,dt);

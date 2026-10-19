@@ -1624,7 +1624,7 @@ const CMX=[
  [['street','me',0,'Заречные решили, что гаражи — их.'],['street','karate',1,'Разбор — на великах и скейтах.'],['street','me',3,'Три круга. Кто первый — того и район.']],
  [['street','n:druzh',0,'После гонки всё отделение на ушах.'],['dvor','me',1,'Нычки раскиданы по пустырю.'],['dvor','me',0,'Успеть бы до рассвета.']],
  [['disko','n:g2',0,'Суббота. ДК «Строитель». Медляк.'],['disko','n:druzh',0,'Дружинники смотрят в оба.'],['disko','dembel',7,'Но заречные пришли не танцевать.']],
- [['street','me',1,'23:40. Последняя электричка.'],['street','karate',0,'— Гляди, кто едет. Это ж тот, с гаражей.','me',0],['street','me',3,'До станции — четыре вагона драки.']],
+ [['train3','me',1,'23:40. Последняя электричка до дома.'],['train0','karate',0,'— Гляди, кто едет. Это ж тот, с гаражей…','kaban',7],['train1','me',3,'До станции — четыре вагона. Пробьёмся.','boxer',0]],
  [['stroika','n:brig',0,'Бригадир собирает дань с гаражей.'],['stroika','n:brig',7,'Ломом машет как прутиком.'],['stroika','me',0,'Один на один.']],
  [['rynok7','n:host',0,'У Хозяина рынка — чёрный крузак. Его гордость.'],['kr:cmx1','',0,'Ночь. Крузак у ворот. Мигалки — у ларьков.'],['rynok1','me',1,'Двадцать пять секунд на замок — и он наш.','n:storozh',0]],
  [['rynok7','n:host',0,'Хозяин рынка. Пока он здесь — район не твой.'],['rynok7','n:host',3,'С ним охрана. И ствол.'],['rynok1','me',0,'Последний разговор.']]];
@@ -1902,7 +1902,7 @@ cv.addEventListener('mousedown',e=>{if(state!=='krz')return;if(e.button===0)krNi
 const ROT=(()=>{const d=document.createElement('div');d.id='rot';d.hidden=true;d.style.cssText='position:fixed;inset:0;z-index:50;background:rgba(10,8,12,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#f3e9dc;font:800 22px system-ui;text-align:center;padding:24px';
  d.innerHTML='<div style="font-size:84px;animation:rotph 1.6s ease-in-out infinite">📱</div><div>Поверни телефон<br>горизонтально</div><div style="font:600 15px system-ui;opacity:.75">Бой начнётся сам, как только повернёшь</div><style>@keyframes rotph{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}#rot[hidden]{display:none!important}</style>';
  document.body.appendChild(d);return d})();
-const PLAYST=['play','krz'];
+const PLAYST=['play','krz','trgap'];
 const needRot=()=>IS_TOUCH&&innerHeight>innerWidth*1.05&&PLAYST.includes(state);
 function rotTryLock(){if(!IS_TOUCH||innerHeight<=innerWidth)return;try{const el=document.documentElement,rq=el.requestFullscreen||el.webkitRequestFullscreen;const go=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};if(rq&&!document.fullscreenElement){const r=rq.call(el,{navigationUI:'hide'});if(r&&r.then)r.then(go).catch(()=>{});else go()}else go()}catch(e){}}
 function rotCheck(){const n=needRot();if(ROT.hidden===n)ROT.hidden=!n;return n}
@@ -1971,9 +1971,62 @@ function trCards(){const D=trCardDeck(),P=[D.pop(),D.pop()],B=[D.pop(),D.pop()];
   else if(bs===ps){done='draw';draw('Ничья — '+ps+'. Значит, по-другому.')}
   else{done='win';draw(bs>21?'У них перебор — '+bs+'. Твоя взяла!':'Твои '+ps+' против их '+bs+'. Твоя взяла!')}SFX.bell()};
  if(trGold(P)){done='win';draw('Золотое очко! Два туза — твоя взяла сразу.')}else draw()}
-function trCardsEnd(r){if(r==='win'){G.wins.me=(G.wins.me||0)+1;gainKap(40);newRound();G.msg='КУПЕ ТВОЁ';G.sub='Заречные сошли на станции. Дальше — открытая платформа.';G.msgT=3;resumePlay();return}
+function trCardsEnd(r){if(r==='win'){G.wins.me=(G.wins.me||0)+1;gainKap(40);G.FX.push({x:W/2,y:200,t:0,life:2,txt:'КУПЕ ТВОЁ',c:'#ffd23f',big:1});if(!trAfterWin()){newRound();resumePlay()}return}
  if(r==='lose'){const others=HOTH(),f=newFighter(G.F.length,others[0],true,1);f.team=1;f.x=1100;f.y=560;f.face=-1;G.F.push(f);G.msg='КАРТОЧНЫЙ ДОЛГ';G.sub='Проиграл — теперь их на одного больше. Отбивайся!';G.msgT=3}
  else{G.msg='НИЧЬЯ — ДРАКА';G.sub=TRSUB[1];G.msgT=2}resumePlay()}
+/* ---------- ПЕРЕХОД МЕЖДУ ВАГОНАМИ: держи равновесие и отбивайся одновременно ---------- */
+let GP=null;const GPN=['В КУПЕЙНЫЙ','НА ПЛАТФОРМУ','К ДВЕРЯМ — НА ПЕРРОН'];
+function trGap(n,done){if(G)G.msgT=0;GP={n,prog:0,bal:0,vb:0,t:0,inL:0,inR:0,hit:0,grab:null,grabT:rnd(1.4,2.2),sw:Math.random()*6,res:null,resT:0,shk:0,fx:[],hp0:G.F[0].hp,done,lim:16+n*2};
+ state='trgap';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
+ const B=(id,t,bg)=>`<button id="${id}" style="flex:1;min-height:clamp(54px,11vh,84px);font:900 clamp(16px,3.4vmin,24px) system-ui;border-radius:16px;background:${bg};touch-action:none">${t}</button>`;
+ $ui.innerHTML=`<div class="card" style="padding:10px"><p class="sub" style="margin:2px">Переход ${n}/3 · ${GPN[n-1]}</p><canvas id="gpc" width="640" height="420" style="width:min(92vw,104vh,640px);height:auto;border-radius:12px;touch-action:none"></canvas>
+ <div class="row" style="gap:8px;max-width:640px;margin:6px auto 0">${B('gpL','◀','#3a3040')}${B('gpH','👊 ОТБИТЬ','#a01820')}${B('gpR','▶','#3a3040')}</div>
+ <p class="sub" style="font-size:13px;margin:4px">${IS_TOUCH?'◀ ▶ держи равновесие':'← → (A D) держи равновесие'} · ${IS_TOUCH?'👊':'F / Пробел'} — отбей руку заречного. Свалишься — проиграл переход.</p></div>`;
+ const hold=(id,k)=>{const el=document.getElementById(id);el.addEventListener('pointerdown',e=>{e.preventDefault();au();GP[k]=1});const up=()=>{if(GP)GP[k]=0};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('pointerleave',up)};
+ hold('gpL','inL');hold('gpR','inR');document.getElementById('gpH').addEventListener('pointerdown',e=>{e.preventDefault();au();gpHit()})}
+function gpHit(){const P=GP;if(!P||P.res)return;if(P.grab){const g=P.grab;P.grab=null;P.grabT=rnd(1.1,2)/(1+.15*P.n);SFX.hit();shake=0;P.shk=.15;P.fx.push({x:g.side<0?150:490,y:180,t:0,txt:'ОТБИЛ!',c:'#ffd23f'});P.bal+=g.side*.12}else{P.bal+=(Math.random()-.5)*.25;P.fx.push({x:320,y:150,t:0,txt:'мимо',c:'#a09080'})}}
+function gpTick(dt){const P=GP;if(!P)return;const c=document.getElementById('gpc');if(!c){GP=null;return}const g=c.getContext('2d');P.t+=dt;
+ if(!P.res){const kL=keys.ArrowLeft||keys.KeyA||P.inL,kR=keys.ArrowRight||keys.KeyD||P.inR,d=1+.22*P.n;
+  // качка: вагоны ходят, порывы
+  P.sw+=dt*(1.3+.2*P.n);const sway=Math.sin(P.sw)*.55+Math.sin(P.sw*2.3)*.35;
+  P.vb+=(sway*1.15*d+(Math.random()-.5)*2.2*d)*dt+(P.bal*1.35*d)*dt;
+  if(kL)P.vb-=3.1*dt;if(kR)P.vb+=3.1*dt;P.vb*=Math.pow(.25,dt);P.bal+=P.vb*dt*1.6;
+  // руки заречных
+  if(!P.grab){P.grabT-=dt;if(P.grabT<=0){P.grab={side:Math.random()<.5?-1:1,t:1.25-.12*P.n,max:1.25-.12*P.n};SFX.whoosh()}}
+  else{P.grab.t-=dt;if(P.grab.t<=0){const s=P.grab.side;P.grab=null;P.grabT=rnd(1.2,2.1);P.vb+=s*-2.4;P.prog=Math.max(0,P.prog-14);P.shk=.35;SFX.heavy();P.fx.push({x:320,y:120,t:0,txt:'ДЁРНУЛИ!',c:'#ff5a5a'});G.F[0].hp=Math.max(1,G.F[0].hp-Math.round(G.F[0].max*.06))}}
+  const ok=Math.abs(P.bal)<.45;P.prog+=(ok&&!P.grab?100/P.lim*1.35:ok?100/P.lim*.45:100/P.lim*.15)*dt;
+  if(Math.abs(P.bal)>=1){P.res='fall';P.resT=1.8;SFX.ko();P.shk=.5}else if(P.prog>=100){P.res='ok';P.resT=1.4;SFX.bell()}}
+ else{P.resT-=dt;if(P.resT<=0){const r=P.res,d=P.done;GP=null;d(r);return}}
+ for(const f of P.fx)f.t+=dt;P.fx=P.fx.filter(f=>f.t<.8);P.shk=Math.max(0,P.shk-dt);
+ // --- рисуем ---
+ g.save();g.clearRect(0,0,640,420);if(P.shk>0)g.translate(rnd(-7,7),rnd(-5,5));
+ const sky=g.createLinearGradient(0,0,0,420);sky.addColorStop(0,'#070b18');sky.addColorStop(1,'#141a2a');g.fillStyle=sky;g.fillRect(0,0,640,420);
+ g.fillStyle='#0d140d';for(let i=0;i<14;i++){const x=((i*90-P.t*900)%1260+1260)%1260-300;g.beginPath();g.moveTo(x,250);g.lineTo(x+40,120+(i*37)%60);g.lineTo(x+80,250);g.fill()}
+ g.fillStyle='#1a1a1e';g.fillRect(0,330,640,90);g.fillStyle='#3a3a40';for(let i=0;i<20;i++){const x=((i*70-P.t*1400)%1400+1400)%1400-100;g.fillRect(x,350,40,8);g.fillRect(x,385,40,8)}
+ const tilt=Math.sin(P.sw)*.035;
+ for(const s of [-1,1]){g.save();g.translate(320+s*250,230);g.rotate(tilt*s);rr(g,-110,-200,220,300,10,'#2f4a3a',4);rr(g,-40,-150,80,160,6,'#14181e',3);g.fillStyle='rgba(255,220,140,.35)';g.fillRect(-34,-144,68,40);g.restore()}
+ // переходная площадка + гармошка
+ g.save();g.translate(320,300);g.rotate(tilt*2);g.fillStyle='#4a4a52';g.fillRect(-120,0,240,22);g.strokeStyle='#222';g.lineWidth=3;for(let x=-110;x<120;x+=22){g.beginPath();g.moveTo(x,0);g.lineTo(x+11,22);g.stroke()}
+ g.fillStyle='#2a2a30';for(let k=0;k<6;k++)g.fillRect(-120,-150+k*24,10,18),g.fillRect(110,-150+k*24,10,18);g.restore();
+ // пацан
+ const H0=HEROES[myHero],SP=PZI[myHero];g.save();g.translate(320+P.bal*60,300);g.rotate(P.bal*.75+tilt);
+ if(SP&&SP.complete&&SP.naturalWidth){const top=PZTOP[myHero]||60,u=210/(350-top),fr=P.res==='fall'?5:P.grab?3:Math.abs(P.bal)>.55?5:0;g.drawImage(SP,fr*400,0,400,360,-200*u,-350*u,400*u,360*u)}
+ g.restore();
+ // рука заречного
+ if(P.grab){const s=P.grab.side,k=1-P.grab.t/P.grab.max,hx=320+s*(200-140*k),hy=190;g.save();g.strokeStyle='#1f2a6a';g.lineWidth=26;g.lineCap='round';g.beginPath();g.moveTo(320+s*230,170);g.lineTo(hx,hy);g.stroke();g.fillStyle='#e9bd96';g.beginPath();g.arc(hx,hy,18,0,TAU);g.fill();g.strokeStyle='#000';g.lineWidth=3;g.stroke();
+  g.fillStyle=`rgba(255,40,40,${.5+.5*Math.sin(P.t*20)})`;g.font='900 30px Impact,sans-serif';g.textAlign='center';g.fillText('👊 ОТБЕЙ!',hx,hy-34);g.restore()}
+ // шкалы
+ g.fillStyle='rgba(0,0,0,.65)';g.fillRect(20,16,600,24);g.fillStyle='#e8b23a';g.fillRect(24,20,592*P.prog/100,16);g.fillStyle='#fff';g.font='900 15px Impact,sans-serif';g.textAlign='left';g.fillText('ПЕРЕХОД '+Math.round(P.prog)+'%',30,34);
+ g.fillStyle='rgba(0,0,0,.65)';g.fillRect(120,48,400,22);g.fillStyle='#2f9a3a';g.fillRect(320-200*.45,50,400*.45,18);g.fillStyle='#7a1a22';g.fillRect(122,50,26,18);g.fillRect(492,50,26,18);
+ g.fillStyle='#fff';g.fillRect(320+P.bal*200-3,44,6,30);g.font='bold 12px system-ui';g.textAlign='center';g.fillText('РАВНОВЕСИЕ',320,86);
+ for(const f of P.fx){g.globalAlpha=1-f.t/.8;g.font='900 28px Impact,sans-serif';g.lineWidth=5;g.strokeStyle='#000';g.strokeText(f.txt,f.x,f.y-f.t*40);g.fillStyle=f.c;g.fillText(f.txt,f.x,f.y-f.t*40);g.globalAlpha=1}
+ if(P.res){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,150,640,100);g.textAlign='center';g.font='900 44px Impact,sans-serif';g.fillStyle=P.res==='ok'?'#e8b23a':'#ff4040';g.fillText(P.res==='ok'?'ПРОШЁЛ!':'СОРВАЛСЯ!',320,205);g.font='bold 18px system-ui';g.fillStyle='#f3e9dc';g.fillText(P.res==='ok'?'+25% здоровья к следующей драке':'Засчитан проигрыш. Догоняй своих!',320,235)}
+ g.restore()}
+addEventListener('keydown',e=>{if(state==='trgap'&&(e.code==='Space'||e.code==='KeyF')&&!e.repeat){e.preventDefault();gpHit()}});
+
+function trAfterWin(){const L=trainLoc();if(NETU.on||L<1||L>3)return false;
+ trGap(L,r=>{if(r==='fall'){G.wins.them=(G.wins.them||0)+1;if(G.wins.them>=2){state='play';G.over=1;return roundEnd()}}
+  newRound();if(r==='ok'){const me=G.F[0];me.hp=Math.min(me.max,Math.round(me.hp*1.25)+Math.round(me.max*.1))}resumePlay()});return true}
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(CAMP.on&&!CAMP.rzAsked&&G.t>1.6&&!G.over&&campRzCheck('start'))return;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
@@ -2078,7 +2131,7 @@ function start(){rotTryLock();if(mode==='krz')return krzBegin();CAMP.rzAsked=0;L
 function roundEnd(){if(NETU.on&&NETU.host){if(!nMatchCheck())newRound();return}if(mode==='rynok')return rynokEnd();const w=G.wins,need=mode==='boss'?1:2,OB3=OBJM();if(mode==='train'?((w.me||0)>=4||(w.them||0)>=2):OB3?((w.me||0)+(w.them||0)>=3||(w.them||0)>=2):((w.me||0)>=need||(w.them||0)>=need)){state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
   $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${endTitle(won)}</h1><p class="sub">Счёт ${w.me||0}:${w.them||0} · нокаутов: ${G.F[0].kills}</p>${progLine()}<div class="row"><button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;
   document.getElementById('again').onclick=()=>{G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won)}
- else{if(campRzCheck('round'))return;newRound()}}
+ else{if(campRzCheck('round'))return;if(mode==='train'&&G.win&&trAfterWin())return;newRound()}}
 
 /* ---------- input ---------- */
 addEventListener('keydown',e=>{keys[e.code]=true;if(state!=='play')return;if(e.code==='KeyQ'&&!e.repeat)useItem();if(e.code==='KeyE'&&!e.repeat)swapKey();if(e.code==='KeyR'&&!e.repeat){if(G&&G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])}if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if((e.code==='KeyF'||e.code==='Space'||e.code==='KeyJ')&&!e.repeat)attack(G.F[0]);if((e.code==='KeyG'||e.code==='KeyK')&&!e.repeat)kick(G.F[0])});
@@ -2106,7 +2159,7 @@ function touchFade(dt){const T=document.getElementById('touch');if(T.hidden||!G|
 paintBG();
 function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  if(MUS.on&&(state!=='play'||mode!=='disko'||(G&&G.over)))musStop();
- try{const RW=rotCheck()&&!NETU.on;if(RW){if(G)render(t);else if(K)krDraw(t)}else if(state==='krz'||state==='krzlock'||state==='krzpause'){krzLoop(dt,t)}else if(state==='play'&&G&&!HOLD){if(G.net){nClientTick(dt);render(t);touchFade(dt)}else{update(dt);render(t);touchFade(dt);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
+ try{if(state==='trgap'){if(!rotCheck())gpTick(dt);if(G)render(t)}const RW=rotCheck()&&!NETU.on;if(state==='trgap'){}else if(RW){if(G)render(t);else if(K)krDraw(t)}else if(state==='krz'||state==='krzlock'||state==='krzpause'){krzLoop(dt,t)}else if(state==='play'&&G&&!HOLD){if(G.net){nClientTick(dt);render(t);touchFade(dt)}else{update(dt);render(t);touchFade(dt);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
  else if(G){render(t)}else{ctx.drawImage(bg,0,0)}}catch(e){console.error(e)}
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);

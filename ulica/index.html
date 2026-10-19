@@ -119,7 +119,7 @@ function drawCop(g,y,t){g.save();g.translate(0,y);g.fillStyle='rgba(0,0,0,.4)';g
  g.fillStyle='#e8e2c8';g.fillRect(-30,-70,180,62);g.fillStyle='#1f3f8f';g.fillRect(-30,-46,180,12);g.fillStyle='#2a3a44';g.fillRect(40,-100,90,34);g.fillStyle='#9fc0d8';g.fillRect(48,-96,34,24);g.fillRect(88,-96,36,24);
  g.fillStyle='#111';for(const wx of[0,120]){g.beginPath();g.arc(wx,-6,18,0,TAU);g.fill()}g.fillStyle='#fff';g.font='bold 14px sans-serif';g.fillText('МИЛИЦИЯ',10,-50);
  const on=(t*6|0)%2;g.fillStyle=on?'#ff2a2a':'#3a6aff';g.fillRect(70,-110,26,10);g.fillStyle=on?'rgba(255,40,40,.25)':'rgba(60,110,255,.25)';g.beginPath();g.arc(83,-105,46,0,TAU);g.fill();g.restore()}
-function drawObst(g,o){const {x,y,w,h}=o;g.save();if(!['car','barrel','bench'].includes(o.k)){g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x+w/2,y+h,w*.6,10,0,0,TAU);g.fill();drawObjObst(g,o);g.restore();return}g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x+w/2,y+h,w*.6,10,0,0,TAU);g.fill();
+function drawObst(g,o){if(o.k==='none')return;const {x,y,w,h}=o;g.save();if(!['car','barrel','bench'].includes(o.k)){g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x+w/2,y+h,w*.6,10,0,0,TAU);g.fill();drawObjObst(g,o);g.restore();return}g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x+w/2,y+h,w*.6,10,0,0,TAU);g.fill();
  if(o.k==='car'){g.fillStyle='#7a3a26';g.fillRect(x,y-40,w,50);g.fillStyle='#5a2a1a';g.fillRect(x+30,y-70,w-60,32);g.fillStyle='#1d2a33';g.fillRect(x+36,y-66,36,24);g.fillRect(x+78,y-66,36,24);g.fillStyle='#111';for(const wx of [x+28,x+w-28]){g.beginPath();g.arc(wx,y+10,15,0,TAU);g.fill()}g.fillStyle='rgba(120,60,20,.5)';g.fillRect(x+10,y-30,40,14);g.fillStyle='#ddd';g.font='bold 11px sans-serif';g.fillText('ВАЗ',x+w-40,y-8)}
  else if(o.k==='barrel'){g.fillStyle='#3a5a6a';g.fillRect(x,y-60,w,62);g.fillStyle='#2a4a5a';g.fillRect(x,y-44,w,5);g.fillRect(x,y-18,w,5);g.fillStyle='rgba(255,140,40,.8)';g.beginPath();g.ellipse(x+w/2,y-62,w/2-4,7,0,0,TAU);g.fill()}
  else{g.fillStyle='#5a3a24';g.fillRect(x,y-26,w,8);g.fillRect(x,y-12,w,6);g.fillStyle='#2a2a2a';g.fillRect(x+4,y-18,5,20);g.fillRect(x+w-9,y-18,5,20)}
@@ -573,11 +573,13 @@ const SL=[
  {obst:OBST_V,zone:{x:640,y:424,rx:190,ry:42},tv:{x:585,y:155,w:95,h:73}},
  {obst:[{x:250,y:540,w:280,h:22,k:'chairs'},{x:750,y:540,w:280,h:22,k:'chairs'},{x:250,y:650,w:280,h:22,k:'chairs'},{x:750,y:650,w:280,h:22,k:'chairs'},{x:140,y:430,w:44,h:24,k:'column'},{x:1096,y:430,w:44,h:24,k:'column'}],zone:{x:640,y:430,rx:220,ry:44},tv:{x:580,y:164,w:120,h:80}},
  {obst:[{x:520,y:566,w:240,h:30,k:'counter'},{x:170,y:470,w:170,h:26,k:'rack'},{x:940,y:470,w:170,h:26,k:'rack'}],zone:{x:640,y:414,rx:210,ry:34},tv:{x:582,y:72,w:98,h:70}}];
-const OBST_A1=[{x:300,y:450,w:140,h:40,k:'blocks'},{x:820,y:600,w:130,h:40,k:'blocks'},{x:900,y:420,w:120,h:50,k:'sand'},{x:520,y:592,w:72,h:36,k:'drum'}];
-const OBST_A2=[{x:280,y:440,w:130,h:36,k:'trash'},{x:820,y:430,w:150,h:40,k:'swing'},{x:560,y:610,w:110,h:24,k:'bench'},{x:1010,y:612,w:60,h:30,k:'barrel'}];
+const OBST_A1=[{x:0,y:520,w:200,h:90,k:'none'},{x:880,y:380,w:200,h:34,k:'none'}];
+const OBST_A2=[];
 function setLoc(i){LOC=(mode==='ffa'||mode==='team'||OBJM())?i%3:0;if(mode==='salon'){ZONE=SL[LOC].zone;TVS=SL[LOC].tv}}
 function bgKey(){return(mode==='ffa'||mode==='team')?['street','stroika','dvor'][LOC]:OBJM()?mode+LOC:'street'}
-const PAINTERS={zavod0:g=>paintZavod(g),zavod1:g=>paintCeh(g),zavod2:g=>paintRail(g),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>paintStroika(g),dvor:g=>paintDvor(g)};
+const PAINTERS={zavod0:g=>paintZavod(g),zavod1:g=>paintCeh(g),zavod2:g=>paintRail(g),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>bgPhoto(g,'stroika',paintStroika),dvor:g=>bgPhoto(g,'dvor',paintDvor)};
+const BGPH={};for(const k of ['dvor','stroika']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
+function bgPhoto(g,k,fb){const i=BGPH[k];if(i&&i.complete&&i.naturalWidth){g.drawImage(i,0,0,W,H);vignette(g)}else fb(g)}
 
 /* progression */
 const UPS={hp:{name:'Здоровье',desc:'+8%'},pow:{name:'Удар',desc:'+6%'},spd:{name:'Скорость',desc:'+4%'}},UPMAX=5;

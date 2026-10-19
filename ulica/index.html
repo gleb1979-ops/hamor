@@ -570,9 +570,9 @@ const ZL=[
  {obst:[{x:330,y:436,w:120,h:40,k:'machine'},{x:720,y:436,w:120,h:40,k:'machine'},{x:520,y:600,w:120,h:40,k:'machine'},{x:900,y:600,w:120,h:40,k:'machine'},{x:470,y:390,w:90,h:28,k:'table'},{x:190,y:470,w:100,h:30,k:'sheets'}],
   crate:[1150,418],ded:[520,454],dogs:[[640,420],[300,664]],paths:[[[480,520],[1040,520]],[[1050,672],[400,672]],[[650,410],[650,560]],[[1070,470],[1070,640]]],
   sl:t=>{const x=640+470*Math.sin(t*.35);return{x,y:560+60*Math.sin(t*.9),sx:x,sy:BGPH.zavod1&&BGPH.zavod1.naturalWidth?56:160}},lights:[[1160,300,270,.95,.9],[420,330,170,.55,1],[900,330,170,.55,1],[40,530,110,.5,1]]},
- {obst:[{x:330,y:420,w:150,h:50,k:'container'},{x:600,y:440,w:100,h:36,k:'crates'},{x:760,y:560,w:150,h:34,k:'sleepers'},{x:250,y:610,w:120,h:30,k:'sleepers'},{x:880,y:386,w:96,h:30,k:'booth'}],
+ {obst:[{x:330,y:420,w:150,h:50,k:'container'},{x:600,y:440,w:100,h:36,k:'crates'},{x:760,y:560,w:150,h:34,k:'sleepers'},{x:250,y:610,w:120,h:30,k:'sleepers'},{x:880,y:386,w:96,h:30,k:'booth'},{x:0,y:380,w:110,h:84,k:'none'}],
   crate:[1150,414],ded:[930,454],dogs:[[820,470],[480,664]],paths:[[[500,520],[1050,520]],[[1050,672],[450,672]],[[560,410],[560,600]],[[1070,470],[1070,640]]],
-  sl:t=>({x:700+420*Math.sin(t*.45),y:540+100*Math.sin(t*.37+2),sx:236,sy:128}),lights:[[1150,300,290,.95,.85],[914,368,150,.75,.9],[40,530,110,.5,1]]}];
+  sl:t=>({x:700+420*Math.sin(t*.45),y:540+100*Math.sin(t*.37+2),sx:BGPH.zavod2&&BGPH.zavod2.naturalWidth?200:236,sy:BGPH.zavod2&&BGPH.zavod2.naturalWidth?35:128}),lights:[[1150,300,290,.95,.85],[914,368,150,.75,.9],[40,530,110,.5,1]]}];
 const SL=[
  {obst:OBST_V,zone:{x:640,y:424,rx:190,ry:42},tv:{x:585,y:155,w:95,h:73}},
  {obst:[{x:250,y:540,w:280,h:22,k:'chairs'},{x:750,y:540,w:280,h:22,k:'chairs'},{x:250,y:650,w:280,h:22,k:'chairs'},{x:750,y:650,w:280,h:22,k:'chairs'},{x:140,y:430,w:44,h:24,k:'column'},{x:1096,y:430,w:44,h:24,k:'column'}],zone:{x:640,y:430,rx:220,ry:44},tv:{x:580,y:164,w:120,h:80}},
@@ -581,8 +581,8 @@ const OBST_A1=[{x:0,y:520,w:200,h:90,k:'none'},{x:880,y:380,w:200,h:34,k:'none'}
 const OBST_A2=[];
 let AOFF=0;function setLoc(i){LOC=(mode==='ffa'||mode==='team')?(i+AOFF)%4:OBJM()?i%3:0;if(mode==='salon'){ZONE=SL[LOC].zone;TVS=SL[LOC].tv}}
 function bgKey(){return mode==='boss'?((CH[CAMP.ch]||{}).b==='host'?'dvor':'stroika'):mode==='disko'?'disko':(mode==='ffa'||mode==='team')?['street','stroika','dvor','ploshad'][LOC]:OBJM()?mode+LOC:'street'}
-const PAINTERS={zavod0:g=>bgPhoto(g,'zavod0',paintZavod),zavod1:g=>bgPhoto(g,'zavod1',paintCeh),zavod2:g=>paintRail(g),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>bgPhoto(g,'stroika',paintStroika),ploshad:g=>bgPhoto(g,'ploshad',paintDvor),dvor:g=>bgPhoto(g,'dvor',paintDvor)};
-const BGPH={};for(const k of ['dvor','stroika','disko','ploshad','zavod0','zavod1','street']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
+const PAINTERS={zavod0:g=>bgPhoto(g,'zavod0',paintZavod),zavod1:g=>bgPhoto(g,'zavod1',paintCeh),zavod2:g=>bgPhoto(g,'zavod2',paintRail),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>bgPhoto(g,'stroika',paintStroika),ploshad:g=>bgPhoto(g,'ploshad',paintDvor),dvor:g=>bgPhoto(g,'dvor',paintDvor)};
+const BGPH={};for(const k of ['dvor','stroika','disko','ploshad','zavod0','zavod1','street','zavod2']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
 function bgPhoto(g,k,fb){const i=BGPH[k];if(i&&i.complete&&i.naturalWidth){g.drawImage(i,0,0,W,H);vignette(g)}else fb(g)}
 
 /* progression */
@@ -1249,7 +1249,7 @@ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 LS.get('age',0)?showMenu():showAge();
-try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp','/ulica/img/bg_ploshad.webp','/ulica/img/bg_zavod0.webp','/ulica/img/bg_zavod1.webp','/ulica/img/bg_street.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
+try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp','/ulica/img/bg_ploshad.webp','/ulica/img/bg_zavod0.webp','/ulica/img/bg_zavod1.webp','/ulica/img/bg_street.webp','/ulica/img/bg_zavod2.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
 window.__r89={get G(){return G},start,attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
 })();
 </script>

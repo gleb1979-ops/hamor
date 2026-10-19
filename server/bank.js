@@ -2,6 +2,7 @@
 // One Durable Object ("main") with SQLite storage. Every request is authenticated by the device's id + secret.
 const HEROES = 8, UPC = [60, 120, 220, 360, 550], SKC = [150, 250, 400], CHEST = 120;
 const DAY_CAP_SOLO = 2500, DAY_CAP_ONLINE = 5000;
+const SWAP_IN_DAY = 300; // max тагшим per day that games can credit from their local currency
 const TEAM_UPS = {
   banner: { name: 'Боевое знамя', max: 3, cost: [400, 900, 1600] },   // +10% coins per level for every member
   armor:  { name: 'Командная броня', max: 3, cost: [500, 1100, 1900] }, // +5% armor per level in team battles
@@ -72,6 +73,13 @@ export class Bank {
       d.c += n; if (b.prog != null) d.prog = Math.max(d.prog | 0, Math.min(11, b.prog | 0)); if (b.games) d.g = (d.g | 0) + 1, d.g % 3 === 0 && (d.ch = (d.ch | 0) + 1);
       this.sql.exec('INSERT INTO ledger VALUES(?,?,?,?,?)', Date.now(), p.id, p.team || null, n, toTeam ? 'earn+team' + toTeam : 'earn');
       this.save(p); return json({ ...this.view(p), got: n, toTeam })
+    }
+    if (op === 'swap') {
+      // exchange with a game's local currency (e.g. «капуста» in Улица): out = spend тагшим, in = credit тагшим (capped per day)
+      const n = Math.max(0, Math.min(100000, b.n | 0)), game = String(b.game || '').slice(0, 12);
+      if (b.dir === 'out') { if (!n || d.c < n) return json({ ok: 0, err: 'money' }); d.c -= n; this.sql.exec('INSERT INTO ledger VALUES(?,?,?,?,?)', Date.now(), p.id, p.team || null, -n, 'swap-out:' + game); this.save(p); return json({ ...this.view(p), got: n }) }
+      if (b.dir === 'in') { if (d.swd !== today()) { d.swd = today(); d.swn = 0 } const m = Math.max(0, Math.min(n, SWAP_IN_DAY - (d.swn | 0))); if (!m) return json({ ok: 0, err: 'cap' }); d.swn = (d.swn | 0) + m; d.c += m; this.sql.exec('INSERT INTO ledger VALUES(?,?,?,?,?)', Date.now(), p.id, p.team || null, m, 'swap-in:' + game); this.save(p); return json({ ...this.view(p), got: m }) }
+      return json({ ok: 0, err: 'dir' })
     }
     if (op === 'buy') {
       const it = String(b.item || ''); let msg = null;

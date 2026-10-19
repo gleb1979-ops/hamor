@@ -61,7 +61,8 @@ const HEROES=[
  {id:'zdor',name:'Здоровый',desc:'Лысый. Медленный, крепкий',hp:150,spd:170,pow:1.35,rate:.8,jacket:'#e8e8ee',vest:1,pants:'#2c2f3a',hair:'#6a4a2a',skin:'#dfa47e',big:1},
  {id:'skor',name:'Скорлупа',desc:'Кудрявый мелкий. Юркий',hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1}];
 const TINT=document.createElement('canvas');TINT.width=400;TINT.height=360;const PZMAP=[1,0,2,3],PZTOP0=[60,70,70,58],PZI=[],PZTOP=[];for(let h=0;h<4;h++){const i=new Image();i.src='img/pq'+PZMAP[h]+'.webp';PZI[h]=i;PZTOP[h]=PZTOP0[PZMAP[h]];i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
-const NSPR={},NTOP={druzh:130,ded:171,storozh:154,host:161,brig:142},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
+const NSPR={},NTOP={druzh:130,ded:171,storozh:154,host:161,brig:142,dog:35,g1:20,g2:20,g3:20},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
+const UAZI=new Image();UAZI.src='img/uaz.webp';
 const nsOK=k=>k&&NSPR[k]&&NSPR[k].complete&&NSPR[k].naturalWidth;
 const ENEMY_COL=['#4a6a2a','#5a2a6a','#6a4a1a','#2a5a6a'];
 const WEAPONS={
@@ -416,7 +417,7 @@ function drawNPC(g,f,t){if(f.flee&&f.x>W+80)return;const N=NPC[f.npc],dog=f.npc=
  if(f.state!=='ko'&&!f.sleep){g.strokeStyle='#e0303a';g.lineWidth=3;g.beginPath();g.ellipse(dog?6:0,0,dog?46:34,10,0,0,TAU);g.stroke()}
  const down=(f.state==='down'||f.state==='ko')&&!f.flee;g.save();if(f.hurtT>.12)g.translate(-f.face*5,0);g.scale(f.flee?1:f.face,1);
  if(down&&!dog){const k=Math.min(1,(f.downT||0)*6);g.translate(0,-22*k);g.rotate(-Math.PI/2*k)}
- if(dog)drawDog(g,f,t,down);else drawMan(g,f,t,N);g.restore();
+ if(dog){if(nsOK('dog')){const u=82/(350-NTOP.dog),fi=f.sleep?5:down?6:f.atkT>0?3:(f.state==='walk'||f.flee)?1+((f.anim*8|0)%2):(G&&G.alarm&&((t*2)|0)%3===0?7:0);g.drawImage(NSPR.dog,fi*400,0,400,360,-200*u+6,-350*u,400*u,360*u)}else drawDog(g,f,t,down)}else drawMan(g,f,t,N);g.restore();
  if(f.sleep){g.font='900 20px Impact,sans-serif';g.textAlign='center';for(let i=0;i<3;i++){const k=((t*.6+i/3)%1);g.globalAlpha=1-k;g.fillStyle='#cfd8ff';g.fillText('z',30+i*10+k*10,-40-k*46)}g.globalAlpha=1}
  if(f.state!=='ko'&&!f.flee&&!f.sleep){const y=dog?-112:-182;g.fillStyle='rgba(0,0,0,.55)';g.fillRect(-30,y,60,7);g.fillStyle=f.hp/f.max>.4?'#d8a040':'#e0303a';g.fillRect(-30,y,60*Math.max(0,f.hp/f.max),7);g.font='bold 13px system-ui';g.textAlign='center';g.fillStyle='#e8c08a';g.fillText(f.name,0,y-5)}
  if(f.stun>0&&f.state!=='ko'){for(let i=0;i<3;i++){const a=t*6+i*2.1;circ(g,Math.cos(a)*22,(dog?-100:-168)+Math.sin(a)*6,4,'#ffd23f')}}
@@ -990,7 +991,7 @@ function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)retu
   if(O.got===O.S.length){O.exitOpen=1;G.banner='ВСЁ! ГОНИ В СВОЙ ГАРАЖ';G.bannerT=2.6}}
  if(O.exitOpen&&me.down<=0&&Math.hypot(T.x[0]-me.x,T.y[0]-me.y)<RW*.8)oblFinish(1,'нычки в гараже, менты остались ни с чем')}
 function oblHitCar(f,kk){for(const c of G.obl.C){if(Math.hypot(c.x-f.x,c.y-f.y)<(kk?96:118)*RS+18){c.stun=kk?2.2:1.5;c.spd*=.3;SFX.metal();shake=Math.max(shake,5);G.FX.push({x:c.x,y:c.y-34,t:0,life:.8,txt:kk?'ПИНКА ПО ДВЕРИ!':'ПО ФАРАМ!',c:'#ffd23f'});return true}}return false}
-function drawUAZ(g,c,t){g.save();g.translate(c.x,c.y);g.rotate(c.ang);const k=RS*1.15;g.scale(k,k);g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-38,-16,88,44);
+function drawUAZ(g,c,t){g.save();g.translate(c.x,c.y);g.rotate(c.ang);const k=RS*1.15;g.scale(k,k);if(UAZI.complete&&UAZI.naturalWidth){const w=104,h=w*UAZI.naturalHeight/UAZI.naturalWidth;g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-w/2+7,-h/2+7,w,h);g.drawImage(UAZI,-w/2,-h/2,w,h);const on=((t*3)|0)%2;g.fillStyle=on?'rgba(255,60,60,.55)':'rgba(70,120,255,.55)';g.beginPath();g.arc(-6,on?-h*.18:h*.08,9,0,TAU);g.fill();g.restore();if(c.stun>0){for(let i=0;i<3;i++){const a=t*6+i*2.1;circ(g,c.x+Math.cos(a)*26,c.y-38+Math.sin(a)*8,4,'#ffd23f')}}return}g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-38,-16,88,44);
  rr(g,-44,-22,88,44,10,'#e0c040',3.5);g.fillStyle='#2a4aa8';g.fillRect(-40,-22,80,6);g.fillRect(-40,16,80,6);rr(g,16,-18,26,36,6,'#d8b838',2);rr(g,4,-17,12,34,3,'#1a2a3a',2);rr(g,-30,-18,34,36,5,'#f0e8d0',2.5);circ(g,-47,0,8,'#1a1a1a',2);
  const on=((t*3)|0)%2;rr(g,-17,-13,12,26,2,'#222',1.5);g.fillStyle=on?'#ff3030':'#5a1010';g.fillRect(-15,-11,8,10);g.fillStyle=on?'#1a2a6a':'#4a7aff';g.fillRect(-15,1,8,10);
  circ(g,43,-13,4,'#fff6c8');circ(g,43,13,4,'#fff6c8');g.restore();
@@ -1022,7 +1023,7 @@ function oblHUD(t){const O=G.obl,me=G.F[0],mm=Math.max(0,Math.ceil(O.tl)),ts=(mm
 
 /* ---------- ДИСКОТЕКА ---------- */
 NPC.druzh={name:'Дружинник',hp:100,spd:150,pow:1,rate:1,coat:'#5a5e66',coatD:'#45484f',pants:'#2b2d33',pantsD:'#1f2025',boot:'#2a2a2a',skin:'#e2a98a',hat:'#3a3a40',fur:'#55555a',weapon:null};
-const GIRLS=[{dress:'#e83a8a',hair:'#3a2214',bow:'#ffe24a',x:380,y:404},{dress:'#3ad0e8',hair:'#e8c060',bow:'#ff5ab0',x:560,y:398},{dress:'#ffd23a',hair:'#8a2a1a',bow:'#3a8aff',x:740,y:404},{dress:'#8a5ae8',hair:'#1a1410',bow:'#ff8a2a',x:900,y:398}];
+const GIRLS=[{spr:'g1',dress:'#e83a8a',hair:'#3a2214',bow:'#ffe24a',x:380,y:404},{spr:'g2',dress:'#3ad0e8',hair:'#e8c060',bow:'#ff5ab0',x:560,y:398},{spr:'g3',dress:'#ffd23a',hair:'#8a2a1a',bow:'#3a8aff',x:740,y:404},{spr:'g2',dress:'#8a5ae8',hair:'#1a1410',bow:'#ff8a2a',x:900,y:398}];
 /* music */
 const MUS={on:0,kind:'',next:0,step:0,nb:null};
 function musNoise(){if(!MUS.nb&&AC){const b=AC.createBuffer(1,AC.sampleRate*.3,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;MUS.nb=b}return MUS.nb}
@@ -1066,6 +1067,7 @@ function drawDiskoLights(g,t){const fight=G.ph==='fight';g.save();g.globalCompos
  circ(g,640,58,20,'#c8ccd8',2.5);g.fillStyle='rgba(255,255,255,.6)';for(let k=0;k<10;k++){const a=t*1.5+k*.63;if(Math.cos(a)>0)g.fillRect(640+Math.sin(a)*15-2,46+(k%5)*5,4,4)}}
 function drawGirl(g,G0,t,fight){const x=G0.cx,y=G0.cy;g.save();g.translate(x,y);const face=G0.face||1;g.scale(face,1);
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,0,24,7,0,0,TAU);g.fill();
+ if(G0.spr&&nsOK(G0.spr)){const u=135/(350-NTOP[G0.spr]),fi=fight?(G0.spr==='g1'?4:5):((t*1.3+G0.x)|0)%8;g.drawImage(NSPR[G0.spr],fi*400,0,400,360,-200*u,-350*u,400*u,360*u);g.restore();return}
  const s=fight?0:Math.sin(t*3+G0.x),cr=fight?1:0;g.translate(0,cr*18);
  limb(g,-6,-52,-8+s*4,-6,7,'#2a2030');limb(g,6,-52,8-s*4,-6,7,'#2a2030');rr(g,-14,-8,14,8,3,'#1a1a1a',2);rr(g,2,-8,14,8,3,'#1a1a1a',2);
  g.beginPath();g.moveTo(-12,-104);g.lineTo(12,-104);g.lineTo(24,-50);g.lineTo(-24,-50);g.closePath();g.fillStyle=G0.dress;g.fill();g.strokeStyle='#0d0b10';g.lineWidth=3;g.stroke();

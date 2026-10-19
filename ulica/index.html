@@ -1484,7 +1484,7 @@ function nSnap(){const G0=G;if(!G0)return;nSend({t:'s',l:LOC,r:G0.round,o:G0.ove
  P:G0.P.map(p=>[p.k,Math.round(p.x),Math.round(p.y)]),B:G0.B.map(b=>[Math.round(b.x),Math.round(b.y),Math.sign(b.vx),b.stone?1:0,b.salt?1:0,b.sd?1:0]),
  X:G0.FX.filter(p=>(p.txt||p.ring)&&p.t<.075&&!p._s).map(p=>(p._s=1,[Math.round(p.x),Math.round(p.y),p.txt||'',p.c,p.big?1:0,p.ring?1:0,p.life]))})}
 /* ---- клиент ---- */
-function nClientStart(m){if(NETU.phase==='game'&&G&&G.net)return;NETU.phase='game';NETU.P=m.p||NETU.P;mode=m.m;LOC=m.loc|0;CAMP.on=0;$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;
+function nClientStart(m){rotTryLock();if(NETU.phase==='game'&&G&&G.net)return;NETU.phase='game';NETU.P=m.p||NETU.P;mode=m.m;LOC=m.loc|0;CAMP.on=0;$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;
  OBST=mode==='ffa'||mode==='team'?[OBST_F,OBST_A1,OBST_A2,[]][LOC]:[];dctx.clearRect(0,0,W,H);paintBG();
  G={net:1,F:[],P:[],B:[],FX:[],RM:[],HL:[],BX:[],t:0,round:1,wins:{},over:0,msg:'ДРАКА!',sub:'онлайн',msgT:1.5,dist:0};NETU.F={};
  document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
@@ -1726,7 +1726,7 @@ const KRT_UI=(()=>{const d=document.createElement('div');d.id='krt';d.hidden=tru
   const off=e=>{hold[id]=0;el.style.background=id==='kB'?'rgba(200,40,40,.45)':'rgba(255,255,255,.16)';upd()};el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
  d.querySelector('#kN').addEventListener('pointerdown',e=>{e.preventDefault();au();krNitro()});d.querySelector('#kT').addEventListener('pointerdown',e=>{e.preventDefault();au();krRam()});
  setInterval(()=>{const on=IS_TOUCH&&(state==='krz');if(d.hidden===on)d.hidden=!on;if(on)document.getElementById('touch').hidden=true},200);return d})();
-function krUI(){state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=true;pad.mx=0;pad.my=0;
+function krUI(){rotTryLock();state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=true;pad.mx=0;pad.my=0;
  const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='НИТРО';bB.textContent='ТАРАН';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display='none'}
 function krzRace(res,net){const y=KRH-260,[c]=krRoad(y),P=net||[{id:'',name:''}],n=P.length;
  const cars=P.map((p,i)=>krNewCar(c+(i-(n-1)/2)*62,y+(i%2)*80,net?KRCOLS[i%KRCOLS.length][0]:(CAMP.on?'black':KRCOL),p.name||'',p.id||'',res==='clean'?1:0));
@@ -1883,6 +1883,14 @@ addEventListener('keydown',e=>{if(state==='krzlock'&&(e.code==='Space'||e.code==
 document.getElementById('bA').addEventListener('pointerdown',()=>{if(state==='krz')krNitro()});document.getElementById('bB').addEventListener('pointerdown',()=>{if(state==='krz')krRam()});
 cv.addEventListener('mousedown',e=>{if(state!=='krz')return;if(e.button===0)krNitro();else if(e.button===2)krRam()});
 
+/* ---------- поворот телефона: сначала горизонтально, потом бой ---------- */
+const ROT=(()=>{const d=document.createElement('div');d.id='rot';d.hidden=true;d.style.cssText='position:fixed;inset:0;z-index:50;background:rgba(10,8,12,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#f3e9dc;font:800 22px system-ui;text-align:center;padding:24px';
+ d.innerHTML='<div style="font-size:84px;animation:rotph 1.6s ease-in-out infinite">📱</div><div>Поверни телефон<br>горизонтально</div><div style="font:600 15px system-ui;opacity:.75">Бой начнётся сам, как только повернёшь</div><style>@keyframes rotph{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}#rot[hidden]{display:none!important}</style>';
+ document.body.appendChild(d);return d})();
+const PLAYST=['play','krz'];
+const needRot=()=>IS_TOUCH&&innerHeight>innerWidth*1.05&&PLAYST.includes(state);
+function rotTryLock(){if(!IS_TOUCH||innerHeight<=innerWidth)return;try{const el=document.documentElement,rq=el.requestFullscreen||el.webkitRequestFullscreen;const go=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};if(rq&&!document.fullscreenElement){const r=rq.call(el,{navigationUI:'hide'});if(r&&r.then)r.then(go).catch(()=>{});else go()}else go()}catch(e){}}
+function rotCheck(){const n=needRot();if(ROT.hidden===n)ROT.hidden=!n;return n}
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(CAMP.on&&!CAMP.rzAsked&&G.t>1.6&&!G.over&&campRzCheck('start'))return;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
@@ -1983,7 +1991,7 @@ function showMenu(){if(NETU.on&&NETU.phase==='game')nLeave();if(NROOMQ&&NROOMQ.l
  $ui.querySelectorAll('.mb').forEach(b=>b.onclick=()=>{mode=b.dataset.m;LS.set('mode',mode);G=null;LOC=0;paintBG();showMenu()});
  document.getElementById('bl').onclick=()=>{BLOOD=!BLOOD;LS.set('blood',BLOOD);showMenu()};
  document.getElementById('go').onclick=()=>{au();G=null;start()}}
-function start(){if(mode==='krz')return krzBegin();CAMP.rzAsked=0;LS.set('tfights',LS.get('tfights',0)+1);setTimeout(()=>{if(state==='play'&&G&&!RMODE())tipOnce('combo1',IS_TOUCH?'СОВЕТ: УДАР-УДАР-ПИНОК = ПОДСЕЧКА':'СОВЕТ: F F G = ПОДСЕЧКА')},3500);AOFF=Math.random()*4|0;try{getSelection().removeAllRanges()}catch(e){}$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;document.getElementById('mb').hidden=false;newRound();document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
+function start(){rotTryLock();if(mode==='krz')return krzBegin();CAMP.rzAsked=0;LS.set('tfights',LS.get('tfights',0)+1);setTimeout(()=>{if(state==='play'&&G&&!RMODE())tipOnce('combo1',IS_TOUCH?'СОВЕТ: УДАР-УДАР-ПИНОК = ПОДСЕЧКА':'СОВЕТ: F F G = ПОДСЕЧКА')},3500);AOFF=Math.random()*4|0;try{getSelection().removeAllRanges()}catch(e){}$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;document.getElementById('mb').hidden=false;newRound();document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
 function roundEnd(){if(NETU.on&&NETU.host){if(!nMatchCheck())newRound();return}if(mode==='rynok')return rynokEnd();const w=G.wins,need=mode==='boss'?1:2,OB3=OBJM();if(OB3?((w.me||0)+(w.them||0)>=3||(w.them||0)>=2):((w.me||0)>=need||(w.them||0)>=need)){state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
   $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${endTitle(won)}</h1><p class="sub">Счёт ${w.me||0}:${w.them||0} · нокаутов: ${G.F[0].kills}</p>${progLine()}<div class="row"><button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;
   document.getElementById('again').onclick=()=>{G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won)}
@@ -2015,7 +2023,7 @@ function touchFade(dt){const T=document.getElementById('touch');if(T.hidden||!G|
 paintBG();
 function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  if(MUS.on&&(state!=='play'||mode!=='disko'||(G&&G.over)))musStop();
- try{if(state==='krz'||state==='krzlock'||state==='krzpause'){krzLoop(dt,t)}else if(state==='play'&&G&&!HOLD){if(G.net){nClientTick(dt);render(t);touchFade(dt)}else{update(dt);render(t);touchFade(dt);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
+ try{const RW=rotCheck()&&!NETU.on;if(RW){if(G)render(t);else if(K)krDraw(t)}else if(state==='krz'||state==='krzlock'||state==='krzpause'){krzLoop(dt,t)}else if(state==='play'&&G&&!HOLD){if(G.net){nClientTick(dt);render(t);touchFade(dt)}else{update(dt);render(t);touchFade(dt);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
  else if(G){render(t)}else{ctx.drawImage(bg,0,0)}}catch(e){console.error(e)}
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);

@@ -43,7 +43,7 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 #touch.side #bD{bottom:calc(34px + var(--bg) + var(--sm)*2)}
 #touch.side #bC{bottom:calc(42px + var(--bg) + var(--sm)*3)}
 #touch.side.lside #stick{left:calc((var(--bar) - min(130px,26vmin))/2)}
-</style></head><body>
+#touch.race #bB{right:max(18px,env(safe-area-inset-right))!important;bottom:calc(36px + min(72px,15vmin) + min(62px,13vmin))!important;width:min(72px,15vmin)!important;height:min(72px,15vmin)!important}#touch.race #bA{width:min(84px,18vmin)!important;height:min(84px,18vmin)!important}</style></head><body>
 <div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Улица"></canvas></div>
 <div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
@@ -1725,15 +1725,15 @@ const KRT_UI=(()=>{const d=document.createElement('div');d.id='krt';d.hidden=tru
  for(const id of ['kL','kR','kB']){const el=d.querySelector('#'+id);el.addEventListener('pointerdown',e=>{e.preventDefault();au();hold[id]=1;el.style.background='rgba(255,255,255,.4)';upd()});
   const off=e=>{hold[id]=0;el.style.background=id==='kB'?'rgba(200,40,40,.45)':'rgba(255,255,255,.16)';upd()};el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
  d.querySelector('#kN').addEventListener('pointerdown',e=>{e.preventDefault();au();krNitro()});d.querySelector('#kT').addEventListener('pointerdown',e=>{e.preventDefault();au();krRam()});
- setInterval(()=>{const on=IS_TOUCH&&(state==='krz');if(d.hidden===on)d.hidden=!on;if(on)document.getElementById('touch').hidden=true},200);return d})();
-function krUI(){rotTryLock();state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=true;pad.mx=0;pad.my=0;
+ return d})();
+function krUI(){rotTryLock();state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!IS_TOUCH;document.getElementById('touch').classList.add('race');pad.mx=0;pad.my=0;
  const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='НИТРО';bB.textContent='ТАРАН';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display='none'}
 function krzRace(res,net){const y=KRH-260,[c]=krRoad(y),P=net||[{id:'',name:''}],n=P.length;
  const cars=P.map((p,i)=>krNewCar(c+(i-(n-1)/2)*62,y+(i%2)*80,net?KRCOLS[i%KRCOLS.length][0]:(CAMP.on?'black':KRCOL),p.name||'',p.id||'',res==='clean'?1:0));
  K={t:0,cd:3.2,res,host:net?1:0,cli:0,cars,c:cars[0],cops:[],O:krGen(),fx:[],msg:'',msgT:0,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:n};
  const back=res==='clean'?760:res==='noisy'?420:230;for(let i=0;i<(n>1?n+1:2);i++)K.cops.push(krCop(y+back+i*130+(i%2)*60,c+(i%2?30:-30)));
  krUI();K.msg=net?'УГОН! '+n+' КРУЗАКА — УАЗИКОВ '+K.cops.length:res==='alarm'?'СИГНАЛКА! УАЗИКИ НА ХВОСТЕ':res==='clean'?'ТИХО УШЁЛ — ЕСТЬ ФОРА':'НАШУМЕЛ — УАЗИКИ БЛИЗКО';K.msgT=2.6}
-function krRestoreUI(){const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='УДАР';bB.textContent='ПИНОК';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display=''}
+function krRestoreUI(){document.getElementById('touch').classList.remove('race');const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='УДАР';bB.textContent='ПИНОК';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display=''}
 function krNitro(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.a++;return}krNitroCar(K.c)}
 function krRam(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.k++;return}krRamCar(K.c)}
 function krNitroCar(c){if(c.out||c.fin||c.nitro<=0||c.boostT>0)return;c.nitro--;c.boostT=3;SFX.whoosh();if(c===K.c){K.msg='НИТРО!';K.msgT=.9}}
@@ -1745,19 +1745,24 @@ function krClampRoad(o,hw){const [rc,rh]=krRoad(o.y),lim=Math.max(6,rh-hw);const
 function krSlope(y){return Math.atan2(krRoad(y-30)[0]-krRoad(y+30)[0],60)}
 function krBox(ax,ay,aw,ah,bx,by,bw,bh){return Math.abs(ax-bx)<(aw+bw)/2&&Math.abs(ay-by)<(ah+bh)/2}
 /* ввод: свой — с клавиатуры/джойстика, чужой — из сети */
-function krInput(c){if(c===K.c){const st=clamp(((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,-1,1);return {st,gas:keys.ArrowUp||keys.KeyW||pad.my<-.35,brk:keys.ArrowDown||keys.KeyS||pad.my>.35}}
+function krJoy(jx,jy){const l=Math.hypot(jx,jy);if(l<.3)return {ta:null,brk:false};if(jy>.55&&Math.abs(jx)<.45)return {ta:null,brk:true};return {ta:clamp(Math.atan2(jx,Math.max(-jy,.25)),-1.25,1.25),brk:false}}
+function krInput(c){if(c===K.c){const kx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0),ky=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0);
+  if(kx||ky)return {ta:kx?kx*.7:ky<0?0:null,brk:ky>0&&!kx,key:1};return krJoy(pad.mx,pad.my)}
  const I=NETU.inp[c.rid]||{};if(I.a!==undefined&&I.a!==c._a){if(c._a!==undefined)krNitroCar(c);c._a=I.a}if(I.k!==undefined&&I.k!==c._k){if(c._k!==undefined)krRamCar(c);c._k=I.k}
- const my=+I.my||0;return {st:clamp(+I.mx||0,-1,1),gas:my<-.35,brk:my>.35}}
-function krCarTick(c,dt){const I=krInput(c);let st=I.st;const me=c===K.c;
+ return krJoy(clamp(+I.mx||0,-1,1),clamp(+I.my||0,-1,1))}
+function krCarTick(c,dt){const I=krInput(c);const me=c===K.c;if(c.a==null)c.a=0;
  let tv=c.boostT>0?KR.NITRO:I.brk?KR.BRAKE:KR.GAS;if(c.slowT>0){tv*=.55;c.slowT-=dt}
  c.v+=(tv-c.v)*Math.min(1,dt*(tv<c.v?3:1.6));if(c.boostT>0){c.boostT-=dt;if(Math.random()<.5)K.fx.push({x:c.x+rnd(-8,8),y:c.y+KR.CL/2,vx:rnd(-20,20),vy:60,t:0,life:.35,c:'#7cf0ff',s:rnd(3,6)})}
- if(c.oilT>0){c.oilT-=dt;st=c.oilD*.8;c.ang=c.oilD*.55*Math.sin((1-c.oilT/.9)*Math.PI)}else c.ang*=Math.pow(.02,dt);
- c.steer+=(st-c.steer)*Math.min(1,dt*10);let lat=c.steer*(120+c.v*.35);
- if(c.ramT>0){c.ramT-=dt;lat=c.ramD*480}c.ramCd-=dt;
- krFollow(c,c.v*dt);c.x+=lat*dt;if(c.inv>0)c.inv-=dt;
+ const road=krSlope(c.y);
+ if(c.oilT>0){c.oilT-=dt;c.a+=c.oilD*dt*3.2}
+ else if(I.ta!=null){let da=I.ta-c.a;c.a+=clamp(da,-3.7*dt,3.7*dt)}
+ else{c.a+=(road-c.a)*Math.min(1,dt*.9)}
+ c.a=clamp(c.a,-1.35,1.35);c.steer=clamp((c.a-road)*1.4,-1,1);c.ang=0;
+ let lat=0;if(c.ramT>0){c.ramT-=dt;lat=c.ramD*480}c.ramCd-=dt;
+ c.x+=Math.sin(c.a)*c.v*dt+lat*dt;c.y-=Math.cos(c.a)*Math.max(c.v,30)*dt;if(c.inv>0)c.inv-=dt;
  const wall=krClampRoad(c,KR.CW*.5+4);c.off=!!wall;
- if(wall){c.v*=Math.pow(.55,dt);if(c.ramT>0)c.ramT=0;if(c.oilT>0)c.oilT=0;if(Math.random()<dt*14)K.fx.push({x:c.x+wall*KR.CW*.5,y:c.y+rnd(-30,30),vx:-wall*rnd(20,90),vy:rnd(-40,60),t:0,life:.35,c:'#ffd27a',s:rnd(2,4)});
-  if(!c.wallT||c.wallT<=0){c.wallT=.8;if(c.v>90&&Math.abs(c.steer)>.4){krDmg(c,2,'БОРТ');if(me)K.shk=Math.max(K.shk,4)}}}
+ if(wall){const into=Math.sign(c.a-road)===wall;c.v*=Math.pow(into?.4:.75,dt);if(into)c.a+=(road-c.a)*Math.min(1,dt*6);if(c.ramT>0)c.ramT=0;if(c.oilT>0)c.oilT=0;if(Math.random()<dt*14)K.fx.push({x:c.x+wall*KR.CW*.5,y:c.y+rnd(-30,30),vx:-wall*rnd(20,90),vy:rnd(-40,60),t:0,life:.35,c:'#ffd27a',s:rnd(2,4)});
+  if(!c.wallT||c.wallT<=0){c.wallT=.8;if(c.v>90&&into&&Math.abs(c.a-road)>.5){krDmg(c,2,'БОРТ');if(me)K.shk=Math.max(K.shk,4)}}}
  if(c.wallT>0)c.wallT-=dt;
  for(const o of K.O){if(o.hit===2)continue;const T=KOT[o.k],[ow,oh2]=krObSize(o);
   if(!krBox(c.x,c.y,KR.CW*.9,KR.CL*.85,o.x,o.y,ow*.8,oh2*.75))continue;
@@ -1823,12 +1828,12 @@ function krShowEnd(won,fin,why,hp,rams,ts,R){const net=!!R;state='end';krRestore
 function krPause(){if(!K||state!=='krz')return;
  if(K.host||K.cli){if(confirm('Выйти из онлайн-гонки?')){K=null;krRestoreUI();nLeave();showMenu()}return}
  state='krzpause';$ui.hidden=false;document.getElementById('touch').hidden=true;
- $ui.innerHTML=`<div class="card"><h1>ПАУЗА</h1><div class="col" style="max-width:360px;margin:10px auto"><button class="pri" id="kres">▶ Продолжить</button><button id="kmenu">Выйти в меню</button></div><p class="sub" style="font-size:14px">${IS_TOUCH?'Газ жмётся сам. ◀ ▶ — руль, ТОРМОЗ — притормозить, НИТРО — рывок, ТАРАН — бок в уазик.':'Газ жмётся сам · ← → руль · ↓ тормоз · F/Пробел — нитро · G — таран'}</p></div>`;
+ $ui.innerHTML=`<div class="card"><h1>ПАУЗА</h1><div class="col" style="max-width:360px;margin:10px auto"><button class="pri" id="kres">▶ Продолжить</button><button id="kmenu">Выйти в меню</button></div><p class="sub" style="font-size:14px">${IS_TOUCH?'Газ жмётся сам. Джойстик — куда ехать (как в «Ночных гонках»), вниз — тормоз. НИТРО — рывок, ТАРАН — бок в уазик.':'Газ жмётся сам · ← → руль · ↓ тормоз · F/Пробел — нитро · G — таран'}</p></div>`;
  document.getElementById('kres').onclick=()=>{state='krz';$ui.hidden=true;document.getElementById('touch').hidden=!IS_TOUCH};document.getElementById('kmenu').onclick=()=>{K=null;krRestoreUI();showMenu()}}
 /* ---- рисование ---- */
 function krCam(){const c=K.c;if((c.out||c.fin)&&K.nP>1){const a=K.cars.filter(x=>!x.out&&!x.fin);if(a.length)return a.reduce((p,q)=>p.y<q.y?p:q)}return c}
 function krDrawCar(c,S,t){const [sx,sy]=S(c.x,c.y),SC=KR.SC;if(sy<-300||sy>H+300)return;
- ctx.save();ctx.translate(sx,sy);ctx.rotate(krSlope(c.y)+c.steer*.14+c.ang);if(c.out)ctx.globalAlpha=.55;else if(c.inv>0&&((t*20)|0)%2)ctx.globalAlpha=.6;
+ ctx.save();ctx.translate(sx,sy);ctx.rotate((c.a!=null?c.a:krSlope(c.y)+c.steer*.14)+(c.ang||0));if(c.out)ctx.globalAlpha=.55;else if(c.inv>0&&((t*20)|0)%2)ctx.globalAlpha=.6;
  {const sg=ctx.createRadialGradient(6,10,10,6,10,KR.CL*SC*.55);sg.addColorStop(0,'rgba(0,0,0,.55)');sg.addColorStop(1,'rgba(0,0,0,0)');ctx.save();ctx.scale(.62,1);ctx.fillStyle=sg;ctx.beginPath();ctx.arc(6/.62,10,KR.CL*SC*.55,0,TAU);ctx.fill();ctx.restore()}
  const fr=c.hp>66?0:c.hp>33?1:2,KC=KRCARS[c.col]||KRCARS.black;if(KC.complete&&KC.naturalWidth){const fw=KC.naturalWidth/3;ctx.drawImage(KC,fr*fw,0,fw,KC.naturalHeight,-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}else{ctx.fillStyle='#111';ctx.fillRect(-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}
  if(c.boostT>0){ctx.fillStyle='rgba(124,240,255,.55)';ctx.beginPath();ctx.moveTo(-14,KR.CL*SC/2);ctx.lineTo(0,KR.CL*SC/2+40+Math.random()*30);ctx.lineTo(14,KR.CL*SC/2);ctx.fill()}ctx.restore();
@@ -1856,13 +1861,13 @@ function krHUD(t){const c=K.c,ts=Math.floor(K.t);
  ctx.fillStyle='#7cf07c';ctx.fillRect(bx-10,by0-14,20,8);for(const p of K.cops){ctx.fillStyle=((t*3)|0)%2?'#ff3030':'#4a7aff';ctx.beginPath();ctx.arc(bx,P(p.y),5,0,TAU);ctx.fill()}
  for(const q of K.cars){if(q===c||q.out)continue;ctx.fillStyle='#f3e9dc';ctx.beginPath();ctx.arc(bx,P(q.y),5,0,TAU);ctx.fill()}ctx.fillStyle='#e8b23a';ctx.beginPath();ctx.arc(bx,P(c.y),7,0,TAU);ctx.fill();
  if(K.cd>0||K.msgT>0){const txt=K.cd>0?(K.cd>1.2?String(Math.ceil(K.cd-1.2)):'ГАЗУ!'):K.msg;ctx.textAlign='center';ctx.font='900 54px Impact,sans-serif';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(txt,W/2,250);ctx.fillStyle=K.over?(K.win?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(txt,W/2,250)}
- if(K.t<6&&!K.over&&K.cd<=0){ctx.textAlign='center';ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.9)';ctx.fillText(IS_TOUCH?'Газ сам · ◀ ▶ — руль · НИТРО — рывок · ТАРАН — бок в уазик':'Газ сам · ← → руль · ↓ тормоз · F нитро · G таран',W/2,84)}}
+ if(K.t<6&&!K.over&&K.cd<=0){ctx.textAlign='center';ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.9)';ctx.fillText(IS_TOUCH?'Газ сам · джойстик — куда ехать · вниз — тормоз · НИТРО — рывок · ТАРАН — бок в уазик':'Газ сам · ← → руль · ↓ тормоз · F нитро · G таран',W/2,84)}}
 /* ---- онлайн ---- */
 function krHostStart(){NETU.phase='game';mode='krz';CAMP.on=0;G=null;const P=NETU.P.slice(0,KRNMAX).map(p=>({id:p.id,name:p.name}));krzRace('noisy',P);
  nSend({t:'go',m:'krz',p:NETU.P,O:K.O.map(o=>[o.k,Math.round(o.x),Math.round(o.y),o.block?1:0]),C:K.cars.map(c=>[c.rid,c.name,c.col,Math.round(c.x),Math.round(c.y)])})}
 function krSnap(){
  nSend({t:'ks',T:+K.t.toFixed(2),cd:+K.cd.toFixed(2),o:K.over?1:0,msg:K.msgT>0?K.msg:'',
-  C:K.cars.map(c=>[c.rid,Math.round(c.x),Math.round(c.y),Math.round(c.v),+c.steer.toFixed(2),Math.round(c.hp),c.boostT>0?1:0,+c.ang.toFixed(2),c.inv>0?1:0,c.out,c.fin,c.nitro,c.rams,c.off?1:0,c.why]),
+  C:K.cars.map(c=>[c.rid,Math.round(c.x),Math.round(c.y),Math.round(c.v),+c.steer.toFixed(2),Math.round(c.hp),c.boostT>0?1:0,+(c.a||0).toFixed(2),c.inv>0?1:0,c.out,c.fin,c.nitro,c.rams,c.off?1:0,c.why]),
   P:K.cops.map(p=>[Math.round(p.x),Math.round(p.y),p.stun>0?1:0,+p.wob.toFixed(1)]),
   H:K.O.filter(o=>o.hit===2).map(o=>o.id),M:K.O.filter(o=>o.vy).map(o=>[o.id,Math.round(o.x),Math.round(o.y)]),
   X:K.fx.filter(f=>f.txt&&!f._s).map(f=>(f._s=1,[Math.round(f.x),Math.round(f.y),f.txt,f.c]))})}
@@ -1873,7 +1878,7 @@ function krClientStart(m){NETU.phase='game';mode='krz';CAMP.on=0;G=null;
  krUI()}
 function krApply(m){if(!K||!K.cli)return;K.t=m.T;K.cd=m.cd;if(m.msg){K.msg=m.msg;K.msgT=.3}
  for(const a of m.C){const c=K.cars.find(q=>q.rid===a[0]);if(!c)continue;const was=c.hp;
-  Object.assign(c,{tx:a[1],ty:a[2],v:a[3],steer:a[4],hp:a[5],boostT:a[6]?1:0,ang:a[7],inv:a[8]?.2:0,out:a[9],fin:a[10],nitro:a[11],rams:a[12],off:!!a[13],why:a[14]});
+  Object.assign(c,{tx:a[1],ty:a[2],v:a[3],steer:a[4],hp:a[5],boostT:a[6]?1:0,a:a[7],ang:0,inv:a[8]?.2:0,out:a[9],fin:a[10],nitro:a[11],rams:a[12],off:!!a[13],why:a[14]});
   if(Math.hypot(c.tx-c.x,c.ty-c.y)>200){c.x=c.tx;c.y=c.ty}if(c===K.c&&c.hp<was-3)K.shk=8}
  while(K.cops.length<m.P.length)K.cops.push(krCop(m.P[K.cops.length][1],m.P[K.cops.length][0]));K.cops.length=m.P.length;
  m.P.forEach((a,i)=>{const p=K.cops[i];p.tx=a[0];p.ty=a[1];p.stun=a[2];p.wob=a[3];if(Math.hypot(p.tx-p.x,p.ty-p.y)>250){p.x=p.tx;p.y=p.ty}});

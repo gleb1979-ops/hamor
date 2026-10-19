@@ -12,6 +12,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 #wrap{position:fixed;inset:0;display:grid;place-items:center}
 canvas{display:block;background:#000;max-width:100vw;max-height:100vh}
 #ui{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;overflow-y:auto;background:rgba(8,6,10,.86);z-index:5;padding:16px}
+.col{display:flex;flex-direction:column;gap:8px;margin:10px 0}.col button{text-align:left}.rza.on,.mi.on{outline:3px solid var(--gold)}.rzp{display:flex;gap:6px;justify-content:center;margin:4px 0}.rzp i{width:34px;height:8px;border-radius:4px;background:#3a2f3a}.rzp i.cur{background:var(--gold)}.rzp i.ok{background:#5ad05a}.rzp i.bad{background:#c8202a}.rztb{height:8px;background:#221c24;border-radius:4px;overflow:hidden;margin:6px 0}.rztb i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#c8202a,#e8b23a)}.cups{position:relative;height:150px;max-width:420px;margin:10px auto}.cup{position:absolute;bottom:20px;width:80px;height:90px;padding:0;border-radius:6px;border:0;clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);background:linear-gradient(90deg,#7a1018,#e8404a 40%,#a01820 70%,#5a0a10);box-shadow:inset 0 -10px 0 #4a0810;transition:left .4s ease-in-out,transform .25s;z-index:2}.cup.up{transform:translateY(-55px)}.ball{position:absolute;bottom:22px;width:22px;height:22px;border-radius:50%;background:#f3e9dc;box-shadow:0 0 8px #fff;transition:opacity .2s;z-index:1}.mshow{font-size:64px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}.mshow small{font-size:16px;opacity:.85}
 .card{margin:auto}.clist{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}.ch{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px}.ch span{font-size:28px}.ch small{opacity:.8;font-weight:600}.ch.lock{opacity:.4}.pbox{border:2px solid #4a3d48;border-radius:12px;padding:10px 12px;margin:4px 0 8px;text-align:left}.pbox small{display:block;opacity:.85;font-size:13px}.xpb{height:9px;background:#221c24;border-radius:5px;overflow:hidden;margin:7px 0}.xpb i{display:block;height:100%;background:var(--gold)}
 button.up{font-size:14px;padding:8px 12px}button.up small{display:inline;opacity:.7}button[disabled]{opacity:.35}
 #mb{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:6;font-size:14px;padding:8px 16px;background:rgba(34,28,36,.8)}#mb[hidden]{display:none}
@@ -1112,8 +1113,9 @@ function showCamp(){state='menu';CAMP.on=0;$ui.hidden=false;document.getElementB
  ${mx>=CH.length&&LS.get('campdone',0)?'<p class="sub" style="color:var(--gold)">★ Сюжет пройден. Район твой.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
  $ui.querySelectorAll('.ch').forEach(b=>b.onclick=()=>showChapter(+b.dataset.c));document.getElementById('back').onclick=showMenu}
 function showChapter(i){const c=CH[i];$ui.innerHTML=`<div class="card"><p class="sub">Глава ${i+1} из ${CH.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${c.ic} ${c.t.toUpperCase()}</h1><div class="warn" style="border-color:#4a3d48;text-align:left;font-size:17px">${c.tx}</div>
- <div class="row"><button class="pri" id="cgo">Начать главу</button><button id="cback">К главам</button></div></div>`;
- document.getElementById('cgo').onclick=()=>{au();CAMP.on=1;CAMP.ch=i;mode=c.m;G=null;LOC=0;paintBG();start()};document.getElementById('cback').onclick=showCamp}
+ <div class="row"><button class="pri" id="cgo">Начать главу</button>${RZCH.includes(c.m)?'<button id="crz">🗣 Разрулить без драки</button>':''}<button id="cback">К главам</button></div></div>`;
+ document.getElementById('cgo').onclick=()=>{au();CAMP.on=1;CAMP.ch=i;mode=c.m;G=null;LOC=0;paintBG();start()};document.getElementById('cback').onclick=showCamp;const rb=document.getElementById('crz');if(rb)rb.onclick=()=>{CAMP.on=1;CAMP.ch=i;rzStart(c.b==='host'?'Хозяин рынка':c.b==='brig'?'Бригадир':c.m==='salon'?'Видик':'Старший',.15+i/CH.length*.85,()=>{state='end';$ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 #e8b23a">РАЗРУЛИЛ</h1><p class="sub">${c.t}: решено без драки.</p>${progLine()}<div class="row"><button id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;campAfter(true);const ag=document.getElementById('again');if(ag)ag.onclick=()=>showChapter(i)},()=>{state='menu';$ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 #c8202a">НЕ ВЫШЛО</h1><p class="sub">Разговор не сложился. Значит — драка.</p><div class="row"><button class="pri" id="cf">👊 В бой</button><button id="cb">К главам</button></div></div>`;document.getElementById('cf').onclick=()=>{au();CAMP.on=1;CAMP.ch=i;mode=c.m;G=null;LOC=0;paintBG();start()};document.getElementById('cb').onclick=showCamp})}}
+const RZCH=['ffa','team','salon','boss'];
 function campAfter(won){if(!CAMP.on)return;const card=$ui.querySelector('.card');if(!card)return;const i=CAMP.ch,last=i===CH.length-1,d=document.createElement('div');
  if(won){if(campMax()<i+2)LS.set('camp',Math.min(CH.length,i+2));gainXP(50);if(last){LS.set('campdone',1);gainXP(250)}
   d.innerHTML=last?`<div class="warn" style="border-color:var(--gold)"><b>Район твой. Теперь ты — старший.</b><br>Сюжет пройден! +300 опыта.</div><div class="row"><button class="pri" id="cnext">К главам</button></div>`:`<p class="sub" style="color:var(--gold)">Глава ${i+1} пройдена! +50 опыта</p><div class="row"><button class="pri" id="cnext">Глава ${i+2}: ${CH[i+1].t} ▶</button></div>`}
@@ -1157,7 +1159,7 @@ function rynInit(){G.wave=1;G.waves=2;G.bossOn=0;G.clearT=0;const me=G.F[0];if(R
  const B=RST[RYN.st-1];G.msg='ЭТАП '+RYN.st+'/7 · '+B.loc.toUpperCase();G.sub='Впереди '+B.b.toLowerCase()+'. Сначала разберись с его людьми.';G.msgT=3;spawnDrop('kefir');spawnDrop(null)}
 function rynUpdate(dt){if(G.over)return;const en=G.F.filter(f=>f.team===1&&f.state!=='ko');if(en.length)return;
  if(G.wave<G.waves){G.wave++;G0wave(G.F,G.wave);G.FX.push({x:1100,y:300,t:0,life:1.2,txt:'ЕЩЁ ИДУТ!',c:'#ff7a3a',big:1});spawnDrop(Math.random()<.5?'kefir':null)}
- else if(!G.bossOn){G.bossOn=1;rynSpawnBoss()}
+ else if(!G.bossOn){G.bossOn=1;const s=RYN.st,B=RST[s-1];rzOffer(B.b,(s-1)/6,B.tip,rynSpawnBoss,()=>{G.FX.push({x:640,y:300,t:0,life:1.6,txt:'РАЗРУЛИЛ!',c:'#e8b23a',big:1})})}
  else{G.over=1;G.overT=0;G.win=true;G.msg=RYN.st<7?'ЭТАП ПРОЙДЕН':'РЫНОК ТВОЙ!';G.sub='';G.msgT=99;SFX.bell();gainXP(60)}}
 function rynokEnd(){const me=G.F[0];if(G.win&&RYN.st<7){RYN.hp=me.hp;RYN.carry=1;RYN.st++;if(RYN.st>rynMax())LS.set('ryn',RYN.st);newRound();return}
  state='end';document.getElementById('mb').hidden=true;$ui.hidden=false;document.getElementById('touch').hidden=true;const won=G.win;if(won){gainXP(200);LS.set('ryndone',1)}
@@ -1185,6 +1187,101 @@ function paintRynok(g,s){const out=s<=3||s===5;
  for(let i=0;i<120;i++){g.fillStyle=['#c8202a','#3aa83a','#e8d83a','rgba(0,0,0,.3)'][i%4];g.globalAlpha=.4;g.beginPath();g.ellipse(rnd(0,W),rnd(350,H),rnd(2,6),rnd(1,3),0,0,TAU);g.fill()}g.globalAlpha=1;vignette(g)}
 for(let s=1;s<=7;s++){const k='rynok'+s;PAINTERS[k]=g=>bgPhoto(g,k,gg=>paintRynok(gg,s));const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
 
+/* ---------- РАЗРУЛИТЬ: квест на смекалку, чем дальше — тем сложнее ---------- */
+const RZQ=[
+ /* t0 — лёгкие */
+ {t:0,q:'Кассета на 90 минут. Сколько музыки влезет на одну сторону?',a:['90 минут','60 минут','45 минут'],c:2,why:'У кассеты две стороны — по 45 минут.'},
+ {t:0,q:'Что тяжелее — килограмм гвоздей или килограмм ваты?',a:['Гвозди','Вата','Одинаково'],c:2,why:'Килограмм — он и есть килограмм.'},
+ {t:0,q:'Газировка с сиропом — 3 копейки. Сколько стаканов купишь на 13 копеек?',a:['4','3','5'],c:0,why:'4 стакана — 12 копеек, копейка останется.'},
+ {t:0,q:'Перемотка всей кассеты — 2 минуты. Сколько мотать половину?',a:['1 минута','2 минуты','30 секунд'],c:0,why:'Половина — вдвое быстрее: минута.'},
+ {t:0,q:'Пятеро идут в видеосалон, билет — рубль. Платят тремя трёшками. Сколько сдачи?',a:['4 рубля','2 рубля','5 рублей'],c:0,why:'Три трёшки — 9 рублей, минус 5 — сдача 4.'},
+ {t:0,q:'Грузчик носит 3 ящика за раз, ящиков 20. Сколько ходок минимум?',a:['6','7','8'],c:1,why:'6 ходок — 18 ящиков, нужна седьмая.'},
+ /* t1 — средние */
+ {t:1,q:'Жвачка: одна — 20 копеек, три — 50. У тебя рубль. Сколько унесёшь больше всего?',a:['4','5','6'],c:2,why:'Две тройки по 50 копеек — шесть жвачек.'},
+ {t:1,q:'Сторож обходит забор за 20 минут, собака — вдвое быстрее. Сколько кругов собака сделает за час?',a:['3','6','4'],c:1,why:'Собаке нужно 10 минут на круг — 6 кругов.'},
+ {t:1,q:'Видик ставит фильм на 1 час 30 минут в 22:00. Плёнку зажевало на 15 минут. Когда конец?',a:['23:30','23:45','23:15'],c:1,why:'22:00 + 1:30 + 0:15 = 23:45.'},
+ {t:1,q:'Ящик дефицита — 12 пачек. Делят на троих, старшему двойная доля. Сколько старшему?',a:['4','6','8'],c:1,why:'Доли 2+1+1 = 4, одна доля — 3 пачки, старшему 6.'},
+ {t:1,q:'В гараже 7 великов и скейтов, колёс всего 20. Сколько скейтов?',a:['3','4','5'],c:0,why:'3 скейта по 4 колеса + 4 велика по 2 = 12 + 8 = 20.'},
+ {t:1,q:'Четыре пацана здороваются за руку каждый с каждым. Сколько рукопожатий?',a:['6','8','12'],c:0,why:'Каждый жмёт троим: 4×3 = 12, но каждое рукопожатие посчитано дважды — 6.'},
+ /* t2 — сложные */
+ {t:2,q:'Джинсы стоили 150. Фарцовщик скинул 10%, потом накинул 10%. Сколько теперь?',a:['150 руб.','148 руб. 50 коп.','151 руб. 50 коп.'],c:1,why:'150 − 15 = 135, потом 135 + 13,50 = 148,50.'},
+ {t:2,q:'Трое скинулись по 10 — 30. Решала вернул 5: каждому по рублю, 2 себе. 9×3 = 27, плюс 2 — 29. Где рубль?',a:['Решала спрятал','Рубль не пропадал — так считать нельзя','Потерялся по дороге'],c:1,why:'В 27 уже сидят те 2 рубля решалы. Складывать их ещё раз нельзя.'},
+ {t:2,q:'Мясник: «Кусок весит 2 кило плюс половину своего веса». Сколько весит кусок?',a:['3 кг','4 кг','2,5 кг'],c:1,why:'Если половина куска — 2 кг, весь кусок — 4 кг.'},
+ {t:2,q:'Барыга купил кассету за 6, продал за 7, выкупил за 8, продал за 9. Сколько заработал?',a:['1 рубль','2 рубля','0'],c:1,why:'Две сделки по рублю прибыли: +1 и +1.'},
+ {t:2,q:'Напёрсточник: «Шарик под одним из 3 стаканов. Ты выбрал, я поднял пустой из двух других. Менять выбор?»',a:['Без разницы','Менять','Не менять'],c:1,why:'Сменишь — выиграешь в 2 случаях из 3.'},
+ {t:2,q:'У смотрящего 9 монет, одна фальшивая — легче. Сколько взвешиваний на чашечных весах хватит наверняка?',a:['2','3','4'],c:0,why:'Делим на тройки: первое взвешивание находит тройку, второе — монету.'}];
+const RZT=[
+ {t:0,say:'Ты чё сюда пришёл? Это моя точка.',o:[['Пришёл поговорить по-людски. Без шума.',1],['Извините, я уйду, только не бейте…',0],['Твоя? Сейчас будет моя, понял?',-1]]},
+ {t:0,say:'С какого района будешь?',o:[['С гаражей. Меня там знают — спроси.',1],['Тебе какая разница?',-1],['Да я ни с какого… я сам по себе…',0]]},
+ {t:0,say:'Ты чё, пугать меня пришёл?',o:[['Нет. Пришёл предложить разойтись без драки.',1],['А ты испугался?',-1],['Нет-нет, что вы…',0]]},
+ {t:1,say:'А мне с этого что?',o:[['Ты не лезешь к нашим, мы — к твоим. Всем выгодно.',1],['Отдам всё, что есть…',0],['Целые зубы тебе с этого.',-1],['Ну… уважение, наверное.',0]]},
+ {t:1,say:'Старшие твои знают, что ты тут?',o:[['Знают. Просили решить по-тихому.',1],['Не говорите им, пожалуйста…',0],['Мне старшие не указ.',-1],['А твои про тебя знают?',-1]]},
+ {t:1,say:'Докажи, что ты не трепло.',o:[['Слово дал — сделаю. Проверь.',1],['Я тебе ничего доказывать не буду.',-1],['А как? Скажите — всё сделаю…',0],['Мамой клянусь!',0]]},
+ {t:2,say:'Мои люди говорят, ты нашего обидел. Было?',o:[['Было. Он первый полез — свидетели есть. Разберёмся честно.',1],['Не было! Это не я! Честно!',0],['Ну обидел. И чё?',-1],['Давай я тебе денег дам — и забыли.',0]]},
+ {t:2,say:'Я с тобой говорить не буду. Пусть старший приходит.',o:[['Старший прислал меня. Значит, и говорить со мной.',1],['Хорошо, я сейчас сбегаю за ним…',0],['Тогда по-другому поговорим.',-1],['Да ладно тебе, чего ты…',0]]},
+ {t:2,say:'Тебе тут всё равно ничего не светит. Чего ты хочешь?',o:[['Половину точки — и ни одной драки на районе.',1],['Всё. Целиком.',-1],['Ничего… я просто посмотреть…',0],['А что предложишь?',0]]},
+ {t:2,say:'Если я соглашусь — мне перед своими как объяснить?',o:[['Скажешь: договорились по-честному. Это не слабость.',1],['Это твои проблемы.',-1],['Скажи, что я тебя побил.',0],['Можешь ничего не объяснять.',0]]}];
+const RZWHY={1:'Спокойно, честно и по делу — так уважают.','0':'Слабость или пустые слова — тут не прокатит.','-1':'Нахамил — разговор окончен.'};
+const RZITEMS=[['📼','кассета'],['👖','джинсы'],['🎧','наушники'],['⌚','часы'],['🍉','арбуз'],['🧴','одеколон'],['🧢','кепка'],['📻','приёмник']];
+const RZL=[ /* серия «Разрулить»: 7 человек, сложность растёт */
+ {w:'Барыга',ic:'🧢',tx:'Барыга у ларька торгует жвачкой. Простой разговор, простые вопросы.'},
+ {w:'Напёрсточник',ic:'🥤',tx:'Ловкость рук и никакого мошенства. Следи за стаканами.'},
+ {w:'Фарцовщик',ic:'👖',tx:'Джинсы, кассеты, проценты. Считать надо быстро — пошёл таймер.'},
+ {w:'Мясник',ic:'🔪',tx:'Весы у него с подвохом. Вопросы на время.'},
+ {w:'Решала',ic:'🎩',tx:'Каждое слово с подвохом. Ошибёшься в разговоре — пиши пропало.'},
+ {w:'Хозяин рынка',ic:'👑',tx:'Опытный и хитрый. Таймер короткий, товара много.'},
+ {w:'Смотрящий',ic:'🕶',tx:'Последний. Нужно ответить на всё без единой ошибки.'}];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+/* d: 0 (легко) … 1 (очень сложно) */
+function rzCfg(d){const tier=d<.3?0:d<.65?1:2;return{d,tier,steps:d<.2?3:4,need:d>=.9?4:d<.2?2:3,time:d<.3?0:Math.round(22-d*12),swaps:5+Math.round(d*8),sp0:Math.round(460-d*200),spMin:Math.round(260-d*120),mem:3+Math.round(d*3),memT:Math.round(900-d*380)}}
+const rzPick=(arr,tier)=>shuf(arr.filter(x=>x.t===tier)).concat(shuf(arr.filter(x=>x.t<tier)));
+let RZTIM=0;
+function rzStart(who,d,onWin,onLose){au();clearInterval(RZTIM);state='quest';$ui.hidden=false;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;
+ const C=rzCfg(d);
+ const steps=shuf(C.steps===3?['talk','q','shells']:['talk','q','shells',Math.random()<.6?'memory':'q']),Q=rzPick(RZQ,C.tier),T=rzPick(RZT,C.tier),res=[];let i=0,score=0,qi=0,ti=0;
+ const head=()=>`<p class="sub" style="margin-bottom:4px">РАЗРУЛИТЬ · ${who} · ${['легко','средне','сложно'][C.tier]}${C.time?' · ⏱ '+C.time+' с':''}</p><div class="rzp">${steps.map((s,k)=>`<i class="${k<i?(res[k]?'ok':'bad'):k===i?'cur':''}"></i>`).join('')}</div><p class="sub" style="font-size:13px;margin:2px 0">Нужно ${C.need} из ${steps.length}</p>`;
+ const timer=on=>{clearInterval(RZTIM);if(!C.time)return;const t0=performance.now();RZTIM=setInterval(()=>{const bar=document.getElementById('rzt'),f=1-(performance.now()-t0)/(C.time*1000);if(bar)bar.style.width=Math.max(0,f*100)+'%';if(f<=0){clearInterval(RZTIM);on()}},100)};
+ const tbar=()=>C.time?'<div class="rztb"><i id="rzt"></i></div>':'';
+ const done=(ok,msg)=>{clearInterval(RZTIM);if(res[i]!=null)return;res[i]=ok;if(ok){score++;SFX.pick()}else SFX.hit();const box=document.getElementById('rzfb');
+  const lost=steps.length-i-1<C.need-score;
+  box.innerHTML=`<div class="warn" style="border-color:${ok?'#5ad05a':'#c8202a'}"><b>${ok?'✔ В точку':'✘ Мимо'}</b><br>${msg}</div><div class="row"><button class="pri" id="rznext">${i<steps.length-1&&!lost?'Дальше':'Итог'}</button></div>`;
+  $ui.querySelectorAll('.rza,.cup,.mi').forEach(b=>b.disabled=true);
+  document.getElementById('rznext').onclick=()=>{i++;i<steps.length&&!lost?show():fin()}};
+ const show=()=>{const s=steps[i];
+  if(s==='q'){const q=Q[qi++%Q.length],ord=shuf(q.a.map((a,k)=>k));$ui.innerHTML=`<div class="card">${head()}<h2>Вопрос на смекалку</h2>${tbar()}<div class="warn" style="border-color:#4a3d48;font-size:18px">${q.q}</div><div class="row">${ord.map(k=>`<button class="rza" data-k="${k}">${q.a[k]}</button>`).join('')}</div><div id="rzfb"></div></div>`;
+   $ui.querySelectorAll('.rza').forEach(b=>b.onclick=()=>{b.classList.add('on');const ok=+b.dataset.k===q.c;done(ok,(ok?'':'Правильно: '+q.a[q.c]+'. ')+q.why)});timer(()=>done(false,'Время вышло. Правильно: '+q.a[q.c]+'. '+q.why))}
+  else if(s==='talk'){const t=T[ti++%T.length],o=shuf(t.o);$ui.innerHTML=`<div class="card">${head()}<h2>Разговор</h2>${tbar()}<div class="warn" style="border-color:#e8b23a;font-size:19px"><b>${who}:</b> «${t.say}»</div><div class="col">${o.map(([a,v])=>`<button class="rza" data-v="${v}">${a}</button>`).join('')}</div><div id="rzfb"></div></div>`;
+   $ui.querySelectorAll('.rza').forEach(b=>b.onclick=()=>{b.classList.add('on');done(+b.dataset.v===1,RZWHY[b.dataset.v])});timer(()=>done(false,'Замолчал — значит, сказать нечего.'))}
+  else if(s==='shells'){$ui.innerHTML=`<div class="card">${head()}<h2>Напёрстки</h2><p class="sub">Напёрсточник крутит стаканы${C.tier?' — и всё быстрее':''}. Следи за шариком!</p><div class="cups">${[0,1,2].map(k=>`<button class="cup" data-k="${k}"></button>`).join('')}<div class="ball" id="ball"></div></div><div id="rzfb"></div></div>`;
+   const cups=[...$ui.querySelectorAll('.cup')],pos=[0,1,2],ball=document.getElementById('ball'),bk=Math.random()*3|0;let canPick=false;const X=p=>`calc(${p*33.3+16.6}% - 40px)`,place=()=>cups.forEach((c,k)=>c.style.left=X(pos[k]));place();
+   const bX=()=>ball.style.left=`calc(${pos[bk]*33.3+16.6}% - 11px)`;bX();cups[bk].classList.add('up');cups.forEach(c=>c.disabled=true);
+   setTimeout(()=>{cups[bk].classList.remove('up');setTimeout(()=>ball.style.opacity=0,250);let n=0,sp=C.sp0;const sw=()=>{if(!document.body.contains(ball))return;if(n++>=C.swaps){canPick=true;cups.forEach(c=>c.disabled=false);return}const a=Math.random()*3|0,b=(a+1+(Math.random()*2|0))%3;const ia=pos.indexOf(a),ib=pos.indexOf(b);pos[ia]=b;pos[ib]=a;cups.forEach(c=>c.style.transitionDuration=sp+'ms');place();SFX.whoosh();sp=Math.max(C.spMin,sp-30);setTimeout(sw,sp+40)};setTimeout(sw,600)},1300);
+   cups.forEach((c,k)=>c.onclick=()=>{if(!canPick)return;canPick=false;bX();ball.style.opacity=1;cups[bk].classList.add('up');if(k!==bk)c.classList.add('up');done(k===bk,k===bk?'Глаз — алмаз. Напёрсточник зауважал.':'Шарик был под другим стаканом. Ловкость рук…')})}
+  else{const seq=shuf(RZITEMS).slice(0,C.mem),rest=RZITEMS.filter(x=>!seq.includes(x)),pool=shuf(seq.concat(shuf(rest).slice(0,2)));
+   $ui.innerHTML=`<div class="card">${head()}<h2>Запомни товар</h2><p class="sub">${who} показывает ${C.mem} вещ${C.mem<5?'и':'ей'} по очереди. Потом нажми в том же порядке.</p><div class="mshow" id="mshow">…</div><div class="row" id="mbtns"></div><div id="rzfb"></div></div>`;
+   const sh=document.getElementById('mshow');let k=0;const tick=()=>{if(!document.body.contains(sh))return;if(k<seq.length){sh.innerHTML=`${seq[k][0]}<small>${seq[k][1]}</small>`;SFX.click();k++;setTimeout(()=>{sh.innerHTML='';setTimeout(tick,200)},C.memT)}else{sh.innerHTML='<small>Твоя очередь</small>';let got=0;
+    document.getElementById('mbtns').innerHTML=pool.map(([e,n])=>`<button class="mi" data-n="${n}">${e} ${n}</button>`).join('');$ui.querySelectorAll('.mi').forEach(b=>b.onclick=()=>{if(b.dataset.n===seq[got][1]){b.classList.add('on');b.disabled=true;got++;SFX.click();if(got===seq.length)done(true,'Всё запомнил — по-деловому.')}else done(false,'Порядок был: '+seq.map(x=>x[1]).join(', ')+'.')})}};setTimeout(tick,600)}};
+ const fin=()=>{clearInterval(RZTIM);const ok=score>=C.need;$ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${ok?'#e8b23a':'#c8202a'}">${ok?'РАЗРУЛИЛ!':'НЕ ВЫШЛО'}</h1><p class="sub">${score} из ${steps.length} (нужно ${C.need}). ${ok?'Вопрос решён без драки.':'Разговор не сложился — значит, по-другому.'}</p><div class="row"><button class="pri" id="rzend">${ok?'Дальше':'Дальше'}</button></div></div>`;
+  if(ok){gainXP(60+Math.round(d*120));SFX.bell()}document.getElementById('rzend').onclick=()=>ok?onWin():onLose()};
+ window.__rz={C,steps};show()}
+function rzHide(){$ui.hidden=true;state='play';document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0);last=0}
+/* выбор перед боссом: драться или разрулить */
+function rzOffer(who,d,tip,onFight,onWin){state='quest';$ui.hidden=false;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;const C=rzCfg(d);
+ $ui.innerHTML=`<div class="card"><p class="sub">Впереди</p><h1 style="font-size:clamp(32px,6vw,58px)">${who.toUpperCase()}</h1>${tip?`<p class="sub">${tip}</p>`:''}<div class="warn" style="border-color:#4a3d48">Можно решить кулаками. А можно <b>разрулить</b>: ${C.steps} задания: напёрстки, смекалка и разговор, нужно ${C.need} из ${C.steps}. Сложность: <b>${['лёгкая','средняя','высокая'][C.tier]}</b>${C.time?', ⏱ '+C.time+' с на ответ':''}. Не выйдет — всё равно драка.</div><div class="row"><button class="pri" id="rzf">👊 Драться</button><button id="rzq">🗣 Разрулить</button></div></div>`;
+ document.getElementById('rzf').onclick=()=>{rzHide();onFight()};document.getElementById('rzq').onclick=()=>rzStart(who,d,()=>{rzHide();onWin()},()=>{rzHide();onFight()})}
+/* отдельная серия из меню */
+const rzMax=()=>Math.min(RZL.length,LS.get('rzl',1));
+function showRz(){state='menu';CAMP.on=0;$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;const mx=rzMax();
+ $ui.innerHTML=`<div class="card"><h1>РАЗРУЛИТЬ</h1><p class="sub">Без драки: напёрстки, смекалка, память и разговор по понятиям. Каждый следующий — сложнее.</p><div class="clist">${RZL.map((c,i)=>`<button class="ch ${i<mx?'':'lock'}" data-c="${i}" ${i<mx?'':'disabled'}><span>${i<mx?c.ic:'🔒'}</span><b>${i+1}. ${i<mx?c.w:'закрыто'}</b><small>${['легко','легко','средне','средне','сложно','сложно','очень сложно'][i]}</small></button>`).join('')}</div>
+ ${LS.get('rzdone',0)?'<p class="sub" style="color:var(--gold)">★ Все разрулены. Ты — решала района.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
+ $ui.querySelectorAll('.ch').forEach(b=>b.onclick=()=>rzLevel(+b.dataset.c));document.getElementById('back').onclick=showMenu}
+function rzLevel(i){const L=RZL[i],d=i/(RZL.length-1),C=rzCfg(d);state='menu';
+ $ui.innerHTML=`<div class="card"><p class="sub">Разрулить · ${i+1} из ${RZL.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${L.ic} ${L.w.toUpperCase()}</h1><div class="warn" style="border-color:#4a3d48;font-size:17px">${L.tx}<br><small>${C.steps} задания · нужно ${C.need}${C.time?' · ⏱ '+C.time+' с на ответ':''}</small></div><div class="row"><button class="pri" id="rgo">Начать</button><button id="rback">К списку</button></div></div>`;
+ document.getElementById('rback').onclick=showRz;
+ document.getElementById('rgo').onclick=()=>rzStart(L.w,d,()=>{if(rzMax()<i+2)LS.set('rzl',Math.min(RZL.length,i+2));if(i===RZL.length-1)LS.set('rzdone',1);rzAfter(i,true)},()=>rzAfter(i,false))}
+function rzAfter(i,won){state='menu';const last=i===RZL.length-1;$ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?(last?'ТЫ — РЕШАЛА':'РАЗРУЛИЛ'):'НЕ ВЫШЛО'}</h1><p class="sub">${won?(last?'Даже смотрящий признал: с тобой можно иметь дело.':`Открыт следующий: ${RZL[i+1].w}.`):'Попробуй ещё раз — вопросы будут другие.'}</p>${progLine()}
+ <div class="row"><button class="pri" id="rn">${won&&!last?RZL[i+1].ic+' '+RZL[i+1].w+' ▶':won?'К списку':'Ещё раз'}</button><button id="rl">К списку</button><button id="rm">Меню</button></div></div>`;
+ document.getElementById('rn').onclick=()=>won&&!last?rzLevel(i+1):won?showRz():rzLevel(i);document.getElementById('rl').onclick=showRz;document.getElementById('rm').onclick=showMenu}
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
@@ -1265,12 +1362,12 @@ function showAge(){state='age';$ui.hidden=false;$ui.innerHTML=`<div class="card"
  <div class="warn"><b>18+</b><br>В игре насилие, оружие и кровь. Все персонажи и события вымышлены.</div>
  <div class="row"><button class="pri" id="y18">Мне есть 18</button><button id="n18">Мне нет 18</button></div></div>`;
  document.getElementById('y18').onclick=()=>{au();LS.set('age',1);showMenu()};document.getElementById('n18').onclick=()=>{location.href='https://games.tagshim.com/'}}
-function showMenu(){state='menu';CAMP.on=0;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;$ui.innerHTML=`<div class="card"><h1>УЛИЦА</h1><h2 style="color:#c8202a">КРОВЬ НА АСФАЛЬТЕ</h2><p class="sub">Выбери пацана</p><div class="row"><button class="pri" id="camp" style="font-size:19px;padding:14px 26px">▶ СЮЖЕТ: ПУТЬ ПАЦАНА <small style="opacity:.8">глава ${campMax()}/${CH.length}</small></button></div><div class="heroes" id="hs"></div><div id="pg">${progHTML()}</div>
+function showMenu(){state='menu';CAMP.on=0;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;$ui.innerHTML=`<div class="card"><h1>УЛИЦА</h1><h2 style="color:#c8202a">КРОВЬ НА АСФАЛЬТЕ</h2><p class="sub">Выбери пацана</p><div class="row"><button class="pri" id="camp" style="font-size:19px;padding:14px 26px">▶ СЮЖЕТ: ПУТЬ ПАЦАНА <small style="opacity:.8">глава ${campMax()}/${CH.length}</small></button><button id="rzb" style="font-size:19px;padding:14px 26px">🗣 РАЗРУЛИТЬ <small style="opacity:.8">${rzMax()}/${RZL.length}</small></button></div><div class="heroes" id="hs"></div><div id="pg">${progHTML()}</div>
  <div class="row"><button class="mb ${mode==='ffa'?'on':''}" data-m="ffa">Без правил · каждый сам</button><button class="mb ${mode==='team'?'on':''}" data-m="team">Стенка · 2 на 2</button><button class="mb ${mode==='rayon'?'on':''}" data-m="rayon">Район · гонка-драка 3 на 3</button><button class="mb ${mode==='oblava'?'on':''}" data-m="oblava">Облава · уйди от ментов</button><button class="mb ${mode==='disko'?'on':''}" data-m="disko">Дискотека · 3 на 3</button><button class="mb ${mode==='rynok'?'on':''}" data-m="rynok">Рынок · от барыги до смотрящего</button><button class="mb ${mode==='zavod'?'on':''}" data-m="zavod">Завод · укради ящик</button><button class="mb ${mode==='salon'?'on':''}" data-m="salon">Видеосалон · отожми</button></div>
  ${mode==='rynok'?`<div class="row"><span style="align-self:center;opacity:.8">Этап:</span>${Array.from({length:rynMax()},(_,i)=>`<button class="rs ${RYN.st===i+1?'on':''}" data-s="${i+1}">${i+1}. ${RST[i].b.toLowerCase()}</button>`).join('')}</div>`:''}${RMODE()?`<div class="row"><span style="align-self:center;opacity:.8">Транспорт:</span><button class="vh ${VEHSEL==='skate'?'on':''}" data-v="skate">🛹 Скейт — вёрткий</button><button class="vh ${VEHSEL==='bike'?'on':''}" data-v="bike">🚲 Велик — быстрый</button></div>${mode==='rayon'?`<div class="row"><span style="align-self:center;opacity:.8">Трасса:</span>${RMAPS.map((n,i)=>`<button class="rm ${LS.get('rmap',1)===i?'on':''}" data-r="${i}">${n}</button>`).join('')}</div>`:''}`:''}<div class="row"><button id="bl" class="${BLOOD?'on':''}">Кровь: ${BLOOD?'вкл':'выкл'}</button><button class="pri" id="go">В БОЙ</button></div>
  <p class="sub" style="margin-top:14px;font-size:13px">Компьютер: WASD или стрелки · удар — F или левая кнопка мыши · пинок — G или правая кнопка. Оружие подбирается само. Завод: прячься от фонарей, бей со спины; с ящиком удар — бросить ящик. Видеосалон: стой в круге у телевизора. Район: держи направление стрелками/джойстиком — едешь туда.</p></div>`;
  const hs=document.getElementById('hs');HEROES.forEach((h,i)=>{const b=document.createElement('button');b.className='hb'+(i===myHero?' on':'');b.appendChild(heroCanvas(i));b.insertAdjacentHTML('beforeend',`<b>${h.name}</b><small>${h.desc}</small><small style="color:var(--gold)">ур. ${PROG.h[i].lv}${PROG.h[i].pts?' · очки: '+PROG.h[i].pts:''}</small>`);b.onclick=()=>{myHero=i;LS.set('hero',i);showMenu()};hs.appendChild(b)});
- document.getElementById('camp').onclick=()=>{au();showCamp()};
+ document.getElementById('camp').onclick=()=>{au();showCamp()};document.getElementById('rzb').onclick=()=>{au();showRz()};
  $ui.querySelectorAll('.up').forEach(b=>b.onclick=()=>{const P=PROG.h[myHero],k=b.dataset.u;if(P.pts>0&&P.up[k]<UPMAX){P.pts--;P.up[k]++;saveProg();au();SFX.pick();showMenu()}});
  $ui.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{RMAP=+b.dataset.r;LS.set('rmap',RMAP);showMenu()});
  $ui.querySelectorAll('.rs').forEach(b=>b.onclick=()=>{RYN.st=+b.dataset.s;showMenu()});

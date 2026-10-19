@@ -1067,6 +1067,7 @@ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 LS.get('age',0)?showMenu():showAge();
+try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp'])).catch(()=>{})}}catch(e){}
 window.__r89={get G(){return G},start,attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
 })();
 </script>

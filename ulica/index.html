@@ -61,12 +61,12 @@ const HEROES=[
  {id:'shust',name:'Шустрый',desc:'Шапка, спортивка. Быстрый',hp:90,spd:250,pow:.9,rate:1.25,jacket:'#1f3f8f',pants:'#1f3f8f',stripe:'#f2f2f2',hair:'#2a1a10',skin:'#e9bd96'},
  {id:'zdor',name:'Здоровый',desc:'Лысый. Медленный, крепкий',hp:150,spd:170,pow:1.35,rate:.8,jacket:'#e8e8ee',vest:1,pants:'#2c2f3a',hair:'#6a4a2a',skin:'#dfa47e',big:1},
  {id:'skor',name:'Скорлупа',desc:'Кудрявый мелкий. Юркий',hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1},
- {id:'boxer',name:'Боксёр',desc:'Перчатки. Каждый 3-й удар — двойной',hp:100,spd:225,pow:1.1,rate:1.2,kickMul:.7,combo:1,price:400,pq:'h_boxer',top:116,sc:1.12,jacket:'#b81c24',pants:'#22252e',stripe:'#f2f2f2',hair:'#6a4a2a',skin:'#e9bd96'},
- {id:'karate',name:'Каратист',desc:'Повязка. Пинок сбивает с ног',hp:95,spd:235,pow:1,rate:1.05,kickMul:1.5,kickDown:1,price:500,pq:'h_karate',top:116,sc:1.12,jacket:'#1f3f9f',pants:'#1f3f9f',stripe:'#f2f2f2',hair:'#6a3a1a',skin:'#e9bd96'},
- {id:'dembel',name:'Дембель',desc:'Тельняшка. Ремень с бляхой не ломается',hp:150,spd:185,pow:1.15,rate:.9,belt:1,price:700,pq:'h_dembel',top:116,sc:1.18,jacket:'#e8eef8',pants:'#5a5a2a',stripe:'#2a4a9a',hair:'#8a5a2a',skin:'#e7b48c'},
- {id:'ryzhiy',name:'Рыжий',desc:'Мелкий. Стреляет из рогатки',hp:80,spd:270,pow:.9,rate:1.1,sling:1,price:350,pq:'h_ryzhiy',top:116,sc:1,jacket:'#e8e0c8',pants:'#5a6a3a',cap:'#2a4a9a',hair:'#e0602a',skin:'#f0c4a0'},
- {id:'kaban',name:'Кабан',desc:'Бугай в спортивке. Кулак сбивает с ног',hp:140,spd:180,pow:1.3,rate:.85,heavyFist:1,price:600,pq:'h_kaban',top:115,sc:1.18,jacket:'#1f2a5a',pants:'#1f2a5a',stripe:'#f2f2f2',hair:'#4a3a2a',skin:'#e0a880'},
- {id:'marinka',name:'Маринка',desc:'Со двора. Вёрткая — уворачивается от ударов',hp:85,spd:260,pow:.95,rate:1.3,dodge:.22,price:450,pq:'h_marinka',top:115,sc:1.05,noEnemy:1,jacket:'#6a2a9a',pants:'#6a2a9a',stripe:'#f2f2f2',hair:'#7a4a2a',skin:'#f0c4a0'}];
+ {id:'boxer',name:'Боксёр',desc:'Перчатки. Каждый 3-й удар — двойной',hp:100,spd:225,pow:1.1,rate:1.2,kickMul:.7,combo:1,price:400,pq:'h_boxer',hand:{i:[38,-97],p:[93,-102],o:[4,-138]},top:116,sc:1.12,jacket:'#b81c24',pants:'#22252e',stripe:'#f2f2f2',hair:'#6a4a2a',skin:'#e9bd96'},
+ {id:'karate',name:'Каратист',desc:'Повязка. Пинок сбивает с ног',hp:95,spd:235,pow:1,rate:1.05,kickMul:1.5,kickDown:1,price:500,pq:'h_karate',hand:{i:[28,-79],p:[72,-94],o:[15,-143]},top:116,sc:1.12,jacket:'#1f3f9f',pants:'#1f3f9f',stripe:'#f2f2f2',hair:'#6a3a1a',skin:'#e9bd96'},
+ {id:'dembel',name:'Дембель',desc:'Тельняшка. Ремень с бляхой не ломается',hp:150,spd:185,pow:1.15,rate:.9,belt:1,price:700,pq:'h_dembel',hand:{i:[47,-96],p:[97,-107],o:[-1,-149]},top:116,sc:1.18,jacket:'#e8eef8',pants:'#5a5a2a',stripe:'#2a4a9a',hair:'#8a5a2a',skin:'#e7b48c'},
+ {id:'ryzhiy',name:'Рыжий',desc:'Мелкий. Стреляет из рогатки',hp:80,spd:270,pow:.9,rate:1.1,sling:1,price:350,pq:'h_ryzhiy',hand:{i:[28,-84],p:[67,-106],o:[0,-140]},top:116,sc:1,jacket:'#e8e0c8',pants:'#5a6a3a',cap:'#2a4a9a',hair:'#e0602a',skin:'#f0c4a0'},
+ {id:'kaban',name:'Кабан',desc:'Бугай в спортивке. Кулак сбивает с ног',hp:140,spd:180,pow:1.3,rate:.85,heavyFist:1,price:600,pq:'h_kaban',hand:{i:[41,-93],p:[101,-110],o:[-15,-147]},top:115,sc:1.18,jacket:'#1f2a5a',pants:'#1f2a5a',stripe:'#f2f2f2',hair:'#4a3a2a',skin:'#e0a880'},
+ {id:'marinka',name:'Маринка',desc:'Со двора. Вёрткая — уворачивается от ударов',hp:85,spd:260,pow:.95,rate:1.3,dodge:.22,price:450,pq:'h_marinka',hand:{i:[28,-93],p:[65,-105],o:[6,-154]},top:115,sc:1.05,noEnemy:1,jacket:'#6a2a9a',pants:'#6a2a9a',stripe:'#f2f2f2',hair:'#7a4a2a',skin:'#f0c4a0'}];
 const TINT=document.createElement('canvas');TINT.width=400;TINT.height=360;const PZMAP=[1,0,2,3],PZTOP0=[60,70,70,58],PZI=[],PZTOP=[];for(let h=0;h<HEROES.length;h++){const i=new Image();i.src=h<4?'img/pq'+PZMAP[h]+'.webp':'img/'+HEROES[h].pq+'.webp';PZI[h]=i;PZTOP[h]=h<4?PZTOP0[PZMAP[h]]:HEROES[h].top;i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
 const NSPR={},NTOP={druzh:130,ded:171,storozh:154,host:115,brig:142,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
 const UAZI=new Image();UAZI.src='img/uaz.webp';
@@ -148,12 +148,12 @@ function drawFighter(g,f,t){const SK=f.spr||NSK[f.npc];if(f.npc&&!nsOK(SK))retur
  g.scale(f.face*big,big);
  const SP=nsOK(SK)?NSPR[SK]:PZI[f.hero];
  if(SP&&SP.complete&&SP.naturalWidth){const top=nsOK(SK)?NTOP[SK]:PZTOP[f.hero],u=150/(350-top);
-  const walking=f.state==='walk'&&!f.onBoard,big7=f.atkT>0&&(SK?!!(WEAPONS[f.weapon]&&WEAPONS[f.weapon].len):(f.weapon==='bat'||(!f.weapon&&HH(f).belt&&f.bigA))),fi=(f.state==='down'||f.state==='ko')?6:f.hurtT>.05?5:f.air>0?4:f.kickT>0?2:big7?7:f.atkT>0?3:walking?((f.anim*7|0)%2?1:0):0;
+  const walking=f.state==='walk'&&!f.onBoard,big7=f.atkT>0&&(SK?!!(WEAPONS[f.weapon]&&WEAPONS[f.weapon].len):(f.weapon==='bat'||(!f.weapon&&HH(f).belt&&f.bigA)||(H0.hand&&f.weapon&&WEAPONS[f.weapon].len&&!WEAPONS[f.weapon].chain&&!WEAPONS[f.weapon].nun&&f.atkT/f.atkDur>.55))),fi=(f.state==='down'||f.state==='ko')?6:f.hurtT>.05?5:f.air>0?4:f.kickT>0?2:big7?7:f.atkT>0?3:walking?((f.anim*7|0)%2?1:0):0;
   g.save();if(f.state==='hurt'&&f.hurtT>.12)g.translate(-6,0);if(f.hurtT>.1){const tc=TINT.getContext('2d');tc.globalCompositeOperation='source-over';tc.clearRect(0,0,400,360);tc.drawImage(SP,fi*400,0,400,360,0,0,400,360);tc.globalCompositeOperation='source-atop';tc.fillStyle='rgba(255,40,40,.4)';tc.fillRect(0,0,400,360);g.drawImage(TINT,-200*u,-350*u,400*u,360*u)}else g.drawImage(SP,fi*400,0,400,360,-200*u,-350*u,400*u,360*u);
   const dmg=1-f.hp/f.max;if(BLOOD&&dmg>.45&&fi<5){g.fillStyle='#9a0e16';g.beginPath();g.arc(14,-118,3.5,0,TAU);g.fill();g.fillRect(12,-114,3,9)}
-  if(f.weapon&&!SK&&!(fi===7&&f.weapon==='bat')&&fi!==6&&fi!==5){const w=WEAPONS[f.weapon],atk=f.atkT>0?f.atkT/f.atkDur:0;const hx=fi===3||fi===7?62:fi===2?30:34,hy=fi===3||fi===7?-88:-78;g.translate(hx,hy);
-   let ang=-.55;if(w.len&&!w.nun&&!w.chain)ang=f.atkT>0?(1-atk)*2.6-2.3:-1.25;else if(w.gun||w.throw)ang=0;else if(w.stab||f.weapon==='knux')ang=f.atkT>0?-.05:-.6;else if(w.nun||w.chain)ang=f.atkT>0?(1-atk)*2-1.6:-1;
-   g.rotate(ang);g.scale(1.15,1.15);drawWeapon(g,f.weapon,t,f.bloody,w.nun&&f.atkT>0?(1-atk)*3-1.5:null);if(w.gun&&f.flash>0){g.fillStyle='#ffe28a';g.beginPath();g.arc(46,-4,10,0,TAU);g.fill()}}
+  if(f.weapon&&!SK&&!(fi===7&&f.weapon==='bat'&&!H0.hand)&&fi!==6&&fi!==5){const w=WEAPONS[f.weapon],atk=f.atkT>0?f.atkT/f.atkDur:0;const HP=H0.hand?(fi===7?H0.hand.o:fi===3?H0.hand.p:H0.hand.i):null,hx=HP?HP[0]:fi===3||fi===7?62:fi===2?30:34,hy=HP?HP[1]:fi===3||fi===7?-88:-78;g.translate(hx,hy);
+   let ang=-.55;if(w.len&&!w.nun&&!w.chain)ang=f.atkT>0?(HP?(fi===7?-2.25+(1-atk)*.9:-1.15+Math.min(1,(.55-atk)/.5)*1.55):(1-atk)*2.6-2.3):-1.25;else if(w.gun||w.throw)ang=0;else if(w.stab||f.weapon==='knux')ang=f.atkT>0?-.05:-.6;else if(w.nun||w.chain)ang=f.atkT>0?(1-atk)*2-1.6:-1;
+   if(f.weapon==='chain')drawChainHeld(g,t,f.atkT>0?atk:0,f.bloody);else if(f.weapon==='nunchaku')drawNunHeld(g,t,f.atkT>0?atk:0,ang);else{g.rotate(ang);drawWeapon(g,f.weapon,t,f.bloody);if(w.gun&&f.flash>0){const mx=(WSP[f.weapon]||[0,40])[1]+4;g.fillStyle='#ffe28a';g.beginPath();g.arc(mx,-5,8,0,TAU);g.fill();g.fillStyle='#fff8d0';g.beginPath();g.arc(mx,-5,4,0,TAU);g.fill()}}}
   g.restore()}
  else{
  const walk=f.onBoard?0:(f.state==='walk'?Math.sin(f.anim*12):0),hurt=f.state==='hurt';
@@ -202,7 +202,21 @@ function drawFighter(g,f,t){const SK=f.spr||NSK[f.npc];if(f.npc&&!nsOK(SK))retur
   g.font='bold 13px system-ui';g.textAlign='center';g.fillStyle=f.bot?'#e8c08a':'#ffffff';g.fillText(f.name,f.x,y-5)}
  if(f.stun>0&&f.state!=='ko'){for(let i=0;i<3;i++){const a=t*6+i*2.1;g.fillStyle='#ffd23f';g.beginPath();g.arc(f.x+Math.cos(a)*22,f.y-160*big+Math.sin(a)*6,4,0,TAU);g.fill()}}}
 
-const WSP={stick:[-6,80,.5],bat:[-8,94,.5],spike:[-8,94,.52],rebar:[-6,92,.5],chain:[-6,94,.5],knux:[-14,26,.55],nunchaku:[-6,80,.5],bottle:[-6,50,.5],knife:[-8,70,.5],stone:[-15,15,.5],pistol:[-2,46,.2],baton:[-8,78,.2],salt:[-12,92,.35],kefir:[-22,22,.5]},WIMG={};
+/* длина оружия в руке — в единицах тела героя (рост ≈150): нож ~ кисть+предплечье, бита ~ полруки-до пояса */
+const WSP={stick:[-7,66,.5],bat:[-9,70,.5],spike:[-9,72,.52],rebar:[-7,80,.5],chain:[-6,70,.5],knux:[-9,11,.55],nunchaku:[-6,64,.5],bottle:[-7,27,.5],knife:[-7,29,.5],stone:[-9,9,.5],pistol:[-3,25,.2],baton:[-8,56,.2],salt:[-12,74,.35],kefir:[-22,22,.5]},WIMG={};
+/* цепь: звенья по кривой, при замахе поднимается, при ударе хлещет вниз; в покое висит */
+function drawChainHeld(g,t,atk,bl){const im=WIMG.chain,ok=im&&im.complete&&im.naturalWidth,N=9,seg=9.4;let th0,curl;
+ if(atk>0){const p=1-atk;if(p<.38){const q=p/.38;th0=1.35+(-2.5-1.35)*q*q;curl=.16}else{const q=(p-.38)/.62,e=1-(1-q)*(1-q);th0=-2.5+(.55+2.5)*e;curl=-.2*(1-q)}}else{th0=1.25+Math.sin(t*2.6)*.08;curl=.03}
+ let x=0,y=0;g.fillStyle='#2a2a30';g.beginPath();g.arc(0,0,4,0,TAU);g.fill();
+ for(let i=0;i<N;i++){const a=th0+curl*i+(atk>0?0:Math.sin(t*3+i*.5)*.03*i),nx=x+Math.cos(a)*seg,ny=y+Math.sin(a)*seg;g.save();g.translate((x+nx)/2,(y+ny)/2);g.rotate(a);const hh=i%2?4.2:9.5;
+  if(ok)g.drawImage(im,0,0,im.naturalWidth*.31,im.naturalHeight,-seg*.75,-hh/2,seg*1.5,hh);else{g.strokeStyle='#9a9aa4';g.lineWidth=2.5;g.beginPath();g.ellipse(0,0,seg*.7,hh/2,0,0,TAU);g.stroke()}g.restore();x=nx;y=ny}
+ if(BLOOD&&bl){g.fillStyle='rgba(138,12,20,.8)';g.beginPath();g.arc(x,y,3.5,0,TAU);g.fill()}}
+/* нунчаки: одна палка в руке, вторая на короткой цепочке — висит, при ударе крутится */
+function drawNunHeld(g,t,atk,ang){const im=WIMG.nunchaku,ok=im&&im.complete&&im.naturalWidth,L=31,T=9.5;const iw=ok?im.naturalWidth:1,ih=ok?im.naturalHeight:1;
+ const stick=(sx)=>{if(ok)g.drawImage(im,sx*iw,0,iw*.36,ih,-3,-T/2,L,T);else{g.fillStyle='#5a3a1a';g.fillRect(-3,-T/2,L,T)}};
+ g.save();g.rotate(ang);stick(0);const ex=L-4;let a2=atk>0?ang+(1-atk)*Math.PI*3.2+1.2:1.45+Math.sin(t*2.2)*.12;
+ const cx=Math.cos(a2-ang)*7,cy=Math.sin(a2-ang)*7;g.strokeStyle='#b8b8c0';g.lineWidth=1.6;g.setLineDash([2,1.5]);g.beginPath();g.moveTo(ex,0);g.lineTo(ex+cx,cy);g.stroke();g.setLineDash([]);
+ g.translate(ex+cx,cy);g.rotate(a2-ang);stick(.64);g.restore()}
 for(const k of ['stick','bat','spike','rebar','chain','knux','nunchaku','bottle','knife','stone','pistol','baton','salt','kefir','sling','belt']){const i=new Image();i.src='img/w_'+k+'.webp';WIMG[k]=i}
 function drawWeapon(g,k,t,bl,sw){const w=WEAPONS[k];if(!w)return;{const im=WIMG[k],S=WSP[k];if(S&&im&&im.complete&&im.naturalWidth){const L=S[1]-S[0],h=L*im.naturalHeight/im.naturalWidth;g.drawImage(im,S[0],-h*S[2],L,h);if(BLOOD&&bl&&w.len){g.save();g.fillStyle='rgba(138,12,20,.75)';g.beginPath();g.ellipse(S[1]-18,0,12,6,0,0,TAU);g.fill();g.restore()}return}}g.save();g.lineJoin='round';g.lineCap='round';const O='#0d0b10',BL='#8a0c14';
  const poly=(pts,fill,lw)=>{g.beginPath();pts.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();g.fillStyle=fill;g.fill();g.strokeStyle=O;g.lineWidth=lw||3;g.stroke()};
@@ -226,7 +240,7 @@ function drawStab(g,k,bl){g.lineJoin='round';if(k==='bottle'){g.fillStyle='#2f7a
 function drawPickup(g,p,t){const bob=Math.sin(t*4+p.x)*3;g.save();g.translate(p.x,p.y);g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,2,30,7,0,0,TAU);g.fill();
  g.fillStyle=`rgba(255,220,120,${.14+.08*Math.sin(t*5)})`;g.beginPath();g.arc(0,-12,38,0,TAU);g.fill();g.save();g.translate(0,-12+bob);
  if(p.k==='kefir'&&WIMG.kefir.complete&&WIMG.kefir.naturalWidth){g.rotate(-.2);drawWeapon(g,'kefir',t)}else if(p.k==='kefir'){g.fillStyle='#f4f4f4';g.strokeStyle='#0d0b10';g.lineWidth=2.5;g.fillRect(-11,-26,22,36);g.strokeRect(-11,-26,22,36);g.fillStyle='#2a8a3a';g.fillRect(-11,-33,22,8);g.fillStyle='#2a6a9a';g.font='bold 8px sans-serif';g.textAlign='center';g.fillText('КЕФИР',0,-4)}
- else{const w=WEAPONS[p.k],L=w.len||(p.k==='knife'?66:p.k==='bottle'?46:p.k==='pistol'?40:30);g.rotate(w.len?-.35:0);g.scale(1.05,1.05);g.translate(-L/2,0);drawWeapon(g,p.k,t,false,p.k==='nunchaku'?.6:p.k==='chain'?10:null)}
+ else{const w=WEAPONS[p.k],S=WSP[p.k]||[-6,60],L=S[1]-S[0],k=Math.max(1,Math.min(2.4,62/L));g.rotate(w.len?-.35:0);g.scale(k,k);g.translate(-(S[0]+S[1])/2,0);drawWeapon(g,p.k,t,false,p.k==='nunchaku'?.6:p.k==='chain'?10:null)}
  g.restore();const nm=WEAPONS[p.k].name;g.font='bold 12px system-ui';g.textAlign='center';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.8)';g.strokeText(nm,0,22);g.fillStyle='#e8d8b0';g.fillText(nm,0,22);g.restore()}
 
 /* ---------- game state ---------- */
@@ -944,7 +958,7 @@ function drawRider(g,f,t){if(f.out&&f.down<=0){g.save();g.translate(f.x,f.y);g.r
  g.strokeStyle=f.team===0?(f.bot?'#4a8aff':'#5ad05a'):'#e0303a';g.lineWidth=3;g.beginPath();g.arc(0,0,30,0,TAU);g.stroke();
  g.rotate(f.ang+(down?f.down*6:0));g.scale(sc*RS,sc*RS);
  {const RI=RDI[f.veh];if(RI&&RI.complete&&RI.naturalWidth){const a0=f.atkT>0,s0=f.atkSide||1,col=a0?(s0<0?2:3):(f.spd>25?((f.anim*(f.veh==='bike'?5:3.5))|0)%2:0);g.save();g.rotate(Math.PI/2);g.drawImage(RI,col*256,(f.team===1?1:0)*256,256,256,-47,-47,94,94);g.restore();
-  if(f.w){g.save();if(a0){g.translate(4,s0*40);g.rotate(s0*(1.6-f.atkT*6));g.scale(.6,.6)}else{g.translate(4,20);g.rotate(.3);g.scale(.5,.5)}drawWeapon(g,f.w,t,false);g.restore()}g.restore();return rLabel(g,f)}}
+  if(f.w){g.save();if(a0){g.translate(4,s0*40);g.rotate(s0*(1.6-f.atkT*6));g.scale(.75,.75)}else{g.translate(4,20);g.rotate(.3);g.scale(.65,.65)}drawWeapon(g,f.w,t,false);g.restore()}g.restore();return rLabel(g,f)}}
  const jacket=f.team===1?ENEMY_COL[f.idx%4]:H0.jacket,O='#0d0b10';
  if(f.veh==='bike'){rr(g,14,-4,18,8,3,'#1a1a1c',2.5);rr(g,-32,-4,18,8,3,'#1a1a1c',2.5);limb(g,-24,0,22,0,4,'#b02020');limb(g,18,-12,18,12,3,'#c8c8c8')}
  else{rr(g,-28,-10,56,20,9,'#c8202a',3);g.fillStyle='#e8e0c0';g.fillRect(-20,-3,40,6);for(const wx of [-20,20])for(const wy of [-12,10])rr(g,wx-4,wy,8,4,1,'#2a2a2a',1)}

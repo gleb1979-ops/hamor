@@ -47,7 +47,7 @@
 })();
 /* Find which Tagshim game a room code belongs to: listen on every game's room channel and return the first one where a host is talking. */
 (function(){
-  var GAMES=[['byd-burger/v1/','/burger/?room='],['tagshim/rifts/v1/','/rifts/?room='],['tagshim-night/stars/v1/','/night/stars/?room='],['byd-hamor/v1/','/donkey/?room=']];
+  var GAMES=[['byd-burger/v1/','/burger/?room='],['tagshim/rifts/v1/','/rifts/?room='],['tagshim-night/stars/v1/','/night/stars/?room='],['byd-hamor/v1/','/donkey/?room='],['tagshim/ulica/v1/','/ulica/?room=']];
   window.TAGSHIM_GAMES=GAMES;
   window.findRoom=function(code,opts){opts=opts||{};return new Promise(function(res){
     if(!window.roomClient){res(null);return}

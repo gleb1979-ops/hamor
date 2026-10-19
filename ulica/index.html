@@ -582,7 +582,7 @@ const OBST_A2=[];
 function setLoc(i){LOC=(mode==='ffa'||mode==='team'||OBJM())?i%3:0;if(mode==='salon'){ZONE=SL[LOC].zone;TVS=SL[LOC].tv}}
 function bgKey(){return mode==='boss'?((CH[CAMP.ch]||{}).b==='host'?'dvor':'stroika'):mode==='disko'?'disko':(mode==='ffa'||mode==='team')?['street','stroika','dvor'][LOC]:OBJM()?mode+LOC:'street'}
 const PAINTERS={zavod0:g=>paintZavod(g),zavod1:g=>paintCeh(g),zavod2:g=>paintRail(g),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>bgPhoto(g,'stroika',paintStroika),dvor:g=>bgPhoto(g,'dvor',paintDvor)};
-const BGPH={};for(const k of ['dvor','stroika']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
+const BGPH={};for(const k of ['dvor','stroika','disko']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
 function bgPhoto(g,k,fb){const i=BGPH[k];if(i&&i.complete&&i.naturalWidth){g.drawImage(i,0,0,W,H);vignette(g)}else fb(g)}
 
 /* progression */
@@ -1061,10 +1061,10 @@ function drawDiskoLights(g,t){const fight=G.ph==='fight';g.save();g.globalCompos
  const cols=fight?['255,60,40','255,140,40','255,40,90','200,60,255']:['255,90,200','160,90,255','90,160,255','255,120,160'],sp=fight?.9:.35;
  for(let i=0;i<4;i++){const x=640+430*Math.sin(t*sp+i*1.7),y=520+120*Math.sin(t*sp*.8+i*2.3),a=fight?.2+.06*Math.sin(t*5+i):.16;
   const gr=g.createRadialGradient(x,y,6,x,y,140);gr.addColorStop(0,`rgba(${cols[i]},${a})`);gr.addColorStop(1,'rgba(0,0,0,0)');g.save();g.translate(x,y);g.scale(1,.4);g.translate(-x,-y);g.fillStyle=gr;g.fillRect(x-140,y-140,280,280);g.restore();
-  g.fillStyle=`rgba(${cols[i]},.05)`;g.beginPath();g.moveTo(640-8,60);g.lineTo(640+8,60);g.lineTo(x+70,y);g.lineTo(x-70,y);g.closePath();g.fill()}
+  g.fillStyle=`rgba(${cols[i]},.05)`;g.beginPath();g.moveTo(640-8,92);g.lineTo(640+8,92);g.lineTo(x+70,y);g.lineTo(x-70,y);g.closePath();g.fill()}
  for(let i=0;i<46;i++){const a=i*2.39+t*.5,r=120+(i*37)%560,x=640+Math.cos(a)*r*1.4,y=330+Math.sin(a)*r*.55;if(y<20)continue;g.fillStyle=`rgba(255,255,255,${.25+.2*Math.sin(t*3+i)})`;g.fillRect(x,y,3,3)}
  g.restore();
- circ(g,640,58,20,'#c8ccd8',2.5);g.fillStyle='rgba(255,255,255,.6)';for(let k=0;k<10;k++){const a=t*1.5+k*.63;if(Math.cos(a)>0)g.fillRect(640+Math.sin(a)*15-2,46+(k%5)*5,4,4)}}
+ if(!(BGPH.disko&&BGPH.disko.naturalWidth)){circ(g,640,58,20,'#c8ccd8',2.5);g.fillStyle='rgba(255,255,255,.6)';for(let k=0;k<10;k++){const a=t*1.5+k*.63;if(Math.cos(a)>0)g.fillRect(640+Math.sin(a)*15-2,46+(k%5)*5,4,4)}}}
 function drawGirl(g,G0,t,fight){const x=G0.cx,y=G0.cy;g.save();g.translate(x,y);const face=G0.face||1;g.scale(face,1);
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,0,24,7,0,0,TAU);g.fill();
  if(G0.spr&&nsOK(G0.spr)){const u=135/(350-NTOP[G0.spr]),fi=fight?(G0.spr==='g1'?4:5):((t*1.3+G0.x)|0)%8;g.drawImage(NSPR[G0.spr],fi*400,0,400,360,-200*u,-350*u,400*u,360*u);g.restore();return}
@@ -1084,7 +1084,7 @@ function diskoItems(t){const fight=G.ph==='fight',it=[];
  return it}
 function diskoHUD(t){const slow=G.ph==='slow',mm=Math.max(0,Math.ceil(G.phT));ctx.save();ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-250,12,500,56);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle=slow?'#ff9ad0':'#ff5a5a';
  ctx.fillText(slow?`МЕДЛЯК · не дерись — дружинники · ${mm}`:`ДРАКА! · до медляка ${mm}`,W/2,38);ctx.fillStyle='#222';ctx.fillRect(W/2-150,46,300,10);ctx.fillStyle=slow?'#ff9ad0':'#ff5a5a';ctx.fillRect(W/2-150,46,300*clamp(G.phT/(slow?9:17),0,1),10);ctx.restore()}
-PAINTERS.disko=g=>paintDisko(g);
+PAINTERS.disko=g=>bgPhoto(g,'disko',paintDisko);
 
 /* ---------- СЮЖЕТ «ПУТЬ ПАЦАНА» + БОССЫ ---------- */
 WEAPONS.bpistol={name:'Ствол',dmg:16,range:900,cd:1.9,knock:220,ammo:99,col:'#1c1c22',gun:1};
@@ -1249,7 +1249,7 @@ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 LS.get('age',0)?showMenu():showAge();
-try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
+try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
 window.__r89={get G(){return G},start,attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
 })();
 </script>

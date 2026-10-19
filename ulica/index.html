@@ -1936,7 +1936,7 @@ function trainUpdate(dt){const T=G.tr;if(!T||G.over)return;const L=T.L,act=G.F.f
  if(L===0){T.lurchT-=dt;if(T.lurchT<=0){T.lurchT=rnd(5,8);const d=Math.random()<.5?-1:1;shake=Math.max(shake,14);SFX.heavy();G.FX.push({x:W/2,y:220,t:0,life:1.1,txt:d>0?'ТОРМОЗИТ!':'ДЁРНУЛО!',c:'#ffd23f',big:1});
    for(const f of act){f.vx+=d*rnd(380,520);if(Math.random()<.35&&f.state!=='down')forceDown(f,.9)}}}
  if(L===1){for(const f of act)f.y=clamp(f.y,520,640);T.doorT-=dt;if(T.doorT<=0&&T.doorN<2){T.doorT=rnd(9,13);T.doorN++;const others=HOTH(),f=newFighter(G.F.length,others[T.doorN%others.length],true,1);f.team=1;f.x=[430,578,1038][T.doorN%3];f.y=525;f.face=-1;f.hp=f.max=Math.round(f.max*.7);G.F.push(f);G.FX.push({x:f.x,y:f.y-200,t:0,life:1.1,txt:'ИЗ КУПЕ!',c:'#ff8a5a',big:1});SFX.whoosh()}}
- if(L===2){T.gustT-=dt;if(T.gustT<=0){T.gust=1.6;T.gustT=rnd(5,8);G.FX.push({x:W/2,y:200,t:0,life:1,txt:'ПОРЫВ!',c:'#9fd0ff',big:1});SFX.whoosh()}const w=T.gust>0?120:30;if(T.gust>0)T.gust-=dt;
+ if(L===2){for(const f of act)f.y=clamp(f.y,352,488);for(const q of G.P)q.y=clamp(q.y,360,480);T.gustT-=dt;if(T.gustT<=0){T.gust=1.6;T.gustT=rnd(5,8);G.FX.push({x:W/2,y:200,t:0,life:1,txt:'ПОРЫВ!',c:'#9fd0ff',big:1});SFX.whoosh()}const w=T.gust>0?120:30;if(T.gust>0)T.gust-=dt;
   for(const f of act){if(f.state==='down'||f.state==='hurt')f.x+=w*1.6*dt;else f.x+=w*dt;
    if(f.x>W-56){f.hp=0;f.state='ko';f.downT=0;SFX.ko();G.FX.push({x:W-200,y:f.y-160,t:0,life:1.3,txt:'СДУЛО С ПЛАТФОРМЫ!',c:'#9fd0ff',big:1});f.x=W-40}}
   if(Math.random()<dt*20)G.FX.push({x:-10,y:rnd(340,700),vx:rnd(700,1000),vy:0,t:0,life:1.4,c:'rgba(220,230,255,.5)',s:rnd(2,4)})}
@@ -1948,7 +1948,7 @@ function trainUpdate(dt){const T=G.tr;if(!T||G.over)return;const L=T.L,act=G.F.f
   for(const f of act)if(f.y<392&&(f.state==='down'||f.state==='hurt')&&f!==G.F[0]){f.hp=Math.max(0,f.hp-25*dt)}}}
 function trainDraw(){if(mode!=='train'||!G||!G.tr)return;const L=G.tr.L;
  if(L===2&&G.tr.gust>0){ctx.save();ctx.globalAlpha=.25;ctx.fillStyle='#cfe0ff';for(let i=0;i<14;i++){const y=340+i*26;ctx.fillRect((G.t*1800+i*137)%(W+300)-220,y,220,2)}ctx.restore()}
- if(L===2){ctx.save();ctx.fillStyle='rgba(255,60,60,.35)';ctx.fillRect(W-56,330,56,390);ctx.restore()}}
+ if(L===2){ctx.save();ctx.fillStyle='rgba(255,60,60,.35)';ctx.fillRect(W-56,322,56,176);ctx.restore()}}
 /* ---------- купе: очко с заречными — разрулить картами или драться ---------- */
 const TRC={done:0};
 function trCardDeck(){const R=[['6',6],['7',7],['8',8],['9',9],['10',10],['В',2],['Д',3],['К',4],['Т',11]],S=['♠','♣','♥','♦'],d=[];for(const r of R)for(const su of S)d.push({r:r[0],v:r[1],s:su});return shuf(d)}

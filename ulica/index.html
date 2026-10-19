@@ -39,6 +39,8 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 <div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Улица"></canvas></div>
 <div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC">🎒</div><div class="tb" id="bD">🔄</div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
+<script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
+<script src="/net.js"></script>
 <script>
 (()=>{
 'use strict';
@@ -141,7 +143,7 @@ function drawObst(g,o){if(o.k==='none')return;const {x,y,w,h}=o;g.save();if(!['c
 
 /* ---------- fighter drawing ---------- */
 function drawFighter(g,f,t){const SK=f.spr||NSK[f.npc];if(f.npc&&!nsOK(SK))return drawNPC(g,f,t);const H0=HH(f),big=(f.bscale||1)*(H0.big?1.15:H0.small?.86:1)*(H0.sc||1);g.save();g.translate(f.x,f.y);
- g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(0,0,34*big,9,0,0,TAU);g.fill();if(!f.noHud&&f.state!=='ko'){g.strokeStyle=!f.bot?'#5ad05a':(f.ally?'#4a8aff':'#e0303a');g.lineWidth=3;g.beginPath();g.ellipse(0,0,36*big,10,0,0,TAU);g.stroke()}
+ g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(0,0,34*big,9,0,0,TAU);g.fill();if(!f.noHud&&f.state!=='ko'){g.strokeStyle=NETU.on&&G&&G.F?(f===G.F[0]?'#5ad05a':sideOf(f)===sideOf(G.F[0])?'#4a8aff':'#e0303a'):!f.bot?'#5ad05a':(f.ally?'#4a8aff':'#e0303a');g.lineWidth=3;g.beginPath();g.ellipse(0,0,36*big,10,0,0,TAU);g.stroke()}
  const zz=f.z||0;if(f.onBoard&&f.state!=='down'&&f.state!=='ko'){if(mode==='bike'){drawBike(g,f,zz,t);g.translate(0,-zz-30)}else{drawBoard(g,f,zz);g.translate(0,-zz-10)}}
  const sprOK=nsOK(SK)||(!f.npc&&PZI[f.hero]&&PZI[f.hero].complete&&PZI[f.hero].naturalWidth);
  if(!sprOK&&(f.state==='down'||f.state==='ko')){g.rotate(f.face*Math.PI/2*Math.min(1,(f.downT||0)*6));g.translate(f.face*10,-14)}
@@ -250,11 +252,11 @@ function newFighter(i,hero,bot,team){const H0=HEROES[hero];return {idx:i,hero,bo
 function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind())paintBG();const n=mode==='disko'?6:4,F=[];
  F.push(newFighter(0,myHero,false,0));
  const others=HOTH();
- if(mode==='rynok')castRynok(F);else if(mode==='boss')castBoss(F);else if(OBJM())castObj(F,(G?G.round:0)+1);else for(let i=1;i<n;i++){const team=mode==='team'?(i===1?0:1):mode==='disko'?(i<3?0:1):i;const f=newFighter(i,others[(i-1)%3],true,team);if((mode==='team'||mode==='disko')&&team===0){f.ally=true;f.name=i===1?'Свой':'Малой'}F.push(f)}
+ if(NETU.on&&NETU.host)nCast(F);else if(mode==='rynok')castRynok(F);else if(mode==='boss')castBoss(F);else if(OBJM())castObj(F,(G?G.round:0)+1);else for(let i=1;i<n;i++){const team=mode==='team'?(i===1?0:1):mode==='disko'?(i<3?0:1):i;const f=newFighter(i,others[(i-1)%3],true,team);if((mode==='team'||mode==='disko')&&team===0){f.ally=true;f.name=i===1?'Свой':'Малой'}F.push(f)}
  applyProg(F[0]);invApply(F[0]);invStart(F[0]);
  if(mode==='bike'){F.forEach((f,i)=>{f.x=420+i*90;f.y=420+i*70;f.face=1})}
  if(mode==='disko'){F.forEach((f,i)=>{const L=f.team===0;f.x=L?200+i*80:1080-(i-3)*80;f.y=440+(i%3)*80;f.face=L?1:-1})}
- if(mode==='team'){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
+ if(mode==='team'&&!NETU.on){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
  dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:mode==='bike'?[]:mode==='zavod'?ZL[LOC].obst:mode==='salon'?SL[LOC].obst:mode==='disko'||mode==='rynok'?[]:mode==='boss'?(CH[CAMP.ch].b==='brig'?OBST_A1:OBST_A2):[OBST_F,OBST_A1,OBST_A2,[]][LOC];
  G={F,P:[],B:[],FX:[],RM:[],HL:[],BX:[],dist:0,hzT:1.5,copY:520,t:0,dropT:2,round:(G?G.round:0)+1,wins:G?G.wins:{},over:0,msg:'',msgT:0};
  if(OBJM())initObj();else for(let i=0;i<3;i++)spawnDrop(i===0?'stick':null);SFX.bell();G.msg='РАУНД '+G.round;G.msgT=1.8;G.sub=(mode==='ffa'||mode==='team')?'Арена: '+ARENAS[LOC]:'';if(OBJM())objIntro();if(mode==='rynok')rynInit();if(mode==='boss'){const b=G.F.find(f=>f.boss);G.msg='БОСС: '+b.name;G.sub=b.kind==='brig'?'Увидишь «!!!» — отбегай: удар ломом о землю. Издалека кидает кирпичи.':'Хозяин стреляет издалека — подходи вплотную. На половине здоровья зовёт охрану.';G.msgT=3.2}if(mode==='disko'){diskoInit();G.msg='РАУНД '+G.round+' · ДИСКОТЕКА';G.sub='Пока медляк — не дерись. Музыка оборвётся — бей заречных!';G.msgT=3}}
@@ -275,7 +277,7 @@ function damage(a,b,dmg,knock,heavy){if(b.state==='ko')return;if(ride()){if(b.ai
  if(heavy&&!(b.upT>0)&&Math.random()<(a.bot&&b===G.F[0]?.3:.45)){b.state='down';b.downT=0;b.stun=1.1}
  if(b.hp<=0){b.hp=0;b.state='ko';b.downT=0;a.kills++;SFX.ko();decalBlood(b.x,b.y,30);if(a===G.F[0])gainXP(b.npc==='dog'?10:25);G.FX.push({x:b.x,y:b.y-170,t:0,life:1.1,txt:'НОКАУТ',c:'#ffffff',big:1});if(b.npc==='dog'){b.flee=1;b.face=1;G.FX.push({x:b.x,y:b.y-130,t:0,life:1.2,txt:'СКУЛИТ И УДИРАЕТ',c:'#e8c08a'})}}
  if(b.carry&&(b.state==='down'||b.state==='ko'))dropCrate(b);if(mode==='zavod'&&((b.npc&&(b.hp>0||b.npc==='dog'))||(b.team===0&&a.npc)))raiseAlarm()}
-function attack(f){if(RMODE())return rHit(f,false);if(mode==='disko'&&G&&G.ph==='slow'){if(!f.bot)diskoPenalty(f);return}if(f.cd>0||f.stun>0||f.state==='down'||f.state==='ko')return;if(f.carry){dropCrate(f,true);return}if(!f.weapon&&HH(f).sling&&!f.carry){f.cd=.5/HH(f).rate;f.atkT=f.atkDur=.25;SFX.whoosh();G.B.push({x:f.x+f.face*36,y:f.y-108,vx:f.face*950,o:f,life:.75,yy:f.y,stone:1,sd:9});return}
+function attack(f){if(G&&G.net){if(f===G.F[0])NETU.a++;return}if(RMODE())return rHit(f,false);if(mode==='disko'&&G&&G.ph==='slow'){if(!f.bot)diskoPenalty(f);return}if(f.cd>0||f.stun>0||f.state==='down'||f.state==='ko')return;if(f.carry){dropCrate(f,true);return}if(!f.weapon&&HH(f).sling&&!f.carry){f.cd=.5/HH(f).rate;f.atkT=f.atkDur=.25;SFX.whoosh();G.B.push({x:f.x+f.face*36,y:f.y-108,vx:f.face*950,o:f,life:.75,yy:f.y,stone:1,sd:9});return}
  f.bigA=!f.bigA;const w=f.weapon?WEAPONS[f.weapon]:HH(f).belt?WEAPONS.belt:(HH(f).small?{...WEAPONS.fist,cd:.26}:WEAPONS.fist);
  f.cd=w.cd/HH(f).rate;f.atkT=f.atkDur=Math.min(.3,w.cd*.8);
  if(w.throw){f.weapon=null;SFX.whoosh();G.B.push({x:f.x+f.face*30,y:f.y-100,vx:f.face*950,o:f,life:.8,yy:f.y,stone:1});return}
@@ -284,11 +286,11 @@ function attack(f){if(RMODE())return rHit(f,false);if(mode==='disko'&&G&&G.ph===
  let cm=1;if(HH(f).combo&&!f.weapon){f.cmb=G.t-(f.cmbT||-9)<1.1?(f.cmb||0)+1:1;f.cmbT=G.t;if(f.cmb>=3){cm=2;f.cmb=0;G.FX.push({x:f.x+f.face*40,y:f.y-170,t:0,life:.7,txt:'СЕРИЯ!',c:'#ff9a5a',big:1})}}
  SFX.whoosh();const T=hitBox(f,w);for(const b of T){damage(f,b,(w.dmg+rnd(-2,3))*cm,w.knock*(HH(f).heavyFist&&!f.weapon?1.6:1),(!!w.len&&Math.random()<.35)||(HH(f).heavyFist&&!f.weapon&&Math.random()<(f.bot?.18:.45)));if(w.len||w.stab||f.weapon==='knux'){f.bloody=true;if(w.metal&&!w.stab)SFX.metal()}if(w.stab){blood(b.x,b.y-100,10,f.face);if(BLOOD)decalBlood(b.x,b.y+rnd(-4,6),rnd(8,16))}if(w.glass&&f.dur<=1)SFX.metal()}
  if(T.length&&f.weapon&&w.dur){f.dur--;if(f.dur<=0){G.FX.push({x:f.x,y:f.y-150,t:0,life:.8,txt:'сломал!',c:'#c9a06a'});f.weapon=null}}}
-function kick(f){if(RMODE())return rHit(f,true);if(mode==='disko'&&G&&G.ph==='slow'){if(!f.bot)diskoPenalty(f);return}if(f.kcd>0||f.stun>0||f.state==='down'||f.state==='ko')return;f.kcd=1.1;f.kickT=.25;f.vx+=f.face*160;SFX.whoosh();
+function kick(f){if(G&&G.net){if(f===G.F[0])NETU.k++;return}if(RMODE())return rHit(f,true);if(mode==='disko'&&G&&G.ph==='slow'){if(!f.bot)diskoPenalty(f);return}if(f.kcd>0||f.stun>0||f.state==='down'||f.state==='ko')return;f.kcd=1.1;f.kickT=.25;f.vx+=f.face*160;SFX.whoosh();
  for(const b of hitBox(f,{range:76})){damage(f,b,10*(HH(f).kickMul||1),320,true);if(HH(f).kickDown&&b.state!=='ko'&&!b.boss&&!(b.upT>0)&&(!f.bot||Math.random()<.35)){b.state='down';b.downT=0;b.stun=1.1}}}
 function dropWeapon(f,loud){if(!f.weapon)return;const w=WEAPONS[f.weapon];if(!(w.gun&&f.ammo<=0)&&!(w.throw&&f.ammo<=0))G.P.push({k:f.weapon,x:clamp(f.x-f.face*38,40,W-40),y:f.y+6,t:0,dur:f.dur,ammo:f.ammo,by:f,byT:G.t});if(loud)G.FX.push({x:f.x,y:f.y-160,t:0,life:.6,txt:'бросил',c:'#c9a06a'});f.weapon=null;SFX.whoosh()}
 function nearWeapon(f){return G.P.some(p=>p.k!=='kefir'&&Math.hypot(p.x-f.x,(p.y-f.y)*1.6)<52)}
-function swapKey(){if(!G||state!=='play'||RMODE())return;const me=G.F[0];if(me.state==='ko'||me.state==='down'||me.carry)return;if(nearWeapon(me))me.swapT=.35;else if(me.weapon)dropWeapon(me,true)}
+function swapKey(){if(G&&G.net){NETU.e++;return}if(!G||state!=='play'||RMODE())return;const me=G.F[0];if(me.state==='ko'||me.state==='down'||me.carry)return;if(nearWeapon(me))me.swapT=.35;else if(me.weapon)dropWeapon(me,true)}
 function pickupNear(f){if(f.swapT>0)f.swapT-=1/60;if(f.npc)return;if(f.state==='ko'||f.state==='down')return;for(let i=G.P.length-1;i>=0;i--){const p=G.P[i];if(Math.hypot(p.x-f.x,(p.y-f.y)*1.6)<44){if(p.k==='kefir'){if(f.hp>=f.max)continue;f.hp=Math.min(f.max,f.hp+WEAPONS.kefir.heal);G.FX.push({x:f.x,y:f.y-160,t:0,life:.8,txt:'+35',c:'#7cf07c'});SFX.pick();G.P.splice(i,1);continue}
   if(p.by===f&&G.t-p.byT<1.5)continue;if(f.weapon){if(!(f.swapT>0)&&!(f.bot&&(WEAPONS[p.k].dmg||0)>(WEAPONS[f.weapon].dmg||0)+4&&Math.random()<.004))continue;f.swapT=0;dropWeapon(f)}f.weapon=p.k;f.dur=p.dur!=null?p.dur:WEAPONS[p.k].dur||0;f.ammo=p.ammo!=null?p.ammo:WEAPONS[p.k].ammo||0;f.bloody=false;SFX.pick();G.P.splice(i,1);if(!f.bot)G.FX.push({x:f.x,y:f.y-170,t:0,life:.9,txt:WEAPONS[p.k].name,c:'#e8b23a'})}}}
 
@@ -1342,7 +1344,7 @@ function invTick(f,dt){if(f.boostT>0)f.boostT-=dt;if(f.powT>0)f.powT-=dt;if(f.st
  if(EQ('walkman')&&f.hp<f.max){f.regA=(f.regA||0)+dt*1.6;if(f.regA>=1){f.hp=Math.min(f.max,f.hp+(f.regA|0));f.regA%=1}}
  if(f.state==='down'&&EQ('snk'))f.stun-=dt*.7;
  const teamMode=mode!=='ffa';if(f.pager&&teamMode&&f.hp<f.max*.35&&!G.over){f.pager=0;const others=HOTH(),k=newFighter(G.F.length,others[Math.random()*3|0],true,0);k.ally=true;k.name='Кореш';k.x=f.x<640?40:1240;k.y=f.y;k.face=k.x<640?1:-1;G.F.push(k);G.FX.push({x:f.x,y:f.y-200,t:0,life:1.4,txt:'📟 КОРЕШ ИДЁТ!',c:'#7cf07c',big:1});SFX.bell()}}
-function useItem(){if(!G||state!=='play'||RMODE())return;const me=G.F[0];if(me.state==='ko')return;const c=INV.c;let k=null;
+function useItem(){if(G&&G.net)return;if(!G||state!=='play'||RMODE())return;const me=G.F[0];if(me.state==='ko')return;const c=INV.c;let k=null;
  if(c.kefir>0&&me.hp<me.max*.75)k='kefir';else if(c.tarhun>0&&!(me.boostT>0))k='tarhun';else if(c.gum>0)k='gum';else if(c.kefir>0)k='kefir';if(!k){G.FX.push({x:me.x,y:me.y-170,t:0,life:.7,txt:'Карманы пустые',c:'#aaa'});return}
  c[k]--;invSave();SFX.pick();let txt=SHC[k].n;
  if(k==='kefir'){me.hp=Math.min(me.max,me.hp+30);txt='+30 🥛'}else if(k==='tarhun'){me.boostT=5;txt='ТАРХУН! 🥤'}
@@ -1379,6 +1381,89 @@ function showShop(msg){state='menu';$ui.hidden=false;document.getElementById('mb
  $ui.querySelectorAll('.sx').forEach(b=>b.onclick=async()=>{$ui.querySelectorAll('.sx').forEach(x=>x.disabled=true);const m=await tgSwap(b.dataset.d,+b.dataset.n);SFX.pick();showShop(m)});
  const nn=document.getElementById('shnone');if(nn)nn.onclick=()=>{INV.sel='';invSave();showShop('Начинаешь с кулаками')};
  document.getElementById('shback').onclick=showMenu}
+/* ---------- ОНЛАЙН: до 6 игроков (хост считает бой, остальные шлют кнопки и получают картинку) ---------- */
+const NETU={on:0,host:0,cli:0,code:'',id:(()=>{try{let v=localStorage.getItem('r89_nid');if(!v){v=Math.random().toString(36).slice(2,10);localStorage.setItem('r89_nid',v)}return v}catch(e){return Math.random().toString(36).slice(2,10)}})(),
+ name:LS.get('nname','')||'',P:[],m:'ffa',cl:null,inp:{},seen:{},a:0,k:0,e:0,lastS:0,snapT:0,hiT:0,inT:0,phase:'',W:{},F:{},lastRx:0};
+const NMAX=6,NTOPIC=c=>'tagshim/ulica/v1/'+c;
+function nSend(o){try{if(NETU.cl)NETU.cl.publish(NTOPIC(NETU.code),JSON.stringify(o),{qos:0})}catch(e){}}
+function nCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++)s+=A[Math.random()*A.length|0];return s}
+function nConnect(code,host){nLeave(true);if(!window.roomClient){alert('Онлайн недоступен без интернета');return false}
+ Object.assign(NETU,{on:1,host:host?1:0,cli:host?0:1,code,P:[],inp:{},seen:{},W:{},phase:'lobby',lastRx:Date.now()});
+ const cl=NETU.cl=window.roomClient(NTOPIC(code),'wss://broker.emqx.io:8084/mqtt',{clientId:'ul_'+NETU.id+'_'+Math.random().toString(36).slice(2,6),clean:true,reconnectPeriod:2000,connectTimeout:8000});
+ cl.on('connect',()=>{cl.subscribe(NTOPIC(code),{qos:0},()=>{});if(cl.bridge)cl.bridge();nHello()});cl.on('message',(t,b)=>{let m;try{m=JSON.parse(b.toString())}catch(e){return}nOnMsg(m)});
+ if(host)NETU.P=[{id:NETU.id,name:nName(),hero:myHero,slot:0}];return true}
+function nName(){return (NETU.name||HEROES[myHero].name).slice(0,12)}
+function nLeave(silent){if(NETU.cl){if(!silent)nSend({t:'bye',id:NETU.id});try{NETU.cl.end()}catch(e){}}NETU.cl=null;NETU.on=NETU.host=NETU.cli=0;NETU.phase=''}
+function nHello(){if(NETU.host)nSend({t:'lobby',p:NETU.P,m:NETU.m,ph:NETU.phase});else nSend({t:'hi',id:NETU.id,name:nName(),hero:myHero})}
+setInterval(()=>{if(!NETU.on)return;nHello();if(NETU.host){const now=Date.now();const n0=NETU.P.length;NETU.P=NETU.P.filter(p=>p.id===NETU.id||now-(NETU.seen[p.id]||now)<7000);if(NETU.P.length!==n0&&NETU.phase==='lobby'&&state==='menu')showOnline()}
+ else if(Date.now()-NETU.lastRx>9000&&NETU.phase!==''){nLeave(true);showMenu();setTimeout(()=>alert('Связь с хостом потеряна'),50)}},1500);
+function nOnMsg(m){if(!m||!m.t)return;
+ if(NETU.host){if(m.t==='hi'){NETU.seen[m.id]=Date.now();let p=NETU.P.find(x=>x.id===m.id);if(!p){if(NETU.P.length>=NMAX||NETU.phase!=='lobby')return nSend({t:'full',id:m.id});p={id:m.id,slot:NETU.P.length};NETU.P.push(p);SFX.pick()}const ch=p.name!==m.name||p.hero!==m.hero;p.name=String(m.name||'Пацан').slice(0,12);p.hero=clamp(m.hero|0,0,HEROES.length-1);if(ch&&state==='menu'&&NETU.phase==='lobby')showOnline()}
+  else if(m.t==='in'){NETU.seen[m.id]=Date.now();NETU.inp[m.id]=m}else if(m.t==='bye'){NETU.P=NETU.P.filter(p=>p.id!==m.id);if(state==='menu')showOnline()}return}
+ NETU.lastRx=Date.now();
+ if(m.t==='full'&&m.id===NETU.id){nLeave(true);showMenu();setTimeout(()=>alert('Комната полная или игра уже идёт'),50)}
+ else if(m.t==='lobby'){NETU.P=m.p||[];NETU.m=m.m;if(NETU.phase==='lobby'&&state==='menu')showOnline()}
+ else if(m.t==='go'){nClientStart(m)}
+ else if(m.t==='s'&&NETU.phase==='game')nApply(m)
+ else if(m.t==='end'&&NETU.phase==='game')nEnd(m.txt,m.win===NETU.id||(m.wteam!=null&&m.wteam===NETU.myTeam))}
+/* ---- лобби ---- */
+function showOnline(msg){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
+ if(!NETU.on){$ui.innerHTML=`<div class="card"><h1>ОНЛАЙН</h1><p class="sub">До ${NMAX} пацанов в одной драке. Один создаёт комнату — остальные заходят по коду или ссылке.</p>${msg?`<p class="sub" style="color:var(--gold)">${msg}</p>`:''}
+  <div class="row"><input id="nnm" maxlength="12" placeholder="Твоё имя" value="${(NETU.name||'').replace(/"/g,'')}" style="font:700 18px system-ui;padding:10px 14px;border-radius:10px;border:2px solid #4a3d48;background:#1a151c;color:#f3e9dc;width:220px"></div>
+  <div class="row"><button class="pri" id="ncr">➕ Создать комнату</button></div>
+  <div class="row"><input id="ncode" maxlength="4" placeholder="КОД" style="font:900 22px system-ui;letter-spacing:4px;text-transform:uppercase;padding:10px;border-radius:10px;border:2px solid #4a3d48;background:#1a151c;color:#f3e9dc;width:120px;text-align:center"><button id="njn">Войти</button></div>
+  <p class="sub" style="font-size:13px">Герой — тот, что выбран в меню: ${HEROES[myHero].name}.</p><div class="row"><button id="nback">Назад</button></div></div>`;
+  const sv=()=>{NETU.name=document.getElementById('nnm').value.trim().slice(0,12);LS.set('nname',NETU.name)};
+  document.getElementById('ncr').onclick=()=>{au();sv();if(nConnect(nCode(),1))showOnline()};
+  document.getElementById('njn').onclick=()=>{au();sv();const c=document.getElementById('ncode').value.trim().toUpperCase();if(c.length!==4)return showOnline('Код — 4 буквы');if(nConnect(c,0))showOnline()};
+  document.getElementById('nback').onclick=showMenu;return}
+ const link=location.origin+location.pathname+'?room='+NETU.code;
+ $ui.innerHTML=`<div class="card"><p class="sub">Комната</p><h1 style="letter-spacing:8px">${NETU.code}</h1><p class="sub" style="font-size:13px">${link}</p><div class="row"><button id="ncp">📋 Скопировать ссылку</button></div>
+  <div class="pbox">${NETU.P.length?NETU.P.map((p,i)=>`<div style="padding:3px 0">${i===0?'👑 ':''}<b>${p.name||'…'}</b> · ${HEROES[p.hero]?HEROES[p.hero].name:''}${p.id===NETU.id?' (ты)':''}</div>`).join(''):'<small>Подключаемся…</small>'}<small>Игроков: ${NETU.P.length}/${NMAX}</small></div>
+  ${NETU.host?`<div class="row"><button class="mm ${NETU.m==='ffa'?'on':''}" data-nm="ffa">Каждый сам</button><button class="mm ${NETU.m==='team'?'on':''}" data-nm="team">Стенка на стенку</button></div><div class="row"><button class="pri" id="ngo" ${NETU.P.length<2?'disabled':''}>▶ Начать драку</button></div><p class="sub" style="font-size:13px">${NETU.P.length<2?'Ждём хотя бы одного пацана…':'Можно начинать. Не хватает людей — добавятся боты.'}</p>`:`<p class="sub">Режим: <b>${NETU.m==='team'?'Стенка на стенку':'Каждый сам'}</b>. Ждём, когда хост начнёт…</p>`}
+  <div class="row"><button id="nlv">Выйти</button></div></div>`;
+ document.getElementById('ncp').onclick=()=>{try{navigator.clipboard.writeText(link);showOnline()}catch(e){}};
+ document.getElementById('nlv').onclick=()=>{nLeave();showOnline()};
+ $ui.querySelectorAll('[data-nm]').forEach(b=>b.onclick=()=>{NETU.m=b.dataset.nm;nHello();showOnline()});
+ const g=document.getElementById('ngo');if(g)g.onclick=()=>{au();nHostStart()}}
+/* ---- старт ---- */
+function nHostStart(){NETU.phase='game';NETU.W={};mode=NETU.m;G=null;CAMP.on=0;start();nSend({t:'go',m:mode,loc:LOC,p:NETU.P})}
+function nCast(F){const P=NETU.P,team=mode==='team';P.forEach((p,i)=>{const f=i===0?F[0]:newFighter(i,p.hero,false,team?i%2:i);if(i>0){f.rid=p.id;F.push(f)}f.name=p.name||HEROES[p.hero].name;f.team=team?i%2:i;f.idx=i;f.x=team?(i%2?1000+(i>>1)*50:200+(i>>1)*50):160+i*(960/Math.max(1,P.length-1));f.y=440+((i*83)%200);f.face=f.x<640?1:-1});
+ let n=F.length;const want=team?Math.max(4,n+(n%2)):Math.max(3,n);const others=HOTH();for(let i=n;i<want;i++){const t=team?i%2:i;const b=newFighter(i,others[i%others.length],true,t);b.team=t;b.idx=i;b.x=t===1||(!team&&i%2)?1100:180;b.y=440+i*40;b.face=b.x<640?1:-1;F.push(b)}}
+function nSnap(){const G0=G;if(!G0)return;nSend({t:'s',l:LOC,r:G0.round,o:G0.over?1:0,msg:G0.msgT>0?G0.msg:'',sub:G0.msgT>0?G0.sub:'',sh:shake|0,w:NETU.W,
+ F:G0.F.map(f=>[f.idx,f.hero,f.team,Math.round(f.x),Math.round(f.y),f.face,f.state,Math.round(f.hp),f.max,f.weapon||'',+(f.atkT||0).toFixed(3),+(f.atkDur||.3).toFixed(3),+(f.kickT||0).toFixed(3),+(f.hurtT||0).toFixed(3),+(f.anim||0).toFixed(2),f.name,+(f.downT||0).toFixed(2),f.bloody?1:0,f.flash>0?1:0,f.rid||(f===G0.F[0]?NETU.id:''),f.bot?1:0,f.kills||0]),
+ P:G0.P.map(p=>[p.k,Math.round(p.x),Math.round(p.y)]),B:G0.B.map(b=>[Math.round(b.x),Math.round(b.y),Math.sign(b.vx),b.stone?1:0,b.salt?1:0,b.sd?1:0]),
+ X:G0.FX.filter(p=>(p.txt||p.ring)&&p.t<.075&&!p._s).map(p=>(p._s=1,[Math.round(p.x),Math.round(p.y),p.txt||'',p.c,p.big?1:0,p.ring?1:0,p.life]))})}
+/* ---- клиент ---- */
+function nClientStart(m){if(NETU.phase==='game'&&G&&G.net)return;NETU.phase='game';NETU.P=m.p||NETU.P;mode=m.m;LOC=m.loc|0;CAMP.on=0;$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;
+ OBST=mode==='ffa'||mode==='team'?[OBST_F,OBST_A1,OBST_A2,[]][LOC]:[];dctx.clearRect(0,0,W,H);paintBG();
+ G={net:1,F:[],P:[],B:[],FX:[],RM:[],HL:[],BX:[],t:0,round:1,wins:{},over:0,msg:'ДРАКА!',sub:'онлайн',msgT:1.5,dist:0};NETU.F={};
+ document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
+function nApply(m){if(m.l!=null&&m.l!==LOC){LOC=m.l;OBST=[OBST_F,OBST_A1,OBST_A2,[]][LOC]||[];paintBG()}const keep=NETU.F,F=[];let me=null;
+ for(const a of m.F){let f=keep[a[0]];if(!f){f=keep[a[0]]=newFighter(a[0],a[1],!!a[20],a[2]);f.x=a[3];f.y=a[4]}
+  Object.assign(f,{idx:a[0],hero:a[1],team:a[2],tx:a[3],ty:a[4],face:a[5],state:a[6],hp:a[7],max:a[8],weapon:a[9]||null,atkT:a[10],atkDur:a[11],kickT:a[12],hurtT:a[13],anim:a[14],name:a[15],downT:a[16],bloody:!!a[17],flash:a[18]?.08:0,rid:a[19],bot:!!a[20],kills:a[21],stun:0});
+  if(Math.hypot(f.tx-f.x,f.ty-f.y)>160){f.x=f.tx;f.y=f.ty}if(a[19]===NETU.id)me=f;else F.push(f)}
+ if(me){F.unshift(me);NETU.myTeam=me.team;if(mode==='ffa')NETU.myTeam=me.idx}G.F=F;
+ G.P=m.P.map(p=>({k:p[0],x:p[1],y:p[2],t:0}));G.B=m.B.map(b=>({x:b[0],y:b[1],vx:b[2]*900,yy:b[1],stone:b[3],salt:b[4],sd:b[5]}));
+ for(const x of m.X)G.FX.push({x:x[0],y:x[1],txt:x[2]||undefined,c:x[3],big:x[4],ring:x[5],life:x[6],t:0});
+ if(m.sh)shake=Math.max(shake,m.sh);G.round=m.r;G.over=m.o;if(m.msg){G.msg=m.msg;G.sub=m.sub;G.msgT=.3}NETU.W=m.w||{};G.t+=.066}
+function nClientTick(dt){NETU.inT-=dt;const me=G.F[0];
+ if(NETU.inT<=0){NETU.inT=.05;let mx=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+pad.mx,my=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+pad.my;nSend({t:'in',id:NETU.id,mx:clamp(mx,-1,1),my:clamp(my,-1,1),a:NETU.a,k:NETU.k,e:NETU.e})}
+ for(const f of G.F){if(f.tx!=null){const k=Math.min(1,dt*14);f.x+=(f.tx-f.x)*k;f.y+=(f.ty-f.y)*k}f.anim+=dt;if(f.atkT>0)f.atkT-=dt;if(f.kickT>0)f.kickT-=dt;if(f.hurtT>0)f.hurtT-=dt}
+ for(const b of G.B){b.x+=b.vx*dt}
+ for(let i=G.FX.length-1;i>=0;i--){const p=G.FX[i];p.t+=dt;if(p.t>=p.life)G.FX.splice(i,1)}if(G.msgT>0)G.msgT-=dt;if(shake>0)shake=Math.max(0,shake-dt*30)}
+/* ---- хост: ввод удалённых игроков, раунды ---- */
+function nRemote(f){const I=NETU.inp[f.rid]||{};if(I.a!==undefined&&I.a!==f._a){if(f._a!==undefined)attack(f);f._a=I.a}if(I.k!==undefined&&I.k!==f._k){if(f._k!==undefined)kick(f);f._k=I.k}
+ if(I.e!==undefined&&I.e!==f._e){if(f._e!==undefined){if(nearWeapon(f))f.swapT=.35;else if(f.weapon)dropWeapon(f,true)}f._e=I.e}return [clamp(+I.mx||0,-1,1),clamp(+I.my||0,-1,1)]}
+function nRoundOver(winSide){const w=NETU.W;if(winSide!=null)w[winSide]=(w[winSide]||0)+1;
+ const winF=G.F.find(f=>sideOf(f)===winSide);G.msg=winSide==null?'НИЧЬЯ':mode==='team'?(winSide===0?'СИНИЕ':'КРАСНЫЕ')+' ВЗЯЛИ РАУНД':(winF?winF.name.toUpperCase():'')+' ВЗЯЛ РАУНД';G.sub='';G.msgT=99;
+ if(winSide!=null&&winSide===sideOf(G.F[0]))gainXP(40);SFX.bell()}
+function nMatchCheck(){const w=NETU.W;let best=null;for(const k in w)if(w[k]>=2)best=+k;if(best==null)return false;
+ const winF=G.F.find(f=>sideOf(f)===best),txt=mode==='team'?(best===0?'Синие':'Красные')+' забрали улицу':(winF?winF.name:'?')+' — хозяин улицы';
+ nSend({t:'end',txt,win:mode==='ffa'&&winF?winF.rid||(winF===G.F[0]?NETU.id:''):'',wteam:mode==='team'?best:null});nEnd(txt,best===sideOf(G.F[0]));return true}
+function nEnd(txt,won){state='end';NETU.phase='lobby';if(won)gainXP(100);gainKap(won?40:10);document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
+ $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'УЛИЦА ТВОЯ':'НЕ В ЭТОТ РАЗ'}</h1><p class="sub">${txt}</p><div class="pbox">${(NETU.P||[]).map(p=>`<div>${p.name} · ${HEROES[p.hero]?HEROES[p.hero].name:''}</div>`).join('')}</div>${progLine()}<div class="row"><button class="pri" id="nlb">В комнату</button><button id="nmn">Выйти в меню</button></div></div>`;
+ document.getElementById('nlb').onclick=()=>{G=null;showOnline()};document.getElementById('nmn').onclick=()=>{nLeave();G=null;showMenu()}}
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
@@ -1388,6 +1473,7 @@ function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(G.msgT>0)G.msgT-=dt
   let mx=0,my=0;
   if(G.over){}
   else if(f.bot)[mx,my]=botThink(f,dt);
+  else if(f.rid)[mx,my]=nRemote(f);
   else{mx=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+pad.mx;my=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+pad.my;mx=clamp(mx,-1,1);my=clamp(my,-1,1)}
   if(f.bot&&f.dtr>0){f.dtr-=dt;my=f.dtrY;if(Math.abs(mx)<.3)mx=f.dtrX||0}const sp=HH(f).spd*(f.mSpd||1)*(f.hurtT>0?.3:1)*(f.boostT>0?1.35:1)*(f.atkT>0?.45:1)*(f.carry?.72:1),ox=f.x,oy=f.y;
   if(f.onBoard){const top=HH(f).spd*1.7;f.mvx+=mx*820*dt;f.mvy+=my*520*dt;f.mvx*=Math.pow(.55,dt);f.mvy*=Math.pow(.25,dt);const v=Math.hypot(f.mvx,f.mvy);if(v>top){f.mvx*=top/v;f.mvy*=top/v}
@@ -1424,10 +1510,10 @@ function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(G.msgT>0)G.msgT-=dt
  for(let i=G.FX.length-1;i>=0;i--){const p=G.FX[i];p.t+=dt;if(p.vx!=null){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=900*dt;if(p.blood&&p.y>p.gnd){if(BLOOD){dctx.fillStyle=p.c;dctx.beginPath();dctx.ellipse(p.x,p.gnd,p.s*1.4,p.s*.6,0,0,TAU);dctx.fill()}p.t=p.life}}if(p.t>=p.life)G.FX.splice(i,1)}
  if(shake>0)shake=Math.max(0,shake-dt*30);
  // round end
- if(!G.over){const sides=new Set(alive().map(sideOf));const OB=OBJM(),meDead=me.state==='ko'&&(mode==='ffa'||OB||mode==='rynok');
+ if(!G.over){const sides=new Set(alive().map(sideOf));const OB=OBJM(),meDead=me.state==='ko'&&!NETU.host&&(mode==='ffa'||OB||mode==='rynok');
   const fin=mode==='bike'&&G.t>=BIKE_T;if((sides.size<=1&&!OB&&mode!=='rynok')||meDead||fin||(OB&&G.obj)){G.over=1;G.overT=0;let winSide=sides.size===1?[...sides][0]:null;if(fin&&sides.size>1){const lead=alive().sort((a,b)=>b.x-a.x)[0];winSide=sideOf(lead);G.FX.push({x:lead.x,y:lead.y-180,t:0,life:2,txt:'ПЕРВЫЙ!',c:'#e8b23a',big:1})}
-   G.win=OB?(G.obj>0&&!meDead):(winSide!=null&&winSide===sideOf(me));gainXP(G.win?(OB?60:40):10);G.wins[G.win?'me':'them']=(G.wins[G.win?'me':'them']||0)+1;
-   G.msg=OB?objMsg(G.win,meDead):G.win?'УЛИЦА ЗА ТОБОЙ':'ТЕБЯ ОТШИЛИ';G.sub='';G.msgT=99;SFX.bell()}}
+   if(NETU.on&&NETU.host){G.win=winSide===sideOf(me);nRoundOver(winSide)}else{G.win=OB?(G.obj>0&&!meDead):(winSide!=null&&winSide===sideOf(me));gainXP(G.win?(OB?60:40):10);G.wins[G.win?'me':'them']=(G.wins[G.win?'me':'them']||0)+1;
+   G.msg=OB?objMsg(G.win,meDead):G.win?'УЛИЦА ЗА ТОБОЙ':'ТЕБЯ ОТШИЛИ';G.sub='';G.msgT=99;SFX.bell()}}}
  else{G.overT+=dt;if(G.overT>2.6)roundEnd()}}
 
 /* ---------- render ---------- */
@@ -1450,7 +1536,8 @@ function render(t){if(RMODE())return rRender(t);ctx.save();if(shake>0)ctx.transl
  ctx.font='bold 14px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(me.carry?'Ящик':me.weapon?(WEAPONS[me.weapon].name+(me.weapon==='pistol'?' ×'+me.ammo:'')):(HH(me).belt?'Ремень':HH(me).sling?'Рогатка':'Кулаки'),236,57);if(!RMODE()&&(INV.c.kefir||INV.c.tarhun||INV.c.gum)){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(16,74,190,24);ctx.font='bold 14px system-ui';ctx.fillStyle='#f3e9dc';ctx.textAlign='left';ctx.fillText(pocketTxt()+' · Q / 🎒',24,91)}
  if(mode==='skate'){for(let i=0;i<3;i++){ctx.globalAlpha=i<me.lives?1:.25;ctx.save();ctx.translate(46+i*58,90);drawBoard(ctx,{air:0},0);ctx.restore();ctx.globalAlpha=1}}
  if(mode==='bike'){const k=Math.min(1,G.t/BIKE_T);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W/2-200,18,400,22);ctx.fillStyle='#e8b23a';ctx.fillRect(W/2-196,22,392*k,14);ctx.fillStyle='#f3e9dc';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('до гаражей '+Math.max(0,Math.ceil(BIKE_T-G.t))+' с · не отставай — милиция!',W/2,58)}
- ctx.textAlign='right';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W-216,14,200,40);ctx.fillStyle='#f3e9dc';ctx.font='900 20px Impact,sans-serif';ctx.fillText(mode==='rynok'?`ЭТАП ${RYN.st}/7`:`РАУНД ${G.round} · ${G.wins.me||0}:${G.wins.them||0}`,W-28,42);
+ ctx.textAlign='right';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W-216,14,200,40);ctx.fillStyle='#f3e9dc';ctx.font='900 20px Impact,sans-serif';ctx.fillText(mode==='rynok'?`ЭТАП ${RYN.st}/7`:NETU.on?`РАУНД ${G.round} · ОНЛАЙН`:`РАУНД ${G.round} · ${G.wins.me||0}:${G.wins.them||0}`,W-28,42);
+ if(NETU.on&&NETU.phase==='game'){const rows=mode==='team'?[['Синие',0],['Красные',1]]:G.F.filter(f=>!f.bot||true).map(f=>[f.name,f.idx]);ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(W-216,58,200,8+rows.length*18);ctx.font='bold 13px system-ui';rows.forEach(([n,k],i)=>{ctx.fillStyle=k===(mode==='team'?G.F[0].team:G.F[0].idx)?'#7cf07c':'#f3e9dc';ctx.fillText(`${n}  ${'★'.repeat(NETU.W[k]||0)}`,W-28,76+i*18)})}
  if(OBJM())drawObjHUD(t);if(mode==='disko')diskoHUD(t);if(mode==='boss')bossHUD();if(mode==='rynok')rynHUD();
  if(G.msgT>0&&G.msg){ctx.textAlign='center';ctx.font='900 46px Impact,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(G.msg,W/2,120);ctx.fillStyle=G.over?(G.win?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(G.msg,W/2,120);if(G.sub&&!G.over){ctx.font='bold 20px system-ui';ctx.lineWidth=5;ctx.strokeText(G.sub,W/2,158);ctx.fillStyle='#f3e9dc';ctx.fillText(G.sub,W/2,158)}}}
 
@@ -1461,12 +1548,13 @@ function showAge(){state='age';$ui.hidden=false;$ui.innerHTML=`<div class="card"
  <div class="warn"><b>18+</b><br>В игре насилие, оружие и кровь. Все персонажи и события вымышлены.</div>
  <div class="row"><button class="pri" id="y18">Мне есть 18</button><button id="n18">Мне нет 18</button></div></div>`;
  document.getElementById('y18').onclick=()=>{au();LS.set('age',1);showMenu()};document.getElementById('n18').onclick=()=>{location.href='https://games.tagshim.com/'}}
-function showMenu(){if(!heroOwned(myHero)){myHero=0;LS.set('hero',0)}state='menu';CAMP.on=0;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;$ui.innerHTML=`<div class="card"><h1>УЛИЦА</h1><h2 style="color:#c8202a">КРОВЬ НА АСФАЛЬТЕ</h2><p class="sub">Выбери пацана</p><div class="row"><button class="pri" id="camp" style="font-size:19px;padding:14px 26px">▶ СЮЖЕТ: ПУТЬ ПАЦАНА <small style="opacity:.8">глава ${campMax()}/${CH.length}</small></button><button id="shopb" style="font-size:19px;padding:14px 26px">🛒 БАРАХОЛКА <small style="opacity:.8">🥬 ${INV.kap}</small></button><button id="rzb" style="font-size:19px;padding:14px 26px">🗣 РАЗРУЛИТЬ <small style="opacity:.8">${rzMax()}/${RZL.length}</small></button></div><div class="heroes" id="hs"></div><div id="pg">${progHTML()}</div>
+let NROOMQ=(()=>{try{return (new URLSearchParams(location.search).get('room')||'').toUpperCase()}catch(e){return ''}})();
+function showMenu(){if(NETU.on&&NETU.phase==='game')nLeave();if(NROOMQ&&NROOMQ.length===4){const c=NROOMQ;NROOMQ='';if(nConnect(c,0))return showOnline()}if(!heroOwned(myHero)){myHero=0;LS.set('hero',0)}state='menu';CAMP.on=0;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;$ui.innerHTML=`<div class="card"><h1>УЛИЦА</h1><h2 style="color:#c8202a">КРОВЬ НА АСФАЛЬТЕ</h2><p class="sub">Выбери пацана</p><div class="row"><button class="pri" id="camp" style="font-size:19px;padding:14px 26px">▶ СЮЖЕТ: ПУТЬ ПАЦАНА <small style="opacity:.8">глава ${campMax()}/${CH.length}</small></button><button id="shopb" style="font-size:19px;padding:14px 26px">🛒 БАРАХОЛКА <small style="opacity:.8">🥬 ${INV.kap}</small></button><button id="onb" style="font-size:19px;padding:14px 26px">🌐 ОНЛАЙН <small style="opacity:.8">до 6</small></button><button id="rzb" style="font-size:19px;padding:14px 26px">🗣 РАЗРУЛИТЬ <small style="opacity:.8">${rzMax()}/${RZL.length}</small></button></div><div class="heroes" id="hs"></div><div id="pg">${progHTML()}</div>
  <div class="row"><button class="mb ${mode==='ffa'?'on':''}" data-m="ffa">Без правил · каждый сам</button><button class="mb ${mode==='team'?'on':''}" data-m="team">Стенка · 2 на 2</button><button class="mb ${mode==='rayon'?'on':''}" data-m="rayon">Район · гонка-драка 3 на 3</button><button class="mb ${mode==='oblava'?'on':''}" data-m="oblava">Облава · уйди от ментов</button><button class="mb ${mode==='disko'?'on':''}" data-m="disko">Дискотека · 3 на 3</button><button class="mb ${mode==='rynok'?'on':''}" data-m="rynok">Рынок · от барыги до смотрящего</button><button class="mb ${mode==='zavod'?'on':''}" data-m="zavod">Завод · укради ящик</button><button class="mb ${mode==='salon'?'on':''}" data-m="salon">Видеосалон · отожми</button></div>
  ${mode==='rynok'?`<div class="row"><span style="align-self:center;opacity:.8">Этап:</span>${Array.from({length:rynMax()},(_,i)=>`<button class="rs ${RYN.st===i+1?'on':''}" data-s="${i+1}">${i+1}. ${RST[i].b.toLowerCase()}</button>`).join('')}</div>`:''}${RMODE()?`<div class="row"><span style="align-self:center;opacity:.8">Транспорт:</span><button class="vh ${VEHSEL==='skate'?'on':''}" data-v="skate">🛹 Скейт — вёрткий</button><button class="vh ${VEHSEL==='bike'?'on':''}" data-v="bike">🚲 Велик — быстрый</button></div>${mode==='rayon'?`<div class="row"><span style="align-self:center;opacity:.8">Трасса:</span>${RMAPS.map((n,i)=>`<button class="rm ${LS.get('rmap',1)===i?'on':''}" data-r="${i}">${n}</button>`).join('')}</div>`:''}`:''}<div class="row"><button id="bl" class="${BLOOD?'on':''}">Кровь: ${BLOOD?'вкл':'выкл'}</button><button class="pri" id="go">В БОЙ</button></div>
  <p class="sub" style="margin-top:14px;font-size:13px">Компьютер: WASD или стрелки · удар — F или левая кнопка мыши · пинок — G или правая кнопка · Q — кефир/тархун/жвачка из кармана · E — поменять оружие (подойди к другому) или бросить. Оружие подбирается само. Завод: прячься от фонарей, бей со спины; с ящиком удар — бросить ящик. Видеосалон: стой в круге у телевизора. Район: держи направление стрелками/джойстиком — едешь туда.</p></div>`;
  const hs=document.getElementById('hs');HEROES.forEach((h,i)=>{const b=document.createElement('button');b.className='hb'+(i===myHero?' on':'');b.appendChild(heroCanvas(i));const own=heroOwned(i);if(!own)b.classList.add('lockh');b.insertAdjacentHTML('beforeend',`<b>${h.name}</b><small>${h.desc}</small>${own?`<small style="color:var(--gold)">ур. ${PROG.h[i].lv}${PROG.h[i].pts?' · очки: '+PROG.h[i].pts:''}</small>`:`<small style="color:var(--gold)">🔒 ${h.price} 🥬</small>`}`);b.onclick=()=>{if(!own){if(INV.kap<h.price){alert(`${h.name} стоит ${h.price} 🥬 капусты. У тебя ${INV.kap}. Капуста даётся за бои.`);return}if(!confirm(`Взять в компанию: ${h.name} за ${h.price} 🥬?`))return;INV.kap-=h.price;INV.heroes.push(h.id);invSave();SFX.bell()}myHero=i;LS.set('hero',i);showMenu()};hs.appendChild(b)});
- document.getElementById('camp').onclick=()=>{au();showCamp()};document.getElementById('rzb').onclick=()=>{au();showRz()};document.getElementById('shopb').onclick=()=>{au();showShop()};
+ document.getElementById('camp').onclick=()=>{au();showCamp()};document.getElementById('rzb').onclick=()=>{au();showRz()};document.getElementById('shopb').onclick=()=>{au();showShop()};document.getElementById('onb').onclick=()=>{au();showOnline()};
  $ui.querySelectorAll('.up').forEach(b=>b.onclick=()=>{const P=PROG.h[myHero],k=b.dataset.u;if(P.pts>0&&P.up[k]<UPMAX){P.pts--;P.up[k]++;saveProg();au();SFX.pick();showMenu()}});
  $ui.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{RMAP=+b.dataset.r;LS.set('rmap',RMAP);showMenu()});
  $ui.querySelectorAll('.rs').forEach(b=>b.onclick=()=>{RYN.st=+b.dataset.s;showMenu()});
@@ -1475,7 +1563,7 @@ function showMenu(){if(!heroOwned(myHero)){myHero=0;LS.set('hero',0)}state='menu
  document.getElementById('bl').onclick=()=>{BLOOD=!BLOOD;LS.set('blood',BLOOD);showMenu()};
  document.getElementById('go').onclick=()=>{au();G=null;start()}}
 function start(){AOFF=Math.random()*4|0;try{getSelection().removeAllRanges()}catch(e){}$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;document.getElementById('mb').hidden=false;newRound();document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
-function roundEnd(){if(mode==='rynok')return rynokEnd();const w=G.wins,need=mode==='boss'?1:2;if((w.me||0)>=need||(w.them||0)>=need){state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
+function roundEnd(){if(NETU.on&&NETU.host){if(!nMatchCheck())newRound();return}if(mode==='rynok')return rynokEnd();const w=G.wins,need=mode==='boss'?1:2;if((w.me||0)>=need||(w.them||0)>=need){state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
   $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${endTitle(won)}</h1><p class="sub">Счёт ${w.me||0}:${w.them||0} · нокаутов: ${G.F[0].kills}</p>${progLine()}<div class="row"><button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;
   document.getElementById('again').onclick=()=>{G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won)}
  else newRound()}
@@ -1499,7 +1587,7 @@ cv.addEventListener('mousedown',e=>e.preventDefault());cv.addEventListener('touc
 paintBG();
 function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  if(MUS.on&&(state!=='play'||mode!=='disko'||(G&&G.over)))musStop();
- try{if(state==='play'&&G){update(dt);render(t)}
+ try{if(state==='play'&&G){if(G.net){nClientTick(dt);render(t)}else{update(dt);render(t);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
  else if(G){render(t)}else{ctx.drawImage(bg,0,0)}}catch(e){console.error(e)}
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);

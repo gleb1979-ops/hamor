@@ -881,9 +881,10 @@ function rUpdate(dt){G.t+=dt;const T=TR,N=T.N,me=G.F[0];if(G.msgT>0)G.msgT-=dt;i
  for(const f of G.F){f.cd-=dt;f.atkT-=dt;f.inv-=dt;f.slip-=dt;f.anim+=dt;if(f.out){f.spd*=Math.pow(.05,dt);continue}
   const C=VEH[f.veh];
   if(f.down>0){f.down-=dt;f.spd*=Math.pow(.08,dt);f.x+=Math.cos(f.ang)*f.spd*dt+f.pvx*dt;f.y+=Math.sin(f.ang)*f.spd*dt+f.pvy*dt;f.pvx*=Math.pow(.05,dt);f.pvy*=Math.pow(.05,dt);
-   if(f.down<=0){const n=trNear(f.x,f.y,f.si);f.si=n.i;f.x=T.x[n.i];f.y=T.y[n.i];f.ang=T.a[n.i];f.hp=Math.round(f.max*.7);f.inv=1.4;f.spd=60}continue}
+   if(f.down<=0){const n=trNear(f.x,f.y,f.si);f.si=n.i;f.x=T.x[n.i];f.y=T.y[n.i];f.ang=T.a[n.i];f.hp=Math.round(f.max*.7);f.inv=G.obl&&f===me?2.6:1.4;f.spd=60;f.pvx=f.pvy=0}continue}
   let da=f.ang,thr=0;
-  if(G.cd<=0&&!G.over){if(f.bot)[da,thr]=rAI(f,dt);else{let mx=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+pad.mx,my=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+pad.my;const m=Math.hypot(mx,my);if(m>.2){da=Math.atan2(my,mx);thr=Math.min(1,m)}}}
+  if(G.cd<=0&&!G.over){if(f.bot)[da,thr]=rAI(f,dt);else{let mx=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+pad.mx,my=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+pad.my;const m=Math.hypot(mx,my);if(m>.2){da=Math.atan2(my,mx);thr=Math.min(1,m)}
+   if(thr>0&&f.down<=0&&f.air<=0){f.stk=f.stk||{t:0,x:f.x,y:f.y};f.stk.t+=dt;if(f.stk.t>1.4){if(Math.hypot(f.x-f.stk.x,f.y-f.stk.y)<30){const n=trNear(f.x,f.y);f.si=n.i;f.x=T.x[n.i];f.y=T.y[n.i];f.ang=T.a[n.i];f.inv=Math.max(f.inv,1);G.FX.push({x:f.x,y:f.y-40,t:0,life:.8,txt:'ВЫБРАЛСЯ',c:'#7cf07c'})}f.stk={t:0,x:f.x,y:f.y}}}else f.stk=null}}
   if(thr>0){let df=da-f.ang;df=Math.atan2(Math.sin(df),Math.cos(df));f.ang+=clamp(df,-C.turn*dt,C.turn*dt);f.spd+=C.acc*thr*dt*(Math.abs(df)>1.6?.3:1)}else f.spd-=C.dec*dt;
   if(f.slip>0)f.ang+=rnd(-4,4)*dt;
   let n=trNear(f.x,f.y,f.si);if(n.d>RW/2+20)n=trNear(f.x,f.y);const inF=IMGMAP&&RMAP===1&&inField(f.x,f.y),surf=n.d<=RW/2?1:inF?(onPath(f.x,f.y)?.86:.55):.55;let cap=C.max*surf*(f.mSpd||1)*(.45+.55*RS);
@@ -973,7 +974,7 @@ function oblInit(){const T=TR,N=T.N,me=G.F[0];G.F.length=1;me.lives=3;const S=[]
  G.obl={C:[],S,got:0,tl:150,exitOpen:0,hideT:0,seen:0,hidden:0,lx:me.x,ly:me.y,sirT:0};oblSpawnCar((me.si+Math.floor(N/2))%N)}
 function oblSpawnCar(si){const T=TR;G.obl.C.push({x:T.x[si],y:T.y[si],ang:T.a[si],spd:0,stun:1.5,mode:'patrol',si,tx:0,ty:0,lostT:0,searchT:0})}
 function oblFinish(win,why){if(G.over)return;G.over=1;G.winTeam=win?0:1;G.why=why;SFX.bell()}
-function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)return;O.tl-=dt;if(O.tl<=0){oblFinish(0,'рассвело — не успел');return}
+function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)return;if(me.out){oblFinish(0,'разбился — дальше пешком не уйти');return}O.tl-=dt;if(O.tl<=0){oblFinish(0,'рассвело — не успел');return}
  const bush=OBS.some(o=>o.k==='t'&&Math.hypot(o.x-me.x,o.y-me.y)<o.r+58);O.hideT=bush&&me.spd<70&&me.down<=0?O.hideT+dt:0;const hidden=O.hideT>.6;
  if(hidden&&!O.hidden)G.FX.push({x:me.x,y:me.y-50,t:0,life:.9,txt:'СПРЯТАЛСЯ',c:'#7cf07c'});O.hidden=hidden;
  let seenAny=0;
@@ -991,7 +992,7 @@ function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)retu
   c.spd=clamp(c.spd,0,cap);c.x+=Math.cos(c.ang)*c.spd*dt;c.y+=Math.sin(c.ang)*c.spd*dt;
   if(nn.d>RW/2+60&&!inF){const k=(nn.d-(RW/2+60))/nn.d;c.x+=(T.x[nn.i]-c.x)*k;c.y+=(T.y[nn.i]-c.y)*k;c.spd*=Math.pow(.3,dt)}
   for(const o of OBS){const dx=c.x-o.x,dy=c.y-o.y,dd=Math.hypot(dx,dy),mr=o.r+26*RS;if(dd<mr){c.x=o.x+dx/(dd||1)*mr;c.y=o.y+dy/(dd||1)*mr;c.spd*=.5}}
-  if(d<46*RS+18&&c.stun<=0&&me.down<=0&&me.inv<=0&&!me.out){rBail(me,'ПРИНЯЛИ!');for(const c2 of O.C){c2.stun=2.8;c2.mode='patrol'}if(me.out){oblFinish(0,'тебя приняли');return}}}
+  if(d<46*RS+18&&c.stun<=0&&me.down<=0&&me.inv<=0&&!me.out){rBail(me,'ПРИНЯЛИ!');for(const c2 of O.C){c2.stun=4;c2.mode='patrol';c2.spd=0;const ex=c2.x-me.x,ey=c2.y-me.y,ed=Math.hypot(ex,ey)||1;if(ed<320){const n2=trNear(me.x,me.y,me.si),j=(n2.i+N-14)%N;c2.x=T.x[j];c2.y=T.y[j];c2.ang=T.a[j];c2.si=j}}if(!me.out){G.banner='ВЫРВАЛСЯ! ОСТАЛОСЬ ЖИЗНЕЙ: '+me.lives;G.bannerT=2}if(me.out){oblFinish(0,'тебя приняли');return}}}
  for(let i=0;i<O.C.length;i++)for(let j=i+1;j<O.C.length;j++){const a=O.C[i],b=O.C[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<70&&d>0){const p=(70-d)/2;a.x-=dx/d*p;a.y-=dy/d*p;b.x+=dx/d*p;b.y+=dy/d*p}}
  if(seenAny){O.sirT-=dt;if(O.sirT<=0){SFX.siren();O.sirT=1.2}}O.seen=seenAny;
  for(const s of O.S)if(!s.got&&me.down<=0&&Math.hypot(s.x-me.x,s.y-me.y)<46){s.got=1;O.got++;SFX.pick();gainXP(20);G.FX.push({x:me.x,y:me.y-56,t:0,life:1.1,txt:'НЫЧКА '+O.got+'/'+O.S.length,c:'#e8b23a',big:1});

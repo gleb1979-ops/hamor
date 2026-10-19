@@ -62,7 +62,7 @@ const HEROES=[
  {id:'zdor',name:'Здоровый',desc:'Лысый. Медленный, крепкий',hp:150,spd:170,pow:1.35,rate:.8,jacket:'#e8e8ee',vest:1,pants:'#2c2f3a',hair:'#6a4a2a',skin:'#dfa47e',big:1},
  {id:'skor',name:'Скорлупа',desc:'Кудрявый мелкий. Юркий',hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1}];
 const TINT=document.createElement('canvas');TINT.width=400;TINT.height=360;const PZMAP=[1,0,2,3],PZTOP0=[60,70,70,58],PZI=[],PZTOP=[];for(let h=0;h<4;h++){const i=new Image();i.src='img/pq'+PZMAP[h]+'.webp';PZI[h]=i;PZTOP[h]=PZTOP0[PZMAP[h]];i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
-const NSPR={},NTOP={druzh:130,ded:171,storozh:154,host:161,brig:142,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
+const NSPR={},NTOP={druzh:130,ded:171,storozh:154,host:161,brig:142,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
 const UAZI=new Image();UAZI.src='img/uaz.webp';
 const nsOK=k=>k&&NSPR[k]&&NSPR[k].complete&&NSPR[k].naturalWidth;
 const ENEMY_COL=['#4a6a2a','#5a2a6a','#6a4a1a','#2a5a6a'];
@@ -1147,7 +1147,7 @@ const RST=[
  {loc:'Ворота рынка',b:'БАРЫГА',spr:'baryga',w:'stick',hp:130,sc:1.12,tip:'Ларёчник у ворот. Машет палкой — не подходи в лоб.'},
  {loc:'Овощные ряды',b:'НАПЁРСТОЧНИК',spr:'naper',w:'bottle',hp:150,sc:1.1,tip:'Шустрый и вёрткий. Бей ногой — отбрасывает.'},
  {loc:'Вещевой ряд',b:'ФАРЦОВЩИК',spr:'farc',w:'chain',hp:175,sc:1.15,tip:'Джинсы, кассеты и цепь. Длинные руки — держи дистанцию.'},
- {loc:'Мясной павильон',b:'МЯСНИК',hero:2,w:'knife',hp:235,sc:1.32,tip:'Огромный, с тесаком. Медленный — бей и отходи.'},
+ {loc:'Мясной павильон',b:'МЯСНИК',spr:'myasnik',w:'knife',hp:235,sc:1.32,tip:'Огромный, с тесаком. Медленный — бей и отходи.'},
  {loc:'Задворки и склад',b:'ГРУЗЧИК ВАСЯ',spr:'brig',kind:'brig',w:'rebar',hp:280,sc:1.36,tip:'Увидишь «!!!» — отбегай. Издалека кидается кирпичами.'},
  {loc:'Контора рынка',b:'РЕШАЛА',spr:'reshala',w:'knux',hp:260,sc:1.25,guards:2,tip:'Решала с охраной. Сначала вырубай охрану.'},
  {loc:'Кабинет смотрящего',b:'СМОТРЯЩИЙ',spr:'smotr',kind:'host',w:'bpistol',hp:380,sc:1.36,tip:'Стреляет издалека, на половине здоровья зовёт охрану. Бей вплотную.'}];
@@ -1411,7 +1411,7 @@ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 LS.get('age',0)?showMenu():showAge();
-try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp','/ulica/img/bg_ploshad.webp','/ulica/img/bg_zavod0.webp','/ulica/img/bg_zavod1.webp','/ulica/img/bg_street.webp','/ulica/img/bg_zavod2.webp','/ulica/img/bg_salon0.webp','/ulica/img/bg_salon1.webp','/ulica/img/bg_salon2.webp','/ulica/img/bg_rynok1.webp','/ulica/img/bg_rynok2.webp','/ulica/img/bg_rynok3.webp','/ulica/img/bg_rynok4.webp','/ulica/img/bg_rynok5.webp','/ulica/img/bg_rynok6.webp','/ulica/img/bg_rynok7.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3','baryga','naper','farc','reshala','smotr'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
+try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp','/ulica/img/bg_ploshad.webp','/ulica/img/bg_zavod0.webp','/ulica/img/bg_zavod1.webp','/ulica/img/bg_street.webp','/ulica/img/bg_zavod2.webp','/ulica/img/bg_salon0.webp','/ulica/img/bg_salon1.webp','/ulica/img/bg_salon2.webp','/ulica/img/bg_rynok1.webp','/ulica/img/bg_rynok2.webp','/ulica/img/bg_rynok3.webp','/ulica/img/bg_rynok4.webp','/ulica/img/bg_rynok5.webp','/ulica/img/bg_rynok6.webp','/ulica/img/bg_rynok7.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3','baryga','naper','farc','reshala','smotr','myasnik'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
 window.__r89={get G(){return G},start,attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
 })();
 </script>

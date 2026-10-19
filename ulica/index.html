@@ -228,7 +228,7 @@ function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind
  if(mode==='bike'){F.forEach((f,i)=>{f.x=420+i*90;f.y=420+i*70;f.face=1})}
  if(mode==='disko'){F.forEach((f,i)=>{const L=f.team===0;f.x=L?200+i*80:1080-(i-3)*80;f.y=440+(i%3)*80;f.face=L?1:-1})}
  if(mode==='team'){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
- dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:mode==='bike'?[]:mode==='zavod'?ZL[LOC].obst:mode==='salon'?SL[LOC].obst:mode==='disko'?[]:mode==='boss'?(CH[CAMP.ch].b==='brig'?OBST_A1:OBST_A2):[OBST_F,OBST_A1,OBST_A2][LOC];
+ dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:mode==='bike'?[]:mode==='zavod'?ZL[LOC].obst:mode==='salon'?SL[LOC].obst:mode==='disko'?[]:mode==='boss'?(CH[CAMP.ch].b==='brig'?OBST_A1:OBST_A2):[OBST_F,OBST_A1,OBST_A2,[]][LOC];
  G={F,P:[],B:[],FX:[],RM:[],HL:[],BX:[],dist:0,hzT:1.5,copY:520,t:0,dropT:2,round:(G?G.round:0)+1,wins:G?G.wins:{},over:0,msg:'',msgT:0};
  if(OBJM())initObj();else for(let i=0;i<3;i++)spawnDrop(i===0?'stick':null);SFX.bell();G.msg='РАУНД '+G.round;G.msgT=1.8;G.sub=(mode==='ffa'||mode==='team')?'Арена: '+ARENAS[LOC]:'';if(OBJM())objIntro();if(mode==='boss'){const b=G.F.find(f=>f.boss);G.msg='БОСС: '+b.name;G.sub=b.kind==='brig'?'Увидишь «!!!» — отбегай: удар ломом о землю. Издалека кидает кирпичи.':'Хозяин стреляет издалека — подходи вплотную. На половине здоровья зовёт охрану.';G.msgT=3.2}if(mode==='disko'){diskoInit();G.msg='РАУНД '+G.round+' · ДИСКОТЕКА';G.sub='Пока медляк — не дерись. Музыка оборвётся — бей заречных!';G.msgT=3}}
 function spawnDrop(k){k=k||DROP_TABLE[Math.random()*DROP_TABLE.length|0];if(k==='pistol'&&G.P.some(p=>p.k==='pistol'))k='bat';let x,y,tries=0;do{x=rnd(80,W-80);y=rnd(FLOOR0+60,FLOOR1-20);if(mode==='bike')x=W+30;tries++}while(mode!=='bike'&&tries<20&&[...OBST,...(mode==='skate'?RAMPS:[])].some(o=>x>o.x-30&&x<o.x+o.w+30&&y>o.y-40&&y<o.y+o.h+30));G.P.push({k,x,y,t:0})}
@@ -561,7 +561,7 @@ function drawObjHUD(t){const cx=W/2,mm=Math.max(0,Math.ceil(G.tl)),ts=(mm/60|0)+
 
 /* ---------- locations, arenas, progression ---------- */
 let LOC=0,MXP=0,MLV=0;
-const ARENAS=['Гаражи','Стройка','Двор'],ZNAMES=['ЗАВОДСКОЙ ДВОР','ЦЕХ №2','ТОВАРНАЯ СТАНЦИЯ'],SNAMES=['ПОДВАЛ','ДК «СТРОИТЕЛЬ»','ВИДЕОПРОКАТ'];
+const ARENAS=['Гаражи','Стройка','Двор','Площадь у ДК'],ZNAMES=['ЗАВОДСКОЙ ДВОР','ЦЕХ №2','ТОВАРНАЯ СТАНЦИЯ'],SNAMES=['ПОДВАЛ','ДК «СТРОИТЕЛЬ»','ВИДЕОПРОКАТ'];
 const ZSUB=['Укради ящик со склада и вынеси через дыру в заборе. Не попадайся в свет.','Ящик у кладовки мастера. Берегись лампы на кран-балке. Выход — щель в воротах слева.','Ящик в открытом вагоне. С водокачки светит прожектор. Уходи через дыру в заборе.'];
 const SSUB=['Выбей их из круга у телевизора и удержи его.','Зал ДК: займи круг у сцены и удержи его.','Тесный ларёк: займи круг у полок и удержи его.'];
 const ZL=[
@@ -579,10 +579,10 @@ const SL=[
  {obst:[{x:520,y:566,w:240,h:30,k:'counter'},{x:170,y:470,w:170,h:26,k:'rack'},{x:940,y:470,w:170,h:26,k:'rack'}],zone:{x:640,y:414,rx:210,ry:34},tv:{x:582,y:72,w:98,h:70}}];
 const OBST_A1=[{x:0,y:520,w:200,h:90,k:'none'},{x:880,y:380,w:200,h:34,k:'none'}];
 const OBST_A2=[];
-function setLoc(i){LOC=(mode==='ffa'||mode==='team'||OBJM())?i%3:0;if(mode==='salon'){ZONE=SL[LOC].zone;TVS=SL[LOC].tv}}
-function bgKey(){return mode==='boss'?((CH[CAMP.ch]||{}).b==='host'?'dvor':'stroika'):mode==='disko'?'disko':(mode==='ffa'||mode==='team')?['street','stroika','dvor'][LOC]:OBJM()?mode+LOC:'street'}
-const PAINTERS={zavod0:g=>paintZavod(g),zavod1:g=>paintCeh(g),zavod2:g=>paintRail(g),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>bgPhoto(g,'stroika',paintStroika),dvor:g=>bgPhoto(g,'dvor',paintDvor)};
-const BGPH={};for(const k of ['dvor','stroika','disko']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
+let AOFF=0;function setLoc(i){LOC=(mode==='ffa'||mode==='team')?(i+AOFF)%4:OBJM()?i%3:0;if(mode==='salon'){ZONE=SL[LOC].zone;TVS=SL[LOC].tv}}
+function bgKey(){return mode==='boss'?((CH[CAMP.ch]||{}).b==='host'?'dvor':'stroika'):mode==='disko'?'disko':(mode==='ffa'||mode==='team')?['street','stroika','dvor','ploshad'][LOC]:OBJM()?mode+LOC:'street'}
+const PAINTERS={zavod0:g=>paintZavod(g),zavod1:g=>paintCeh(g),zavod2:g=>paintRail(g),salon0:g=>{TVS=SL[0].tv;paintSalon(g)},salon1:g=>paintDK(g),salon2:g=>paintKiosk(g),stroika:g=>bgPhoto(g,'stroika',paintStroika),ploshad:g=>bgPhoto(g,'ploshad',paintDvor),dvor:g=>bgPhoto(g,'dvor',paintDvor)};
+const BGPH={};for(const k of ['dvor','stroika','disko','ploshad']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
 function bgPhoto(g,k,fb){const i=BGPH[k];if(i&&i.complete&&i.naturalWidth){g.drawImage(i,0,0,W,H);vignette(g)}else fb(g)}
 
 /* progression */
@@ -1219,7 +1219,7 @@ function showMenu(){state='menu';CAMP.on=0;document.getElementById('mb').hidden=
  $ui.querySelectorAll('.mb').forEach(b=>b.onclick=()=>{mode=b.dataset.m;LS.set('mode',mode);G=null;LOC=0;paintBG();showMenu()});
  document.getElementById('bl').onclick=()=>{BLOOD=!BLOOD;LS.set('blood',BLOOD);showMenu()};
  document.getElementById('go').onclick=()=>{au();G=null;start()}}
-function start(){try{getSelection().removeAllRanges()}catch(e){}$ui.hidden=true;state='play';MXP=0;MLV=0;document.getElementById('mb').hidden=false;newRound();document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
+function start(){AOFF=Math.random()*4|0;try{getSelection().removeAllRanges()}catch(e){}$ui.hidden=true;state='play';MXP=0;MLV=0;document.getElementById('mb').hidden=false;newRound();document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
 function roundEnd(){const w=G.wins,need=mode==='boss'?1:2;if((w.me||0)>=need||(w.them||0)>=need){state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
   $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${endTitle(won)}</h1><p class="sub">Счёт ${w.me||0}:${w.them||0} · нокаутов: ${G.F[0].kills}</p>${progLine()}<div class="row"><button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;
   document.getElementById('again').onclick=()=>{G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won)}
@@ -1249,7 +1249,7 @@ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 LS.get('age',0)?showMenu():showAge();
-try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
+try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp','/ulica/img/bg_ploshad.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3'].map(k=>'/ulica/img/n_'+k+'.webp')))).catch(()=>{})}}catch(e){}
 window.__r89={get G(){return G},start,attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
 })();
 </script>

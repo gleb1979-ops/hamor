@@ -973,7 +973,7 @@ function rUpdate(dt){G.t+=dt;const T=TR,N=T.N,me=G.F[0];if(G.msgT>0)G.msgT-=dt;i
  if(G.over){G.overT+=dt;if(G.overT>2.8&&state==='play')rEnd()}}
 function rEnd(){state='end';const won=G.winTeam===0;gainXP(won?100:15);$ui.hidden=false;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;
  const ranked=G.F.slice().sort((a,b)=>(a.out-b.out)||rProg(b)-rProg(a));
- $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${G.obl?(won?'УШЁЛ ОТ МЕНТОВ':'ПРИНЯЛИ'):won?'РАЙОН ТВОЙ':'РАЙОН ЗАБРАЛИ'}</h1><p class="sub">${G.why}${G.obl?' · нычек: '+G.obl.got+'/'+G.obl.S.length:' · сбил: '+G.F[0].kills}</p>
+ $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${G.obl?(won?'УШЁЛ ОТ МЕНТОВ':'ПРИНЯЛИ'):won?'РАЙОН ТВОЙ':'РАЙОН ЗАБРАЛИ'}</h1><p class="sub">${G.why}${G.obl?' · круг '+G.obl.lap+'/'+OBL_LAPS+' · нычек: '+(G.obl.tot+G.obl.got):' · сбил: '+G.F[0].kills}</p>
  ${G.obl?'':`<div class="pbox">${ranked.map((f,i)=>`<div style="color:${f.team?'#ff8a7a':'#9fd0ff'}">${i+1}. ${f.name} · ${VEH[f.veh].name}${f.out?' · выбыл':''}</div>`).join('')}</div>`}${progLine()}
  <div class="row"><button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;
  document.getElementById('again').onclick=()=>{G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won)}
@@ -1031,12 +1031,21 @@ function rRender(t){const me=G.F[0],cx=G.camx,cy=G.camy;ctx.save();if(shake>0)ct
 /* ---------- ОБЛАВА: night escape from the militia ---------- */
 const RMODE=()=>mode==='rayon'||mode==='oblava';
 const UAZ={max:395,acc:300,turn:2.1};
-function oblInit(){const T=TR,N=T.N,me=G.F[0];G.F.length=1;me.lives=3;const S=[];let tries=0;
- while(S.length<6&&tries<800){tries++;let x,y;
+const OBL_LAPS=3;
+function oblStash(n){const T=TR,N=T.N,me=G.F[0];const S=[];let tries=0;
+ while(S.length<n&&tries<900){tries++;let x,y;
   if(Math.random()<.5&&IMGMAP&&RMAP===1){x=rnd(420,1250)*RK;y=rnd(270,600)*RK;if(!inField(x,y)||OBS.some(o=>Math.hypot(o.x-x,o.y-y)<o.r+40))continue}
   else{const si=Math.random()*N|0,o=rnd(-RW/2+20,RW/2-20),a=T.a[si];x=T.x[si]-Math.sin(a)*o;y=T.y[si]+Math.cos(a)*o}
-  if(Math.hypot(x-me.x,y-me.y)<520||S.some(s=>Math.hypot(s.x-x,s.y-y)<380))continue;S.push({x,y,got:0})}
- G.obl={C:[],S,got:0,tl:150,exitOpen:0,hideT:0,seen:0,hidden:0,lx:me.x,ly:me.y,sirT:0};oblSpawnCar((me.si+Math.floor(N/2))%N)}
+  if(Math.hypot(x-me.x,y-me.y)<520||S.some(s=>Math.hypot(s.x-x,s.y-y)<360))continue;S.push({x,y,got:0})}return S}
+function oblInit(){const T=TR,N=T.N,me=G.F[0];G.F.length=1;me.lives=3;
+ G.obl={C:[],S:oblStash(6),got:0,tot:0,lap:1,tl:150,exitOpen:0,hideT:0,seen:0,hidden:0,lx:me.x,ly:me.y,sirT:0};
+ oblSpawnCar((me.si+Math.floor(N/2))%N);oblSpawnCar((me.si+Math.floor(N/4))%N)}
+/* следующий круг: новые нычки, больше уазиков, быстрее, меньше времени */
+function oblNextLap(){const O=G.obl,me=G.F[0],T=TR,N=T.N;O.lap++;O.tot+=O.got;O.got=0;O.exitOpen=0;O.S=oblStash(5+O.lap);O.tl=150-10*(O.lap-1);
+ for(const c of O.C){const j=(me.si+Math.floor(N*rnd(.3,.7)))%N;c.x=T.x[j];c.y=T.y[j];c.ang=T.a[j];c.si=j;c.mode='patrol';c.spd=0;c.stun=2.5}
+ while(O.C.length<O.lap+1)oblSpawnCar((me.si+Math.floor(N*rnd(.3,.7)))%N);
+ me.inv=3;me.hp=Math.min(me.max,me.hp+Math.round(me.max*.3));gainXP(40);SFX.bell();
+ G.banner=O.lap===OBL_LAPS?'ПОСЛЕДНИЙ КРУГ! УАЗИКОВ: '+O.C.length:'КРУГ '+O.lap+'/'+OBL_LAPS+' · ЕЩЁ НЫЧКИ · УАЗИКОВ: '+O.C.length;G.bannerT=3}
 function oblSpawnCar(si){const T=TR;G.obl.C.push({x:T.x[si],y:T.y[si],ang:T.a[si],spd:0,stun:1.5,mode:'patrol',si,tx:0,ty:0,lostT:0,searchT:0})}
 function oblFinish(win,why){if(G.over)return;G.over=1;G.winTeam=win?0:1;G.why=why;SFX.bell()}
 function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)return;if(me.out){oblFinish(0,'разбился — дальше пешком не уйти');return}O.tl-=dt;if(O.tl<=0){oblFinish(0,'рассвело — не успел');return}
@@ -1053,7 +1062,7 @@ function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)retu
   let df=Math.atan2(ty-c.y,tx-c.x)-c.ang;df=Math.atan2(Math.sin(df),Math.cos(df));
   if(c.stun<=0){c.ang+=clamp(df,-UAZ.turn*dt,UAZ.turn*dt);c.spd+=UAZ.acc*dt*(Math.abs(df)>1.4?.2:1)}else c.spd*=Math.pow(.1,dt);
   let nn=trNear(c.x,c.y,c.si);if(nn.d>RW/2+20)nn=trNear(c.x,c.y);c.si=nn.i;const inF=IMGMAP&&RMAP===1&&inField(c.x,c.y);
-  const cap=UAZ.max*(.45+.55*RS)*(nn.d<=RW/2?1:inF?.62:.5)*(c.mode==='patrol'?.6:1)*(1+.04*O.got);
+  const cap=UAZ.max*(.45+.55*RS)*(nn.d<=RW/2?1:inF?.62:.5)*(c.mode==='patrol'?.6:1)*(1+.04*O.got)*(1+.09*(O.lap-1));
   c.spd=clamp(c.spd,0,cap);c.x+=Math.cos(c.ang)*c.spd*dt;c.y+=Math.sin(c.ang)*c.spd*dt;
   if(nn.d>RW/2+60&&!inF){const k=(nn.d-(RW/2+60))/nn.d;c.x+=(T.x[nn.i]-c.x)*k;c.y+=(T.y[nn.i]-c.y)*k;c.spd*=Math.pow(.3,dt)}
   for(const o of OBS){const dx=c.x-o.x,dy=c.y-o.y,dd=Math.hypot(dx,dy),mr=o.r+26*RS;if(dd<mr){c.x=o.x+dx/(dd||1)*mr;c.y=o.y+dy/(dd||1)*mr;c.spd*=.5}}
@@ -1061,9 +1070,9 @@ function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)retu
  for(let i=0;i<O.C.length;i++)for(let j=i+1;j<O.C.length;j++){const a=O.C[i],b=O.C[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<70&&d>0){const p=(70-d)/2;a.x-=dx/d*p;a.y-=dy/d*p;b.x+=dx/d*p;b.y+=dy/d*p}}
  if(seenAny){O.sirT-=dt;if(O.sirT<=0){SFX.siren();O.sirT=1.2}}O.seen=seenAny;
  for(const s of O.S)if(!s.got&&me.down<=0&&Math.hypot(s.x-me.x,s.y-me.y)<46){s.got=1;O.got++;SFX.pick();gainXP(20);G.FX.push({x:me.x,y:me.y-56,t:0,life:1.1,txt:'НЫЧКА '+O.got+'/'+O.S.length,c:'#e8b23a',big:1});
-  const want=Math.min(3,1+Math.floor(O.got/2));while(O.C.length<want){oblSpawnCar((me.si+Math.floor(N*rnd(.35,.65)))%N);G.banner='ЕЩЁ ОДИН УАЗИК!';G.bannerT=1.6}
-  if(O.got===O.S.length){O.exitOpen=1;G.banner='ВСЁ! ГОНИ В СВОЙ ГАРАЖ';G.bannerT=2.6}}
- if(O.exitOpen&&me.down<=0&&Math.hypot(T.x[0]-me.x,T.y[0]-me.y)<RW*.8)oblFinish(1,'нычки в гараже, менты остались ни с чем')}
+  const want=Math.min(O.lap+2,O.lap+1+Math.floor(O.got/3));while(O.C.length<want){oblSpawnCar((me.si+Math.floor(N*rnd(.35,.65)))%N);G.banner='ЕЩЁ ОДИН УАЗИК!';G.bannerT=1.6}
+  if(O.got===O.S.length){O.exitOpen=1;G.banner=O.lap<OBL_LAPS?'ВСЁ! ГОНИ В ГАРАЖ — СДАТЬ НЫЧКИ':'ВСЁ! ГОНИ В СВОЙ ГАРАЖ';G.bannerT=2.6}}
+ if(O.exitOpen&&me.down<=0&&Math.hypot(T.x[0]-me.x,T.y[0]-me.y)<RW*.8){if(O.lap<OBL_LAPS)oblNextLap();else{O.tot+=O.got;O.got=0;oblFinish(1,'три круга — все нычки в гараже, менты остались ни с чем')}}}
 function oblHitCar(f,kk){for(const c of G.obl.C){if(Math.hypot(c.x-f.x,c.y-f.y)<(kk?96:118)*RS+18){c.stun=kk?2.2:1.5;c.spd*=.3;SFX.metal();shake=Math.max(shake,5);G.FX.push({x:c.x,y:c.y-34,t:0,life:.8,txt:kk?'ПИНКА ПО ДВЕРИ!':'ПО ФАРАМ!',c:'#ffd23f'});return true}}return false}
 function drawUAZ(g,c,t){g.save();g.translate(c.x,c.y);g.rotate(c.ang);const k=RS*1.15;g.scale(k,k);if(UAZI.complete&&UAZI.naturalWidth){const w=104,h=w*UAZI.naturalHeight/UAZI.naturalWidth;g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-w/2+7,-h/2+7,w,h);g.drawImage(UAZI,-w/2,-h/2,w,h);const on=((t*3)|0)%2;g.fillStyle=on?'rgba(255,60,60,.55)':'rgba(70,120,255,.55)';g.beginPath();g.arc(-6,on?-h*.18:h*.08,9,0,TAU);g.fill();g.restore();if(c.stun>0){for(let i=0;i<3;i++){const a=t*6+i*2.1;circ(g,c.x+Math.cos(a)*26,c.y-38+Math.sin(a)*8,4,'#ffd23f')}}return}g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-38,-16,88,44);
  rr(g,-44,-22,88,44,10,'#e0c040',3.5);g.fillStyle='#2a4aa8';g.fillRect(-40,-22,80,6);g.fillRect(-40,16,80,6);rr(g,16,-18,26,36,6,'#d8b838',2);rr(g,4,-17,12,34,3,'#1a2a3a',2);rr(g,-30,-18,34,36,5,'#f0e8d0',2.5);circ(g,-47,0,8,'#1a1a1a',2);
@@ -1087,7 +1096,7 @@ function oblNight(t,cx,cy,Z){const O=G.obl,me=G.F[0],n=NIGHT.getContext('2d'),S=
 function oblHUD(t){const O=G.obl,me=G.F[0],mm=Math.max(0,Math.ceil(O.tl)),ts=(mm/60|0)+':'+String(mm%60).padStart(2,'0');
  ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(16,14,320,62);ctx.font='900 20px Impact,sans-serif';ctx.textAlign='left';ctx.fillStyle='#f3e9dc';ctx.fillText(HEROES[me.hero].name.toUpperCase()+'  '+'♥'.repeat(Math.max(0,me.lives)),28,38);
  ctx.fillStyle='#331';ctx.fillRect(28,46,180,12);ctx.fillStyle=me.hp/me.max>.4?'#5ad05a':'#e0303a';ctx.fillRect(28,46,180*Math.max(0,me.hp/me.max),12);ctx.font='bold 14px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(VEH[me.veh].name,216,57);
- ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-230,12,460,56);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`НЫЧКИ ${O.got}/${O.S.length} · ДО РАССВЕТА ${ts} · УАЗИКОВ ${O.C.length}`,W/2,38);
+ ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-270,12,540,56);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`КРУГ ${O.lap}/${OBL_LAPS} · НЫЧКИ ${O.got}/${O.S.length} · ${ts} · УАЗИКОВ ${O.C.length}`,W/2,38);
  ctx.font='900 15px Impact,sans-serif';ctx.fillStyle=O.seen?'#ff5a5a':O.hidden?'#7cf07c':'#9fd0ff';ctx.fillText(O.seen?'ТЕБЯ ВИДЯТ — УХОДИ!':O.hidden?'СПРЯТАЛСЯ В КУСТАХ':'ИЩУТ…',W/2,60);
  ctx.drawImage(MM,W-236,14);const ks=220/WW,ox=W-236,oy=14;for(const s of O.S)if(!s.got){ctx.fillStyle='#e8b23a';ctx.fillRect(ox+s.x*ks-3,oy+s.y*ks-3,6,6)}
  if(O.exitOpen){ctx.strokeStyle='#7cf07c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(ox+TR.x[0]*ks,oy+TR.y[0]*ks,7,0,TAU);ctx.stroke()}
@@ -1168,7 +1177,7 @@ const CH=[
  {t:'Дефицит',m:'zavod',ic:'📦',tx:'Старшие говорят: на заводе «Прогресс» лежит ящик дефицита. Ночью, тихо, через дыру в заборе. Сторожа злые, а у деда — ружьё с солью.'},
  {t:'Отжать салон',m:'salon',ic:'📼',rz:{at:'start',who:'Видик',tip:'Хозяин салона выходит навстречу: «Может, договоримся, пока аппаратуру не побили?»'},tx:'Видик с соседнего района крутит кино в подвале и ни с кем не делится. Пора объяснить ему, чей это район.'},
  {t:'Разборка по кругу',m:'rayon',ic:'🚲',tx:'Заречные решили, что гаражи теперь их. Разбор — на великах и скейтах, три круга по району. Приди первым или сбей их всех.'},
- {t:'Облава',m:'oblava',ic:'🚨',tx:'После гонки по району всё отделение на ушах. Нычки раскиданы по пустырю — собери и уйди в свой гараж, пока не рассвело.'},
+ {t:'Облава',m:'oblava',ic:'🚨',tx:'После гонки по району всё отделение на ушах. Нычки раскиданы по пустырю — три круга: собери, сдай в гараж, и снова. С каждым кругом уазиков больше.'},
  {t:'Дискотека',m:'disko',ic:'🪩',rz:{at:'round',who:'Старший заречных',tip:'После первого раунда старший заречных отводит тебя в сторону: «Дружинники смотрят. Решим по-тихому?»'},tx:'Суббота, ДК «Строитель». Пока играет медляк — мир, дружинники смотрят. Но заречные пришли не танцевать.'},
  {t:'Бригадир',m:'boss',b:'brig',ic:'⛑️',rz:{at:'start',who:'Бригадир',tip:'Бригадир опирается на лом: «Дань с гаражей — моя. Но если ты такой умный — объясни, почему нет.»'},tx:'Бригадир со стройки собирает дань с гаражей. Говорят, ломом машет как прутиком, а кирпичи кидает через весь двор. Один на один.'},
  {t:'Хозяин рынка',m:'boss',b:'host',ic:'👑',tx:'Последний — Хозяин рынка. Пока он держит рынок, район не твой. С ним охрана, а у него самого — ствол.'}];
@@ -1783,7 +1792,7 @@ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
 requestAnimationFrame(loop);
 LS.get('age',0)?showMenu():showAge();
 try{if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{});if(window.caches)caches.open('tagshim-v2').then(c=>c.addAll(['/ulica/','/ulica/img/pq0.webp','/ulica/img/pq1.webp','/ulica/img/pq2.webp','/ulica/img/pq3.webp','/ulica/img/bg_dvor.webp','/ulica/img/bg_stroika.webp','/ulica/img/rayon_map0.webp','/ulica/img/rayon_map1.webp','/ulica/img/uaz.webp','/ulica/img/bg_disko.webp','/ulica/img/bg_ploshad.webp','/ulica/img/bg_zavod0.webp','/ulica/img/bg_zavod1.webp','/ulica/img/bg_street.webp','/ulica/img/bg_zavod2.webp','/ulica/img/bg_salon0.webp','/ulica/img/bg_salon1.webp','/ulica/img/bg_salon2.webp','/ulica/img/bg_rynok1.webp','/ulica/img/bg_rynok2.webp','/ulica/img/bg_rynok3.webp','/ulica/img/bg_rynok4.webp','/ulica/img/bg_rynok5.webp','/ulica/img/bg_rynok6.webp','/ulica/img/bg_rynok7.webp'].concat(['druzh','ded','storozh','host','brig','dog','g1','g2','g3','baryga','naper','farc','reshala','smotr','myasnik','vasya'].map(k=>'/ulica/img/n_'+k+'.webp')).concat(['/ulica/img/tg_icon.png','/ulica/img/kap.png','/ulica/img/h_star.webp','/ulica/img/h_shust.webp','/ulica/img/h_skor.webp','/ulica/img/h_zdor.webp','/ulica/img/h_boxer.webp','/ulica/img/h_karate.webp','/ulica/img/h_dembel.webp','/ulica/img/h_ryzhiy.webp','/ulica/img/h_kaban.webp','/ulica/img/h_marinka.webp','/ulica/img/w_stick.webp','/ulica/img/w_bat.webp','/ulica/img/w_spike.webp','/ulica/img/w_rebar.webp','/ulica/img/w_chain.webp','/ulica/img/w_knux.webp','/ulica/img/w_nunchaku.webp','/ulica/img/w_bottle.webp','/ulica/img/w_knife.webp','/ulica/img/w_stone.webp','/ulica/img/w_pistol.webp','/ulica/img/w_baton.webp','/ulica/img/w_salt.webp','/ulica/img/w_kefir.webp','/ulica/img/w_sling.webp','/ulica/img/w_belt.webp','/ulica/img/rd_bike.webp','/ulica/img/rd_skate.webp']))).catch(()=>{})}}catch(e){}
-let HOLD=0;window.__r89={get G(){return G},get st(){return state},get LOC(){return LOC},setMode:m=>{mode=m;G=null},start,loc:i=>{LOC=i;OBST=mode==='ffa'||mode==='team'?[OBST_F,OBST_A1,OBST_A2,[]][i]:OBST;paintBG()},hold:v=>{HOLD=v},attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
+let HOLD=0;window.__r89={get G(){return G},garage:()=>{const me=G.F[0];me.x=TR.x[0];me.y=TR.y[0];me.inv=9;update(1/60);return [G.obl.lap,G.obl.S.length,G.obl.C.length,Math.round(G.obl.tl),G.over,G.why||'']},get st(){return state},get LOC(){return LOC},setMode:m=>{mode=m;G=null},start,loc:i=>{LOC=i;OBST=mode==='ffa'||mode==='team'?[OBST_F,OBST_A1,OBST_A2,[]][i]:OBST;paintBG()},hold:v=>{HOLD=v},attack:()=>attack(G.F[0]),sim:(n,dt)=>{for(let i=0;i<n&&G&&state==='play';i++)update(dt||1/60)},render:()=>render(performance.now()/1000),see:(g,e)=>seesIt(coneOf(g),e),world:()=>{if(!WORLD)paintWorld();const c=document.createElement('canvas');c.width=1500;c.height=1100;c.getContext('2d').drawImage(WORLD,0,0,1500,1100);return c.toDataURL('image/jpeg',.7)}};
 })();
 </script>
 </body></html>

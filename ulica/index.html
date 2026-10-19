@@ -1731,7 +1731,7 @@ function krUI(){rotTryLock();state='krz';$ui.hidden=true;document.getElementById
 function krzRace(res,net){const y=KRH-260,[c]=krRoad(y),P=net||[{id:'',name:''}],n=P.length;
  const cars=P.map((p,i)=>krNewCar(c+(i-(n-1)/2)*62,y+(i%2)*80,net?KRCOLS[i%KRCOLS.length][0]:(CAMP.on?'black':KRCOL),p.name||'',p.id||'',res==='clean'?1:0));
  K={t:0,cd:3.2,res,host:net?1:0,cli:0,cars,c:cars[0],cops:[],O:krGen(),fx:[],msg:'',msgT:0,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:n};
- const back=res==='clean'?760:res==='noisy'?420:230;for(let i=0;i<(n>1?n+1:2);i++)K.cops.push(krCop(y+back+i*130+(i%2)*60,c+(i%2?30:-30)));
+ const back=res==='clean'?760:res==='noisy'?420:230;for(let i=0;i<(n>1?n:1);i++)K.cops.push(krCop(y+back+i*130+(i%2)*60,c+(i%2?30:-30)));
  krUI();K.msg=net?'УГОН! '+n+' КРУЗАКА — УАЗИКОВ '+K.cops.length:res==='alarm'?'СИГНАЛКА! УАЗИКИ НА ХВОСТЕ':res==='clean'?'ТИХО УШЁЛ — ЕСТЬ ФОРА':'НАШУМЕЛ — УАЗИКИ БЛИЗКО';K.msgT=2.6}
 function krRestoreUI(){document.getElementById('touch').classList.remove('race');const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='УДАР';bB.textContent='ПИНОК';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display=''}
 function krNitro(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.a++;return}krNitroCar(K.c)}
@@ -1787,7 +1787,7 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
  const live=act.length?act:K.cars,lowY=Math.max(...live.map(c=>c.y)),lead=live.reduce((a,b)=>a.y<b.y?a:b);
  K.O=K.O.filter(o=>o.y<lowY+900&&o.y>-200);
  // уазики: больше игроков — больше уазиков
- const prog=clamp((KRH-260-lead.y)/(KRH-530),0,1),want=(K.nP>1?K.nP+1:2)+(prog>.4)+(prog>.75);
+ const prog=clamp((KRH-260-lead.y)/(KRH-530),0,1),want=(K.nP>1?K.nP:1)+(prog>.4)+(prog>.75);
  if(act.length)while(K.cops.length<want){const yy=lowY+380,[cc]=krRoad(yy);K.cops.push(krCop(yy,cc+rnd(-30,30)));K.msg='ЕЩЁ ОДИН УАЗИК!';K.msgT=1.5}
  let near=0;
  for(const p of K.cops){p.wob+=dt;p.hitT-=dt;const [pc,ph]=krRoad(p.y),poff=false;

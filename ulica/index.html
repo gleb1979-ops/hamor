@@ -1668,8 +1668,8 @@ const KRCOLS=[['black','Чёрный','kr_car'],['white','Белый','kr_car_wh
 const KROB={};for(const k of ['barrier','manhole','oil','pit','tree','cart','tractor','gate','crates','barrel','fuel','wrench']){const i=new Image();i.src='../shared/road/'+k+'.webp';KROB[k]=i}
 const KROAD=[[130,650,260],[300,640,200],[420,600,80],[600,590,75],[800,585,72],[1000,580,72],[1200,575,72],[1400,570,85],[1700,570,78],[1950,545,92],[2100,516,96],[2900,516,96],[3000,518,96],[3300,515,96],[3550,470,115],[3750,440,115],[3950,520,120],[4150,590,115],[4350,560,110],[4500,520,105],[4700,480,110],[4900,465,115],[5050,560,120],[5250,560,110],[5450,505,110],[5700,490,120],[5900,520,135],[6100,570,190],[6300,595,200],[6500,580,190],[6700,555,180],[7000,525,140],[7200,518,128],[7400,525,120],[7800,525,120],[8000,492,112],[8200,495,112],[8400,532,112],[8600,555,112],[8804,560,112]];
 function krRoad(y){y=clamp(y,KROAD[0][0],KRH);let i=0;while(i<KROAD.length-2&&KROAD[i+1][0]<y)i++;const a=KROAD[i],b=KROAD[i+1],t=clamp((y-a[0])/(b[0]-a[0]),0,1);return [a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
-const KOT={barrier:{w:76,solid:1,dmg:14,br:1},manhole:{w:50,bump:1,dmg:5},oil:{w:72,oil:1},pit:{w:58,bump:1,dmg:8},tree:{w:104,solid:1,dmg:18},cart:{w:42,solid:1,dmg:13,vy:-34},tractor:{w:56,solid:1,dmg:18,vy:52,flip:1},gate:{w:104,solid:1,dmg:12,br:1},crates:{w:70,solid:1,dmg:10,br:1},barrel:{w:44,solid:1,dmg:8,br:1},fuel:{w:38,pick:'nitro'},wrench:{w:40,pick:'fix'},uaz:{w:96,solid:1,dmg:16}};
-const KR={SC:2.1,CRUISE:72,GAS:98,BRAKE:30,NITRO:150,OFF:40,CW:44,CL:92,UW:54,UL:94};
+const KOT={barrier:{w:76,solid:1,dmg:14,br:1},manhole:{w:50,bump:1,dmg:5},oil:{w:72,oil:1},pit:{w:58,bump:1,dmg:8},tree:{w:104,solid:1,dmg:18},cart:{w:42,solid:1,dmg:13,vy:-45},tractor:{w:56,solid:1,dmg:18,vy:70,flip:1},gate:{w:104,solid:1,dmg:12,br:1},crates:{w:70,solid:1,dmg:10,br:1},barrel:{w:44,solid:1,dmg:8,br:1},fuel:{w:38,pick:'nitro'},wrench:{w:40,pick:'fix'},uaz:{w:96,solid:1,dmg:16}};
+const KR={SC:2.1,CRUISE:155,GAS:155,BRAKE:55,NITRO:240,OFF:80,CW:44,CL:92,UW:54,UL:94};
 let K=null,KL=null,KRLOOP=0;
 function krRegion(y){return y>7270?['barrel','crates','manhole','oil','barrel']:y>5850?['barrier','gate','crates','manhole','oil']:y>3020?['pit','oil','barrel','barrier','gate','crates']:y>1910?['oil','manhole','crates','barrel']:y>960?['pit','cart','tree','oil','cart']:['tractor','tree','pit','tractor']}
 function krObSize(o){const im=KROB[o.k],T=KOT[o.k];if(o.k==='uaz')return [KR.UL,KR.UW];const w=T.w,h=im&&im.naturalWidth?w*im.naturalHeight/im.naturalWidth:w;return [w,h]}
@@ -1714,7 +1714,19 @@ function krLockTick(dt){const L=KL;if(!L)return;const c=document.getElementById(
 const KRNMAX=4;
 function krNewCar(x,y,col,name,rid,nitro){return {x,y,v:0,steer:0,hp:100,inv:0,oilT:0,oilD:0,ramT:0,ramD:0,ramCd:0,nitro,boostT:0,slowT:0,ang:0,col,name,rid,out:0,fin:0,stillT:0,rams:0,why:''}}
 function krActive(){return K.cars.filter(c=>!c.out&&!c.fin)}
-function krUI(){state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!IS_TOUCH;
+const KRT_UI=(()=>{const d=document.createElement('div');d.id='krt';d.hidden=true;d.style.cssText='position:fixed;inset:0;z-index:5;pointer-events:none';
+ const B=(id,txt,css,bg)=>`<div id="${id}" style="position:absolute;${css};display:grid;place-items:center;border-radius:50%;background:${bg};border:3px solid rgba(255,255,255,.35);color:#fff;font:900 clamp(14px,3.6vmin,20px) system-ui;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none">${txt}</div>`;
+ const S='width:min(110px,24vmin);height:min(110px,24vmin)',M='width:min(84px,19vmin);height:min(84px,19vmin)';
+ d.innerHTML=B('kL','◀',S+';left:max(14px,env(safe-area-inset-left));bottom:14px;font-size:38px','rgba(255,255,255,.16)')+B('kR','▶',S+';left:calc(max(14px,env(safe-area-inset-left)) + min(110px,24vmin) + 18px);bottom:14px;font-size:38px','rgba(255,255,255,.16)')
+  +B('kN','НИТРО',S+';right:max(14px,env(safe-area-inset-right));bottom:14px','rgba(40,170,220,.55)')+B('kT','ТАРАН',M+';right:max(20px,env(safe-area-inset-right));bottom:calc(14px + min(110px,24vmin) + 34px)','rgba(232,178,58,.55)')
+  +B('kB','ТОРМ.','width:min(76px,17vmin);height:min(76px,17vmin);left:max(18px,env(safe-area-inset-left));bottom:calc(14px + min(110px,24vmin) + 30px);font-size:clamp(12px,3vmin,16px)','rgba(200,40,40,.45)');
+ document.body.appendChild(d);const hold={kL:0,kR:0,kB:0};
+ const upd=()=>{if(state!=='krz')return;pad.mx=(hold.kR?1:0)-(hold.kL?1:0);pad.my=hold.kB?1:0};
+ for(const id of ['kL','kR','kB']){const el=d.querySelector('#'+id);el.addEventListener('pointerdown',e=>{e.preventDefault();au();hold[id]=1;el.style.background='rgba(255,255,255,.4)';upd()});
+  const off=e=>{hold[id]=0;el.style.background=id==='kB'?'rgba(200,40,40,.45)':'rgba(255,255,255,.16)';upd()};el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
+ d.querySelector('#kN').addEventListener('pointerdown',e=>{e.preventDefault();au();krNitro()});d.querySelector('#kT').addEventListener('pointerdown',e=>{e.preventDefault();au();krRam()});
+ setInterval(()=>{const on=IS_TOUCH&&(state==='krz');if(d.hidden===on)d.hidden=!on;if(on)document.getElementById('touch').hidden=true},200);return d})();
+function krUI(){state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=true;pad.mx=0;pad.my=0;
  const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='НИТРО';bB.textContent='ТАРАН';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display='none'}
 function krzRace(res,net){const y=KRH-260,[c]=krRoad(y),P=net||[{id:'',name:''}],n=P.length;
  const cars=P.map((p,i)=>krNewCar(c+(i-(n-1)/2)*62,y+(i%2)*80,net?KRCOLS[i%KRCOLS.length][0]:(CAMP.on?'black':KRCOL),p.name||'',p.id||'',res==='clean'?1:0));
@@ -1726,7 +1738,7 @@ function krNitro(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.a++;return}krNitr
 function krRam(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.k++;return}krRamCar(K.c)}
 function krNitroCar(c){if(c.out||c.fin||c.nitro<=0||c.boostT>0)return;c.nitro--;c.boostT=3;SFX.whoosh();if(c===K.c){K.msg='НИТРО!';K.msgT=.9}}
 function krRamCar(c){if(c.out||c.fin||c.ramCd>0)return;let best=null,bd=1e9;for(const p of K.cops){const d=Math.hypot(p.x-c.x,p.y-c.y);if(d<bd){bd=d;best=p}}
- c.ramD=best&&bd<200?Math.sign(best.x-c.x)||1:(c.steer||1)>0?1:-1;c.ramT=.32;c.ramCd=1.1;if(c===K.c)SFX.whoosh()}
+ c.ramD=best&&bd<200?Math.sign(best.x-c.x)||1:(c.steer||1)>0?1:-1;c.ramT=.28;c.ramCd=1;if(c===K.c)SFX.whoosh()}
 function krBox(ax,ay,aw,ah,bx,by,bw,bh){return Math.abs(ax-bx)<(aw+bw)/2&&Math.abs(ay-by)<(ah+bh)/2}
 /* ввод: свой — с клавиатуры/джойстика, чужой — из сети */
 function krInput(c){if(c===K.c){const st=clamp(((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,-1,1);return {st,gas:keys.ArrowUp||keys.KeyW||pad.my<-.35,brk:keys.ArrowDown||keys.KeyS||pad.my>.35}}
@@ -1734,11 +1746,11 @@ function krInput(c){if(c===K.c){const st=clamp(((keys.ArrowLeft||keys.KeyA)?-1:0
  const my=+I.my||0;return {st:clamp(+I.mx||0,-1,1),gas:my<-.35,brk:my>.35}}
 function krCarTick(c,dt){const I=krInput(c);let st=I.st;const me=c===K.c;
  const [rc,rh]=krRoad(c.y),off=Math.abs(c.x-rc)>rh-KR.CW*.3;c.off=off;
- let tv=c.boostT>0?KR.NITRO:I.gas?KR.GAS:I.brk?KR.BRAKE:KR.CRUISE;if(off)tv=Math.min(tv,KR.OFF);if(c.slowT>0){tv*=.55;c.slowT-=dt}
- c.v+=(tv-c.v)*Math.min(1,dt*(tv<c.v?2.6:1.25));if(c.boostT>0){c.boostT-=dt;if(Math.random()<.5)K.fx.push({x:c.x+rnd(-8,8),y:c.y+KR.CL/2,vx:rnd(-20,20),vy:60,t:0,life:.35,c:'#7cf0ff',s:rnd(3,6)})}
+ let tv=c.boostT>0?KR.NITRO:I.brk?KR.BRAKE:KR.GAS;if(off)tv=Math.min(tv,KR.OFF);if(c.slowT>0){tv*=.55;c.slowT-=dt}
+ c.v+=(tv-c.v)*Math.min(1,dt*(tv<c.v?3:1.6));if(c.boostT>0){c.boostT-=dt;if(Math.random()<.5)K.fx.push({x:c.x+rnd(-8,8),y:c.y+KR.CL/2,vx:rnd(-20,20),vy:60,t:0,life:.35,c:'#7cf0ff',s:rnd(3,6)})}
  if(c.oilT>0){c.oilT-=dt;st=c.oilD*.8;c.ang=c.oilD*.55*Math.sin((1-c.oilT/.9)*Math.PI)}else c.ang*=Math.pow(.02,dt);
- c.steer+=(st-c.steer)*Math.min(1,dt*8);let lat=c.steer*(105+c.v*.6);
- if(c.ramT>0){c.ramT-=dt;lat=c.ramD*340}c.ramCd-=dt;
+ c.steer+=(st-c.steer)*Math.min(1,dt*13);let lat=c.steer*(150+c.v*.4);
+ if(c.ramT>0){c.ramT-=dt;lat=c.ramD*480}c.ramCd-=dt;
  c.x+=lat*dt;c.y-=c.v*dt;c.x=clamp(c.x,30,KRW-30);if(c.inv>0)c.inv-=dt;
  if(off&&c.v>40&&Math.random()<dt*8){if(me)K.shk=Math.max(K.shk,3);K.fx.push({x:c.x+rnd(-20,20),y:c.y+KR.CL/2,vx:rnd(-30,30),vy:40,t:0,life:.5,c:'#8a6a40',s:rnd(3,6)})}
  for(const o of K.O){if(o.hit===2)continue;const T=KOT[o.k],[ow,oh2]=krObSize(o);
@@ -1748,7 +1760,7 @@ function krCarTick(c,dt){const I=krInput(c);let st=I.st;const me=c===K.c;
   if(T.bump){if(!(o.bumped||(o.bumped=[])).includes(c)){o.bumped.push(c);krDmg(c,T.dmg,'ТРЯХНУЛО');c.v*=.62;if(me)K.shk=8}continue}
   if(T.solid&&c.inv<=0){krDmg(c,Math.round(T.dmg*.7*(.6+c.v/KR.GAS*.5)),o.k==='uaz'?'В УАЗИК!':'БАХ!');c.v*=.3;c.slowT=.6;if(me)K.shk=12;SFX.heavy();c.x+=(c.x>o.x?1:-1)*24;
    if(T.br){o.hit=2;for(let i=0;i<10;i++)K.fx.push({x:o.x,y:o.y,vx:rnd(-160,160),vy:rnd(-160,60),t:0,life:.7,c:o.k==='barrel'?'#6a4422':o.k==='crates'?'#9a6a3a':'#d8d0c0',s:rnd(4,8)})}}}
- const boxed=K.cops.some(p=>p.stun<=0&&Math.hypot(p.x-c.x,p.y-c.y)<90);if(boxed&&c.v<26)c.stillT+=dt;else c.stillT=Math.max(0,c.stillT-dt*2);
+ const boxed=K.cops.some(p=>p.stun<=0&&Math.hypot(p.x-c.x,p.y-c.y)<90);if(boxed&&c.v<45)c.stillT+=dt;else c.stillT=Math.max(0,c.stillT-dt*2);
  if(c.stillT>1.5)krCarOut(c,'зажали уазиками — не вырвался');
  else if(c.hp<=0)krCarOut(c,'крузак заглох — дальше пешком не уйти');
  else if(c.y<270){c.fin=++K.place;c.why=K.nP>1?(c.fin===1?'первым загнал крузак в гараж':'в гараже — '+c.fin+'-м'):'крузак в гараже, ворота закрыты — менты остались с носом';krTxt(c,c.fin===1?'ПЕРВЫЙ!':c.fin+'-Й!','#e8b23a');SFX.bell()}}
@@ -1771,8 +1783,8 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
   let tg=null,bd=1e9;for(const c of act){const d=Math.hypot(c.x-p.x,(c.y-p.y)*.7);if(d<bd){bd=d;tg=c}}
   const c=tg||lead,dy=p.y-c.y;
   if(p.stun>0){p.stun-=dt;p.v*=Math.pow(.25,dt);p.x+=Math.sin(p.wob*9)*40*dt}
-  else{let tv=dy>90?Math.min(132,c.v+26+dy*.035):dy<-160?KR.CRUISE*.7:c.v+(dy>0?14:-6);if(poff)tv=Math.min(tv,KR.OFF+8);if(!tg)tv=KR.CRUISE*.5;p.v+=(tv-p.v)*Math.min(1,dt*1.6);
-   const tx=Math.abs(dy)<110?c.x:pc+Math.sin(p.wob)*ph*.3;p.x+=clamp(tx-p.x,-1,1)*Math.min(Math.abs(tx-p.x),(Math.abs(dy)<110?62:50))*dt*1.4}
+  else{let tv=dy>90?Math.min(KR.GAS*1.3,c.v+34+dy*.05):dy<-160?KR.GAS*.65:c.v+(dy>0?16:-8);if(poff)tv=Math.min(tv,KR.OFF+8);if(!tg)tv=KR.CRUISE*.5;p.v+=(tv-p.v)*Math.min(1,dt*1.6);
+   const tx=Math.abs(dy)<110?c.x:pc+Math.sin(p.wob)*ph*.3;p.x+=clamp(tx-p.x,-1,1)*Math.min(Math.abs(tx-p.x),(Math.abs(dy)<110?95:75))*dt*1.4}
   p.y-=p.v*dt;p.x=clamp(p.x,30,KRW-30);if(Math.hypot(p.x-K.c.x,p.y-K.c.y)<260)near=1;
   if(tg&&p.y>lowY+700){const yy=lowY+420,[cc]=krRoad(yy);p.y=yy;p.x=cc;p.v=c.v}
   for(const o of K.O)if(o.hit!==2&&KOT[o.k].solid&&!o.block&&krBox(p.x,p.y,KR.UW*.8,KR.UL*.8,o.x,o.y,...krObSize(o).map(v=>v*.7))&&p.stun<=0){p.stun=1.4;p.v*=.3;SFX.metal();if(KOT[o.k].br)o.hit=2}
@@ -1804,7 +1816,7 @@ function krShowEnd(won,fin,why,hp,rams,ts,R){const net=!!R;state='end';krRestore
 function krPause(){if(!K||state!=='krz')return;
  if(K.host||K.cli){if(confirm('Выйти из онлайн-гонки?')){K=null;krRestoreUI();nLeave();showMenu()}return}
  state='krzpause';$ui.hidden=false;document.getElementById('touch').hidden=true;
- $ui.innerHTML=`<div class="card"><h1>ПАУЗА</h1><div class="col" style="max-width:360px;margin:10px auto"><button class="pri" id="kres">▶ Продолжить</button><button id="kmenu">Выйти в меню</button></div><p class="sub" style="font-size:14px">${IS_TOUCH?'Джойстик: влево-вправо — руль, вверх — газ, вниз — тормоз. НИТРО — рывок, ТАРАН — бок в уазик.':'← → руль · ↑ газ · ↓ тормоз · F/Пробел — нитро · G — таран'}</p></div>`;
+ $ui.innerHTML=`<div class="card"><h1>ПАУЗА</h1><div class="col" style="max-width:360px;margin:10px auto"><button class="pri" id="kres">▶ Продолжить</button><button id="kmenu">Выйти в меню</button></div><p class="sub" style="font-size:14px">${IS_TOUCH?'Газ жмётся сам. ◀ ▶ — руль, ТОРМОЗ — притормозить, НИТРО — рывок, ТАРАН — бок в уазик.':'Газ жмётся сам · ← → руль · ↓ тормоз · F/Пробел — нитро · G — таран'}</p></div>`;
  document.getElementById('kres').onclick=()=>{state='krz';$ui.hidden=true;document.getElementById('touch').hidden=!IS_TOUCH};document.getElementById('kmenu').onclick=()=>{K=null;krRestoreUI();showMenu()}}
 /* ---- рисование ---- */
 function krCam(){const c=K.c;if((c.out||c.fin)&&K.nP>1){const a=K.cars.filter(x=>!x.out&&!x.fin);if(a.length)return a.reduce((p,q)=>p.y<q.y?p:q)}return c}
@@ -1814,7 +1826,7 @@ function krDrawCar(c,S,t){const [sx,sy]=S(c.x,c.y),SC=KR.SC;if(sy<-300||sy>H+300
  const fr=c.hp>66?0:c.hp>33?1:2,KC=KRCARS[c.col]||KRCARS.black;if(KC.complete&&KC.naturalWidth){const fw=KC.naturalWidth/3;ctx.drawImage(KC,fr*fw,0,fw,KC.naturalHeight,-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}else{ctx.fillStyle='#111';ctx.fillRect(-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}
  if(c.boostT>0){ctx.fillStyle='rgba(124,240,255,.55)';ctx.beginPath();ctx.moveTo(-14,KR.CL*SC/2);ctx.lineTo(0,KR.CL*SC/2+40+Math.random()*30);ctx.lineTo(14,KR.CL*SC/2);ctx.fill()}ctx.restore();
  if(K.nP>1){const me=c===K.c;ctx.font='900 17px Impact,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='#000';const lab=(me?'▼ ТЫ':c.name||'?')+(c.fin?' 🏁'+c.fin:c.out?' 🚨':'');ctx.strokeText(lab,sx,sy-KR.CL*SC/2-10);ctx.fillStyle=me?'#7cf07c':'#f3e9dc';ctx.fillText(lab,sx,sy-KR.CL*SC/2-10)}}
-function krDraw(t){const cam=krCam(),SC=KR.SC,VW=W/SC,VH=H/SC;const camX=clamp(cam.x-VW/2,0,KRW-VW),camY=clamp(cam.y-VH*.6,0,KRH-VH);
+function krDraw(t){const cam=krCam(),SC=KR.SC,VW=W/SC,VH=H/SC;const camX=clamp(cam.x-VW/2,0,KRW-VW),camY=clamp(cam.y-VH*.7,0,KRH-VH);
  const S=(x,y)=>[(x-camX)*SC,(y-camY)*SC];ctx.save();if(K.shk>0)ctx.translate(rnd(-K.shk,K.shk),rnd(-K.shk,K.shk));
  ctx.fillStyle='#0a0a0e';ctx.fillRect(0,0,W,H);
  for(let i=0;i<3;i++){const ty0=i*KRT_H,ty1=ty0+KRT_H,ys=Math.max(camY,ty0),ye=Math.min(camY+VH,ty1);if(ye>ys&&KRT[i].complete&&KRT[i].naturalWidth)ctx.drawImage(KRT[i],camX,ys-ty0,VW,ye-ys,0,(ys-camY)*SC,W,(ye-ys)*SC)}
@@ -1837,7 +1849,7 @@ function krHUD(t){const c=K.c,ts=Math.floor(K.t);
  ctx.fillStyle='#7cf07c';ctx.fillRect(bx-10,by0-14,20,8);for(const p of K.cops){ctx.fillStyle=((t*3)|0)%2?'#ff3030':'#4a7aff';ctx.beginPath();ctx.arc(bx,P(p.y),5,0,TAU);ctx.fill()}
  for(const q of K.cars){if(q===c||q.out)continue;ctx.fillStyle='#f3e9dc';ctx.beginPath();ctx.arc(bx,P(q.y),5,0,TAU);ctx.fill()}ctx.fillStyle='#e8b23a';ctx.beginPath();ctx.arc(bx,P(c.y),7,0,TAU);ctx.fill();
  if(K.cd>0||K.msgT>0){const txt=K.cd>0?(K.cd>1.2?String(Math.ceil(K.cd-1.2)):'ГАЗУ!'):K.msg;ctx.textAlign='center';ctx.font='900 54px Impact,sans-serif';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(txt,W/2,250);ctx.fillStyle=K.over?(K.win?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(txt,W/2,250)}
- if(K.t<6&&!K.over&&K.cd<=0){ctx.textAlign='center';ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.9)';ctx.fillText(IS_TOUCH?'Джойстик — руль и газ · НИТРО — рывок · ТАРАН — бок в уазик':'← → руль · ↑ газ · ↓ тормоз · F нитро · G таран',W/2,H-70)}}
+ if(K.t<6&&!K.over&&K.cd<=0){ctx.textAlign='center';ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.9)';ctx.fillText(IS_TOUCH?'Газ сам · ◀ ▶ — руль · НИТРО — рывок · ТАРАН — бок в уазик':'Газ сам · ← → руль · ↓ тормоз · F нитро · G таран',W/2,84)}}
 /* ---- онлайн ---- */
 function krHostStart(){NETU.phase='game';mode='krz';CAMP.on=0;G=null;const P=NETU.P.slice(0,KRNMAX).map(p=>({id:p.id,name:p.name}));krzRace('noisy',P);
  nSend({t:'go',m:'krz',p:NETU.P,O:K.O.map(o=>[o.k,Math.round(o.x),Math.round(o.y),o.block?1:0]),C:K.cars.map(c=>[c.rid,c.name,c.col,Math.round(c.x),Math.round(c.y)])})}

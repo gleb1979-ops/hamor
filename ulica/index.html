@@ -170,12 +170,12 @@ function drawFighter(g,f,t){const SK=f.spr||NSK[f.npc];if(f.npc&&!nsOK(SK))retur
  g.scale(f.face*big,big);
  const SP=nsOK(SK)?NSPR[SK]:PZI[f.hero];
  if(SP&&SP.complete&&SP.naturalWidth){const top=nsOK(SK)?NTOP[SK]:PZTOP[f.hero],u=150/(350-top);
-  const walking=f.state==='walk'&&!f.onBoard,big7=f.atkT>0&&(SK?!!(WEAPONS[f.weapon]&&WEAPONS[f.weapon].len):((f.weapon==='bat'&&!H0.hand)||(!f.weapon&&HH(f).belt&&f.bigA)||(H0.hand&&f.weapon&&WEAPONS[f.weapon].len&&!WEAPONS[f.weapon].chain&&!WEAPONS[f.weapon].nun&&f.atkT/f.atkDur>.55))),fi=f.girl?(f.spr==='girl'?(f.gfr|0):0):(f.state==='down'||f.state==='ko')?6:f.hurtT>.05?5:f.air>0?4:f.kickT>0?2:big7?7:f.atkT>0?3:walking?((f.anim*2.7%1)<.5?1:0):0;const WS=walking&&fi<2?(SK?WKN[SK]:WKH[f.hero]):null,wsOK=imOK(WS),wc=f.anim*2.7%1,wd=Math.min(Math.abs(wc-.5),wc,1-wc),wx=!wsOK&&walking&&fi<2&&wd<.13?.55*(1-wd/.13):0;
+  const walking=f.state==='walk'&&!f.onBoard,big7=f.atkT>0&&(SK?!!(WEAPONS[f.weapon]&&WEAPONS[f.weapon].len)&&f.atkT/f.atkDur>.5:((f.weapon==='bat'&&!H0.hand)||(!f.weapon&&HH(f).belt&&f.bigA)||(H0.hand&&f.weapon&&WEAPONS[f.weapon].len&&!WEAPONS[f.weapon].chain&&!WEAPONS[f.weapon].nun&&f.atkT/f.atkDur>.55))),fi=f.girl?(f.spr==='girl'?(f.gfr|0):0):(f.state==='down'||f.state==='ko')?6:f.hurtT>.05?5:f.air>0?4:f.kickT>0?2:big7?7:f.atkT>0?3:walking?((f.anim*2.7%1)<.5?1:0):0;const WS=walking&&fi<2?(SK?WKN[SK]:WKH[f.hero]):null,wsOK=imOK(WS),wc=f.anim*2.7%1,wd=Math.min(Math.abs(wc-.5),wc,1-wc),wx=!wsOK&&walking&&fi<2&&wd<.13?.55*(1-wd/.13):0;
   g.save();if(f.state==='hurt'&&f.hurtT>.12)g.translate(-6,0);if(walking&&fi<2&&!wsOK){g.translate(0,-Math.abs(Math.sin(wc*TAU))*6);g.rotate(.035)}else if(wsOK)g.rotate(.02);if(f.hurtT>.1){const tc=TINT.getContext('2d');tc.globalCompositeOperation='source-over';tc.clearRect(0,0,400,360);tc.drawImage(SP,fi*400,0,400,360,0,0,400,360);tc.globalCompositeOperation='source-atop';tc.fillStyle='rgba(255,40,40,.4)';tc.fillRect(0,0,400,360);g.drawImage(TINT,-200*u,-350*u,400*u,360*u)}else if(wsOK)g.drawImage(WS,((f.anim*1.8*6|0)%6)*400,0,400,360,-200*u,-350*u,400*u,360*u);else{g.drawImage(SP,fi*400,0,400,360,-200*u,-350*u,400*u,360*u);if(wx>0){g.globalAlpha=wx;g.drawImage(SP,(1-fi)*400,0,400,360,-200*u,-350*u,400*u,360*u);g.globalAlpha=1}}
   const dmg=1-f.hp/f.max;if(BLOOD&&dmg>.45&&fi<5){g.fillStyle='#9a0e16';g.beginPath();g.arc(14,-118,3.5,0,TAU);g.fill();g.fillRect(12,-114,3,9)}
   if(f.weapon&&!SK&&!(fi===7&&f.weapon==='bat'&&!H0.hand)&&fi!==6&&fi!==5){const w=WEAPONS[f.weapon],atk=f.atkT>0?f.atkT/f.atkDur:0;const HP=H0.hand?(fi===7?H0.hand.o:fi===3?H0.hand.p:H0.hand.i):null,hx=HP?HP[0]:fi===3||fi===7?62:fi===2?30:34,hy=HP?HP[1]:fi===3||fi===7?-88:-78;g.translate(hx,hy);
-   let ang=-.55;if(w.len&&!w.nun&&!w.chain)ang=f.atkT>0?(HP?(fi===7?-2.25+(1-atk)*.9:-1.15+Math.min(1,(.55-atk)/.5)*1.55):(1-atk)*2.6-2.3):-1.25;else if(w.gun||w.throw)ang=f.atkT>0?0:(w.shot?.6:.15);else if(w.stab||f.weapon==='knux')ang=f.atkT>0?-.05:-.6;else if(w.nun||w.chain)ang=f.atkT>0?(1-atk)*2-1.6:-1;
-   if(f.weapon==='chain')drawChainHeld(g,t,f.atkT>0?atk:0,f.bloody);else if(f.weapon==='nunchaku')drawNunHeld(g,t,f.atkT>0?atk:0,ang);else{g.rotate(ang);drawWeapon(g,f.weapon,t,f.bloody);if(w.gun&&f.flash>0){const mx=(WSP[f.weapon]||[0,40])[1]+4;g.fillStyle='#ffe28a';g.beginPath();g.arc(mx,-5,8,0,TAU);g.fill();g.fillStyle='#fff8d0';g.beginPath();g.arc(mx,-5,4,0,TAU);g.fill()}}}
+   let ang=-.55;if(w.len&&!w.nun&&!w.chain){const q=1-atk,eo=x=>1-Math.pow(1-clamp(x,0,1),3);ang=f.atkT>0?(HP?(fi===7?-2.25-.35*eo(q/.45)+(q>.45?0:0):-2.6+eo((q-.45)/.55)*3.05):(q<.3?-2.3-.45*eo(q/.3):-2.75+eo((q-.3)/.7)*3.1)):-1.25;{const s0=HP?.45:.3;f._swing=f.atkT>0&&q>s0&&q<s0+.4?(q-s0)/.4:0}}else if(w.gun||w.throw)ang=f.atkT>0?0:(w.shot?.6:.15);else if(w.stab||f.weapon==='knux')ang=f.atkT>0?-.05:-.6;else if(w.nun||w.chain)ang=f.atkT>0?(1-atk)*2-1.6:-1;
+   if(f.weapon==='chain')drawChainHeld(g,t,f.atkT>0?atk:0,f.bloody);else if(f.weapon==='nunchaku')drawNunHeld(g,t,f.atkT>0?atk:0,ang);else{g.rotate(ang);if(f._swing>0&&w.len&&!w.gun){g.save();g.globalAlpha=.35*(1-f._swing);g.strokeStyle='#fff';g.lineCap='round';g.lineWidth=(w.w||6)+4;g.beginPath();g.arc(0,0,(w.len||70)*.85,-1.1,-.05);g.stroke();g.restore()}drawWeapon(g,f.weapon,t,f.bloody);if(w.gun&&f.flash>0){const mx=(WSP[f.weapon]||[0,40])[1]+4;g.fillStyle='#ffe28a';g.beginPath();g.arc(mx,-5,8,0,TAU);g.fill();g.fillStyle='#fff8d0';g.beginPath();g.arc(mx,-5,4,0,TAU);g.fill()}}}
   g.restore()}
  else{
  const walk=f.onBoard?0:(f.state==='walk'?Math.sin(f.anim*12):0),hurt=f.state==='hurt';
@@ -321,7 +321,7 @@ function pickupNear(f){if(f.swapT>0)f.swapT-=1/60;if(f.npc)return;if(f.state==='
 
 /* ---------- AI ---------- */
 function botThink(f,dt){if(f.girl)return doutGirlThink(f);if(mode==='dout'&&f.grab){const r=doutGrab(f,dt);if(r)return r}if(mode==='disko'&&G.ph==='slow')return diskoDance(f,dt);if(mode==='zavod')return f.npc?npcThink(f,dt):allyZavod(f,dt);if(mode==='salon')return salonThink(f,dt);const A=f.ai;A.t-=dt;let mx=0,my=0;
- const enemies=alive().filter(b=>sideOf(b)!==sideOf(f)&&!b.girl);if(!enemies.length)return[0,0];
+ let enemies=alive().filter(b=>sideOf(b)!==sideOf(f)&&!b.girl);if(f.team===2&&mode==='train'){const z=enemies.filter(b=>b.team===1);if(z.length&&Math.random()<.85)enemies=z}if(!enemies.length)return[0,0];
  if(A.t<=0||!A.tgt||A.tgt.state==='ko'){A.t=rnd(.6,1.4);A.tgt=enemies.sort((a,b)=>Math.hypot(a.x-f.x,a.y-f.y)-Math.hypot(b.x-f.x,b.y-f.y))[Math.random()<.75?0:Math.random()*enemies.length|0];A.wantPick=!f.weapon&&Math.random()<.6}
  let tx=A.tgt.x,ty=A.tgt.y;
  if(A.wantPick&&!f.weapon){const p=G.P.filter(p=>p.k!=='kefir').sort((a,b)=>Math.hypot(a.x-f.x,a.y-f.y)-Math.hypot(b.x-f.x,b.y-f.y))[0];if(p&&Math.hypot(p.x-f.x,p.y-f.y)<420){tx=p.x;ty=p.y}}
@@ -2004,7 +2004,7 @@ function trainUpdate(dt){const T=G.tr;if(!T||G.over)return;const L=T.L,act=G.F.f
   for(const f of act){if(f.state==='down'||f.state==='hurt')f.x+=w*1.6*dt;else f.x+=w*dt;
    if(f.x>W-56){f.hp=0;f.state='ko';f.downT=0;SFX.ko();G.FX.push({x:W-200,y:f.y-160,t:0,life:1.3,txt:'СДУЛО С ПЛАТФОРМЫ!',c:'#9fd0ff',big:1});f.x=W-40}}
   if(Math.random()<dt*20)G.FX.push({x:-10,y:rnd(340,700),vx:rnd(700,1000),vy:0,t:0,life:1.4,c:'rgba(220,230,255,.5)',s:rnd(2,4)})}
- if(L===3){T.copT=(T.copT==null?6:T.copT)-dt;if(T.copT<=0&&(T.copN||0)<4){T.copN=(T.copN||0)+1;T.copT=T.copN===2?14:2.5;
+ if(L===3){T.copT=(T.copT==null?6:T.copT)-dt;if(T.copT<=0&&(T.copN||0)<3){T.copN=(T.copN||0)+1;T.copT=T.copN===2?14:2.5;
    const others=HOTH();for(const side of T.copN%2?[-1]:[1]){const f=newFighter(G.F.length,others[0],true,2);f.team=2;f.spr='ment';f.name='Мент';f.weapon='baton';f.dur=0;f.x=side<0?40:W-40;f.y=rnd(440,640);f.face=-side;f.hp=f.max=Math.round(f.max*.9);G.F.push(f)}
    if(T.copN===1){G.FX.push({x:W/2,y:200,t:0,life:1.6,txt:'МИЛИЦИЯ! БЬЮТ ВСЕХ!',c:'#6aa8ff',big:1});SFX.siren&&SFX.siren()}}
   if(!G.F.some(f=>f.team===1&&f.state!=='ko')&&G.F.some(f=>f.team===2)){G.F=G.F.filter(f=>f.team!==2);G.FX.push({x:W/2,y:220,t:0,life:1.6,txt:'МЕНТЫ ПОВЯЗАЛИ ЗАРЕЧНЫХ',c:'#6aa8ff',big:1})}
@@ -2266,8 +2266,8 @@ function doutUpdate(dt){const D=G.dout,gl=dGirl();if(!D||!gl||G.over)return;cons
  if(!gl.held)for(const f of G.F)if(f.team===1&&!f.bot&&f.state!=='ko'&&f.state!=='hurt'&&f.state!=='down'&&!(f.stun>0)&&Math.hypot(f.x-gl.x,f.y-gl.y)<52){gl.held=f;G.FX.push({x:gl.x,y:gl.y-190,t:0,life:1.2,txt:f.name.toUpperCase()+' СХВАТИЛ '+GIRLA.toUpperCase()+'!',c:'#ff5a5a',big:1});SFX.whoosh();break}
  const H=gl.held;if(H)G.dHolder=H;
  if(H){const bag=Math.random()<dt*.12;if(bag){H.stun=.7;H.hurtT=.3;G.FX.push({x:gl.x,y:gl.y-200,t:0,life:1,txt:'СУМОЧКОЙ ПО ГОЛОВЕ!',c:'#ff9ad0',big:1})}const bad=bag||H.state==='ko'||H.state==='down'||H.state==='hurt'||H.hurtT>0||H.stun>0;
-  if(bad){gl.held=null;H.grab=0;H.ai.t=0;D.regrabT=3;gl.gfr=4;G.FX.push({x:gl.x,y:gl.y-170,t:0,life:1,txt:'ОТБИЛ!',c:'#7cf07c',big:1});SFX.hit()}
-  else{gl.x=H.x-H.face*36;gl.y=H.y+4;gl.face=H.face;gl.fear=Math.min(100,gl.fear+dt*10);gl.gfr=3;if(Math.random()<dt*1.2)G.FX.push({x:gl.x,y:gl.y-170,t:0,life:.8,txt:'ПОМОГИ!',c:'#ff9ad0'})}}
+  if(bad){H._lx=null;gl.held=null;H.grab=0;H.ai.t=0;D.regrabT=3;gl.gfr=4;G.FX.push({x:gl.x,y:gl.y-170,t:0,life:1,txt:'ОТБИЛ!',c:'#7cf07c',big:1});SFX.hit()}
+  else{if(H._lx!=null&&Math.abs(H.x-H._lx)<60)H.x=H._lx+(H.x-H._lx)*.45;H._lx=H.x;gl.x=H.x-H.face*36;gl.y=H.y+4;gl.face=H.face;gl.fear=Math.min(100,gl.fear+dt*10);gl.gfr=3;if(Math.random()<dt*1.2)G.FX.push({x:gl.x,y:gl.y-170,t:0,life:.8,txt:'ПОМОГИ!',c:'#ff9ad0'})}}
  else{gl.fear=Math.max(0,gl.fear-dt*4);const near=G.F.some(f=>f.team===1&&f.state!=='ko'&&Math.abs(f.x-gl.x)<120&&Math.abs(f.y-gl.y)<60);gl.gfr=near?2:gl.state==='walk'?1:0}
  if(gl.fear>=100||(H&&gl.held&&(H.x<=EDGE+8||H.x>=W-EDGE-8))){G.over=1;G.overT=0;G.win=false;G.dlost=1;G.msg=GIRLA.toUpperCase()+' УВЕЛИ';G.sub='Заречные утащили её в переулок';G.msgT=99;SFX.ko()}}
 function doutGrab(f,dt){const gl=dGirl();if(!gl)return null;

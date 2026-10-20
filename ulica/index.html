@@ -1143,9 +1143,13 @@ function songNote(t,st){const spb=60/96/2,b=SNG.bars[(st>>3)%SNG.bars.length],e=
 const MPROG=[[220,261.6,329.6],[174.6,220,261.6],[261.6,329.6,392],[196,246.9,293.7]];
 function musNote(t,st){if(MUS.kind==='song'){MUS.sstep=st+1;return songNote(t,st)}if(MUS.kind==='slow'){const ch=MPROG[(st>>3)%4];if(st%8===0)for(const f of ch)mOsc(t,f/2,3.2,'triangle',.022,0,.6);mOsc(t,ch[st%3]*(st%8>3?2:1),.5,'sine',.028,0,.02)}
  else{const ch=MPROG[(st>>4)%4];if(st%4===0)mOsc(t,150,.16,'sine',.3,40);if(st%8===4)mHit(t,.12,.12,0);if(st%2===1)mHit(t,.04,.035,1);if(st%4===2||st%8===7)mOsc(t,ch[0]/2,.13,'sawtooth',.05);if(st%16===0)mOsc(t,ch[2]*2,.3,'square',.025)}}
-setInterval(()=>{if(!AC||!MUS.on)return;const spb=MUS.kind==='song'?60/96/2:MUS.kind==='slow'?60/70/2:60/128/4;if(MUS.next<AC.currentTime)MUS.next=AC.currentTime+.05;while(MUS.next<AC.currentTime+.15){musNote(MUS.next,MUS.step);MUS.next+=spb;MUS.step++}},40);
-function musPlay(k){au();if(MUS.on&&MUS.kind===k&&k==='song')return;MUS.on=1;MUS.kind=k;MUS.step=k==='song'?(MUS.sstep||0)%SNG.len:0;MUS.next=AC?AC.currentTime+.05:0}
-function musStop(){MUS.on=0}
+setInterval(()=>{if(!AC||!MUS.on||MUS.ext)return;const spb=MUS.kind==='song'?60/96/2:MUS.kind==='slow'?60/70/2:60/128/4;if(MUS.next<AC.currentTime)MUS.next=AC.currentTime+.05;while(MUS.next<AC.currentTime+.15){musNote(MUS.next,MUS.step);MUS.next+=spb;MUS.step++}},40);
+/* «Седая ночь над ДК» — песня (ElevenLabs Music), играет файлом; если файл не загрузился — синтезаторная «Огни ДК» */
+const SONGA=new Audio('snd/song.mp3');SONGA.loop=true;SONGA.volume=.5;SONGA.preload='auto';let SONGOK=true;SONGA.addEventListener('error',()=>{SONGOK=false});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')SONGA.pause();else if(MUS.on&&MUS.ext)SONGA.play().catch(()=>{})});
+function musPlay(k){au();if(k==='song'&&SONGOK){if(MUS.on&&MUS.ext)return;MUS.on=1;MUS.kind='song';MUS.ext=1;const p=SONGA.play();if(p&&p.catch)p.catch(()=>{MUS.ext=0;MUS.step=(MUS.sstep||0)%SNG.len;MUS.next=AC?AC.currentTime+.05:0});return}
+ if(MUS.ext){SONGA.pause();MUS.ext=0}if(MUS.on&&MUS.kind===k&&k==='song')return;MUS.on=1;MUS.kind=k;MUS.step=k==='song'?(MUS.sstep||0)%SNG.len:0;MUS.next=AC?AC.currentTime+.05:0}
+function musStop(){MUS.on=0;if(MUS.ext){SONGA.pause();MUS.ext=0}}
 function musScratch(){if(!AC)return;const t=AC.currentTime;mOsc(t,420,.35,'sawtooth',.08,60);mHit(t,.3,.15,0)}
 /* phases */
 function diskoInit(){G.ph='slow';G.phT=7;musPlay('song');G.F.forEach(f=>{f.home={x:f.x,y:f.y}})}

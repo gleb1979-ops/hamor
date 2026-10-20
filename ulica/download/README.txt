@@ -1,2 +1,2 @@
 Улица — офлайн-версия.
-Один архив: ulica-offline.zip
+Архив разбит на 2 части (ulica-offline-1.zip, ulica-offline-2.zip). Распакуй ВСЕ части в одну и ту же папку (с заменой), потом открой ulica/index.html.

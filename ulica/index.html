@@ -35,7 +35,9 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 #knob{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;background:rgba(255,255,255,.28)}
 .tb{position:absolute;width:min(72px,15vmin);height:min(72px,15vmin);transition:opacity .2s;opacity:.8;border-radius:50%;background:rgba(200,32,42,.55);border:2px solid rgba(255,255,255,.3);color:#fff;font:900 15px system-ui;display:grid;place-items:center;pointer-events:auto}
 #touch{--sr:max(16px,env(safe-area-inset-right));--A:min(92px,21vmin);--B:min(80px,18vmin)}#bA{right:var(--sr);bottom:16px;width:min(92px,21vmin)!important;height:min(92px,21vmin)!important;font-size:17px}#bC small,#bD small{display:block;font-size:9px;font-weight:800;margin-top:-6px}#bC,#bD{display:flex;flex-direction:column;align-items:center;justify-content:center}#bE{right:calc(var(--sr) + 2px);bottom:calc(34px + var(--A));width:min(50px,11vmin);height:min(50px,11vmin);font-size:22px;background:rgba(255,210,63,.35);display:flex;flex-direction:column;align-items:center;justify-content:center}#bE small{display:block;font-size:9px;font-weight:800;margin-top:-6px}#bE.rdy{background:rgba(255,210,63,.85);box-shadow:0 0 18px #ffd23f}#bD{right:calc(var(--sr) + 16px + min(50px,11vmin));bottom:calc(34px + var(--A));width:min(50px,11vmin);height:min(50px,11vmin);font-size:24px;background:rgba(232,178,58,.45)}#bC{right:calc(var(--sr) + 30px + min(50px,11vmin)*2);bottom:calc(34px + var(--A));width:min(50px,11vmin);height:min(50px,11vmin);font-size:24px;background:rgba(90,208,90,.45)}.kp{display:inline-block;width:1.55em;height:1em;background:url(img/kap.png) center/contain no-repeat;vertical-align:-.18em;font-style:normal}.shg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:8px 0}.shb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px}.shb span{font-size:28px}.shb small{opacity:.8;font-weight:600;font-size:12px}.shb i{font-style:normal;color:var(--gold);font-weight:800}.shb.on{outline:3px solid #5ad05a}.stb.on{outline:3px solid var(--gold)}#bB{right:calc(var(--sr) + var(--A) + 22px);bottom:12px;width:min(80px,18vmin);height:min(80px,18vmin);font-size:15px;background:rgba(232,178,58,.5)}
-.tb.thru,#stick.thru{opacity:.22}#bC img{width:60%!important;height:60%!important}#touch.side{--bg:min(72px,calc(var(--bar) - 8px),17vh);--sm:min(56px,calc(var(--bar) - 12px),13vh)}
+.tb.thru,#stick.thru{opacity:.22}#bC img{width:60%!important;height:60%!important}
+#bK{right:calc(var(--sr) + 44px + min(50px,11vmin)*3);bottom:calc(34px + var(--A));width:min(50px,11vmin);height:min(50px,11vmin);font-size:22px;background:rgba(124,240,124,.4);display:flex;flex-direction:column;align-items:center;justify-content:center}#bK[hidden]{display:none}#bK small{display:block;font-size:9px;font-weight:800;margin-top:-6px}#bK.used{opacity:.3!important}
+#touch.side #bK{right:calc((var(--bar) - var(--sm))/2);width:var(--sm);height:var(--sm);opacity:.9;bottom:calc(64px + var(--A) + var(--sm)*3)}#touch.side{--bg:min(72px,calc(var(--bar) - 8px),17vh);--sm:min(56px,calc(var(--bar) - 12px),13vh)}
 #touch.side #bC,#touch.side #bD,#touch.side #bE{right:calc((var(--bar) - var(--sm))/2);width:var(--sm);height:var(--sm);opacity:.9}
 #touch.side #bE{bottom:calc(34px + var(--A))}
 #touch.side #bD{bottom:calc(44px + var(--A) + var(--sm))}
@@ -43,7 +45,7 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 #touch.side.lside #stick{left:calc((var(--bar) - min(130px,26vmin))/2)}
 #touch.race #bB{right:max(18px,env(safe-area-inset-right))!important;bottom:calc(36px + min(72px,15vmin) + min(62px,13vmin))!important;width:min(72px,15vmin)!important;height:min(72px,15vmin)!important}#touch.race #bA{width:min(84px,18vmin)!important;height:min(84px,18vmin)!important}.pcards{display:flex;gap:8px;justify-content:center;margin:6px 0 10px;flex-wrap:wrap}.pcard{width:62px;height:88px;border-radius:8px;background:#f6f1e6;border:2px solid #1a1418;box-shadow:2px 3px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 24px system-ui}.pcard i{font-style:normal;font-size:28px;line-height:1}.pcard.back{background:repeating-linear-gradient(45deg,#7a1a22 0 6px,#5a1218 6px 12px)}</style></head><body>
 <div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Улица"></canvas></div>
-<div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div></div>
+<div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bK" hidden>🤝<small>кореш</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="/update.js"></script><script src="/net.js"></script>
@@ -1633,6 +1635,18 @@ function korJoin(){if(!G||!G.F)return '';const K=korList(),done=LS.get('korch',[
  const c=G.F.filter(f=>f.bot&&!f.ally&&f.team!==0&&!f.npc&&!f.boss&&!f.spr&&HEROES[f.hero]&&f.hero!==myHero&&!K.some(k=>k.h===f.hero));if(!c.length)return '';
  const f=c.sort((a,b)=>(b.max||0)-(a.max||0))[0],nm=(f.name&&f.name!=='Ты'?f.name:HEROES[f.hero].name).slice(0,14);K.push({h:f.hero,n:nm});LS.set('kor',K);done.push(CAMP.ch);LS.set('korch',done);SFX.pick();
  return `<div class="warn" style="border-color:#7cf07c;text-align:left"><b>🤝 ${nm} зауважал тебя.</b><br>Теперь он твой кореш (${HEROES[f.hero].name}) — будет приходить на помощь в драках сюжета.<br><small>Кореша: ${K.map(k=>k.n).join(', ')}</small></div>`}
+/* позвать кореша: раз за раунд, помогает 20 секунд и уходит */
+const KORT=20;
+function korCan(){return !!(G&&!G.net&&!NETU.on&&!RMODE()&&state==='play'&&korList().some(k=>HEROES[k.h]&&k.h!==myHero))}
+function korBtn(){const b=document.getElementById('bK');if(!b)return;const ok=korCan();if(b.hidden===ok)b.hidden=!ok;b.classList.toggle('used',!!(G&&G.korUsed))}
+function korCall(){if(!korCan()||G.over)return;const me=G.F[0];if(me.state==='ko')return;
+ if(G.korUsed){G.FX.push({x:me.x,y:me.y-190,t:0,life:1.1,txt:'КОРЕШ УЖЕ БЫЛ В ЭТОМ РАУНДЕ',c:'#a0d8a0'});return}
+ const K=korList().filter(k=>HEROES[k.h]&&k.h!==myHero),k=K[(LS.get('korn',0))%K.length];LS.set('korn',LS.get('korn',0)+1);G.korUsed=1;
+ const f=newFighter(G.F.length,k.h,true,me.team);Object.assign(f,{ally:true,team:me.team,idx:me.idx,kor:1,korT:KORT,korN:k.n,name:k.n,x:me.x<W/2?30:W-30,y:clamp(me.y+rnd(-60,60),FLOOR0+30,FLOOR1-10),face:me.x<W/2?1:-1,inv:1});
+ G.F.push(f);G.FX.push({x:clamp(f.x+(f.face*120),340,W-340),y:f.y-200,t:0,life:1.8,txt:'🤝 '+k.n.toUpperCase()+' НА ПОДМОГУ!',c:'#7cf07c',big:1});SFX.bell();korBtn()}
+function korTick(dt){if(!G||!G.F)return;const me=G.F[0];for(let i=G.F.length-1;i>0;i--){const f=G.F[i];if(f.korT==null)continue;f.korT-=dt;f.name=f.korN+' · '+Math.max(0,Math.ceil(f.korT));
+  if(f.korT<=0||me.state==='ko'||(f.state==='ko'&&f.korT<KORT-1)){G.FX.push({x:f.x,y:f.y-170,t:0,life:1.4,txt:f.state==='ko'?'КОРЕША ВЫРУБИЛИ':'КОРЕШ УШЁЛ',c:'#a0d8a0',big:1});G.F.splice(i,1)}}
+ korBtn()}
 /* союзники в финале */
 function campAllies(F){if(!(CAMP.on&&CAMP.ch===CH.length-1))return;const c=cChoices();let k=0;for(const i of [2,4,6])if(c[i]==='good'){const a=newFighter(F.length,[3,6,9][k%3],true,0);a.ally=true;a.name=CAL[i];a.x=120+k*50;a.y=470+k*80;a.face=1;F.push(a);k++}
  if(k)setTimeout(()=>{if(G){G.FX.push({x:300,y:300,t:0,life:2,txt:k===3?'ВЕСЬ РАЙОН ЗА ТЕБЯ!':'СВОИ ПРИШЛИ!',c:'#7cf07c',big:1})}},400)}
@@ -2196,7 +2210,7 @@ function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(CAMP.on&&!CAMP.rzAs
   const near=alive().sort((a,b)=>a.x-b.x)[0];if(near)G.copY+=(near.y-G.copY)*Math.min(1,dt*2);
   for(const f of G.F)if(f.state!=='ko'&&f.x<120){f.state='ko';f.hp=0;f.onBoard=false;f.downT=0;SFX.ko();G.FX.push({x:Math.max(80,f.x),y:f.y-170,t:0,life:1.2,txt:'ПРИНЯЛИ!',c:'#4a8aff',big:1})}}
  if((mode==='boss'||mode==='rynok')&&!G.over)bossUpdate(dt);if(mode==='rynok')rynUpdate(dt);if(mode==='disko'&&!G.over)diskoUpdate(dt);if(G.druzhT>0)G.druzhT-=dt;
- if(mode==='train')trainUpdate(dt);if(mode==='kpz')kpzUpdate(dt);if(mode==='zavod'&&!G.over)zavodUpdate(dt);if(mode==='salon'&&!G.over)salonUpdate(dt);
+ if(mode==='train')trainUpdate(dt);korTick(dt);if(mode==='kpz')kpzUpdate(dt);if(mode==='zavod'&&!G.over)zavodUpdate(dt);if(mode==='salon'&&!G.over)salonUpdate(dt);
  // drops
  G.dropT-=dt;if(G.dropT<=0&&G.P.length<5){spawnDrop();G.dropT=rnd(4,7)}
  // particles
@@ -2264,7 +2278,7 @@ function roundEnd(){if(NETU.on&&NETU.host){if(!nMatchCheck())newRound();return}i
  else{if(campRzCheck('round'))return;if(mode==='train'&&G.win&&trAfterWin())return;if(mode==='kpz'&&G.win&&kpzAfterWin())return;newRound()}}
 
 /* ---------- input ---------- */
-addEventListener('keydown',e=>{keys[e.code]=true;if(state!=='play')return;if(e.code==='KeyQ'&&!e.repeat)useItem();if(e.code==='KeyE'&&!e.repeat)swapKey();if(e.code==='KeyR'&&!e.repeat){if(G&&G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])}if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if((e.code==='KeyF'||e.code==='Space'||e.code==='KeyJ')&&!e.repeat)attack(G.F[0]);if((e.code==='KeyG'||e.code==='KeyK')&&!e.repeat)kick(G.F[0])});
+addEventListener('keydown',e=>{keys[e.code]=true;if(state!=='play')return;if(e.code==='KeyQ'&&!e.repeat)useItem();if(e.code==='KeyC'&&!e.repeat)korCall();if(e.code==='KeyE'&&!e.repeat)swapKey();if(e.code==='KeyR'&&!e.repeat){if(G&&G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])}if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if((e.code==='KeyF'||e.code==='Space'||e.code==='KeyJ')&&!e.repeat)attack(G.F[0]);if((e.code==='KeyG'||e.code==='KeyK')&&!e.repeat)kick(G.F[0])});
 addEventListener('keyup',e=>{keys[e.code]=false});
 document.getElementById('mb').onclick=()=>{if(state==='play')showPause();else if(state==='krz')krPause()};addEventListener('keydown',e=>{if(e.code==='Escape'){if(state==='play')showPause();else if(state==='pause')resumePlay()}if(e.code==='KeyH'&&state==='play'){HINTS=!HINTS;LS.set('hints',HINTS)}});
 cv.addEventListener('mousedown',e=>{if(state!=='play')return;au();if(e.button===0)attack(G.F[0]);else if(e.button===2)kick(G.F[0])});
@@ -2276,7 +2290,7 @@ cv.addEventListener('mousedown',e=>e.preventDefault());cv.addEventListener('touc
  const mv=e=>{if(e.pointerId!==id)return;let dx=e.clientX-cx,dy=e.clientY-cy;const d=Math.hypot(dx,dy),m=60;if(d>m){dx=dx/d*m;dy=dy/d*m}kn.style.transform=`translate(${dx}px,${dy}px)`;pad.mx=Math.abs(dx)>12?dx/m:0;pad.my=Math.abs(dy)>12?dy/m:0};
  st.addEventListener('pointermove',mv);const up=e=>{if(e.pointerId!==id)return;id=null;pad.mx=pad.my=0;kn.style.transform=''};st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
  document.getElementById('bA').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state==='play')attack(G.F[0])});
- document.getElementById('bB').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state==='play')kick(G.F[0])});document.getElementById('bC').addEventListener('pointerdown',e=>{e.preventDefault();au();useItem()});document.getElementById('bD').addEventListener('pointerdown',e=>{e.preventDefault();au();swapKey()});document.getElementById('bE').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state!=='play'||!G)return;if(G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])})}
+ document.getElementById('bB').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state==='play')kick(G.F[0])});document.getElementById('bC').addEventListener('pointerdown',e=>{e.preventDefault();au();useItem()});document.getElementById('bD').addEventListener('pointerdown',e=>{e.preventDefault();au();swapKey()});document.getElementById('bK').addEventListener('pointerdown',e=>{e.preventDefault();au();korCall()});document.getElementById('bE').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state!=='play'||!G)return;if(G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])})}
 
 /* кнопки прозрачнеют, когда за ними кто-то стоит */
 let TFT=0;const TFB=['stick','bA','bB','bC','bD','bE'].map(i=>document.getElementById(i));

@@ -78,12 +78,12 @@ const HEROES=[
  {id:'kaban',name:'Кабан',desc:'Бугай в спортивке. Кулак сбивает с ног',hp:140,spd:180,pow:1.3,rate:.85,heavyFist:1,price:600,pq:'h_kaban',hand:{i:[41,-93],p:[101,-110],o:[-15,-147]},top:115,sc:1.18,jacket:'#1f2a5a',pants:'#1f2a5a',stripe:'#f2f2f2',hair:'#4a3a2a',skin:'#e0a880'},
  {id:'marinka',name:'Маринка',desc:'Со двора. Вёрткая — уворачивается от ударов',hp:85,spd:260,pow:.95,rate:1.3,dodge:.22,price:450,pq:'h_marinka',hand:{i:[28,-93],p:[65,-105],o:[6,-154]},top:115,sc:1.05,noEnemy:1,jacket:'#6a2a9a',pants:'#6a2a9a',stripe:'#f2f2f2',hair:'#7a4a2a',skin:'#f0c4a0'}];
 const TINT=document.createElement('canvas');TINT.width=400;TINT.height=360;const PZMAP=[1,0,2,3],PZTOP0=[60,70,70,58],PZI=[],PZTOP=[];for(let h=0;h<HEROES.length;h++){const i=new Image();i.src=HEROES[h].pq?'img/'+HEROES[h].pq+'.webp':'img/pq'+PZMAP[h]+'.webp';PZI[h]=i;PZTOP[h]=HEROES[h].top!=null?HEROES[h].top:PZTOP0[PZMAP[h]];i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
-const NSPR={},NTOP={major:130,majorb:130,ment:116,druzh:116,ded:116,storozh:115,vasya:115,host:115,brig:116,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
+const NSPR={},NTOP={girl:83,major:130,majorb:130,ment:116,druzh:116,ded:116,storozh:115,vasya:115,host:115,brig:116,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
 const UAZI=new Image();UAZI.src='img/uaz.webp';
 const nsOK=k=>k&&NSPR[k]&&NSPR[k].complete&&NSPR[k].naturalWidth;
 /* 6-кадровый цикл ходьбы: ноги переставляются */
 const WKH=[],WKN={};for(let h=0;h<HEROES.length;h++)if(HEROES[h].pq){const i=new Image();i.src='img/wk_'+HEROES[h].pq+'.webp';WKH[h]=i}
-for(const k of ['major','majorb','ment','brig','druzh','g2','host','myasnik','naper','smotr','storozh','vasya','farc','g3','reshala','ded','baryga']){const i=new Image();i.src='img/wk_n_'+k+'.webp';WKN[k]=i}
+for(const k of ['girl','major','majorb','ment','brig','druzh','g2','host','myasnik','naper','smotr','storozh','vasya','farc','g3','reshala','ded','baryga']){const i=new Image();i.src='img/wk_n_'+k+'.webp';WKN[k]=i}
 const imOK=i=>i&&i.complete&&i.naturalWidth;
 const ENEMY_COL=['#4a6a2a','#5a2a6a','#6a4a1a','#2a5a6a'];
 const WEAPONS={
@@ -271,7 +271,7 @@ function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind
  if(NETU.on&&NETU.host)nCast(F);else if(mode==='rynok')castRynok(F);else if(mode==='boss')castBoss(F);else if(mode==='train')castTrain(F);else if(mode==='kpz')castKpz(F);else if(mode==='dout')castDout(F);else if(OBJM())castObj(F,(G?G.round:0)+1);else for(let i=1;i<n;i++){const team=mode==='team'?(i===1?0:1):mode==='disko'?(i<3?0:1):i;const f=newFighter(i,others[(i-1)%3],true,team);if((mode==='team'||mode==='disko')&&team===0){f.ally=true;f.name=i===1?'Свой':'Малой'}F.push(f)}
  korApply(F);applyProg(F[0]);invApply(F[0]);invStart(F[0]);
  if(mode==='bike'){F.forEach((f,i)=>{f.x=420+i*90;f.y=420+i*70;f.face=1})}
- if(mode==='disko'){F.forEach((f,i)=>{const L=f.team===0;f.x=L?200+i*80:1080-(i-3)*80;f.y=440+(i%3)*80;f.face=L?1:-1})}
+ if(mode==='disko'&&!NETU.on){F.forEach((f,i)=>{const L=f.team===0;f.x=L?200+i*80:1080-(i-3)*80;f.y=440+(i%3)*80;f.face=L?1:-1})}
  if(mode==='team'&&!NETU.on){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
  dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:mode==='bike'?[]:mode==='zavod'?ZL[LOC].obst:mode==='salon'?SL[LOC].obst:mode==='disko'||mode==='dout'||mode==='rynok'||mode==='train'||mode==='kpz'?[]:mode==='boss'?(CH[CAMP.ch].b==='brig'?OBST_A1:OBST_A2):[OBST_F,OBST_A1,OBST_A2,[]][LOC];
  G={F,P:[],B:[],FX:[],RM:[],HL:[],BX:[],dist:0,hzT:1.5,copY:520,t:0,dropT:2,round:(G?G.round:0)+1,wins:G?G.wins:{},over:0,msg:'',msgT:0};
@@ -1457,6 +1457,7 @@ function nOnMsg(m){if(!m||!m.t)return;
  NETU.lastRx=Date.now();
  if(m.t==='full'&&m.id===NETU.id){nLeave(true);showMenu();setTimeout(()=>alert('Комната полная или игра уже идёт'),50)}
  else if(m.t==='lobby'){NETU.P=m.p||[];NETU.m=m.m;if(NETU.phase==='lobby'&&state==='menu')showOnline()}
+ else if(m.t==='st'&&NETU.phase==='game'){dstairsNet(m.h|0,m.nm,m.rid)}
  else if(m.t==='go'){if(m.re&&m.re!==NETU.id)return;if(m.m==='krz')krClientStart(m);else nClientStart(m)}
  else if(m.t==='ks'&&NETU.phase==='game'){if(K&&K.cli)krApply(m)}
  else if(m.t==='kend'&&K&&K.cli){const me=m.R.find(r=>r.id===NETU.id)||{};krShowEnd(!!me.f,me.f,me.why||'',me.hp||0,me.r||0,m.ts||0,m.R);K=null}
@@ -1476,27 +1477,27 @@ function showOnline(msg){state='menu';$ui.hidden=false;document.getElementById('
  const link=location.origin+location.pathname+'?room='+NETU.code;
  $ui.innerHTML=`<div class="card"><p class="sub">Комната</p><h1 style="letter-spacing:8px">${NETU.code}</h1><p class="sub" style="font-size:13px">${link}</p><div class="row"><button id="ncp">📋 Скопировать ссылку</button></div>
   <div class="pbox">${NETU.P.length?NETU.P.map((p,i)=>`<div style="padding:3px 0">${i===0?'👑 ':''}<b>${p.name||'…'}</b> · ${HEROES[p.hero]?HEROES[p.hero].name:''}${p.id===NETU.id?' (ты)':''}</div>`).join(''):'<small>Подключаемся…</small>'}<small>Игроков: ${NETU.P.length}/${NMAX}</small></div>
-  ${NETU.host?`<div class="row"><button class="mm ${NETU.m==='team'?'on':''}" data-nm="team">🤝 Все вместе против ботов</button><button class="mm ${NETU.m==='train'?'on':''}" data-nm="train">🚆 Электричка вместе</button><button class="mm ${NETU.m==='kpz'?'on':''}" data-nm="kpz">🚔 Ментовка вместе</button></div><div class="row"><button class="mm ${NETU.m==='ffa'?'on':''}" data-nm="ffa">Каждый сам</button><button class="mm ${NETU.m==='pvp'?'on':''}" data-nm="pvp">⚔ Люди на людей</button><button class="mm ${NETU.m==='krz'?'on':''}" data-nm="krz">🚙 Угнать крузака</button></div><div class="row"><button class="pri" id="ngo" ${NETU.P.length<2||(NETU.m==='krz'&&NETU.P.length>KRNMAX)?'disabled':''}>${NETU.m==='krz'?'▶ Угнать!':'▶ Начать драку'}</button></div><p class="sub" style="font-size:13px">${NETU.P.length<2?'Ждём хотя бы одного пацана…':NETU.m==='krz'?(NETU.P.length>KRNMAX?'В гонке крузаков максимум '+KRNMAX+' игрока':'Каждому свой крузак: чёрный, белый, вишнёвый, серебристый. Чем больше вас — тем больше уазиков.'):NETU.m==='team'?'Все игроки в одной команде, против вас — боты. Их на одного больше, чем вас.':NETU.m==='train'?'Вместе через 4 вагона: вагон, купе, платформа, перрон. Чем больше вас — тем больше заречных.':NETU.m==='kpz'?'Вместе из КПЗ: камера, коридор, дежурка с майором. Чем больше вас — тем больше ментов.':NETU.m==='pvp'?'Люди делятся на две команды, недостающих добавят боты.':'Можно начинать. Не хватает людей — добавятся боты.'}</p>`:`<p class="sub">Режим: <b>${NMODEN[NETU.m]||'Каждый сам'}</b>. Ждём, когда хост начнёт…</p>`}
+  ${NETU.host?`<div class="row"><button class="mm ${NETU.m==='team'?'on':''}" data-nm="team">🤝 Все вместе против ботов</button><button class="mm ${NETU.m==='train'?'on':''}" data-nm="train">🚆 Электричка вместе</button><button class="mm ${NETU.m==='kpz'?'on':''}" data-nm="kpz">🚔 Ментовка вместе</button><button class="mm ${NETU.m==='diskoffa'?'on':''}" data-nm="diskoffa">💃 Дискотека: каждый сам</button></div><div class="row"><button class="mm ${NETU.m==='ffa'?'on':''}" data-nm="ffa">Каждый сам</button><button class="mm ${NETU.m==='pvp'?'on':''}" data-nm="pvp">⚔ Люди на людей</button><button class="mm ${NETU.m==='krz'?'on':''}" data-nm="krz">🚙 Угнать крузака</button></div><div class="row"><button class="pri" id="ngo" ${NETU.P.length<2||(NETU.m==='krz'&&NETU.P.length>KRNMAX)?'disabled':''}>${NETU.m==='krz'?'▶ Угнать!':'▶ Начать драку'}</button></div><p class="sub" style="font-size:13px">${NETU.P.length<2?'Ждём хотя бы одного пацана…':NETU.m==='krz'?(NETU.P.length>KRNMAX?'В гонке крузаков максимум '+KRNMAX+' игрока':'Каждому свой крузак: чёрный, белый, вишнёвый, серебристый. Чем больше вас — тем больше уазиков.'):NETU.m==='diskoffa'?'Каждый сам на танцполе (в медляк не драться!). Кто первым возьмёт 2 раунда — уводит Лену, остальные на улице пытаются её отбить.':NETU.m==='team'?'Все игроки в одной команде, против вас — боты. Их на одного больше, чем вас.':NETU.m==='train'?'Вместе через 4 вагона: вагон, купе, платформа, перрон. Чем больше вас — тем больше заречных.':NETU.m==='kpz'?'Вместе из КПЗ: камера, коридор, дежурка с майором. Чем больше вас — тем больше ментов.':NETU.m==='pvp'?'Люди делятся на две команды, недостающих добавят боты.':'Можно начинать. Не хватает людей — добавятся боты.'}</p>`:`<p class="sub">Режим: <b>${NMODEN[NETU.m]||'Каждый сам'}</b>. Ждём, когда хост начнёт…</p>`}
   <div class="row"><button id="nlv">Выйти</button></div></div>`;
  document.getElementById('ncp').onclick=()=>{try{navigator.clipboard.writeText(link);showOnline()}catch(e){}};
  document.getElementById('nlv').onclick=()=>{nLeave();showOnline()};
  $ui.querySelectorAll('[data-nm]').forEach(b=>b.onclick=()=>{NETU.m=b.dataset.nm;nHello();showOnline()});
  const g=document.getElementById('ngo');if(g)g.onclick=()=>{au();nHostStart()}}
 /* ---- старт ---- */
-const NMODEN={ffa:'Каждый сам',team:'Все вместе против ботов',pvp:'Люди на людей',train:'Электричка вместе',kpz:'Ментовка вместе',krz:'Угнать крузака'};
-function nHostStart(){if(NETU.m==='krz')return krHostStart();NETU.phase='game';NETU.W={};mode=NETU.m==='pvp'?'team':NETU.m;G=null;CAMP.on=0;start();nSend({t:'go',m:mode,loc:LOC,p:NETU.P})}
+const NMODEN={diskoffa:'Дискотека: каждый сам',ffa:'Каждый сам',team:'Все вместе против ботов',pvp:'Люди на людей',train:'Электричка вместе',kpz:'Ментовка вместе',krz:'Угнать крузака'};
+function nHostStart(){if(NETU.m==='krz')return krHostStart();NETU.phase='game';NETU.W={};mode=NETU.m==='pvp'?'team':NETU.m==='diskoffa'?'disko':NETU.m;G=null;CAMP.on=0;start();nSend({t:'go',m:mode,loc:LOC,p:NETU.P})}
 function nCoopCast(F){const P=NETU.P;(mode==='train'?castTrain:castKpz)(F);for(let i=F.length-1;i>0;i--)if(F[i].ally)F.splice(i,1);
  const me=F[0];me.name=(P[0]&&P[0].name)||me.name;P.slice(1).forEach((p,j)=>{const f=newFighter(0,p.hero,false,0);f.rid=p.id;f.name=p.name||HEROES[p.hero].name;f.team=0;f.x=me.x-70+(j%3)*60;f.y=clamp(me.y-110+((j+1)*97)%220,450,650);f.face=1;F.push(f)});
  const en=F.filter(f=>f.team!==0),extra=P.length-1,others=HOTH();
  for(let k=0;k<extra;k++){const f=mode==='kpz'&&kpzLoc()>0?mkCop(0,1150,rnd(470,640),-1):newFighter(0,others[(k+1)%others.length],true,1);f.team=1;f.x=1120+(k%2)*60;f.y=rnd(460,640);f.face=-1;F.push(f)}
  for(const f of F)if(f.team!==0&&(f.spr==='major'||/Старший/.test(f.name||''))){f.max=f.hp=Math.round(f.max*(1+.35*extra))}
  F.forEach((f,i)=>f.idx=i)}
-function nCast(F){if(mode==='train'||mode==='kpz')return nCoopCast(F);const P=NETU.P,coop=mode==='team'&&NETU.m==='team',team=mode==='team'&&!coop;
+function nCast(F){if(mode==='dout')return nDoutCast(F);if(mode==='train'||mode==='kpz')return nCoopCast(F);if(mode==='disko'){const P=NETU.P;P.forEach((p,i)=>{const f=i===0?F[0]:newFighter(i,p.hero,false,i);if(i>0){f.rid=p.id;F.push(f)}f.name=p.name||HEROES[p.hero].name;f.team=i;f.idx=i});const others=HOTH(),n0=F.length;for(let i=n0;i<Math.max(4,n0+1);i++){const b=newFighter(i,others[i%others.length],true,i);b.team=i;b.idx=i;F.push(b)}F.forEach((f,i)=>{const a=i/F.length*TAU;f.x=640+Math.cos(a)*380;f.y=540+Math.sin(a)*110;f.face=f.x<640?1:-1});return}const P=NETU.P,coop=mode==='team'&&NETU.m==='team',team=mode==='team'&&!coop;
  if(coop){P.forEach((p,i)=>{const f=i===0?F[0]:newFighter(i,p.hero,false,0);if(i>0){f.rid=p.id;F.push(f)}f.name=p.name||HEROES[p.hero].name;f.team=0;f.idx=i;f.x=160+(i%3)*70;f.y=450+((i*83)%200);f.face=1});
   const n=F.length,others=HOTH(),nb=Math.max(3,n+1);for(let k=0;k<nb;k++){const i=n+k,b=newFighter(i,others[k%others.length],true,1);b.team=1;b.idx=i;b.x=1060+(k%3)*60;b.y=450+((k*71)%200);b.face=-1;F.push(b)}return}P.forEach((p,i)=>{const f=i===0?F[0]:newFighter(i,p.hero,false,team?i%2:i);if(i>0){f.rid=p.id;F.push(f)}f.name=p.name||HEROES[p.hero].name;f.team=team?i%2:i;f.idx=i;f.x=team?(i%2?1000+(i>>1)*50:200+(i>>1)*50):160+i*(960/Math.max(1,P.length-1));f.y=440+((i*83)%200);f.face=f.x<640?1:-1});
  let n=F.length;const want=team?Math.max(4,n+(n%2)):Math.max(3,n);const others=HOTH();for(let i=n;i<want;i++){const t=team?i%2:i;const b=newFighter(i,others[i%others.length],true,t);b.team=t;b.idx=i;b.x=t===1||(!team&&i%2)?1100:180;b.y=440+((i*67)%220);b.face=b.x<640?1:-1;F.push(b)}}
 function nSnap(){const G0=G;if(!G0)return;nSend({t:'s',l:LOC,r:G0.round,o:G0.over?1:0,msg:G0.msgT>0?G0.msg:'',sub:G0.msgT>0?G0.sub:'',sh:shake|0,w:NETU.W,
- F:G0.F.map(f=>[f.idx,f.hero,f.team,Math.round(f.x),Math.round(f.y),f.face,f.state,Math.round(f.hp),f.max,f.weapon||'',+(f.atkT||0).toFixed(3),+(f.atkDur||.3).toFixed(3),+(f.kickT||0).toFixed(3),+(f.hurtT||0).toFixed(3),+(f.anim||0).toFixed(2),f.name,+(f.downT||0).toFixed(2),f.bloody?1:0,f.flash>0?1:0,f.rid||(f===G0.F[0]?NETU.id:''),f.bot?1:0,f.kills||0,f.spr||'',f.bscale||0]),g:G0.tr&&G0.tr.gust>0?1:0,
+ F:G0.F.map(f=>[f.idx,f.hero,f.team,Math.round(f.x),Math.round(f.y),f.face,f.state,Math.round(f.hp),f.max,f.weapon||'',+(f.atkT||0).toFixed(3),+(f.atkDur||.3).toFixed(3),+(f.kickT||0).toFixed(3),+(f.hurtT||0).toFixed(3),+(f.anim||0).toFixed(2),f.name,+(f.downT||0).toFixed(2),f.bloody?1:0,f.flash>0?1:0,f.rid||(f===G0.F[0]?NETU.id:''),f.bot?1:0,f.kills||0,f.spr||'',f.bscale||0,f.girl?1:0,Math.round(f.fear||0),f.held?1:0,f.gfr|0]),g:G0.tr&&G0.tr.gust>0?1:0,md:mode,ph:G0.ph||'',pt:+(G0.phT||0).toFixed(1),
  P:G0.P.map(p=>[p.k,Math.round(p.x),Math.round(p.y)]),B:G0.B.map(b=>[Math.round(b.x),Math.round(b.y),Math.sign(b.vx),b.stone?1:0,b.salt?1:0,b.sd?1:0]),
  X:G0.FX.filter(p=>(p.txt||p.ring)&&p.t<.075&&!p._s).map(p=>(p._s=1,[Math.round(p.x),Math.round(p.y),p.txt||'',p.c,p.big?1:0,p.ring?1:0,p.life]))})}
 /* ---- клиент ---- */
@@ -1504,9 +1505,9 @@ function nClientStart(m){rotTryLock();if(NETU.phase==='game'&&G&&G.net)return;NE
  OBST=mode==='ffa'||mode==='team'?[OBST_F,OBST_A1,OBST_A2,[]][LOC]:[];BGK='';dctx.clearRect(0,0,W,H);paintBG();
  G={net:1,F:[],P:[],B:[],FX:[],RM:[],HL:[],BX:[],t:0,round:1,wins:{},over:0,msg:'ДРАКА!',sub:'онлайн',msgT:1.5,dist:0};NETU.F={};
  document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
-function nApply(m){if(m.l!=null&&m.l!==LOC){LOC=m.l;OBST=(mode==='ffa'||mode==='team')?[OBST_F,OBST_A1,OBST_A2,[]][LOC]||[]:[];paintBG()}const W0=m.w||{};G.wins={me:W0[0]||0,them:W0[1]||0};if(mode==='train')G.tr={L:LOC,gust:m.g?1:0};if(mode==='kpz')G.kp={L:LOC};const keep=NETU.F,F=[];let me=null;
+function nApply(m){if(m.md&&m.md!==mode){mode=m.md;BGK='';paintBG()}if(mode==='disko'&&m.ph){if(m.ph!==G.ph){G.ph=m.ph;try{musPlay(m.ph==='slow'?'slow':'fight')}catch(e){}}G.phT=m.pt||0}if(m.l!=null&&m.l!==LOC){LOC=m.l;OBST=(mode==='ffa'||mode==='team')?[OBST_F,OBST_A1,OBST_A2,[]][LOC]||[]:[];paintBG()}const W0=m.w||{};G.wins={me:W0[0]||0,them:W0[1]||0};if(mode==='train')G.tr={L:LOC,gust:m.g?1:0};if(mode==='kpz')G.kp={L:LOC};const keep=NETU.F,F=[];let me=null;
  for(const a of m.F){let f=keep[a[0]];if(!f){f=keep[a[0]]=newFighter(a[0],a[1],!!a[20],a[2]);f.x=a[3];f.y=a[4]}
-  Object.assign(f,{idx:a[0],hero:a[1],team:a[2],tx:a[3],ty:a[4],face:a[5],state:a[6],hp:a[7],max:a[8],weapon:a[9]||null,atkT:a[10],atkDur:a[11],kickT:a[12],hurtT:a[13],anim:a[14],name:a[15],downT:a[16],bloody:!!a[17],flash:a[18]?.08:0,rid:a[19],bot:!!a[20],kills:a[21],spr:a[22]||undefined,bscale:a[23]||undefined,stun:0});
+  Object.assign(f,{idx:a[0],hero:a[1],team:a[2],tx:a[3],ty:a[4],face:a[5],state:a[6],hp:a[7],max:a[8],weapon:a[9]||null,atkT:a[10],atkDur:a[11],kickT:a[12],hurtT:a[13],anim:a[14],name:a[15],downT:a[16],bloody:!!a[17],flash:a[18]?.08:0,rid:a[19],bot:!!a[20],kills:a[21],spr:a[22]||undefined,bscale:a[23]||undefined,girl:a[24]||0,fear:a[25]||0,held:a[26]?1:null,gfr:a[27]||0,noHud:a[24]?1:undefined,stun:0});
   if(Math.hypot(f.tx-f.x,f.ty-f.y)>160){f.x=f.tx;f.y=f.ty}if(a[19]===NETU.id)me=f;else F.push(f)}
  if(me){F.unshift(me);NETU.myTeam=me.team;if(mode==='ffa')NETU.myTeam=me.idx}G.F=F;
  G.P=m.P.map(p=>({k:p[0],x:p[1],y:p[2],t:0}));G.B=m.B.map(b=>({x:b[0],y:b[1],vx:b[2]*900,yy:b[1],stone:b[3],salt:b[4],sd:b[5]}));
@@ -1520,10 +1521,11 @@ function nClientTick(dt){NETU.inT-=dt;const me=G.F[0];if(Date.now()-NETU.lastRx>
 /* ---- хост: ввод удалённых игроков, раунды ---- */
 function nRemote(f){const I=NETU.inp[f.rid]||{};if(I.a!==undefined&&I.a!==f._a){if(f._a!==undefined)attack(f);f._a=I.a}if(I.k!==undefined&&I.k!==f._k){if(f._k!==undefined)kick(f);f._k=I.k}
  if(I.s!==undefined&&I.s!==f._s){if(f._s!==undefined)useSuper(f);f._s=I.s}if(I.e!==undefined&&I.e!==f._e){if(f._e!==undefined){if(nearWeapon(f))f.swapT=.35;else if(f.weapon)dropWeapon(f,true)}f._e=I.e}return [clamp(+I.mx||0,-1,1),clamp(+I.my||0,-1,1)]}
-function nRoundOver(winSide){const w=NETU.W;if(winSide!=null)w[winSide]=(w[winSide]||0)+1;
+function nRoundOver(winSide){G.lastWS=winSide;const w=NETU.W;if(winSide!=null)w[winSide]=(w[winSide]||0)+1;
  const winF=G.F.find(f=>sideOf(f)===winSide);G.wins={me:w[0]||0,them:w[1]||0};const CO=mode==='train'||mode==='kpz'||NETU.m==='team';G.msg=winSide==null?'НИЧЬЯ':CO?(winSide===0?'НАШИ ВЗЯЛИ РАУНД':'НАС ЗАВАЛИЛИ'):mode==='team'?(winSide===0?'СИНИЕ':'КРАСНЫЕ')+' ВЗЯЛИ РАУНД':(winF?winF.name.toUpperCase():'')+' ВЗЯЛ РАУНД';G.sub='';G.msgT=99;
  if(winSide!=null&&winSide===sideOf(G.F[0]))gainXP(40);SFX.bell()}
 function nMatchCheck(){const w=NETU.W;let best=null;for(const k in w){const need=+k===0&&mode==='train'?4:+k===0&&mode==='kpz'?3:2;if(w[k]>=need)best=+k}if(best==null)return false;
+ if(mode==='disko'){const wf=G.F.find(f=>sideOf(f)===best);if(wf&&!wf.bot){doutNetStart(wf);return true}}
  const winF=G.F.find(f=>sideOf(f)===best),txt=mode==='train'?(best===0?'Доехали! Электричка ваша':'Заречные скинули вас с поезда'):mode==='kpz'?(best===0?'Вырвались из ментовки на волю':'Вас снова закрыли в КПЗ'):NETU.m==='team'?(best===0?'Вместе забрали улицу':'Боты отбили улицу'):mode==='team'?(best===0?'Синие':'Красные')+' забрали улицу':(winF?winF.name:'?')+' — хозяин улицы';
  nSend({t:'end',txt,win:mode==='ffa'&&winF?winF.rid||(winF===G.F[0]?NETU.id:''):'',wteam:mode!=='ffa'?best:null});nEnd(txt,best===sideOf(G.F[0]));return true}
 function nEnd(txt,won){state='end';NETU.phase='lobby';if(won)gainXP(100);gainKap(won?40:10);document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
@@ -2189,15 +2191,19 @@ function paintStairs(g){g.fillStyle='#1a1418';g.fillRect(0,0,W,H);g.fillStyle='#
 function doutStart(){DOUTF=0;DST={t:0};state='dstairs';$ui.hidden=true;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;musPlay&&musPlay('slow')}
 function dstairsSkip(){if(state==='dstairs'&&DST&&DST.t>.6)DST.t=99}
 addEventListener('keydown',e=>{if(state==='dstairs'&&!e.repeat)dstairsSkip()});addEventListener('pointerdown',()=>dstairsSkip());
-function dstairsTick(dt){DST.t+=dt;const T=4.6,k=Math.min(1,DST.t/T);const i=BGPH.dstairs;if(imOK(i))ctx.drawImage(i,0,0,W,H);else paintStairs(ctx);
- const x=lerp(200,1010,k),y=lerp(300,640,k)+(Math.abs(Math.sin(DST.t*7))*-6),sc=lerp(.82,1.05,k);
+function dstairsTick(dt){DST.t+=dt;const T=4.8,k=Math.min(1,DST.t/T);const i=BGPH.dstairs,ART=imOK(i);if(ART)ctx.drawImage(i,0,-100,1280,853);else paintStairs(ctx);
+ const hero=DST.hero!=null?DST.hero:myHero;let x,y,sc;
+ if(ART){const P=[[250,275],[933,637],[1090,633]],s1=.78;const L1=Math.hypot(P[1][0]-P[0][0],P[1][1]-P[0][1]),L2=P[2][0]-P[1][0],d=k*(L1+L2);
+  if(d<L1){const q=d/L1;x=lerp(P[0][0],P[1][0],q);y=lerp(P[0][1],P[1][1],q)}else{const q=(d-L1)/L2;x=lerp(P[1][0],P[2][0],q);y=lerp(P[1][1],P[2][1],q)}sc=lerp(.72,.98,k)}
+ else{x=lerp(200,1010,k);y=lerp(300,640,k);sc=lerp(.82,1.05,k)}
  const drawSp=(img,fr,top,px,py,h)=>{if(!imOK(img))return;const u=h/(350-top);ctx.drawImage(img,fr*400,0,400,360,px-200*u,py-350*u,400*u,360*u)};
- const wk=WKH[myHero],hf=((DST.t*1.8*6)|0)%6;if(imOK(wk))drawSp(wk,hf,PZTOP[myHero]||60,x,y,150*sc*FIGS);else drawSp(PZI[myHero],(DST.t*3|0)%2,PZTOP[myHero]||60,x,y,150*sc*FIGS);
- const gs=girlSpr();drawSp(NSPR[gs],gs==='girl'?((DST.t*3|0)%2?1:7):0,NTOP[gs]||20,x-70*sc,y-24*sc,(gs==='girl'?140:120)*sc*FIGS);
- ctx.save();ctx.textAlign='center';ctx.font='900 44px Impact,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#000';const a=Math.min(1,DST.t*2);ctx.globalAlpha=a;
- ctx.strokeText(GIRLN.toUpperCase()+' УХОДИТ С ТОБОЙ',W/2,90);ctx.fillStyle='#ff9ad0';ctx.fillText(GIRLN.toUpperCase()+' УХОДИТ С ТОБОЙ',W/2,90);
- ctx.font='bold 22px system-ui';ctx.lineWidth=5;ctx.strokeText('Заречные не простят — на улице будь начеку',W/2,128);ctx.fillStyle='#f3e9dc';ctx.fillText('Заречные не простят — на улице будь начеку',W/2,128);ctx.restore();
- if(DST.t>=T+.4){DST=null;doutRound()}}
+ const wf=((DST.t*1.8*6)|0)%6,wk=WKH[hero];
+ const gs=girlSpr(),gw=WKN.girl;if(gs==='girl'&&imOK(gw))drawSp(gw,(wf+3)%6,NTOP.girl,x-46*sc,y-14*sc,150*sc*FIGS);else drawSp(NSPR[gs],0,NTOP[gs]||20,x-60*sc,y-14*sc,120*sc*FIGS);
+ if(imOK(wk))drawSp(wk,wf,PZTOP[hero]||60,x,y,150*sc*FIGS);else drawSp(PZI[hero],(DST.t*3|0)%2,PZTOP[hero]||60,x,y,150*sc*FIGS);
+ const t1=DST.mine===false?(DST.nm||'Он').toUpperCase()+' УВОДИТ '+GIRLA.toUpperCase():GIRLN.toUpperCase()+' УХОДИТ С ТОБОЙ',t2=DST.mine===false?'Отбей её на улице — она будет твоей!':DST.net?'Остальные пацаны попробуют её отбить — защищай!':'Заречные не простят — на улице будь начеку';
+ ctx.save();ctx.textAlign='center';ctx.font='900 44px Impact,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.globalAlpha=Math.min(1,DST.t*2);
+ ctx.strokeText(t1,W/2,90);ctx.fillStyle='#ff9ad0';ctx.fillText(t1,W/2,90);ctx.font='bold 22px system-ui';ctx.lineWidth=5;ctx.strokeText(t2,W/2,128);ctx.fillStyle='#f3e9dc';ctx.fillText(t2,W/2,128);ctx.restore();
+ if(DST.t>=T+.4){const net=DST.net;DST=null;if(net){if(NETU.host){mode='dout';newRound();resumePlay()}else{state='play';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!IS_TOUCH}}else doutRound()}}
 function doutRound(){mode='dout';newRound();resumePlay();rotTryLock&&rotTryLock()}
 function castDout(F){const me=F[0];me.x=360;me.y=560;me.face=1;me.team=0;const others=HOTH();
  const gl=newFighter(1,myHero,true,0);Object.assign(gl,{girl:1,team:0,spr:girlSpr(),name:GIRLN,noHud:1,x:270,y:520,face:1,fear:0,held:null});F.push(gl);
@@ -2206,23 +2212,36 @@ function doutInit(){G.dout={wave:0,regrabT:0};G.msg='РАУНД · УЛИЦА У
 function dGirl(){return G&&G.F.find(f=>f.girl)}
 function doutUpdate(dt){const D=G.dout,gl=dGirl();if(!D||!gl||G.over)return;const me=G.F[0];
  const foes=G.F.filter(f=>f.team===1&&f.state!=='ko');
- if(D.wave===0&&foes.length<=1){D.wave=1;const others=HOTH();for(let i=0;i<1;i++){const f=newFighter(G.F.length,others[(i+3)%others.length],true,1);f.team=1;f.hp=f.max=Math.round(f.max*.55);f.x=-30;f.y=470+i*110;f.face=1;if(i===0){f.weapon='bat';f.dur=WEAPONS.bat.dur||0}G.F.push(f)}G.FX.push({x:W/2,y:220,t:0,life:1.4,txt:'ЕЩЁ ЗАРЕЧНЫЕ СЗАДИ!',c:'#ff5a5a',big:1});SFX.whoosh()}
+ if(D.wave===0&&foes.length<=1&&!NETU.on){D.wave=1;const others=HOTH();for(let i=0;i<1;i++){const f=newFighter(G.F.length,others[(i+3)%others.length],true,1);f.team=1;f.hp=f.max=Math.round(f.max*.55);f.x=-30;f.y=470+i*110;f.face=1;if(i===0){f.weapon='bat';f.dur=WEAPONS.bat.dur||0}G.F.push(f)}G.FX.push({x:W/2,y:220,t:0,life:1.4,txt:'ЕЩЁ ЗАРЕЧНЫЕ СЗАДИ!',c:'#ff5a5a',big:1});SFX.whoosh()}
  if(!G.F.some(f=>f.grab&&f.state!=='ko')){D.regrabT-=dt;if(D.regrabT<=0){const c=foes.sort((a,b)=>Math.abs(a.x-gl.x)-Math.abs(b.x-gl.x))[0];if(c){c.grab=1;c.ai.t=0}D.regrabT=2.5}}
- const H=gl.held;
+ if(!gl.held)for(const f of G.F)if(f.team===1&&!f.bot&&f.state!=='ko'&&f.state!=='hurt'&&f.state!=='down'&&!(f.stun>0)&&Math.hypot(f.x-gl.x,f.y-gl.y)<52){gl.held=f;G.FX.push({x:gl.x,y:gl.y-190,t:0,life:1.2,txt:f.name.toUpperCase()+' СХВАТИЛ '+GIRLA.toUpperCase()+'!',c:'#ff5a5a',big:1});SFX.whoosh();break}
+ const H=gl.held;if(H)G.dHolder=H;
  if(H){const bag=Math.random()<dt*.12;if(bag){H.stun=.7;H.hurtT=.3;G.FX.push({x:gl.x,y:gl.y-200,t:0,life:1,txt:'СУМОЧКОЙ ПО ГОЛОВЕ!',c:'#ff9ad0',big:1})}const bad=bag||H.state==='ko'||H.state==='down'||H.state==='hurt'||H.hurtT>0||H.stun>0;
   if(bad){gl.held=null;H.grab=0;H.ai.t=0;D.regrabT=3;gl.gfr=4;G.FX.push({x:gl.x,y:gl.y-170,t:0,life:1,txt:'ОТБИЛ!',c:'#7cf07c',big:1});SFX.hit()}
-  else{gl.x=H.x-H.face*36;gl.y=H.y+4;gl.face=-H.face;gl.fear=Math.min(100,gl.fear+dt*10);gl.gfr=3;if(Math.random()<dt*1.2)G.FX.push({x:gl.x,y:gl.y-170,t:0,life:.8,txt:'ПОМОГИ!',c:'#ff9ad0'})}}
+  else{gl.x=H.x-H.face*36;gl.y=H.y+4;gl.face=H.face;gl.fear=Math.min(100,gl.fear+dt*10);gl.gfr=3;if(Math.random()<dt*1.2)G.FX.push({x:gl.x,y:gl.y-170,t:0,life:.8,txt:'ПОМОГИ!',c:'#ff9ad0'})}}
  else{gl.fear=Math.max(0,gl.fear-dt*4);const near=G.F.some(f=>f.team===1&&f.state!=='ko'&&Math.abs(f.x-gl.x)<120&&Math.abs(f.y-gl.y)<60);gl.gfr=near?2:gl.state==='walk'?1:0}
  if(gl.fear>=100||(H&&gl.held&&(H.x<=EDGE+8||H.x>=W-EDGE-8))){G.over=1;G.overT=0;G.win=false;G.dlost=1;G.msg=GIRLA.toUpperCase()+' УВЕЛИ';G.sub='Заречные утащили её в переулок';G.msgT=99;SFX.ko()}}
 function doutGrab(f,dt){const gl=dGirl();if(!gl)return null;
  if(gl.held===f){const ex=W+60;const d=Math.sign(ex-f.x);f.face=d;return [d*.5,0]}
  if(gl.held)return null;const dx=gl.x-f.x,dy=gl.y-f.y,dd=Math.hypot(dx,dy)||1;f.face=dx>=0?1:-1;
- if(dd<52&&f.state!=='hurt'&&f.stun<=0){gl.held=f;f.exitX=null;G.FX.push({x:gl.x,y:gl.y-190,t:0,life:1.2,txt:'ХВАТАЮТ '+GIRLA.toUpperCase()+'!',c:'#ff5a5a',big:1});SFX.whoosh();return [0,0]}
+ if(dd<52&&f.state!=='hurt'&&f.stun<=0){gl.held=f;G.dHolder=f;G.FX.push({x:gl.x,y:gl.y-190,t:0,life:1.2,txt:'ХВАТАЮТ '+GIRLA.toUpperCase()+'!',c:'#ff5a5a',big:1});SFX.whoosh();return [0,0]}
  return [dx/dd,dy/dd*.8]}
 function doutGirlThink(f){const me=G.F[0];if(f.held)return [0,0];const tx=me.x-me.face*80,ty=me.y-30,dx=tx-f.x,dy=ty-f.y;if(Math.hypot(dx,dy)<40)return [0,0];f.face=dx>=0?1:-1;return [Math.sign(dx)*Math.min(1,Math.abs(dx)/80),Math.sign(dy)*Math.min(1,Math.abs(dy)/60)]}
 function doutHUD(){const gl=dGirl();if(!gl)return;ctx.save();const x=gl.x,y=gl.y-150;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-52,y-6,104,12);ctx.fillStyle=gl.fear>66?'#ff3a3a':gl.fear>33?'#ffb03a':'#ff9ad0';ctx.fillRect(x-50,y-4,100*gl.fear/100,8);
  ctx.font='900 15px Impact,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='#000';ctx.strokeText('💃 '+GIRLN+(gl.held?' · СХВАТИЛИ!':''),x,y-12);ctx.fillStyle='#ff9ad0';ctx.fillText('💃 '+GIRLN+(gl.held?' · СХВАТИЛИ!':''),x,y-12);
  ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W/2-200,58,400,26);ctx.fillStyle='#ff9ad0';ctx.font='900 18px Impact,sans-serif';ctx.fillText('💃 Защити '+GIRLA+' · страх '+Math.round(gl.fear)+'%',W/2,77);ctx.restore()}
+function doutNetStart(w){DOUTW={rid:w.rid||NETU.id,hero:w.hero,name:w.name};nSend({t:'st',h:w.hero,nm:w.name,rid:DOUTW.rid});dstairsNet(w.hero,w.name,DOUTW.rid)}
+function dstairsNet(h,nm,rid){DST={t:0,hero:h,nm,mine:rid===NETU.id,net:1};state='dstairs';$ui.hidden=true;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true}
+let DOUTW=null;
+function nDoutCast(F){const P=NETU.P,wr=DOUTW?DOUTW.rid:NETU.id;let k=0;
+ P.forEach((p,i)=>{const f=i===0?F[0]:newFighter(i,p.hero,false,1);if(i>0){f.rid=p.id;F.push(f)}f.name=p.name||HEROES[p.hero].name;const win=p.id===wr;f.team=win?0:1;f.x=win?360:1000+(k%3)*70;f.y=win?560:450+((k*97)%200);f.face=win?1:-1;if(!win)k++});
+ const gl=newFighter(0,0,true,0);Object.assign(gl,{girl:1,team:0,spr:girlSpr(),name:GIRLN,noHud:1,x:270,y:520,face:1,fear:0,held:null});F.push(gl);
+ const others=HOTH();for(let b=k;b<2;b++){const f=newFighter(0,others[(b+1)%others.length],true,1);f.team=1;f.x=1150;f.y=480+b*100;f.face=-1;f.hp=f.max=Math.round(f.max*.6);if(b===k)f.grab=1;F.push(f)}
+ F.forEach((f,i)=>f.idx=i)}
+function doutFinishNet(){const ws=G.dlost?1:G.lastWS,W0=G.F.find(f=>f.team===0&&!f.girl);let txt,win='';
+ if(ws===0&&W0){txt=W0.name+' увёл '+GIRLA+' с дискотеки';win=W0.rid||NETU.id}
+ else{const h=(G.dHolder&&!G.dHolder.bot)?G.dHolder:G.F.find(f=>f.team===1&&!f.bot&&f.state!=='ko');txt=h?h.name+' отбил '+GIRLA+'!':'Заречные увели '+GIRLA;win=h?(h.rid||NETU.id):''}
+ nSend({t:'end',txt,win});mode='disko';nEnd(txt,win===NETU.id)}
 function doutFinish(won){DOUTF=1;mode='disko';G.over=1;if(!won){G.wins={me:1,them:2};G.doutL=1}roundEnd();const c=$ui.querySelector('.card');if(c){const d=document.createElement('div');d.className='warn';d.style.borderColor=won?'#ff9ad0':'#c8202a';d.innerHTML=won?'💃 '+GIRLN+' ушла с тобой. Заречные остались ни с чем.':'😢 '+GIRLA+' увели заречные. Без неё глава не пройдена — попробуй ещё раз.';const h=c.querySelector('h1');if(h)h.after(d)}}
 
 /* ---------- update ---------- */
@@ -2326,7 +2345,7 @@ function showMenu(){if(NETU.on&&NETU.phase==='game')nLeave();if(NROOMQ&&NROOMQ.l
  document.getElementById('bl').onclick=()=>{BLOOD=!BLOOD;LS.set('blood',BLOOD);showMenu()};
  document.getElementById('go').onclick=()=>{au();G=null;start()}}
 function start(){rotTryLock();if(mode==='krz')return krzBegin();CAMP.rzAsked=0;LS.set('tfights',LS.get('tfights',0)+1);setTimeout(()=>{if(state==='play'&&G&&!RMODE())tipOnce('combo1',IS_TOUCH?'СОВЕТ: УДАР-УДАР-ПИНОК = ПОДСЕЧКА':'СОВЕТ: F F G = ПОДСЕЧКА')},3500);AOFF=Math.random()*4|0;try{getSelection().removeAllRanges()}catch(e){}$ui.hidden=true;state='play';MXP=0;MLV=0;MKAP=0;document.getElementById('mb').hidden=false;newRound();document.getElementById('touch').hidden=!('ontouchstart' in window||navigator.maxTouchPoints>0)}
-function roundEnd(){if(mode==='dout')return doutFinish(!!G.win);if(NETU.on&&NETU.host){if(!nMatchCheck())newRound();return}if(mode==='rynok')return rynokEnd();const w=G.wins,need=mode==='boss'?1:2,OB3=OBJM();if(mode==='kpz'?((w.me||0)>=3||(w.them||0)>=2):mode==='train'?((w.me||0)>=4||(w.them||0)>=2):OB3?((w.me||0)+(w.them||0)>=3||(w.them||0)>=2):((w.me||0)>=need||(w.them||0)>=need)){if(mode==='disko'&&!NETU.on){if((w.me||0)>=need&&!DOUTF)return doutStart();DOUTF=0}state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
+function roundEnd(){if(mode==='dout')return NETU.on?doutFinishNet():doutFinish(!!G.win);if(NETU.on&&NETU.host){if(!nMatchCheck())newRound();return}if(mode==='rynok')return rynokEnd();const w=G.wins,need=mode==='boss'?1:2,OB3=OBJM();if(mode==='kpz'?((w.me||0)>=3||(w.them||0)>=2):mode==='train'?((w.me||0)>=4||(w.them||0)>=2):OB3?((w.me||0)+(w.them||0)>=3||(w.them||0)>=2):((w.me||0)>=need||(w.them||0)>=need)){if(mode==='disko'&&!NETU.on){if((w.me||0)>=need&&!DOUTF)return doutStart();DOUTF=0}state='end';document.getElementById('mb').hidden=true;const won=(w.me||0)>=need;if(won)gainXP(100);$ui.hidden=false;document.getElementById('touch').hidden=true;
   $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${endTitle(won)}</h1><p class="sub">Счёт ${w.me||0}:${w.them||0} · нокаутов: ${G.F[0].kills}</p>${progLine()}<div class="row"><button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;
   document.getElementById('again').onclick=()=>{G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won)}
  else{if(campRzCheck('round'))return;if(mode==='train'&&G.win&&trAfterWin())return;if(mode==='kpz'&&G.win&&kpzAfterWin())return;newRound()}}

@@ -267,7 +267,7 @@ function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind
  F.push(newFighter(0,myHero,false,0));
  const others=HOTH();
  if(NETU.on&&NETU.host)nCast(F);else if(mode==='rynok')castRynok(F);else if(mode==='boss')castBoss(F);else if(mode==='train')castTrain(F);else if(mode==='kpz')castKpz(F);else if(OBJM())castObj(F,(G?G.round:0)+1);else for(let i=1;i<n;i++){const team=mode==='team'?(i===1?0:1):mode==='disko'?(i<3?0:1):i;const f=newFighter(i,others[(i-1)%3],true,team);if((mode==='team'||mode==='disko')&&team===0){f.ally=true;f.name=i===1?'Свой':'Малой'}F.push(f)}
- applyProg(F[0]);invApply(F[0]);invStart(F[0]);
+ korApply(F);applyProg(F[0]);invApply(F[0]);invStart(F[0]);
  if(mode==='bike'){F.forEach((f,i)=>{f.x=420+i*90;f.y=420+i*70;f.face=1})}
  if(mode==='disko'){F.forEach((f,i)=>{const L=f.team===0;f.x=L?200+i*80:1080-(i-3)*80;f.y=440+(i%3)*80;f.face=L?1:-1})}
  if(mode==='team'&&!NETU.on){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
@@ -1193,7 +1193,7 @@ const CAMP={on:0,ch:0};
 function campMax(){return Math.min(CH.length,LS.get('camp',1))}
 function showCamp(){state='menu';CAMP.on=0;$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;const mx=campMax();
  $ui.innerHTML=`<div class="card"><h1>ПУТЬ ПАЦАНА</h1><p class="sub">Сюжет из ${CH.length} глав. Пройди главу — откроется следующая.</p><div class="clist">${CH.map((c,i)=>`<button class="ch ${i<mx?'':'lock'}" data-c="${i}" ${i<mx?'':'disabled'}><span>${i<mx?c.ic:'🔒'}</span><b>Глава ${i+1}</b><small>${i<mx?c.t:'закрыто'}</small></button>`).join('')}</div>
- ${mx>=CH.length&&LS.get('campdone',0)?'<p class="sub" style="color:var(--gold)">★ Сюжет пройден. Район твой.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
+ ${korList().length?`<p class="sub" style="color:#7cf07c">🤝 Кореша: ${korList().map(k=>k.n+' ('+(HEROES[k.h]?HEROES[k.h].name:'')+')').join(', ')} — приходят на помощь в драках</p>`:''}${mx>=CH.length&&LS.get('campdone',0)?'<p class="sub" style="color:var(--gold)">★ Сюжет пройден. Район твой.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
  $ui.querySelectorAll('.ch').forEach(b=>b.onclick=()=>showChapter(+b.dataset.c));document.getElementById('back').onclick=showMenu}
 function showChapter(i){if(CCH[i]&&cChoices()[i]==null)return showChoice(i,()=>showChapter(i));const c=CH[i];$ui.innerHTML=`<div class="card"><p class="sub">Глава ${i+1} из ${CH.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${c.ic} ${c.t.toUpperCase()}</h1>${comicHTML(i)}<div class="warn" style="border-color:#4a3d48;text-align:left;font-size:17px">${c.tx}</div>
  <div class="row"><button class="pri" id="cgo">Начать главу</button>${c.rz?'<p class="sub" style="font-size:13px;color:var(--gold)">🗣 В этой главе можно попробовать разрулить по понятиям</p>':''}<button id="cback">К главам</button></div></div>`;
@@ -1206,7 +1206,7 @@ function campRzCheck(at){if(!CAMP.on||!G||CAMP.rzAsked)return false;const c=CH[C
  rzOffer(c.rz.who,.15+CAMP.ch/CH.length*.8,c.rz.tip,()=>{if(at==='round')newRound()},()=>campRzWin());return true}
 function campAfter(won){if(!CAMP.on)return;const card=$ui.querySelector('.card');if(!card)return;const i=CAMP.ch,last=i===CH.length-1,d=document.createElement('div');
  if(won){if(campMax()<i+2)LS.set('camp',Math.min(CH.length,i+2));gainXP(50);if(last){LS.set('campdone',1);gainXP(250)}
-  const EN=campEnding();d.innerHTML=last?`<div class="warn" style="border-color:var(--gold)"><b>${EN.t}</b><br>${EN.s}<br><small>Уважение: ${'★'.repeat(cRespect())}${'☆'.repeat(3-cRespect())} · Сюжет пройден! +300 опыта.</small></div><div class="row"><button class="pri" id="cnext">К главам</button></div>`:`<p class="sub" style="color:var(--gold)">Глава ${i+1} пройдена! +50 опыта</p><div class="row"><button class="pri" id="cnext">Глава ${i+2}: ${CH[i+1].t} ▶</button></div>`}
+  const EN=campEnding(),KJ=last?'':korJoin();d.innerHTML=KJ+(last?`<div class="warn" style="border-color:var(--gold)"><b>${EN.t}</b><br>${EN.s}<br><small>Уважение: ${'★'.repeat(cRespect())}${'☆'.repeat(3-cRespect())} · Сюжет пройден! +300 опыта.</small></div><div class="row"><button class="pri" id="cnext">К главам</button></div>`:`<p class="sub" style="color:var(--gold)">Глава ${i+1} пройдена! +50 опыта</p><div class="row"><button class="pri" id="cnext">Глава ${i+2}: ${CH[i+1].t} ▶</button></div>`)}
  else d.innerHTML=`<p class="sub">Глава не пройдена — попробуй ещё раз.</p><div class="row"><button id="cnext">К главам</button></div>`;
  card.insertBefore(d,card.querySelector('.row:last-child'));const nb=document.getElementById('cnext');nb.onclick=()=>{if(won&&!last)showChapter(i+1);else showCamp()};
  const ag=document.getElementById('again');if(ag)ag.onclick=()=>{G=null;start()};const mn=document.getElementById('menu');if(mn)mn.onclick=()=>{CAMP.on=0;showMenu()}}
@@ -1623,6 +1623,16 @@ function showChoice(i,next){const C=CCH[i];state='menu';
  const pick=(o,v)=>{const c=cChoices();c[i]=v;LS.set('cch',c);if(o[3]){INV.kap+=o[3];invSave()}SFX.pick();
   $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(28px,5vw,46px)">${v==='good'?'ПО-ПАЦАНСКИ':'ДЕЛО СДЕЛАНО'}</h1><p class="sub">${o[2]}</p><p class="sub">Уважение района: ${'★'.repeat(cRespect())}${'☆'.repeat(3-cRespect())}</p><div class="row"><button class="pri" id="chgo">Дальше ▶</button></div></div>`;document.getElementById('chgo').onclick=next};
  document.getElementById('cha').onclick=()=>pick(C.a,'good');document.getElementById('chb').onclick=()=>pick(C.b,'bad')}
+/* кореша: побеждённый пацан зауважал и теперь ходит с тобой */
+function korList(){return LS.get('kor',[])}
+function korApply(F){if(!CAMP.on||NETU.on)return;const K=korList().filter(k=>HEROES[k.h]&&k.h!==myHero);if(!K.length)return;let j=CAMP.ch%K.length,used=0;
+ for(let i=1;i<F.length&&used<K.length;i++){const o=F[i];if(!(o.ally&&o.bot&&!o.spr&&!o.npc))continue;const k=K[(j+used)%K.length];const f=newFighter(o.idx,k.h,true,0);Object.assign(f,{x:o.x,y:o.y,face:o.face,team:o.team,ally:true,name:k.n,kor:1});F[i]=f;used++}
+ if(!used&&mode==='boss'){const k=K[j];const f=newFighter(F.length,k.h,true,0);Object.assign(f,{x:160,y:470,face:1,team:0,ally:true,name:k.n,kor:1});F.push(f);used=1}
+ if(used)setTimeout(()=>{if(G&&G.F){const f=G.F.find(x=>x.kor);if(f)G.FX.push({x:f.x,y:f.y-190,t:0,life:2,txt:'КОРЕШ '+f.name.toUpperCase()+' С ТОБОЙ',c:'#7cf07c',big:1})}},500)}
+function korJoin(){if(!G||!G.F)return '';const K=korList(),done=LS.get('korch',[]);if(K.length>=4||done.includes(CAMP.ch))return '';
+ const c=G.F.filter(f=>f.bot&&!f.ally&&f.team!==0&&!f.npc&&!f.boss&&!f.spr&&HEROES[f.hero]&&f.hero!==myHero&&!K.some(k=>k.h===f.hero));if(!c.length)return '';
+ const f=c.sort((a,b)=>(b.max||0)-(a.max||0))[0],nm=(f.name&&f.name!=='Ты'?f.name:HEROES[f.hero].name).slice(0,14);K.push({h:f.hero,n:nm});LS.set('kor',K);done.push(CAMP.ch);LS.set('korch',done);SFX.pick();
+ return `<div class="warn" style="border-color:#7cf07c;text-align:left"><b>🤝 ${nm} зауважал тебя.</b><br>Теперь он твой кореш (${HEROES[f.hero].name}) — будет приходить на помощь в драках сюжета.<br><small>Кореша: ${K.map(k=>k.n).join(', ')}</small></div>`}
 /* союзники в финале */
 function campAllies(F){if(!(CAMP.on&&CAMP.ch===CH.length-1))return;const c=cChoices();let k=0;for(const i of [2,4,6])if(c[i]==='good'){const a=newFighter(F.length,[3,6,9][k%3],true,0);a.ally=true;a.name=CAL[i];a.x=120+k*50;a.y=470+k*80;a.face=1;F.push(a);k++}
  if(k)setTimeout(()=>{if(G){G.FX.push({x:300,y:300,t:0,life:2,txt:k===3?'ВЕСЬ РАЙОН ЗА ТЕБЯ!':'СВОИ ПРИШЛИ!',c:'#7cf07c',big:1})}},400)}

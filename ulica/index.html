@@ -212,7 +212,9 @@ function drawFighter(g,f,t){const SK=f.spr||NSK[f.npc];if(f.npc&&!nsOK(SK))retur
  }
  g.restore();
  // name + hp
- if(f.state!=='ko'&&!f.noHud){const y=f.y-170*big;g.fillStyle='rgba(0,0,0,.55)';g.fillRect(f.x-30,y,60,7);g.fillStyle=f.hp/f.max>.4?(f.bot?'#d8a040':'#5ad05a'):'#e0303a';g.fillRect(f.x-30,y,60*Math.max(0,f.hp/f.max),7);
+ if(f.state==='ko'&&!f.noHud&&!f.npc){g.save();g.globalAlpha=.75;g.font='bold 13px system-ui';g.textAlign='center';g.fillStyle='rgba(0,0,0,.55)';const kx=f.x+f.face*45;g.fillRect(kx-34,f.y-104,68,17);g.fillStyle='#d0c8c0';g.fillText('✖ выбыл',kx,f.y-91);g.restore()}
+ if(f.state==='down'&&!f.noHud){const y=f.y-92,bx=f.x+f.face*45;g.fillStyle='rgba(0,0,0,.6)';g.fillRect(bx-32,y,64,8);g.fillStyle=f.hp/f.max>.4?(f.bot?'#d8a040':'#5ad05a'):'#e0303a';g.fillRect(bx-32,y,64*Math.max(0,f.hp/f.max),8);g.save();g.font='18px system-ui';g.textAlign='center';const tt=(G?G.t:0)*4;for(let k=0;k<3;k++)g.fillText('💫',bx+Math.cos(tt+k*2.1)*26,y-8+Math.sin(tt+k*2.1)*6);g.restore()}
+ if(f.state!=='ko'&&f.state!=='down'&&!f.noHud){const y=f.y-170*big;g.fillStyle='rgba(0,0,0,.55)';g.fillRect(f.x-30,y,60,7);g.fillStyle=f.hp/f.max>.4?(f.bot?'#d8a040':'#5ad05a'):'#e0303a';g.fillRect(f.x-30,y,60*Math.max(0,f.hp/f.max),7);
   g.font='bold 13px system-ui';g.textAlign='center';g.fillStyle=f.bot?'#e8c08a':'#ffffff';g.fillText(f.name,f.x,y-5)}
  if(f.stun>0&&f.state!=='ko'){for(let i=0;i<3;i++){const a=t*6+i*2.1;g.fillStyle='#ffd23f';g.beginPath();g.arc(f.x+Math.cos(a)*22,f.y-160*big+Math.sin(a)*6,4,0,TAU);g.fill()}}}
 
@@ -1768,7 +1770,7 @@ function krCarTick(c,dt){const I=krInput(c);const me=c===K.c;if(c.a==null)c.a=0;
   if(!c.wallT||c.wallT<=0){c.wallT=.8;if(c.v>90&&into&&Math.abs(c.a-road)>.5){krDmg(c,2,'БОРТ');if(me)K.shk=Math.max(K.shk,4)}}}
  if(c.wallT>0)c.wallT-=dt;
  for(const o of K.O){if(o.hit===2)continue;const T=KOT[o.k],[ow,oh2]=krObSize(o);
-  if(!krBox(c.x,c.y,KR.CW*.9,KR.CL*.85,o.x,o.y,ow*.8,oh2*.75))continue;
+  if(T.oil||T.bump||T.pick){const ex=(c.x-o.x)/(ow*.36+KR.CW*.32),ey=(c.y-o.y)/(oh2*.34+KR.CL*.34);if(ex*ex+ey*ey>1)continue}else if(!krBox(c.x,c.y,KR.CW*.72,KR.CL*.78,o.x,o.y,ow*.62,oh2*.58))continue;
   if(T.pick){o.hit=2;if(me)SFX.pick();if(T.pick==='nitro'){c.nitro=Math.min(3,c.nitro+1);krTxt(c,'+НИТРО','#7cf0ff')}else{c.hp=Math.min(100,c.hp+35);krTxt(c,'ПОЧИНИЛ +35','#5ad05a')}continue}
   if(T.oil){if(c.oilT<=0){c.oilT=.9;c.oilD=Math.random()<.5?-1:1;krTxt(c,'ЗАНОС!','#e8b23a');if(me)SFX.whoosh()}continue}
   if(T.bump){if(!(o.bumped||(o.bumped=[])).includes(c)){o.bumped.push(c);krDmg(c,T.dmg,'ТРЯХНУЛО');c.v*=.62;if(me)K.shk=8}continue}

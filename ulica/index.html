@@ -1181,7 +1181,7 @@ const CH=[
  {t:'Отжать салон',m:'salon',ic:'📼',rz:{at:'start',who:'Видик',tip:'Хозяин салона выходит навстречу: «Может, договоримся, пока аппаратуру не побили?»'},tx:'Видик с соседнего района крутит кино в подвале и ни с кем не делится. Пора объяснить ему, чей это район.'},
  {t:'Разборка по кругу',m:'rayon',ic:'🚲',tx:'Заречные решили, что гаражи теперь их. Разбор — на великах и скейтах, три круга по району. Приди первым или сбей их всех.'},
  {t:'Облава',m:'oblava',ic:'🚨',tx:'После гонки по району всё отделение на ушах. Нычки раскиданы по пустырю — три круга: собери, сдай в гараж, и снова. С каждым кругом уазиков больше.'},
- {t:'Ментовка',m:'kpz',ic:'🚔',tx:'Под утро всё-таки приняли. КПЗ: в камере блатные устраивают прописку. Отбейся, вскрой замок камеры и уходи через коридор и дежурку, пока не оформили. Два раза свалят — сидеть тебе.'},
+ {t:'Ментовка',m:'kpz',ic:'🚔',tx:'Под утро всё-таки приняли. КПЗ: в камере блатные устраивают прописку. Отбейся — а дальше решай: сдать блатных и выйти, или вскрыть замок и тихо уйти через коридор и дежурку. Два раза попадёшься — сидеть тебе.'},
  {t:'Дискотека',m:'disko',ic:'🪩',rz:{at:'round',who:'Старший заречных',tip:'После первого раунда старший заречных отводит тебя в сторону: «Дружинники смотрят. Решим по-тихому?»'},tx:'Суббота, ДК «Строитель». Пока играет медляк — мир, дружинники смотрят. Но заречные пришли не танцевать.'},
  {t:'Электричка',m:'train',ic:'🚆',tx:'Последняя электричка. Заречные едут той же — и решили, что до станции ты не доедешь. Вагон, купе, открытая платформа на ходу и перрон — пробейся через всё. Два раза свалят — глава не пройдена.'},
  {t:'Бригадир',m:'boss',b:'brig',ic:'⛑️',rz:{at:'start',who:'Бригадир',tip:'Бригадир опирается на лом: «Дань с гаражей — моя. Но если ты такой умный — объясни, почему нет.»'},tx:'Бригадир со стройки собирает дань с гаражей. Говорят, ломом машет как прутиком, а кирпичи кидает через весь двор. Один на один.'},
@@ -1902,7 +1902,7 @@ cv.addEventListener('mousedown',e=>{if(state!=='krz')return;if(e.button===0)krNi
 const ROT=(()=>{const d=document.createElement('div');d.id='rot';d.hidden=true;d.style.cssText='position:fixed;inset:0;z-index:50;background:rgba(10,8,12,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#f3e9dc;font:800 22px system-ui;text-align:center;padding:24px';
  d.innerHTML='<div style="font-size:84px;animation:rotph 1.6s ease-in-out infinite">📱</div><div>Поверни телефон<br>горизонтально</div><div style="font:600 15px system-ui;opacity:.75">Бой начнётся сам, как только повернёшь</div><style>@keyframes rotph{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}#rot[hidden]{display:none!important}</style>';
  document.body.appendChild(d);return d})();
-const PLAYST=['play','krz','trgap'];
+const PLAYST=['play','krz','trgap','kpzsneak'];
 const needRot=()=>IS_TOUCH&&innerHeight>innerWidth*1.05&&PLAYST.includes(state);
 function rotTryLock(){if(!IS_TOUCH||innerHeight<=innerWidth)return;try{const el=document.documentElement,rq=el.requestFullscreen||el.webkitRequestFullscreen;const go=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};if(rq&&!document.fullscreenElement){const r=rq.call(el,{navigationUI:'hide'});if(r&&r.then)r.then(go).catch(()=>{});else go()}else go()}catch(e){}}
 function rotCheck(){const n=needRot();if(ROT.hidden===n)ROT.hidden=!n;return n}
@@ -2057,11 +2057,77 @@ function kpzInit(){const L=kpzLoc();G.kp={L,copT:L===2?12:L===1?9:0,copN:0};G.ms
 function kpzUpdate(dt){const P=G.kp;if(!P||G.over)return;const act=G.F.filter(f=>f.state!=='ko');
  if(P.L===1){for(const f of act)f.y=clamp(f.y,470,650);P.copT-=dt;if(P.copT<=0&&P.copN<2){P.copN++;P.copT=10;const f=mkCop(G.F.length,[420,760,1100][P.copN%3],480,-1);G.F.push(f);G.FX.push({x:f.x,y:f.y-200,t:0,life:1.1,txt:'ИЗ КАБИНЕТА!',c:'#6aa8ff',big:1});SFX.whoosh()}}
  if(P.L===2){P.copT-=dt;if(P.copT<=0&&P.copN<3){P.copN++;P.copT=12;const f=mkCop(G.F.length,W-40,rnd(460,640),-1);G.F.push(f);G.FX.push({x:W/2,y:210,t:0,life:1.4,txt:'ПОДМОГА!',c:'#6aa8ff',big:1});SFX.siren&&SFX.siren()}}}
-function kpzAfterWin(){const L=kpzLoc();if(NETU.on||L!==1)return false;
- krzLock(r=>{G0kpz.bonus=r;newRound();G0kpz.bonus='';resumePlay();if(r==='alarm'){G.msg='ТРЕВОГА!';G.sub='Шум услышали — в коридоре на одного мента больше.';G.msgT=2.5}else if(r==='clean'){G.msg='ТИХО ВЫШЕЛ';G.sub='+25% здоровья.';G.msgT=2}},
+function kpzAfterWin(){if(NETU.on||kpzLoc()!==1)return false;kpzSnitch();return true}
+/* ---------- МЕНТОВКА: тихий побег — две длинные локации, прячься и вырубай со спины ---------- */
+const SNW=2400,SNY0=470,SNY1=660;
+const SNL=[{name:'КОРИДОР ОТДЕЛЕНИЯ',hide:[[435,555],[1035,1155],[1635,1755]],g:[[600,1150,1],[1300,1800,-1],[1950,2250,1]]},
+ {name:'ДЕЖУРНАЯ ЧАСТЬ',hide:[[435,555],[735,855],[1335,1455],[1935,2055]],g:[[520,1000,1],[1050,1500,-1],[1550,2000,1],[1900,2300,-1]]}];
+for(const k of ['kpzs0a','kpzs0b','kpzs1a','kpzs1b']){const i=new Image();i.src='img/bg_'+k+'.webp';BGPH[k]=i}
+let SN=null;
+function snBG(n){const c=document.createElement('canvas');c.width=SNW;c.height=H;const g=c.getContext('2d');
+ const a=BGPH['kpzs'+n+'a'],b=BGPH['kpzs'+n+'b'];
+ if(a&&a.naturalWidth&&b&&b.naturalWidth){g.drawImage(a,0,0,SNW/2+40,H);g.drawImage(b,SNW/2-40,0,SNW/2+40,H);return c}
+ g.fillStyle=n?'#3a4a5a':'#4a6a7a';g.fillRect(0,0,SNW,330);g.fillStyle=n?'#c8c0a8':'#d8d0b0';g.fillRect(0,200,SNW,130);
+ g.fillStyle=n?'#5a5a60':'#7a6a52';g.fillRect(0,330,SNW,H-330);g.fillStyle='rgba(0,0,0,.18)';for(let x=0;x<SNW;x+=80)g.fillRect(x,330,3,H-330);
+ for(let x=140;x<SNW;x+=300){rr(g,x,70,110,260,4,'#6a4a2a',4);g.fillStyle='#e8c23a';g.fillRect(x+90,200,8,10);rr(g,x+20,90,70,22,3,'#e8e2c0',2)}
+ for(let x=60;x<SNW;x+=240){g.fillStyle='rgba(255,240,200,.85)';g.fillRect(x,8,90,8)}
+ rr(g,SNW-170,60,150,270,6,'#2a2a30',4);g.fillStyle='#5ad05a';g.fillRect(SNW-150,80,110,30);g.fillStyle='#0a0a0a';g.font='900 22px Impact';g.textAlign='center';g.fillText('ВЫХОД',SNW-95,103);return c}
+function snStart(n,done){const me=G.F[0];me.x=90;me.y=560;me.face=1;me.state='idle';me.atkT=0;me.kickT=0;me.vx=0;me.weapon=null;
+ const L=SNL[n],gs=L.g.map(([a,b,f],i)=>{const g=newFighter(10+i,0,true,1);g.spr='druzh';g.name='Мент';g.team=1;g.a=a;g.b=b;g.x=f>0?a:b;g.y=rnd(SNY0+20,SNY1-20);g.face=f;g.state='walk';g.sus=0;g.wait=0;g.out=0;g.chase=0;return g});
+ SN={n,L,gs,done,bg:snBG(n),cam:0,sus:0,hid:0,over:0,res:null,resT:0,t:0,msg:L.name,msgT:2.4,ko:0,fx:[]};
+ state='kpzsneak';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!IS_TOUCH;rotTryLock()}
+function snCone(g){return {x:g.x,y:g.y,d:g.face,r:300}}
+function snSees(g,p,hid){if(hid||g.out)return false;const dx=(p.x-g.x)*g.face;return dx>20&&dx<300&&Math.abs(p.y-g.y)<70+dx*.15}
+function snHit(){if(!SN||SN.res)return;const me=G.F[0];me.atkT=me.atkDur=.25;SFX.whoosh();
+ for(const g of SN.gs){if(g.out)continue;const dx=me.x-g.x,behind=dx*g.face<0;if(Math.abs(dx)<85&&Math.abs(me.y-g.y)<45){
+   if(behind&&!g.chase){g.out=1;g.state='ko';g.downT=0;SN.ko++;SFX.hit();SN.fx.push({x:g.x,y:g.y-150,t:0,txt:'ТИХО ВЫРУБИЛ',c:'#7cf07c'})}
+   else{g.chase=1;SN.sus=1;SFX.metal();SN.fx.push({x:g.x,y:g.y-150,t:0,txt:'ЗАМЕТИЛ!',c:'#ff5a5a'})}return}}}
+function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(const f of S.fx)f.t+=dt;S.fx=S.fx.filter(f=>f.t<1.1);
+ const me=G.F[0];me.anim+=dt;if(me.atkT>0)me.atkT-=dt;
+ if(S.res){S.resT-=dt;if(S.resT<=0){const r=S.res,d=S.done;SN=null;d(r)}return}
+ let mx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,my=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my;
+ mx=clamp(mx,-1,1);my=clamp(my,-1,1);const mv=Math.hypot(mx,my)>.15;const sp=150;
+ me.x=clamp(me.x+mx*sp*dt,40,SNW-40);me.y=clamp(me.y+my*sp*.6*dt,SNY0,SNY1);if(mv){me.state='walk';if(Math.abs(mx)>.1)me.face=mx>0?1:-1}else me.state='idle';
+ const inHide=S.L.hide.some(([a,b])=>me.x>a&&me.x<b&&me.y<SNY0+70);S.hid=inHide&&!mv;
+ let seen=0;
+ for(const g of S.gs){if(g.out){g.downT=(g.downT||0)+dt;continue}g.anim+=dt;
+  if(g.chase){const dx=me.x-g.x,dy=me.y-g.y;g.face=dx>0?1:-1;g.state='walk';g.x+=Math.sign(dx)*190*dt;g.y+=clamp(dy,-1,1)*Math.min(Math.abs(dy),110*dt);if(Math.abs(dx)<50&&Math.abs(dy)<35){S.res='caught';S.resT=1.6;SFX.siren&&SFX.siren()}continue}
+  if(g.wait>0){g.wait-=dt;g.state='idle';if(g.wait<=0)g.face=-g.face}else{g.state='walk';g.x+=g.face*70*dt;if(g.x>g.b){g.x=g.b;g.wait=rnd(1,2)}if(g.x<g.a){g.x=g.a;g.wait=rnd(1,2)}}
+  if(snSees(g,me,S.hid)){seen=1;g.sus=Math.min(1,(g.sus||0)+dt*(1.4-Math.min(1,Math.abs(me.x-g.x)/300)*.8));if(g.sus>=1){g.chase=1;SFX.metal();S.fx.push({x:g.x,y:g.y-150,t:0,txt:'СТОЯТЬ!',c:'#ff5a5a'})}}
+  else g.sus=Math.max(0,(g.sus||0)-dt*.5)}
+ S.sus=Math.max(...S.gs.map(g=>g.chase?1:g.sus||0),0);
+ if(me.x>SNW-120){S.res='ok';S.resT=1.4;SFX.bell()}
+ S.cam=clamp(me.x-W*.4,0,SNW-W)}
+function snDraw(t){const S=SN;if(!S)return;ctx.save();ctx.drawImage(S.bg,S.cam,0,W,H,0,0,W,H);ctx.translate(-S.cam,0);
+ for(const [a,b] of S.L.hide){ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(a,SNY0-30,b-a,100);ctx.strokeStyle='rgba(124,240,124,.35)';ctx.setLineDash([8,6]);ctx.lineWidth=2;ctx.strokeRect(a,SNY0-30,b-a,100);ctx.setLineDash([])}
+ for(const g of S.gs){if(g.out)continue;const gr=ctx.createLinearGradient(g.x,0,g.x+g.face*300,0);gr.addColorStop(0,`rgba(255,240,170,${.32+.4*(g.sus||0)})`);gr.addColorStop(1,'rgba(255,240,170,0)');ctx.fillStyle=g.chase?'rgba(255,60,60,.25)':gr;ctx.beginPath();ctx.moveTo(g.x+g.face*20,g.y-6);ctx.lineTo(g.x+g.face*300,g.y-70-45);ctx.lineTo(g.x+g.face*300,g.y+70+45);ctx.closePath();ctx.fill()}
+ const all=[...S.gs,G.F[0]].sort((a,b)=>a.y-b.y),me=G.F[0];
+ for(const f of all){ctx.save();if(f===me&&S.hid)ctx.globalAlpha=.45;drawFighter(ctx,f,t);ctx.restore();
+  if(f!==me&&!f.out&&(f.sus>.05||f.chase)){ctx.fillStyle=f.chase?'#ff3030':'#ffd23f';ctx.font='900 34px Impact';ctx.textAlign='center';ctx.fillText(f.chase?'!':'?',f.x,f.y-215)}}
+ for(const f of S.fx){ctx.globalAlpha=1-f.t/1.1;ctx.font='900 26px Impact';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(f.txt,f.x,f.y-f.t*40);ctx.fillStyle=f.c;ctx.fillText(f.txt,f.x,f.y-f.t*40);ctx.globalAlpha=1}
+ ctx.restore();
+ ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-230,12,460,62);ctx.textAlign='center';ctx.font='900 20px Impact';ctx.fillStyle='#6aa8ff';ctx.fillText('🚔 ПОБЕГ '+(S.n+1)+'/2 · '+S.L.name+' · вырубил: '+S.ko,W/2,36);
+ ctx.fillStyle='#331';ctx.fillRect(W/2-150,46,300,14);ctx.fillStyle=S.sus>.7?'#e0303a':S.sus>.3?'#e8b23a':'#5ad05a';ctx.fillRect(W/2-150,46,300*S.sus,14);ctx.font='bold 12px system-ui';ctx.fillStyle='#fff';ctx.fillText(S.hid?'СПРЯТАЛСЯ':'ЗАМЕТНОСТЬ',W/2,70-12);
+ const P=(me.x-90)/(SNW-210);ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(W/2-150,80,300,6);ctx.fillStyle='#e8b23a';ctx.fillRect(W/2-150,80,300*clamp(P,0,1),6);
+ if(S.t<7){ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.95)';ctx.fillText('Иди к ВЫХОДУ справа · стой в тёмных нишах — не видят · сзади '+(IS_TOUCH?'УДАР':'F')+' — тихо вырубить · в свет фонаря не попадай',W/2,H-80)}
+ if(S.msgT>0){ctx.font='900 52px Impact';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(S.msg,W/2,250);ctx.fillStyle='#f3e9dc';ctx.fillText(S.msg,W/2,250)}
+ if(S.res){ctx.font='900 56px Impact';ctx.lineWidth=9;ctx.strokeStyle='#000';const tx=S.res==='ok'?'ПРОШЁЛ':'ПОВЯЗАЛИ';ctx.strokeText(tx,W/2,300);ctx.fillStyle=S.res==='ok'?'#e8b23a':'#e0303a';ctx.fillText(tx,W/2,300)}}
+addEventListener('keydown',e=>{if(state==='kpzsneak'&&(e.code==='KeyF'||e.code==='Space')&&!e.repeat){e.preventDefault();snHit()}});
+document.getElementById('bA').addEventListener('pointerdown',()=>{if(state==='kpzsneak')snHit()});
+/* цепочка: побег 1 → побег 2 → выход */
+function kpzSneakChain(n){snStart(n,r=>{if(r==='ok'){if(n===0)return kpzSneakChain(1);state='play';G.wins.me=3;G.wins.them=G.wins.them||0;return roundEnd()}
+ G.wins.them=(G.wins.them||0)+1;if(G.wins.them>=2){state='play';return roundEnd()}
+ G.msg='ПОВЯЗАЛИ — ЕЩЁ РАЗ';kpzSneakChain(n)})}
+function kpzSnitch(){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;if(G)G.msgT=0;
+ $ui.innerHTML=`<div class="card"><p class="sub">Ментовка · под утро</p><h1 style="font-size:clamp(28px,5.5vw,48px)">СДАЙ БЛАТНЫХ?</h1><div class="warn" style="border-color:#6aa8ff;text-align:left;font-size:17px">Дежурный открывает кормушку: «Слышь, малой. Скажи, у кого из блатных заточка и кто вчера ларёк брал — и пойдёшь домой прямо сейчас. Никто не узнает».</div>
+ <div class="col" style="max-width:440px;margin:10px auto"><button class="rza" id="snY">🐀 Сдать блатных — выйти сразу</button><button class="rza" id="snN">🤐 Молчать — бежать самому</button></div><p class="sub" style="font-size:13px">Сдашь — выйдешь без драки, но на районе это узнают: уважение упадёт.</p></div>`;
+ document.getElementById('snY').onclick=()=>{const c=cChoices();for(const k in c)if(c[k]==='good'){c[k]='bad';break}LS.set('cch',c);LS.set('snitch',1);
+  $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(28px,5vw,46px)">СДАЛ</h1><p class="sub">Утром тебя выпустили. Но в КПЗ всё слышно — к вечеру об этом знает весь район.</p><p class="sub">Уважение района: ${'★'.repeat(cRespect())}${'☆'.repeat(3-cRespect())}</p><div class="row"><button class="pri" id="snGo">Дальше ▶</button></div></div>`;
+  document.getElementById('snGo').onclick=()=>{state='play';G.wins.me=3;roundEnd()}};
+ document.getElementById('snN').onclick=()=>{au();kpzLockThenSneak()}}
+function kpzLockThenSneak(){krzLock(r=>{G.msgT=0;if(r==='alarm'){G.wins.them=(G.wins.them||0)+1}kpzSneakChain(0)},
   {sub:'КПЗ · ночь',title:'ВСКРОЙ ЗАМОК КАМЕРЫ',hint:'Дежурный идёт с обходом.',gname:'🚶 ДЕЖУРНЫЙ',img:KPLOCK,
-   R:{alarm:['ДЕЖУРНЫЙ ПОДНЯЛ ШУМ!','В коридоре ждут — пробивайся'],clean:['ДВЕРЬ ОТКРЫТА. ТИХО.','Дежурный ничего не слышал'],noisy:['ОТКРЫЛ, НО ЛЯЗГНУЛО','Менты насторожились']}});
- return true}
+   R:{alarm:['ДЕЖУРНЫЙ ПОДНЯЛ ШУМ!','Засчитан промах — дальше тихо'],clean:['ДВЕРЬ ОТКРЫТА. ТИХО.','Теперь — по коридору незаметно'],noisy:['ОТКРЫЛ, НО ЛЯЗГНУЛО','Менты насторожились']}})}
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(CAMP.on&&!CAMP.rzAsked&&G.t>1.6&&!G.over&&campRzCheck('start'))return;if(G.msgT>0)G.msgT-=dt;
  const me=G.F[0];
@@ -2194,7 +2260,7 @@ function touchFade(dt){const T=document.getElementById('touch');if(T.hidden||!G|
 paintBG();
 function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;
  if(MUS.on&&(state!=='play'||mode!=='disko'||(G&&G.over)))musStop();
- try{if(state==='trgap'){if(!rotCheck())gpTick(dt);if(G)render(t)}const RW=rotCheck()&&!NETU.on;if(state==='trgap'){}else if(RW){if(G)render(t);else if(K)krDraw(t)}else if(state==='krz'||state==='krzlock'||state==='krzpause'){krzLoop(dt,t)}else if(state==='play'&&G&&!HOLD){if(G.net){nClientTick(dt);render(t);touchFade(dt)}else{update(dt);render(t);touchFade(dt);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
+ try{if(state==='kpzsneak'){if(!rotCheck())snTick(dt);if(SN)snDraw(t)}if(state==='trgap'){if(!rotCheck())gpTick(dt);if(G)render(t)}const RW=rotCheck()&&!NETU.on;if(state==='trgap'||state==='kpzsneak'){}else if(RW){if(G)render(t);else if(K)krDraw(t)}else if(state==='krz'||state==='krzlock'||state==='krzpause'){krzLoop(dt,t)}else if(state==='play'&&G&&!HOLD){if(G.net){nClientTick(dt);render(t);touchFade(dt)}else{update(dt);render(t);touchFade(dt);if(NETU.on&&NETU.host&&NETU.phase==='game'){NETU.snapT-=dt;if(NETU.snapT<=0){NETU.snapT=.066;nSnap()}}}}
  else if(G){render(t)}else{ctx.drawImage(bg,0,0)}}catch(e){console.error(e)}
  requestAnimationFrame(loop)}
 requestAnimationFrame(loop);

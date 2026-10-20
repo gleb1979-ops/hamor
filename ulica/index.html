@@ -60,9 +60,15 @@ const LS={get(k,d){try{const v=localStorage.getItem('r89_'+k);return v==null?d:J
 let BLOOD=LS.get('blood',true);
 
 /* ---------- audio ---------- */
-let AC=null;function au(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume()}
-function noise(dur,f,vol,type){if(!AC)return;const t=AC.currentTime,b=AC.createBuffer(1,AC.sampleRate*dur,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);const s=AC.createBufferSource();s.buffer=b;const fl=AC.createBiquadFilter();fl.type=type||'lowpass';fl.frequency.value=f;const g=AC.createGain();g.gain.value=vol;s.connect(fl);fl.connect(g);g.connect(AC.destination);s.start(t)}
-function tone(f,dur,type,vol,f2){if(!AC)return;const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=type||'square';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(vol||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur)}
+let AC=null,MOUT=null,VOICES=0;
+function au(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();const c=AC.createDynamicsCompressor();c.threshold.value=-14;c.knee.value=10;c.ratio.value=6;c.attack.value=.003;c.release.value=.15;const g=AC.createGain();g.gain.value=.85;c.connect(g);g.connect(AC.destination);MOUT=c}catch(e){}}
+ if(AC&&AC.state!=='running'){try{const r=AC.resume();if(r&&r.catch)r.catch(()=>{})}catch(e){}}}
+/* звук пропадал: телефон «усыплял» звук (звонок, свернули, блокировка, iOS «interrupted»), а будили его только кнопки меню — теперь будит любое касание/клавиша и возврат в игру */
+for(const ev of ['pointerdown','touchend','keydown'])addEventListener(ev,()=>{if(!AC||AC.state!=='running')au()},{capture:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&AC)au()});
+function vOK(n){if(!AC||AC.state!=='running'){au();if(!AC)return false}if(VOICES>=26)return false;VOICES+=n||1;setTimeout(()=>{VOICES=Math.max(0,VOICES-(n||1))},400);return true}
+function noise(dur,f,vol,type){if(!vOK())return;const t=AC.currentTime,b=AC.createBuffer(1,AC.sampleRate*dur,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);const s=AC.createBufferSource();s.buffer=b;const fl=AC.createBiquadFilter();fl.type=type||'lowpass';fl.frequency.value=f;const g=AC.createGain();g.gain.value=vol;s.connect(fl);fl.connect(g);g.connect(MOUT||AC.destination);s.start(t)}
+function tone(f,dur,type,vol,f2){if(!vOK())return;const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=type||'square';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(vol||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(MOUT||AC.destination);o.start(t);o.stop(t+dur)}
 const SFX={hit(){noise(.12,900,.5)},heavy(){noise(.22,500,.7);tone(90,.2,'sine',.3,40)},whoosh(){noise(.1,2500,.12,'highpass')},metal(){tone(900,.12,'triangle',.12,500);noise(.1,3000,.2,'highpass')},shot(){noise(.25,1800,.8);tone(160,.15,'square',.2,50)},click(){tone(1400,.03,'square',.05)},ko(){tone(220,.5,'sawtooth',.12,60)},pick(){tone(600,.08,'square',.08,900)},bell(){tone(880,.6,'triangle',.15);tone(1320,.5,'triangle',.08)}};
 
 /* ---------- data ---------- */
@@ -1117,8 +1123,8 @@ const GIRLS=[{spr:'g1',dress:'#e83a8a',hair:'#3a2214',bow:'#ffe24a',x:380,y:404}
 /* music */
 const MUS={on:0,kind:'',next:0,step:0,nb:null};
 function musNoise(){if(!MUS.nb&&AC){const b=AC.createBuffer(1,AC.sampleRate*.3,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;MUS.nb=b}return MUS.nb}
-function mOsc(t,f,dur,type,vol,f2,att){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);const a=att||.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0005,t+dur);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur+.05)}
-function mHit(t,dur,vol,hp){const s=AC.createBufferSource();s.buffer=musNoise();const f=AC.createBiquadFilter();f.type=hp?'highpass':'bandpass';f.frequency.value=hp?7000:1800;const g=AC.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0005,t+dur);s.connect(f);f.connect(g);g.connect(AC.destination);s.start(t);s.stop(t+dur+.02)}
+function mOsc(t,f,dur,type,vol,f2,att){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);const a=att||.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0005,t+dur);o.connect(g);g.connect(MOUT||AC.destination);o.start(t);o.stop(t+dur+.05)}
+function mHit(t,dur,vol,hp){const s=AC.createBufferSource();s.buffer=musNoise();const f=AC.createBiquadFilter();f.type=hp?'highpass':'bandpass';f.frequency.value=hp?7000:1800;const g=AC.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0005,t+dur);s.connect(f);f.connect(g);g.connect(MOUT||AC.destination);s.start(t);s.stop(t+dur+.02)}
 const MPROG=[[220,261.6,329.6],[174.6,220,261.6],[261.6,329.6,392],[196,246.9,293.7]];
 function musNote(t,st){if(MUS.kind==='slow'){const ch=MPROG[(st>>3)%4];if(st%8===0)for(const f of ch)mOsc(t,f/2,3.2,'triangle',.022,0,.6);mOsc(t,ch[st%3]*(st%8>3?2:1),.5,'sine',.028,0,.02)}
  else{const ch=MPROG[(st>>4)%4];if(st%4===0)mOsc(t,150,.16,'sine',.3,40);if(st%8===4)mHit(t,.12,.12,0);if(st%2===1)mHit(t,.04,.035,1);if(st%4===2||st%8===7)mOsc(t,ch[0]/2,.13,'sawtooth',.05);if(st%16===0)mOsc(t,ch[2]*2,.3,'square',.025)}}

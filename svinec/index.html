@@ -652,7 +652,7 @@ function coverPosters(g){const P=[[282,75,149,141,'#b81c24'],[452,46,130,134,'#1
   g.strokeStyle='rgba(0,0,0,.6)';g.lineWidth=3;g.strokeRect(0,0,w,h);g.restore()})}
 /* скрытая реклама Тагшим: афиши и вывески прямо в мире */
 const TGI=new Image();TGI.src='img/tg_icon.png';TGI.onload=()=>{if(typeof BGK!=='undefined'&&TAGAD[BGK])paintBG()};
-const TAGAD={rynok1:[448,150,58,76,-.05,'p'],rynok3:[298,258,140,38,.02,'s'],rynok6:[826,116,52,66,.04,'p'],street:[666,178,60,80,-.03,'p'],rynok7:[1180,140,44,58,.03,'p']};
+const TAGAD={rynok1:[448,150,58,76,-.05,'p'],rynok3:[298,258,140,38,.02,'s'],rynok6:[826,116,52,66,.04,'p'],rynok7:[1180,140,44,58,.03,'p']};
 function tagAd(g,k){const A=TAGAD[k];if(!A)return;const [x,y,w,h,r,st]=A;g.save();g.translate(x+w/2,y+h/2);g.rotate(r);g.translate(-w/2,-h/2);
  if(st==='p'){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(3,4,w,h);const pg=g.createLinearGradient(0,0,w,h);pg.addColorStop(0,'#efe3c4');pg.addColorStop(1,'#cdbb92');g.fillStyle=pg;g.fillRect(0,0,w,h);
   g.fillStyle='#b81c24';g.fillRect(0,0,w,h*.16);if(TGI.complete&&TGI.naturalWidth)g.drawImage(TGI,w*.18,h*.2,w*.64,w*.64);

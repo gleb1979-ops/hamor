@@ -85,12 +85,12 @@ const HEROES=[
  {id:'kaban',name:'Кабан',desc:'Бугай в спортивке. Кулак сбивает с ног',hp:140,spd:180,pow:1.3,rate:.85,heavyFist:1,price:600,pq:'h_kaban',hand:{i:[41,-93],p:[101,-110],o:[-15,-147]},top:115,sc:1.18,jacket:'#1f2a5a',pants:'#1f2a5a',stripe:'#f2f2f2',hair:'#4a3a2a',skin:'#e0a880'},
  {id:'marinka',name:'Маринка',desc:'Со двора. Вёрткая — уворачивается от ударов',hp:85,spd:260,pow:.95,rate:1.3,dodge:.22,price:450,pq:'h_marinka',hand:{i:[28,-93],p:[65,-105],o:[6,-154]},top:115,sc:1.05,noEnemy:1,jacket:'#6a2a9a',pants:'#6a2a9a',stripe:'#f2f2f2',hair:'#7a4a2a',skin:'#f0c4a0'}];
 const TINT=document.createElement('canvas');TINT.width=400;TINT.height=360;const PZMAP=[1,0,2,3],PZTOP0=[60,70,70,58],PZI=[],PZTOP=[];for(let h=0;h<HEROES.length;h++){const i=new Image();i.src=HEROES[h].pq?'img/'+HEROES[h].pq+'.webp':'img/pq'+PZMAP[h]+'.webp';PZI[h]=i;PZTOP[h]=HEROES[h].top!=null?HEROES[h].top:PZTOP0[PZMAP[h]];i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
-const NSPR={},NTOP={girl:83,major:130,majorb:130,ment:116,druzh:116,ded:116,storozh:115,vasya:115,host:115,brig:116,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115,perro:110},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
+const NSPR={},NTOP={girl:83,major:130,majorb:130,ment:116,druzh:116,ded:116,storozh:115,vasya:115,host:115,brig:116,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115,perro:110,flaco:110},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
 const UAZI=new Image();UAZI.src='img/uaz.webp';
 const nsOK=k=>k&&NSPR[k]&&NSPR[k].complete&&NSPR[k].naturalWidth;
 /* 6-кадровый цикл ходьбы: ноги переставляются */
 const WKH=[],WKN={};for(let h=0;h<HEROES.length;h++)if(HEROES[h].pq){const i=new Image();i.src='img/wk_'+HEROES[h].pq+'.webp';WKH[h]=i}
-for(const k of ['perro','girl','major','majorb','ment','brig','druzh','g2','host','myasnik','naper','smotr','storozh','vasya','farc','g3','reshala','ded','baryga']){const i=new Image();i.src='img/wk_n_'+k+'.webp';WKN[k]=i}
+for(const k of ['perro','flaco','girl','major','majorb','ment','brig','druzh','g2','host','myasnik','naper','smotr','storozh','vasya','farc','g3','reshala','ded','baryga']){const i=new Image();i.src='img/wk_n_'+k+'.webp';WKN[k]=i}
 const imOK=i=>i&&i.complete&&i.naturalWidth;
 const ENEMY_COL=['#4a6a2a','#5a2a6a','#6a4a1a','#2a5a6a'];
 const WEAPONS={
@@ -276,7 +276,7 @@ function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind
  F.push(newFighter(0,myHero,false,0));
  const others=HOTH();
  if(NETU.on&&NETU.host)nCast(F);else if(mode==='rynok')castRynok(F);else if(mode==='boss')castBoss(F);else if(mode==='train')castTrain(F);else if(mode==='kpz')castKpz(F);else if(mode==='dout')castDout(F);else if(mode==='dlad')castDlad(F);else if(OBJM())castObj(F,(G?G.round:0)+1);else for(let i=1;i<n;i++){const team=mode==='team'?(i===1?0:1):mode==='disko'?(i<3?0:1):i;const f=newFighter(i,others[(i-1)%3],true,team);if((mode==='team'||mode==='disko')&&team===0){f.ally=true;f.name=i===1?'Свой':'Малой'}F.push(f)}
- korApply(F);applyProg(F[0]);invApply(F[0]);invStart(F[0]);if(CAMP.on&&CAMP.ch===0&&mode==='ffa'){const p=F.find(f=>f.bot&&!f.ally);if(p){p.spr='perro';p.name='Эль Перро';p.bscale=1.12;p.max=Math.round(p.max*1.35);p.hp=p.max;p.weapon='chain';p.dur=99;p.perro=1}}if(CAMP.on){const heat=Object.values(cChoices()).filter(v=>v==='bad').length;if(heat)for(const f of F)if(f.bot&&!f.ally&&f.team!==0){f.max=Math.round(f.max*(1+.15*heat));f.hp=f.max}}
+ korApply(F);applyProg(F[0]);invApply(F[0]);invStart(F[0]);if(CAMP.on&&CAMP.ch===0&&mode==='ffa'){const p=F.find(f=>f.bot&&!f.ally);if(p){p.spr='perro';p.name='Эль Перро';p.bscale=1.12;p.max=Math.round(p.max*1.35);p.hp=p.max;p.weapon='chain';p.dur=99;p.perro=1}const q=F.find(f=>f.bot&&!f.ally&&f!==p);if(q){q.spr='flaco';q.name='Флако';q.weapon='knife';q.dur=99;q.mSpd=(q.mSpd||1)*1.12}}if(CAMP.on){const heat=Object.values(cChoices()).filter(v=>v==='bad').length;if(heat)for(const f of F)if(f.bot&&!f.ally&&f.team!==0){f.max=Math.round(f.max*(1+.15*heat));f.hp=f.max}}
  if(mode==='bike'){F.forEach((f,i)=>{f.x=420+i*90;f.y=420+i*70;f.face=1})}
  if(mode==='disko'&&!NETU.on){F.forEach((f,i)=>{const L=f.team===0;f.x=L?200+i*80:1080-(i-3)*80;f.y=440+(i%3)*80;f.face=L?1:-1})}
  if(mode==='team'&&!NETU.on){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}

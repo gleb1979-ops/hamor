@@ -690,5 +690,13 @@
 "ОГОНЬ": [
 "FIRE",
 "FUEGO"
+],
+"Иди к ВЫХОДУ справа · присядь за ящиком, бочкой или шкафом — не увидят · сзади ": [
+"Get to the EXIT on the right · crouch behind a crate, barrel or cabinet — they won't see you · from behind ",
+"Llega a la SALIDA a la derecha · agáchate tras una caja, un barril o un archivador — no te verán · por detrás "
+],
+" — тихо вырубить": [
+" — silent takedown",
+" — noqueo silencioso"
 ]
 }

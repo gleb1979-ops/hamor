@@ -2495,9 +2495,11 @@ function chDraw(t){const Z=CHZ;if(!Z)return;const g=ctx,S=CHS[Z.sec];g.save();co
   if(S.prop==='palm'){g.fillStyle='rgba(255,200,120,.8)';g.beginPath();g.arc(W*.7,CH_HOR-40,46,0,7);g.fill();g.fillStyle='#2a5a7a';g.fillRect(0,CH_HOR-10,W,12)}
   g.fillStyle=S.gnd;g.fillRect(0,CH_HOR,W,H-CH_HOR)}
  // дорога
+ const HASIMG=img.complete&&img.naturalWidth;if(HASIMG)g.globalAlpha=.8;
  for(let y=H;y>CH_HOR+1;y-=3){const z=CH_CAM*CH_F/(y-CH_HOR);if(z>160)break;const c=chOff(z),s=CH_F/z,cx=W/2+c*s,hw=5.5*s,ph=Math.floor((z+Z.dist)/3.5)&1;
   g.fillStyle=ph?S.side:'#b02020';g.fillRect(cx-hw-.5*s,y-3,.5*s,3);g.fillRect(cx+hw,y-3,.5*s,3);
   g.fillStyle=S.road;g.fillRect(cx-hw,y-3,hw*2,3);if(ph){g.fillStyle='#e8e0c0';g.fillRect(cx-.08*s,y-3,.16*s,3)}}
+ g.globalAlpha=1;
  // столбы/пальмы по краям
  const step=22,w0=Math.floor(Z.dist/step)*step;
  for(let k=0;k<9;k++){const w=w0-k*step,z=Z.dist-w;if(z<3||z>150)continue;for(const sd of [-1,1]){const p=chProj(sd*8.5,z),s=p.s;g.fillStyle='rgba(10,10,14,.85)';

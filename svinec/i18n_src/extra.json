@@ -466,5 +466,33 @@
 "ПЛОЩАДЬ У СОБОРА": [
 "CATHEDRAL SQUARE",
 "PLAZA DE LA CATEDRAL"
+],
+"ВАГОН ПОЕЗДА": [
+"TRAIN CAR",
+"VAGÓN"
+],
+"СТАНЦИЯ": [
+"STATION",
+"ESTACIÓN"
+],
+"Поезд вместе": [
+"Train together",
+"Tren juntos"
+],
+"Поезд": [
+"Train",
+"Tren"
+],
+"Доехали! Поезд ваш": [
+"Made it! The train is yours",
+"¡Llegamos! El tren es tuyo"
+],
+"Люди Калеро скинули вас с поезда": [
+"Calero's men threw you off the train",
+"Los de Calero los tiraron del tren"
+],
+"Комисария вместе": [
+"Police station together",
+"Comisaría juntos"
 ]
 }

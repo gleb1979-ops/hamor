@@ -682,5 +682,13 @@
 "ТАРАН!": [
 "RAM!",
 "¡EMBESTIDA!"
+],
+"Левым пальцем води по экрану, как по тачпаду, — прицел двигается. Держи «ОГОНЬ» справа — стреляешь. Тап по патронам — перезарядка": [
+"Slide your left finger across the screen like a trackpad to move the sight. Hold FIRE on the right to shoot. Tap the ammo to reload",
+"Desliza el dedo izquierdo por la pantalla como un touchpad para mover la mira. Mantén FUEGO a la derecha para disparar. Toca la munición para recargar"
+],
+"ОГОНЬ": [
+"FIRE",
+"FUEGO"
 ]
 }

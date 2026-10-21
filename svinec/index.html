@@ -77,7 +77,7 @@ const HEROES=[
  {id:'star',name:'Чино',desc:'Парень из баррио. Сильный удар',pq:'h_star',top:110,sc:1.08,hand:{i:[29,-87],p:[68,-98],o:[-4,-153]},hp:110,spd:205,pow:1.15,rate:1,jacket:'#3a2a22',pants:'#22252e',cap:'#2b2b30',hair:'#3a2616',skin:'#e7b48c',acc:'#8a6a3a'},
  {id:'shust',name:'Рата',desc:'Крыса из порта. Быстрый',pq:'h_shust',top:110,sc:1.06,hand:{i:[24,-86],p:[67,-101],o:[-5,-144]},hp:90,spd:250,pow:.9,rate:1.25,jacket:'#1f3f8f',pants:'#1f3f8f',stripe:'#f2f2f2',hair:'#2a1a10',skin:'#e9bd96'},
  {id:'zdor',name:'Здоровый',desc:'Лысый. Медленный, крепкий',pq:'h_zdor',top:116,sc:1,hand:{i:[36,-97],p:[70,-106],o:[-8,-167]},hp:150,spd:170,pow:1.35,rate:.8,jacket:'#e8e8ee',vest:1,pants:'#2c2f3a',hair:'#6a4a2a',skin:'#dfa47e',big:1},
- {id:'skor',name:'Скорлупа',desc:'Кудрявый мелкий. Юркий',pq:'h_skor',top:115,sc:1.06,hand:{i:[33,-87],p:[89,-103],o:[-9,-144]},hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1},
+ {id:'skor',name:'Чико',desc:'Самый мелкий. Юркий',pq:'h_skor',top:110,sc:1.06,hand:{i:[33,-87],p:[89,-103],o:[-9,-144]},hp:80,spd:265,pow:.85,rate:1.4,jacket:'#7a2a2a',pants:'#3a3a44',hat:'#2a5a3a',hair:'#b07a3a',skin:'#f0c4a0',small:1},
  {id:'boxer',name:'Боксёр',desc:'Перчатки. Каждый 3-й удар — двойной',hp:100,spd:225,pow:1.1,rate:1.2,kickMul:.7,combo:1,price:400,pq:'h_boxer',hand:{i:[38,-97],p:[93,-102],o:[4,-138]},top:116,sc:1.12,jacket:'#b81c24',pants:'#22252e',stripe:'#f2f2f2',hair:'#6a4a2a',skin:'#e9bd96'},
  {id:'karate',name:'Каратист',desc:'Повязка. Пинок сбивает с ног',hp:95,spd:235,pow:1,rate:1.05,kickMul:1.5,kickDown:1,price:500,pq:'h_karate',hand:{i:[28,-79],p:[72,-94],o:[15,-143]},top:116,sc:1.12,jacket:'#1f3f9f',pants:'#1f3f9f',stripe:'#f2f2f2',hair:'#6a3a1a',skin:'#e9bd96'},
  {id:'dembel',name:'Дембель',desc:'Тельняшка. Ремень с бляхой не ломается',hp:150,spd:185,pow:1.15,rate:.9,belt:1,price:700,pq:'h_dembel',hand:{i:[47,-96],p:[97,-107],o:[-1,-149]},top:116,sc:1.18,jacket:'#e8eef8',pants:'#5a5a2a',stripe:'#2a4a9a',hair:'#8a5a2a',skin:'#e7b48c'},
@@ -271,7 +271,7 @@ function drawPickup(g,p,t){const bob=Math.sin(t*4+p.x)*3;g.save();g.translate(p.
 /* ---------- game state ---------- */
 let G=null,state='age',myHero=LS.get('hero',0),mode=LS.get('mode','ffa'),last=0,shake=0;if(mode==='skate'||mode==='bike')mode='rayon';
 const keys={},pad={mx:0,my:0,a:false,b:false};
-function newFighter(i,hero,bot,team){const H0=HEROES[hero];return {idx:i,hero,bot,team,ally:false,name:bot?['Турбо','Зима','Кащей','Сутулый','Ералаш','Пальто'][(i+hero)%6]:'Ты',x:i===0?260:rnd(560,1120),y:rnd(450,640),vx:0,vy:0,face:i===0?1:-1,hp:Math.round(H0.hp*HPM),max:Math.round(H0.hp*HPM),state:'idle',anim:0,atkT:0,atkDur:.3,cd:0,kickT:0,kcd:0,hurtT:0,stun:0,downT:0,weapon:null,dur:0,ammo:0,flash:0,bloody:false,ai:{t:0,tgt:null},kills:0,lives:mode==='bike'?99:3,onBoard:ride(),mvx:0,mvy:0,air:0,z:0}}
+function newFighter(i,hero,bot,team){const H0=HEROES[hero];return {idx:i,hero,bot,team,ally:false,name:bot?['Турбо','Кайман','Фантасма','Флака','Негрито','Чато'][(i+hero)%6]:'Ты',x:i===0?260:rnd(560,1120),y:rnd(450,640),vx:0,vy:0,face:i===0?1:-1,hp:Math.round(H0.hp*HPM),max:Math.round(H0.hp*HPM),state:'idle',anim:0,atkT:0,atkDur:.3,cd:0,kickT:0,kcd:0,hurtT:0,stun:0,downT:0,weapon:null,dur:0,ammo:0,flash:0,bloody:false,ai:{t:0,tgt:null},kills:0,lives:mode==='bike'?99:3,onBoard:ride(),mvx:0,mvy:0,air:0,z:0}}
 function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind())paintBG();const n=mode==='disko'?6:4,F=[];
  F.push(newFighter(0,myHero,false,0));
  const others=HOTH();
@@ -919,7 +919,7 @@ function paintWorld(){TRK=RMAP;RIMG=RIMGS[RMAP];IMGMAP=RIMG.complete&&RIMG.natur
  MM=document.createElement('canvas');MM.width=220;MM.height=160;const m=MM.getContext('2d'),ks=200/WW;m.fillStyle='rgba(0,0,0,.55)';m.fillRect(0,0,220,160);m.lineJoin='round';m.beginPath();for(let i=0;i<T.N;i+=4)(i?m.lineTo:m.moveTo).call(m,10+T.x[i]*ks,6+T.y[i]*ks);m.closePath();m.strokeStyle='#8a8478';m.lineWidth=6;m.stroke();m.strokeStyle='#45454b';m.lineWidth=4;m.stroke()}
 
 /* race state */
-function rNew(){if(mode==='oblava'&&(!G||!G.obl)){const n=LS.get('oblmap',0)+1;LS.set('oblmap',n);RMAP=n%2?2:1}else if(mode!=='oblava')RMAP=LS.get('rmap',1);if(TRK!==RMAP||!IMGMAP)paintWorld();const T=TR,F=[],others=HOTH(),names=['Турбо','Зима','Кащей','Сутулый','Ералаш','Пальто'];
+function rNew(){if(mode==='oblava'&&(!G||!G.obl)){const n=LS.get('oblmap',0)+1;LS.set('oblmap',n);RMAP=n%2?2:1}else if(mode!=='oblava')RMAP=LS.get('rmap',1);if(TRK!==RMAP||!IMGMAP)paintWorld();const T=TR,F=[],others=HOTH(),names=['Турбо','Кайман','Фантасма','Флака','Негрито','Чато'];
  for(let k=0;k<6;k++){const team=k<3?0:1,hero=k===0?myHero:others[k%3],bot=k>0;const f=newFighter(k,hero,bot,team);f.name=k===0?'Ты':team===0?['','Свой','Малой'][k]:names[k];f.ally=team===0&&bot;
   f.veh=k===0?VEHSEL:(k%2?'bike':'skate');const row=k>>1,col=k%2,si=(T.N-30-row*9)%T.N,a=T.a[si];f.x=T.x[si]-Math.sin(a)*(col?-40:40);f.y=T.y[si]+Math.cos(a)*(col?-40:40);f.ang=a;f.si=si;f.lap=-1;f.cp=15;
   f.spd=0;f.pvx=f.pvy=0;f.lives=RLIVES;f.out=0;f.down=0;f.inv=0;f.air=0;f.slip=0;f.cd=0;f.atkT=0;f.w=null;f.wd=0;f.kills=0;f.lane=rnd(-40,40);f.skill=rnd(.88,.97);
@@ -2116,7 +2116,7 @@ function paintKpz(n){return g=>{const i=BGPH['kpz'+n];if(i&&i.complete&&i.natura
 PAINTERS.kpz0=paintKpz(0);PAINTERS.kpz1=paintKpz(1);PAINTERS.kpz2=paintKpz(2);
 function mkCop(i,x,y,face,boss){const f=newFighter(i,HOTH()[0],true,1);f.team=1;f.spr=boss===2?'majorb':boss?'major':'ment';f.name=boss===2?'Старшина':boss?'Майор':'Полицейский';const B1=boss&&boss!==2;f.weapon=B1?'pistol':'baton';f.ammo=B1?2:0;f.dur=0;f.x=x;f.y=y;f.face=face;if(B1){f.max=f.hp=Math.round(f.max*2.2);f.boss=0}else if(boss===2){f.max=f.hp=Math.round(f.max*1.5)}return f}
 function castKpz(F){const L=kpzLoc(),others=HOTH(),me=F[0];me.x=200;me.y=540;me.face=1;me.team=0;
- if(L===0){const names=['Сиплый','Гвоздь','Хмурый'];for(let i=0;i<3;i++){const f=newFighter(1+i,others[(i+2)%others.length],true,1);f.team=1;f.name=names[i];f.x=820+i*110;f.y=450+i*70;f.face=-1;F.push(f)}}
+ if(L===0){const names=['Ронко','Клаво','Тристе'];for(let i=0;i<3;i++){const f=newFighter(1+i,others[(i+2)%others.length],true,1);f.team=1;f.name=names[i];f.x=820+i*110;f.y=450+i*70;f.face=-1;F.push(f)}}
  else{const al=newFighter(1,others[0],true,0);al.ally=true;al.name='Сокамерник';al.x=150;al.y=470;al.face=1;F.push(al);
   if(L===1){for(let i=0;i<3;i++)F.push(mkCop(2+i,880+i*100,460+i*60,-1,i===2?2:0))}
   else{for(let i=0;i<2;i++)F.push(mkCop(2+i,900+i*110,470+i*90,-1));F.push(mkCop(4,1100,560,-1,true))}}

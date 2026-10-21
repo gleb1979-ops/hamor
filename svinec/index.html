@@ -45,7 +45,7 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 #touch.side.lside #stick{left:calc((var(--bar) - min(130px,26vmin))/2)}
 #touch.race #bB{right:max(18px,env(safe-area-inset-right))!important;bottom:calc(36px + min(72px,15vmin) + min(62px,13vmin))!important;width:min(72px,15vmin)!important;height:min(72px,15vmin)!important}#touch.race #bA{width:min(84px,18vmin)!important;height:min(84px,18vmin)!important}.pcards{display:flex;gap:8px;justify-content:center;margin:6px 0 10px;flex-wrap:wrap}.pcard{width:62px;height:88px;border-radius:8px;background:#f6f1e6;border:2px solid #1a1418;box-shadow:2px 3px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 24px system-ui}.pcard i{font-style:normal;font-size:28px;line-height:1}.pcard.back{background:repeating-linear-gradient(45deg,#7a1a22 0 6px,#5a1218 6px 12px)}</style></head><body>
 <div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Улица"></canvas></div>
-<div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bK" hidden>🤝<small>кореш</small></div></div>
+<div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bK" hidden>🤝<small>друг</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="/update.js"></script><script src="/net.js"></script>
@@ -282,7 +282,7 @@ function newRound(){if(RMODE())return rNew();setLoc(G?G.round:0);if(BGK!==bgKind
  if(mode==='team'&&!NETU.on){F[0].x=240;F[1].x=300;F[1].y=560;F[2].x=1040;F[3].x=1100;F[3].y=600;F[2].face=F[3].face=-1}
  dctx.clearRect(0,0,W,H);OBST=mode==='skate'?OBST_S:mode==='bike'?[]:mode==='zavod'?ZL[LOC].obst:mode==='salon'?SL[LOC].obst:mode==='disko'||mode==='dout'||mode==='dlad'||mode==='rynok'||mode==='train'||mode==='kpz'?[]:mode==='boss'?(CH[CAMP.ch].b==='brig'?OBST_A1:OBST_A2):[OBST_F,OBST_A1,OBST_A2,[]][LOC];
  G={F,P:[],B:[],FX:[],RM:[],HL:[],BX:[],dist:0,hzT:1.5,copY:520,t:0,dropT:2,round:(G?G.round:0)+1,wins:G?G.wins:{},over:0,msg:'',msgT:0};
- if(OBJM())initObj();else for(let i=0;i<3;i++)spawnDrop(i===0?'stick':null);SFX.bell();G.msg='РАУНД '+G.round;G.msgT=1.8;G.sub=(mode==='ffa'||mode==='team')?'Арена: '+ARENAS[LOC]:'';if(OBJM())objIntro();if(mode==='rynok')rynInit();if(mode==='boss'){const b=G.F.find(f=>f.boss);G.msg='БОСС: '+b.name;G.sub=b.kind==='brig'?'Увидишь «!!!» — отбегай: Полковник бьёт дубинкой о землю. Издалека кидает камни.':'Босс стреляет издалека — подходи вплотную. На половине здоровья зовёт охрану.';G.msgT=3.2}if(mode==='train')trainInit();if(mode==='kpz')kpzInit();if(mode==='dout')doutInit();if(mode==='dlad'){musPlay('fight');G.msg='ЛЕСТНИЦА ДК';G.sub='Заречные перекрыли лестницу — пробейся к выходу!';G.msgT=3}if(mode==='disko'){diskoInit();G.msg='РАУНД '+G.round+' · ДИСКОТЕКА';G.sub='Пока медляк — не дерись. Музыка оборвётся — бей заречных!';G.msgT=3}}
+ if(OBJM())initObj();else for(let i=0;i<3;i++)spawnDrop(i===0?'stick':null);SFX.bell();G.msg='РАУНД '+G.round;G.msgT=1.8;G.sub=(mode==='ffa'||mode==='team')?'Арена: '+ARENAS[LOC]:'';if(OBJM())objIntro();if(mode==='rynok')rynInit();if(mode==='boss'){const b=G.F.find(f=>f.boss);G.msg='БОСС: '+b.name;G.sub=b.kind==='brig'?'Увидишь «!!!» — отбегай: Полковник бьёт дубинкой о землю. Издалека кидает камни.':'Босс стреляет издалека — подходи вплотную. На половине здоровья зовёт охрану.';G.msgT=3.2}if(mode==='train')trainInit();if(mode==='kpz')kpzInit();if(mode==='dout')doutInit();if(mode==='dlad'){musPlay('fight');G.msg='ЛЕСТНИЦА КЛУБА';G.sub='Люди Калеро перекрыли лестницу — пробейся к выходу!';G.msgT=3}if(mode==='disko'){diskoInit();G.msg='РАУНД '+G.round+' · КАНТИНА';G.sub='Пока болеро — не дерись. Музыка оборвётся — бей людей Калеро!';G.msgT=3}}
 function spawnDrop(k){k=k||DROP_TABLE[Math.random()*DROP_TABLE.length|0];if(k==='pistol'&&G.P.some(p=>p.k==='pistol'))k='bat';let x,y,tries=0;do{x=rnd(80,W-80);y=rnd(FLOOR0+60,FLOOR1-20);if(mode==='bike')x=W+30;tries++}while(mode!=='bike'&&tries<20&&[...OBST,...(mode==='skate'?RAMPS:[])].some(o=>x>o.x-30&&x<o.x+o.w+30&&y>o.y-40&&y<o.y+o.h+30));G.P.push({k,x,y,t:0})}
 function alive(){return G.F.filter(f=>f.state!=='ko'&&!f.girl)}
 function sideOf(f){return CAMP.on&&CAMP.ch===0&&mode==='ffa'?f.team:mode==='dout'||mode==='dlad'||mode==='team'||mode==='train'||mode==='kpz'||mode==='disko'||mode==='boss'||mode==='rynok'||OBJM()?f.team:f.idx}
@@ -364,7 +364,7 @@ function castObj(F,r){const me=F[0],others=[0,1,2,3].filter(h=>h!==myHero);
   for(const [x,y] of ZD.dogs){const dg=mkNPC(F.length,'dog');dg.x=x;dg.y=y;F.push(dg)}}
  else{me.x=120;me.y=520;me.face=1;
   const al=newFighter(1,others[0],true,0);al.ally=true;al.name='Свой';al.x=90;al.y=622;al.face=1;al.slot=-70;F.push(al);
-  const own=newFighter(2,others[1],true,1);own.name='Видик';own.hp=own.max=Math.round(own.max*1.25);own.weapon='bat';own.dur=16;own.x=ZONE.x+10;own.y=ZONE.y-4;own.face=-1;own.slot=0;F.push(own);
+  const own=newFighter(2,others[1],true,1);own.name='Киношник';own.hp=own.max=Math.round(own.max*1.25);own.weapon='bat';own.dur=16;own.x=ZONE.x+10;own.y=ZONE.y-4;own.face=-1;own.slot=0;F.push(own);
   const nb=r>=3?3:2,nm=['Каратист','Бобина','Кассета'],wp=['nunchaku',null,'chain'];
   for(let i=0;i<nb;i++){const b=newFighter(F.length,others[1+(i+1)%2],true,1);b.name=nm[i];b.x=ZONE.x-100+i*190;b.y=ZONE.y-12+i*14;b.face=-1;b.slot=rnd(-150,150);b.weapon=wp[i];if(b.weapon)b.dur=WEAPONS[b.weapon].dur;F.push(b)}}}
 function initObj(){G.tl=mode==='zavod'?100:110;G.obj=0;
@@ -372,7 +372,7 @@ function initObj(){G.tl=mode==='zavod'?100:110;G.obj=0;
  else{G.cap=0;G.zs=2;G.reserve=G.round;G.rfT=8;spawnDrop('bat');spawnDrop(null)}}
 function objIntro(){G.msgT=3.4;if(mode==='zavod'){G.msg='РАУНД '+G.round+' · '+ZNAMES[LOC];G.sub=ZSUB[LOC]}else{G.msg='РАУНД '+G.round+' · '+SNAMES[LOC];G.sub=SSUB[LOC]}}
 function objMsg(win,dead){if(mode==='zavod')return win?'ИЗУМРУДЫ ВЫНЕСЛИ!':dead?'ПОВЯЗАЛИ':'РАССВЕЛО — НЕ УСПЕЛИ';return win?'САЛОН ТЕПЕРЬ НАШ!':dead?'ВЫКИНУЛИ НА УЛИЦУ':'НЕ ОТЖАЛИ — ВРЕМЯ ВЫШЛО'}
-function endTitle(won){if(mode==='kpz')return won?'УШЁЛ ИЗ МЕНТОВКИ':'ОСТАЛСЯ НА НАРАХ';if(mode==='train')return won?'ЭЛЕКТРИЧКА НАША':'ВЫКИНУЛИ НА ХОДУ';if(mode==='boss')return won?'БОСС ПОВЕРЖЕН':'БОСС СИЛЬНЕЕ';if(mode==='disko')return won?'ДИСКОТЕКА НАША':G&&G.doutL?GIRLA.toUpperCase()+' УВЕЛИ':'ВЫКИНУЛИ С ТАНЦПОЛА';if(mode==='zavod')return won?'ЗАВОД ОБНЕСЛИ':'ПОВЯЗАЛИ';if(mode==='salon')return won?'САЛОН ТВОЙ':'ВЫГНАЛИ';return won?'УЛИЦА ТВОЯ':'ОТШИЛИ'}
+function endTitle(won){if(mode==='kpz')return won?'УШЁЛ ИЗ МЕНТОВКИ':'ОСТАЛСЯ НА НАРАХ';if(mode==='train')return won?'ЭЛЕКТРИЧКА НАША':'ВЫКИНУЛИ НА ХОДУ';if(mode==='boss')return won?'БОСС ПОВЕРЖЕН':'БОСС СИЛЬНЕЕ';if(mode==='disko')return won?'КАНТИНА НАША':G&&G.doutL?GIRLA.toUpperCase()+' УВЕЛИ':'ВЫКИНУЛИ С ТАНЦПОЛА';if(mode==='zavod')return won?'ЗАВОД ОБНЕСЛИ':'ПОВЯЗАЛИ';if(mode==='salon')return won?'САЛОН ТВОЙ':'ВЫГНАЛИ';return won?'УЛИЦА ТВОЯ':'ОТШИЛИ'}
 
 /* ----- AI helpers ----- */
 function goTo(f,x,y){const dx=x-f.x,dy=y-f.y,d=Math.hypot(dx,dy);if(d<12)return[0,0];if(Math.abs(dx)>6)f.face=dx>0?1:-1;return[dx/d,clamp(dy/d*1.6,-1,1)]}
@@ -621,9 +621,9 @@ function drawObjHUD(t){const cx=W/2,mm=Math.max(0,Math.ceil(G.tl)),ts=(mm/60|0)+
 
 /* ---------- locations, arenas, progression ---------- */
 let LOC=0,MXP=0,MLV=0;
-const ARENAS=['Баррио Сан-Хасинто','Двор Дона Эрнесто','Рынок ночью','Площадь у собора'],ZNAMES=['ЗАВОДСКОЙ ДВОР','ЦЕХ №2','ТОВАРНАЯ СТАНЦИЯ'],SNAMES=['ПОДВАЛ','ДК «СТРОИТЕЛЬ»','ВИДЕОПРОКАТ'];
+const ARENAS=['Баррио Сан-Хасинто','Двор Дона Эрнесто','Рынок ночью','Площадь у собора'],ZNAMES=['ПОРТ · СКЛАД №7','ЦЕХ №2','ТОВАРНАЯ СТАНЦИЯ'],SNAMES=['ПОДВАЛ','КЛУБ «ЭЛЬ ТИГРЕ»','ВИДЕОПРОКАТ'];
 const ZSUB=['Укради ящик со склада и вынеси через дыру в заборе. Не попадайся в свет.','Ящик у кладовки мастера. Берегись лампы на кран-балке. Выход — щель в воротах слева.','Ящик в открытом вагоне. С водокачки светит прожектор. Уходи через дыру в заборе.'];
-const SSUB=['Выбей их из круга у телевизора и удержи его.','Зал ДК: займи круг у сцены и удержи его.','Тесный ларёк: займи круг у полок и удержи его.'];
+const SSUB=['Выбей их из круга у телевизора и удержи его.','Зал клуба: займи круг у сцены и удержи его.','Тесный ларёк: займи круг у полок и удержи его.'];
 const ZL=[
  {obst:OBST_Z,crate:[1150,412],ded:[600,452],dogs:[[700,446],[772,476]],paths:[[[520,520],[1040,520]],[[1010,662],[420,662]],[[830,404],[830,500]],[[1010,470],[1010,612]]],
   sl:t=>({x:640+430*Math.sin(t*.42),y:535+105*Math.sin(t*.31+1),sx:BGPH.zavod0&&BGPH.zavod0.naturalWidth?286:640,sy:BGPH.zavod0&&BGPH.zavod0.naturalWidth?68:108}),lights:[[1155,300,290,.95,.85],[574,368,150,.75,.9],[40,530,110,.5,1]]},
@@ -847,7 +847,7 @@ const TDI={bike:{},skate:{}};for(const v of ['bike','skate'])for(const h of HERO
 let RW=170,WW=3000,WH=2200,RS=1,RMAP=LS.get('rmap',1),TRK=-1;const LAPS=3,RLIVES=3;let RK=2.2,IMGMAP=0;
 const RIMGS=[0,1,2].map(i=>{const m=new Image();m.src='img/rayon_map'+i+'.webp';return m});let RIMG=RIMGS[1];
 const CL0=[237,913,245,919,253,925,262,930,271,933,281,936,291,939,300,942,310,945,319,947,329,949,339,951,349,952,359,952,369,950,378,946,387,943,397,940,407,938,417,936,426,933,434,928,443,922,451,916,459,910,467,904,476,899,485,895,495,895,505,895,515,896,525,896,535,896,544,897,553,902,562,907,570,912,579,918,588,923,596,927,606,931,615,935,625,936,635,936,645,936,655,934,664,931,673,927,682,922,691,918,701,915,710,913,720,912,730,911,740,911,750,912,760,913,770,913,780,913,790,913,800,913,809,916,818,921,827,926,836,931,844,936,853,941,862,945,871,949,881,952,891,954,901,954,911,954,918,954,928,952,938,950,948,948,957,945,967,942,976,938,984,932,993,927,1002,923,1011,920,1021,918,1031,916,1041,915,1051,912,1060,909,1070,906,1079,902,1088,899,1098,895,1107,892,1117,889,1126,886,1136,884,1145,881,1155,877,1163,871,1171,865,1178,858,1184,851,1190,843,1198,835,1204,828,1211,821,1217,813,1223,805,1229,797,1235,789,1239,780,1242,770,1244,760,1246,750,1248,741,1250,731,1252,721,1249,712,1244,704,1237,697,1229,690,1221,684,1213,678,1205,672,1197,666,1190,659,1184,651,1180,642,1181,632,1184,622,1188,613,1192,604,1199,597,1207,592,1216,586,1225,582,1233,577,1242,571,1251,566,1259,561,1266,553,1271,545,1273,535,1270,526,1267,516,1265,507,1261,497,1256,489,1249,482,1242,474,1236,467,1229,459,1223,451,1217,443,1213,434,1211,424,1210,414,1214,405,1221,398,1228,391,1235,384,1242,377,1249,369,1257,363,1265,357,1272,351,1280,344,1287,337,1294,330,1298,321,1300,311,1300,301,1298,291,1294,282,1287,275,1280,268,1273,261,1266,254,1261,245,1255,237,1248,230,1241,223,1233,217,1225,211,1217,205,1208,200,1199,195,1190,191,1181,188,1171,185,1162,183,1152,183,1142,185,1132,187,1123,191,1114,196,1106,202,1099,208,1090,214,1082,219,1072,222,1063,225,1053,227,1043,227,1033,226,1023,224,1014,221,1004,218,995,215,985,211,977,206,969,200,961,193,955,186,947,179,938,175,929,171,919,169,909,168,899,168,890,170,880,173,871,177,861,179,851,181,841,184,832,187,823,192,815,198,807,204,798,208,788,209,778,209,768,208,758,207,749,203,740,199,731,195,722,190,713,185,704,180,695,178,686,174,677,169,668,163,660,157,652,153,642,150,632,150,622,150,613,153,604,158,596,163,587,168,577,171,568,174,558,175,548,177,538,179,529,183,520,188,512,194,504,200,495,203,485,205,475,204,465,203,456,200,446,196,437,191,429,186,420,181,411,178,401,176,391,173,382,170,372,167,363,164,353,162,343,164,333,166,324,169,314,172,305,176,296,181,287,185,278,189,269,192,259,195,250,199,242,205,234,211,227,218,221,226,216,235,211,244,206,252,201,261,196,269,191,278,187,287,183,296,180,306,178,316,177,326,178,336,181,345,187,353,194,360,200,368,207,375,214,382,222,388,230,394,238,401,246,407,253,413,260,421,265,429,268,439,269,449,267,459,263,468,256,475,249,482,242,489,236,497,228,504,221,510,213,517,206,524,200,532,195,540,192,550,191,560,193,569,198,578,204,586,211,593,218,600,226,606,233,613,241,619,249,626,256,633,262,641,267,649,269,659,269,669,267,679,262,688,256,696,249,702,240,707,231,712,223,718,216,725,209,732,203,740,197,748,190,755,184,763,179,772,177,782,176,792,176,802,178,811,181,821,184,830,189,839,195,847,201,855,207,863,212,872,216,881,219,890,223,899,230,907];
-const RMAPS=['Петля через район','Кольцо у гаражей','Зимний квартал'];
+const RMAPS=['Петля через баррио','Кольцо у доков','Верхний квартал'];
 const RZ=()=>IMGMAP?1.45:1.15;
 const OBI_W=[[538,399,43,'b'],[981,392,49,'b'],[1094,392,49,'b'],[1165,493,34,'b'],[745,337,24,'b'],[455,323,24,'t'],[606,448,24,'t'],[848,529,24,'t'],[1059,323,24,'t'],[1226,348,24,'t'],[455,499,24,'t'],[969,492,24,'t'],[636,554,24,'t'],[848,323,24,'t'],[1241,492,24,'t']];
 const OBI=[[620,275,30,'t'],[785,258,18,'t'],[742,340,16,'t'],[565,358,38,'t'],[440,372,28,'t'],[482,286,15,'t'],[892,312,20,'t'],[980,305,18,'b'],[1047,320,18,'t'],[1135,292,30,'t'],[1220,366,24,'t'],[1030,356,42,'s'],[1095,342,20,'s'],[872,392,20,'b'],[870,442,18,'b'],[785,422,18,'t'],[1016,462,14,'t'],[440,505,38,'t'],[455,412,16,'b'],[555,460,16,'t'],[597,492,22,'b'],[632,514,24,'t'],[795,576,20,'t'],[895,570,24,'t'],[975,566,22,'t'],[942,525,16,'r'],[1035,497,22,'d'],[1130,516,38,'t'],[1255,515,15,'w'],[1150,558,16,'s'],[540,572,20,'t'],[1245,455,28,'t'],[720,462,14,'R'],[814,522,14,'R'],[1060,432,14,'R']];
@@ -1040,7 +1040,7 @@ function rRender(t){const me=G.F[0],cx=G.camx,cy=G.camy;ctx.save();if(shake>0)ct
  ctx.fillText(`КРУГ ${Math.min(LAPS,Math.max(1,me.lap+1))}/${LAPS} · МЕСТО ${G.place}/6`,W/2,38);ctx.font='bold 14px system-ui';ctx.fillStyle='#9fd0ff';ctx.fillText(`Наших: ${ours}`,W/2-90,60);ctx.fillStyle='#ff8a7a';ctx.fillText(`Чужих: ${theirs}`,W/2+90,60);ctx.fillStyle='#e8b23a';ctx.fillText(RSEC[G.sec]||'',W/2,60);
  ctx.drawImage(MM,W-236,14);const ks=IMGMAP?220/WW:200/WW,ox=IMGMAP?W-236:W-226,oy=IMGMAP?14:20;for(const f of G.F){if(f.out)continue;ctx.fillStyle=f===me?'#5ad05a':f.team?'#e0303a':'#4a8aff';ctx.beginPath();ctx.arc(ox+f.x*ks,oy+f.y*ks,f===me?5:4,0,TAU);ctx.fill()}
  if(G.cd>0||G.bannerT>0||G.over){const txt=G.over?(G.winTeam===0?'РАЙОН ТВОЙ!':'РАЙОН ЗАБРАЛИ'):G.cd>0?(G.cd>1?String(Math.ceil(G.cd-1)):'ВПЕРЁД!'):G.banner;ctx.font='900 64px Impact,sans-serif';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(txt,W/2,250);ctx.fillStyle=G.over?(G.winTeam===0?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(txt,W/2,250);
-  if(G.cd>0){ctx.font='bold 20px system-ui';ctx.lineWidth=5;const s1='Отбей район: приди первым или выбей всех чужих (у каждого 3 жизни)';ctx.strokeText(s1,W/2,292);ctx.fillStyle='#f3e9dc';ctx.fillText(s1,W/2,292)}}}
+  if(G.cd>0){ctx.font='bold 20px system-ui';ctx.lineWidth=5;const s1='Отбей баррио: приди первым или выбей всех чужих (у каждого 3 жизни)';ctx.strokeText(s1,W/2,292);ctx.fillStyle='#f3e9dc';ctx.fillText(s1,W/2,292)}}}
 
 /* ---------- ОБЛАВА: night escape from the militia ---------- */
 const RMODE=()=>mode==='rayon'||mode==='oblava';
@@ -1059,7 +1059,7 @@ function oblNextLap(){const O=G.obl,me=G.F[0],T=TR,N=T.N;O.lap++;O.tot+=O.got;O.
  for(const c of O.C){const j=(me.si+Math.floor(N*rnd(.3,.7)))%N;c.x=T.x[j];c.y=T.y[j];c.ang=T.a[j];c.si=j;c.mode='patrol';c.spd=0;c.stun=2.5}
  while(O.C.length<O.lap+1)oblSpawnCar((me.si+Math.floor(N*rnd(.3,.7)))%N);
  me.inv=3;me.hp=Math.min(me.max,me.hp+Math.round(me.max*.3));gainXP(40);SFX.bell();
- G.banner=O.lap===OBL_LAPS?'ПОСЛЕДНИЙ КРУГ! УАЗИКОВ: '+O.C.length:'КРУГ '+O.lap+'/'+OBL_LAPS+' · ЕЩЁ НЫЧКИ · УАЗИКОВ: '+O.C.length;G.bannerT=3}
+ G.banner=O.lap===OBL_LAPS?'ПОСЛЕДНИЙ КРУГ! ПАТРУЛЕЙ: '+O.C.length:'КРУГ '+O.lap+'/'+OBL_LAPS+' · ЕЩЁ ТАЙНИКИ · ПАТРУЛЕЙ: '+O.C.length;G.bannerT=3}
 function oblSpawnCar(si){const T=TR;G.obl.C.push({x:T.x[si],y:T.y[si],ang:T.a[si],spd:0,stun:1.5,mode:'patrol',si,tx:0,ty:0,lostT:0,searchT:0})}
 function oblFinish(win,why){if(G.over)return;G.over=1;G.winTeam=win?0:1;G.why=why;SFX.bell()}
 function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)return;if(me.out){oblFinish(0,'разбился — дальше пешком не уйти');return}O.tl-=dt;if(O.tl<=0){oblFinish(0,'рассвело — не успел');return}
@@ -1084,9 +1084,9 @@ function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)retu
  for(let i=0;i<O.C.length;i++)for(let j=i+1;j<O.C.length;j++){const a=O.C[i],b=O.C[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<70&&d>0){const p=(70-d)/2;a.x-=dx/d*p;a.y-=dy/d*p;b.x+=dx/d*p;b.y+=dy/d*p}}
  if(seenAny){O.sirT-=dt;if(O.sirT<=0){SFX.siren();O.sirT=1.2}}O.seen=seenAny;
  for(const s of O.S)if(!s.got&&me.down<=0&&Math.hypot(s.x-me.x,s.y-me.y)<46){s.got=1;O.got++;SFX.pick();gainXP(20);G.FX.push({x:me.x,y:me.y-56,t:0,life:1.1,txt:'НЫЧКА '+O.got+'/'+O.S.length,c:'#e8b23a',big:1});
-  const want=Math.min(O.lap+2,O.lap+1+Math.floor(O.got/3));while(O.C.length<want){oblSpawnCar((me.si+Math.floor(N*rnd(.35,.65)))%N);G.banner='ЕЩЁ ОДИН УАЗИК!';G.bannerT=1.6}
-  if(O.got===O.S.length){O.exitOpen=1;G.banner=O.lap<OBL_LAPS?'ВСЁ! ГОНИ В ГАРАЖ — СДАТЬ НЫЧКИ':'ВСЁ! ГОНИ В СВОЙ ГАРАЖ';G.bannerT=2.6}}
- if(O.exitOpen&&me.down<=0&&Math.hypot(T.x[0]-me.x,T.y[0]-me.y)<RW*.8){if(O.lap<OBL_LAPS)oblNextLap();else{O.tot+=O.got;O.got=0;oblFinish(1,'три круга — все нычки в гараже, менты остались ни с чем')}}}
+  const want=Math.min(O.lap+2,O.lap+1+Math.floor(O.got/3));while(O.C.length<want){oblSpawnCar((me.si+Math.floor(N*rnd(.35,.65)))%N);G.banner='ЕЩЁ ОДИН ПАТРУЛЬ!';G.bannerT=1.6}
+  if(O.got===O.S.length){O.exitOpen=1;G.banner=O.lap<OBL_LAPS?'ВСЁ! ГОНИ В ГАРАЖ — СДАТЬ ТАЙНИКИ':'ВСЁ! ГОНИ В СВОЙ ГАРАЖ';G.bannerT=2.6}}
+ if(O.exitOpen&&me.down<=0&&Math.hypot(T.x[0]-me.x,T.y[0]-me.y)<RW*.8){if(O.lap<OBL_LAPS)oblNextLap();else{O.tot+=O.got;O.got=0;oblFinish(1,'три круга — все тайники в гараже, полиция осталась ни с чем')}}}
 function oblHitCar(f,kk){for(const c of G.obl.C){if(Math.hypot(c.x-f.x,c.y-f.y)<(kk?96:118)*RS+18){c.stun=kk?2.2:1.5;c.spd*=.3;SFX.metal();shake=Math.max(shake,5);G.FX.push({x:c.x,y:c.y-34,t:0,life:.8,txt:kk?'ПИНКА ПО ДВЕРИ!':'ПО ФАРАМ!',c:'#ffd23f'});return true}}return false}
 function drawUAZ(g,c,t){g.save();g.translate(c.x,c.y);g.rotate(c.ang);const k=RS*1.15;g.scale(k,k);if(UAZI.complete&&UAZI.naturalWidth){const w=104,h=w*UAZI.naturalHeight/UAZI.naturalWidth;g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-w/2+7,-h/2+7,w,h);g.drawImage(UAZI,-w/2,-h/2,w,h);const on=((t*3)|0)%2;g.fillStyle=on?'rgba(255,60,60,.55)':'rgba(70,120,255,.55)';g.beginPath();g.arc(-6,on?-h*.18:h*.08,9,0,TAU);g.fill();g.restore();if(c.stun>0){for(let i=0;i<3;i++){const a=t*6+i*2.1;circ(g,c.x+Math.cos(a)*26,c.y-38+Math.sin(a)*8,4,'#ffd23f')}}return}g.fillStyle='rgba(0,0,0,.35)';g.fillRect(-38,-16,88,44);
  rr(g,-44,-22,88,44,10,'#e0c040',3.5);g.fillStyle='#2a4aa8';g.fillRect(-40,-22,80,6);g.fillRect(-40,16,80,6);rr(g,16,-18,26,36,6,'#d8b838',2);rr(g,4,-17,12,34,3,'#1a2a3a',2);rr(g,-30,-18,34,36,5,'#f0e8d0',2.5);circ(g,-47,0,8,'#1a1a1a',2);
@@ -1110,13 +1110,13 @@ function oblNight(t,cx,cy,Z){const O=G.obl,me=G.F[0],n=NIGHT.getContext('2d'),S=
 function oblHUD(t){const O=G.obl,me=G.F[0],mm=Math.max(0,Math.ceil(O.tl)),ts=(mm/60|0)+':'+String(mm%60).padStart(2,'0');
  ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(16,14,320,62);ctx.font='900 20px Impact,sans-serif';ctx.textAlign='left';ctx.fillStyle='#f3e9dc';ctx.fillText(HEROES[me.hero].name.toUpperCase()+'  '+'♥'.repeat(Math.max(0,me.lives)),28,38);
  ctx.fillStyle='#331';ctx.fillRect(28,46,180,12);ctx.fillStyle=me.hp/me.max>.4?'#5ad05a':'#e0303a';ctx.fillRect(28,46,180*Math.max(0,me.hp/me.max),12);ctx.font='bold 14px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(VEH[me.veh].name,216,57);
- ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-270,12,540,56);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`КРУГ ${O.lap}/${OBL_LAPS} · НЫЧКИ ${O.got}/${O.S.length} · ${ts} · УАЗИКОВ ${O.C.length}`,W/2,38);
+ ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-270,12,540,56);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`КРУГ ${O.lap}/${OBL_LAPS} · ТАЙНИКИ ${O.got}/${O.S.length} · ${ts} · ПАТРУЛЕЙ ${O.C.length}`,W/2,38);
  ctx.font='900 15px Impact,sans-serif';ctx.fillStyle=O.seen?'#ff5a5a':O.hidden?'#7cf07c':'#9fd0ff';ctx.fillText(O.seen?'ТЕБЯ ВИДЯТ — УХОДИ!':O.hidden?'СПРЯТАЛСЯ В КУСТАХ':'ИЩУТ…',W/2,60);
  ctx.drawImage(MM,W-236,14);const ks=220/WW,ox=W-236,oy=14;for(const s of O.S)if(!s.got){ctx.fillStyle='#e8b23a';ctx.fillRect(ox+s.x*ks-3,oy+s.y*ks-3,6,6)}
  if(O.exitOpen){ctx.strokeStyle='#7cf07c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(ox+TR.x[0]*ks,oy+TR.y[0]*ks,7,0,TAU);ctx.stroke()}
  for(const c of O.C){ctx.fillStyle=((t*3)|0)%2?'#ff3030':'#4a7aff';ctx.beginPath();ctx.arc(ox+c.x*ks,oy+c.y*ks,4,0,TAU);ctx.fill()}ctx.fillStyle='#5ad05a';ctx.beginPath();ctx.arc(ox+me.x*ks,oy+me.y*ks,5,0,TAU);ctx.fill();
  if(G.cd>0||G.bannerT>0||G.over){const txt=G.over?(G.winTeam===0?'УШЁЛ!':'ПРИНЯЛИ'):G.cd>0?(G.cd>1?String(Math.ceil(G.cd-1)):'ПОГНАЛИ!'):G.banner;ctx.font='900 60px Impact,sans-serif';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(txt,W/2,250);ctx.fillStyle=G.over?(G.winTeam===0?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(txt,W/2,250);
-  if(G.cd>0){ctx.font='bold 19px system-ui';ctx.lineWidth=5;for(const [i,s1] of ['Собери 6 нычек и уходи в свой гараж (старт).','Прячься в кустах — стой на месте. Удар по УАЗику — он встанет.'].entries()){ctx.strokeText(s1,W/2,292+i*26);ctx.fillStyle='#f3e9dc';ctx.fillText(s1,W/2,292+i*26)}}}}
+  if(G.cd>0){ctx.font='bold 19px system-ui';ctx.lineWidth=5;for(const [i,s1] of ['Собери 6 нычек и уходи в свой гараж (старт).','Прячься в кустах — стой на месте. Удар по патрульной машине — он встанет.'].entries()){ctx.strokeText(s1,W/2,292+i*26);ctx.fillStyle='#f3e9dc';ctx.fillText(s1,W/2,292+i*26)}}}}
 
 /* ---------- ДИСКОТЕКА ---------- */
 NPC.druzh={name:'Вышибала',hp:100,spd:150,pow:1,rate:1,coat:'#5a5e66',coatD:'#45484f',pants:'#2b2d33',pantsD:'#1f2025',boot:'#2a2a2a',skin:'#e2a98a',hat:'#3a3a40',fur:'#55555a',weapon:null};
@@ -1155,8 +1155,8 @@ function musScratch(){if(!AC)return;const t=AC.currentTime;mOsc(t,420,.35,'sawto
 /* phases */
 function diskoInit(){G.ph='slow';G.phT=7;musPlay('song');G.F.forEach(f=>{f.home={x:f.x,y:f.y}})}
 function diskoUpdate(dt){G.phT-=dt;if(G.phT>0)return;
- if(G.ph==='slow'){G.ph='fight';G.phT=rnd(13,17);musScratch();setTimeout(()=>{if(mode==='disko'&&G&&G.ph==='fight')musPlay('fight')},700);G.msg='МУЗЫКА ОБОРВАЛАСЬ!';G.sub='Бей заречных!';G.msgT=1.6;shake=6}
- else{G.ph='slow';G.phT=rnd(7,9);musPlay('song');G.msg='МЕДЛЯК';G.sub='Драться нельзя — дружинники смотрят!';G.msgT=1.6;G.F.forEach(f=>{f.atkT=0;f.home={x:f.x,y:f.y}})}}
+ if(G.ph==='slow'){G.ph='fight';G.phT=rnd(13,17);musScratch();setTimeout(()=>{if(mode==='disko'&&G&&G.ph==='fight')musPlay('fight')},700);G.msg='МУЗЫКА ОБОРВАЛАСЬ!';G.sub='Бей людей Калеро!';G.msgT=1.6;shake=6}
+ else{G.ph='slow';G.phT=rnd(7,9);musPlay('song');G.msg='БОЛЕРО';G.sub='Драться нельзя — охрана клуба смотрит!';G.msgT=1.6;G.F.forEach(f=>{f.atkT=0;f.home={x:f.x,y:f.y}})}}
 function diskoPenalty(f){if(f.stun>0||f.state==='ko')return;f.hp-=12;f.stun=.9;f.hurtT=.3;f.state='hurt';SFX.heavy();G.druzhT=1.2;G.FX.push({x:f.x,y:f.y-190,t:0,life:1.1,txt:'ДРУЖИННИКИ!',c:'#ff5a5a',big:1});if(f.hp<=0){f.hp=0;f.state='ko';f.downT=0}}
 function diskoDance(f,dt){const h=f.home||{x:f.x,y:f.y},sw=Math.sin(G.t*1.6+f.idx*1.3)*40,dx=h.x+sw-f.x,dy=h.y-f.y;const en=alive().filter(b=>sideOf(b)!==sideOf(f)).sort((a,b)=>Math.abs(a.x-f.x)-Math.abs(b.x-f.x))[0];if(en)f.face=en.x>f.x?1:-1;return[clamp(dx/60,-.35,.35),clamp(dy/40,-.35,.35)]}
 /* drawing */
@@ -1168,7 +1168,7 @@ function paintDisko(g){g.fillStyle='#1a1428';g.fillRect(0,0,W,330);g.fillStyle='
  for(let k=0;k<2;k++){const y0=40+k*30;for(let x=250;x<1030;x+=22){const yy=y0+Math.sin((x-250)/780*Math.PI)*24;circ(g,x,yy,4,['#ff4a4a','#ffe24a','#4aff8a','#4ab0ff','#ff5ad0'][(x/22+k)%5|0]);}}
  for(const sx of [290,900]){rr(g,sx,130,90,120,4,'#141218',3);for(const yy of [162,214])circ(g,sx+45,yy,22,'#2a2830',2);circ(g,sx+45,162,8,'#0a0a0c');circ(g,sx+45,214,8,'#0a0a0c');rr(g,sx+10,104,70,28,3,'#141218',2.5);circ(g,sx+45,118,9,'#2a2830',2)}
  rr(g,540,196,200,56,4,'#3a2a1a',3);rr(g,556,176,168,24,3,'#2a2a30',2.5);for(const rx of [590,690]){circ(g,rx,170,22,'#1a1a1e',2.5);circ(g,rx,170,6,'#8a8a90')}g.fillStyle='#9fd8a0';g.fillRect(620,184,40,6);
- rr(g,470,84,340,32,4,'#3a0a28',2.5);g.save();g.shadowColor='#ff4ab0';g.shadowBlur=14;g.fillStyle='#ffb0e0';g.font='900 24px Impact,sans-serif';g.textAlign='center';g.fillText('ДИСКОТЕКА · ДК «СТРОИТЕЛЬ»',640,108);g.restore();
+ rr(g,470,84,340,32,4,'#3a0a28',2.5);g.save();g.shadowColor='#ff4ab0';g.shadowBlur=14;g.fillStyle='#ffb0e0';g.font='900 24px Impact,sans-serif';g.textAlign='center';g.fillText('КАНТИНА «ЭЛЬ ТИГРЕ»',640,108);g.restore();
  g.strokeStyle='#888';g.lineWidth=2;g.beginPath();g.moveTo(640,0);g.lineTo(640,40);g.stroke();
  const fg=g.createLinearGradient(0,330,0,H);fg.addColorStop(0,'#3a2418');fg.addColorStop(1,'#1a100a');g.fillStyle=fg;g.fillRect(0,330,W,H-330);
  let y=334,bh=16,row=0;while(y<H){for(let x=(row%2)*24-48;x<W;x+=48){g.fillStyle=`rgba(${(x/48+row)%2?'255,220,170':'40,20,10'},${rnd(.04,.09)})`;g.fillRect(x,y,46,bh-1)}g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=1.5;g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke();y+=bh;bh*=1.08;row++}
@@ -1199,7 +1199,7 @@ function diskoItems(t){const fight=G.ph==='fight',it=[];
  for(const [x,f] of [[70,1],[1210,-1]]){const D={npc:'druzh',x,y:452,face:f,state:'idle',anim:0,atkT:0,atkDur:.3,kickT:0,flash:0};it.push({y:452,d:()=>{ctx.save();ctx.translate(x,452);ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(0,0,30,8,0,0,TAU);ctx.fill();ctx.scale(f,1);if(nsOK('druzh')){const u=150/(350-NTOP.druzh),fi=G.druzhT>0?7:0;ctx.drawImage(NSPR.druzh,fi*400,0,400,360,-200*u,-350*u,400*u,360*u)}else drawMan(ctx,D,t,NPC.druzh);ctx.restore();ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillStyle='#ffb0a0';ctx.fillText('Вышибала',x,452-180);if(G.druzhT>0){ctx.font='900 34px Impact,sans-serif';ctx.lineWidth=4;ctx.strokeStyle='#000';ctx.strokeText('!',x,452-200);ctx.fillStyle='#e0303a';ctx.fillText('!',x,452-200)}}})}
  return it}
 function diskoHUD(t){const slow=G.ph==='slow',mm=Math.max(0,Math.ceil(G.phT));ctx.save();ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-250,12,500,56);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle=slow?'#ff9ad0':'#ff5a5a';
- ctx.fillText(slow?`МЕДЛЯК · не дерись — дружинники · ${mm}`:`ДРАКА! · до медляка ${mm}`,W/2,38);ctx.fillStyle='#222';ctx.fillRect(W/2-150,46,300,10);ctx.fillStyle=slow?'#ff9ad0':'#ff5a5a';ctx.fillRect(W/2-150,46,300*clamp(G.phT/(slow?9:17),0,1),10);ctx.restore()}
+ ctx.fillText(slow?`БОЛЕРО · не дерись — охрана · ${mm}`:`ДРАКА! · до болеро ${mm}`,W/2,38);ctx.fillStyle='#222';ctx.fillRect(W/2-150,46,300,10);ctx.fillStyle=slow?'#ff9ad0':'#ff5a5a';ctx.fillRect(W/2-150,46,300*clamp(G.phT/(slow?9:17),0,1),10);ctx.restore()}
 PAINTERS.disko=g=>bgPhoto(g,'disko',paintDisko);
 
 /* ---------- СЮЖЕТ «ПУТЬ ПАЦАНА» + БОССЫ ---------- */
@@ -1211,7 +1211,7 @@ const CH=[
  {t:'Порт',m:'zavod',ic:'⚓',tx:'Ночь. Склад в порту. Ящик с изумрудами надо вынести мимо охраны и собак. Тихо — или громко, как сам решишь.'},
  {t:'Погоня',m:'chase',ic:'🔫',tx:'Изумруды в джипе, но люди Калеро сели на хвост. Машину ведёт Флако, ты — на заднем сиденье с пистолетом. Город, порт, шоссе у моря, серпантин — отстреливайся до самых гор.'},
  {t:'Кантина',m:'disko',ic:'🎸',tx:'Кантина «Эль Тигре». Люди из картеля Калеро пришли выяснить, чей теперь порт. Пока играет музыка — не дерись.'},
- {t:'Облава',m:'oblava',ic:'🚨',tx:'После порта на ушах вся полиция. Тайники с деньгами раскиданы по району — собери и уйди, пока не рассвело.'},
+ {t:'Облава',m:'oblava',ic:'🚨',tx:'После порта на ушах вся полиция. Тайники с деньгами раскиданы по баррио — собери и уйди, пока не рассвело.'},
  {t:'Поезд',m:'train',ic:'🚆',tx:'Ночной поезд на юг. Люди Калеро сели в тот же состав. Вагон, купе, платформа, станция — пробейся через всё.'},
  {t:'Полковник',m:'boss',b:'brig',ic:'🎖',tx:'Полковник Варгас держит все блокпосты города. Он не берёт деньги у тех, кого не уважает. Значит, сначала — уважение.'},
  {t:'Дон',m:'boss',b:'host',ic:'🎩',tx:'Дон Эрнесто решил, что ты стал слишком большим. Серьёзный разговор. С ним охрана, а у него самого — ствол.'},
@@ -1220,15 +1220,15 @@ const CAMP={on:0,ch:0};
 function campMax(){return TEST_ALL?CH.length:Math.min(CH.length,LS.get('camp',1))}
 function showCamp(){state='menu';CAMP.on=0;$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;const mx=campMax();
  $ui.innerHTML=`<div class="card"><h1>ПУТЬ НАВЕРХ</h1><p class="sub">Сюжет из ${CH.length} глав. Пройди главу — откроется следующая.</p><div class="clist">${CH.map((c,i)=>`<button class="ch ${i<mx?'':'lock'}" data-c="${i}" ${i<mx?'':'disabled'}><span>${i<mx?c.ic:'🔒'}</span><b>Глава ${i+1}</b><small>${i<mx?c.t:'закрыто'}</small></button>`).join('')}</div>
- ${korList().length?`<p class="sub" style="color:#7cf07c">🤝 Кореша: ${korList().map(k=>k.n+' ('+(HEROES[k.h]?HEROES[k.h].name:'')+')').join(', ')} — приходят на помощь в драках</p>`:''}${mx>=CH.length&&LS.get('campdone',0)?'<p class="sub" style="color:var(--gold)">★ Сюжет пройден. Район твой.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
+ ${korList().length?`<p class="sub" style="color:#7cf07c">🤝 Друзья: ${korList().map(k=>k.n+' ('+(HEROES[k.h]?HEROES[k.h].name:'')+')').join(', ')} — приходят на помощь в драках</p>`:''}${mx>=CH.length&&LS.get('campdone',0)?'<p class="sub" style="color:var(--gold)">★ Сюжет пройден. Баррио твоё.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
  $ui.querySelectorAll('.ch').forEach(b=>b.onclick=()=>showChapter(+b.dataset.c));document.getElementById('back').onclick=showMenu}
 function showChapter(i){if(CCH[i]&&cChoices()[i]==null)return showChoice(i,()=>showChapter(i));const c=CH[i];$ui.innerHTML=`<div class="card"><p class="sub">Глава ${i+1} из ${CH.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${c.ic} ${c.t.toUpperCase()}</h1>${comicHTML(i)}<div class="warn" style="border-color:#4a3d48;text-align:left;font-size:17px">${c.tx}</div>
- <div class="row"><button class="pri" id="cgo">Начать главу</button>${c.rz?'<p class="sub" style="font-size:13px;color:var(--gold)">🗣 В этой главе можно попробовать разрулить по понятиям</p>':''}<button id="cback">К главам</button></div></div>`;
+ <div class="row"><button class="pri" id="cgo">Начать главу</button>${c.rz?'<p class="sub" style="font-size:13px;color:var(--gold)">🗣 В этой главе можно попробовать договориться по законам улицы</p>':''}<button id="cback">К главам</button></div></div>`;
  document.getElementById('cgo').onclick=()=>{au();CAMP.on=1;CAMP.ch=i;mode=c.m;G=null;LOC=0;paintBG();start()};document.getElementById('cback').onclick=showCamp}
 const RZCH=[];
 /* разрулить внутри сюжета: в отдельных главах посреди боя появляется возможность договориться */
 function campRzWin(){const i=CAMP.ch,c=CH[i];state='end';document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
- $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 #e8b23a">РАЗРУЛИЛ</h1><p class="sub">${c.t}: решили по понятиям, без лишней крови.</p>${progLine()}<div class="row"><button id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;campAfter(true);const ag=document.getElementById('again');if(ag)ag.onclick=()=>showChapter(i)}
+ $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 #e8b23a">РАЗРУЛИЛ</h1><p class="sub">${c.t}: решили по законам улицы, без лишней крови.</p>${progLine()}<div class="row"><button id="again">Ещё раз</button><button id="menu">Меню</button></div></div>`;campAfter(true);const ag=document.getElementById('again');if(ag)ag.onclick=()=>showChapter(i)}
 function campRzCheck(at){if(!CAMP.on||!G||CAMP.rzAsked)return false;const c=CH[CAMP.ch];if(!c||!c.rz||c.rz.at!==at)return false;CAMP.rzAsked=1;
  rzOffer(c.rz.who,.15+CAMP.ch/CH.length*.8,c.rz.tip,()=>{if(at==='round')newRound()},()=>campRzWin());return true}
 function campAfter(won){if(!CAMP.on)return;const card=$ui.querySelector('.card');if(!card)return;const i=CAMP.ch,last=i===CH.length-1,d=document.createElement('div');
@@ -1310,32 +1310,32 @@ const RZQ=[
  {t:0,q:'Что тяжелее — килограмм гвоздей или килограмм ваты?',a:['Гвозди','Вата','Одинаково'],c:2,why:'Килограмм — он и есть килограмм.'},
  {t:0,q:'Газировка с сиропом — 3 копейки. Сколько стаканов купишь на 13 копеек?',a:['4','3','5'],c:0,why:'4 стакана — 12 копеек, копейка останется.'},
  {t:0,q:'Перемотка всей кассеты — 2 минуты. Сколько мотать половину?',a:['1 минута','2 минуты','30 секунд'],c:0,why:'Половина — вдвое быстрее: минута.'},
- {t:0,q:'Пятеро идут в видеосалон, билет — рубль. Платят тремя трёшками. Сколько сдачи?',a:['4 рубля','2 рубля','5 рублей'],c:0,why:'Три трёшки — 9 рублей, минус 5 — сдача 4.'},
+ {t:0,q:'Пятеро идут в видеосалон, билет — 1 песо. Платят тремя купюрами по 3. Сколько сдачи?',a:['4 песо','2 песо','5 песо'],c:0,why:'Три купюры по 3 — 9 песо, минус 5 — сдача 4.'},
  {t:0,q:'Грузчик носит 3 ящика за раз, ящиков 20. Сколько ходок минимум?',a:['6','7','8'],c:1,why:'6 ходок — 18 ящиков, нужна седьмая.'},
  /* t1 — средние */
- {t:1,q:'Жвачка: одна — 20 копеек, три — 50. У тебя рубль. Сколько унесёшь больше всего?',a:['4','5','6'],c:2,why:'Две тройки по 50 копеек — шесть жвачек.'},
+ {t:1,q:'Жвачка: одна — 20 сентаво, три — 50. У тебя 1 песо. Сколько унесёшь больше всего?',a:['4','5','6'],c:2,why:'Две тройки по 50 копеек — шесть жвачек.'},
  {t:1,q:'Сторож обходит забор за 20 минут, собака — вдвое быстрее. Сколько кругов собака сделает за час?',a:['3','6','4'],c:1,why:'Собаке нужно 10 минут на круг — 6 кругов.'},
- {t:1,q:'Видик ставит фильм на 1 час 30 минут в 22:00. Плёнку зажевало на 15 минут. Когда конец?',a:['23:30','23:45','23:15'],c:1,why:'22:00 + 1:30 + 0:15 = 23:45.'},
+ {t:1,q:'Киношник ставит фильм на 1 час 30 минут в 22:00. Плёнку зажевало на 15 минут. Когда конец?',a:['23:30','23:45','23:15'],c:1,why:'22:00 + 1:30 + 0:15 = 23:45.'},
  {t:1,q:'Ящик изумрудов — 12 камней. Делят на троих, старшему двойная доля. Сколько старшему?',a:['4','6','8'],c:1,why:'Доли 2+1+1 = 4, одна доля — 3 камня, старшему 6.'},
  {t:1,q:'В гараже 7 великов и скейтов, колёс всего 20. Сколько скейтов?',a:['3','4','5'],c:0,why:'3 скейта по 4 колеса + 4 велика по 2 = 12 + 8 = 20.'},
- {t:1,q:'Четыре пацана здороваются за руку каждый с каждым. Сколько рукопожатий?',a:['6','8','12'],c:0,why:'Каждый жмёт троим: 4×3 = 12, но каждое рукопожатие посчитано дважды — 6.'},
+ {t:1,q:'Четыре парня здороваются за руку каждый с каждым. Сколько рукопожатий?',a:['6','8','12'],c:0,why:'Каждый жмёт троим: 4×3 = 12, но каждое рукопожатие посчитано дважды — 6.'},
  /* t2 — сложные */
  {t:2,q:'Джинсы стоили 150. Фарцовщик скинул 10%, потом накинул 10%. Сколько теперь?',a:['150 руб.','148 руб. 50 коп.','151 руб. 50 коп.'],c:1,why:'150 − 15 = 135, потом 135 + 13,50 = 148,50.'},
- {t:2,q:'Трое скинулись по 10 — 30. Решала вернул 5: каждому по рублю, 2 себе. 9×3 = 27, плюс 2 — 29. Где рубль?',a:['Решала спрятал','Рубль не пропадал — так считать нельзя','Потерялся по дороге'],c:1,why:'В 27 уже сидят те 2 рубля решалы. Складывать их ещё раз нельзя.'},
+ {t:2,q:'Трое скинулись по 10 — 30. Решала вернул 5: каждому по одному песо, 2 себе. 9×3 = 27, плюс 2 — 29. Где песо?',a:['Решала спрятал','Песо не пропадал — так считать нельзя','Потерялся по дороге'],c:1,why:'В 27 уже сидят те 2 песо решалы. Складывать их ещё раз нельзя.'},
  {t:2,q:'Мясник: «Кусок весит 2 кило плюс половину своего веса». Сколько весит кусок?',a:['3 кг','4 кг','2,5 кг'],c:1,why:'Если половина куска — 2 кг, весь кусок — 4 кг.'},
- {t:2,q:'Барыга купил кассету за 6, продал за 7, выкупил за 8, продал за 9. Сколько заработал?',a:['1 рубль','2 рубля','0'],c:1,why:'Две сделки по рублю прибыли: +1 и +1.'},
+ {t:2,q:'Барыга купил кассету за 6, продал за 7, выкупил за 8, продал за 9. Сколько заработал?',a:['1 песо','2 песо','0'],c:1,why:'Две сделки по одному песо прибыли: +1 и +1.'},
  {t:2,q:'Напёрсточник: «Шарик под одним из 3 стаканов. Ты выбрал, я поднял пустой из двух других. Менять выбор?»',a:['Без разницы','Менять','Не менять'],c:1,why:'Сменишь — выиграешь в 2 случаях из 3.'},
  {t:2,q:'У смотрящего 9 монет, одна фальшивая — легче. Сколько взвешиваний на чашечных весах хватит наверняка?',a:['2','3','4'],c:0,why:'Делим на тройки: первое взвешивание находит тройку, второе — монету.'}];
 const RZT=[
  {t:0,say:'Ты чё сюда пришёл? Это моя точка.',o:[['Пришёл поговорить по-людски. Без шума.',1],['Извините, я уйду, только не бейте…',0],['Твоя? Сейчас будет моя, понял?',-1]]},
- {t:0,say:'С какого района будешь?',o:[['С гаражей. Меня там знают — спроси.',1],['Тебе какая разница?',-1],['Да я ни с какого… я сам по себе…',0]]},
+ {t:0,say:'С какого баррио будешь?',o:[['С доков. Меня там знают — спроси.',1],['Тебе какая разница?',-1],['Да я ни с какого… я сам по себе…',0]]},
  {t:0,say:'Ты чё, пугать меня пришёл?',o:[['Нет. Пришёл предложить разойтись без драки.',1],['А ты испугался?',-1],['Нет-нет, что вы…',0]]},
  {t:1,say:'А мне с этого что?',o:[['Ты не лезешь к нашим, мы — к твоим. Всем выгодно.',1],['Отдам всё, что есть…',0],['Целые зубы тебе с этого.',-1],['Ну… уважение, наверное.',0]]},
  {t:1,say:'Старшие твои знают, что ты тут?',o:[['Знают. Просили решить по-тихому.',1],['Не говорите им, пожалуйста…',0],['Мне старшие не указ.',-1],['А твои про тебя знают?',-1]]},
  {t:1,say:'Докажи, что ты не трепло.',o:[['Слово дал — сделаю. Проверь.',1],['Я тебе ничего доказывать не буду.',-1],['А как? Скажите — всё сделаю…',0],['Мамой клянусь!',0]]},
  {t:2,say:'Мои люди говорят, ты нашего обидел. Было?',o:[['Было. Он первый полез — свидетели есть. Разберёмся честно.',1],['Не было! Это не я! Честно!',0],['Ну обидел. И чё?',-1],['Давай я тебе денег дам — и забыли.',0]]},
  {t:2,say:'Я с тобой говорить не буду. Пусть старший приходит.',o:[['Старший прислал меня. Значит, и говорить со мной.',1],['Хорошо, я сейчас сбегаю за ним…',0],['Тогда по-другому поговорим.',-1],['Да ладно тебе, чего ты…',0]]},
- {t:2,say:'Тебе тут всё равно ничего не светит. Чего ты хочешь?',o:[['Половину точки — и ни одной драки на районе.',1],['Всё. Целиком.',-1],['Ничего… я просто посмотреть…',0],['А что предложишь?',0]]},
+ {t:2,say:'Тебе тут всё равно ничего не светит. Чего ты хочешь?',o:[['Половину точки — и ни одной драки в баррио.',1],['Всё. Целиком.',-1],['Ничего… я просто посмотреть…',0],['А что предложишь?',0]]},
  {t:2,say:'Если я соглашусь — мне перед своими как объяснить?',o:[['Скажешь: договорились по-честному. Это не слабость.',1],['Это твои проблемы.',-1],['Скажи, что я тебя побил.',0],['Можешь ничего не объяснять.',0]]}];
 const RZWHY={1:'Спокойно, честно и по делу — так уважают.','0':'Слабость или пустые слова — тут не прокатит.','-1':'Нахамил — разговор окончен.'};
 const RZITEMS=[['📼','кассета'],['👖','джинсы'],['🎧','наушники'],['⌚','часы'],['🍉','арбуз'],['🧴','одеколон'],['🧢','кепка'],['📻','приёмник']];
@@ -1388,8 +1388,8 @@ function rzOffer(who,d,tip,onFight,onWin){state='quest';$ui.hidden=false;documen
 /* отдельная серия из меню */
 const rzMax=()=>Math.min(RZL.length,LS.get('rzl',1));
 function showRz(){state='menu';CAMP.on=0;$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;const mx=rzMax();
- $ui.innerHTML=`<div class="card"><h1>РАЗРУЛИТЬ</h1><p class="sub">Без драки: напёрстки, смекалка, память и разговор по понятиям. Каждый следующий — сложнее.</p><div class="clist">${RZL.map((c,i)=>`<button class="ch ${i<mx?'':'lock'}" data-c="${i}" ${i<mx?'':'disabled'}><span>${i<mx?c.ic:'🔒'}</span><b>${i+1}. ${i<mx?c.w:'закрыто'}</b><small>${['легко','легко','средне','средне','сложно','сложно','очень сложно'][i]}</small></button>`).join('')}</div>
- ${LS.get('rzdone',0)?'<p class="sub" style="color:var(--gold)">★ Все разрулены. Ты — решала района.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
+ $ui.innerHTML=`<div class="card"><h1>РАЗРУЛИТЬ</h1><p class="sub">Без драки: напёрстки, смекалка, память и разговор по законам улицы. Каждый следующий — сложнее.</p><div class="clist">${RZL.map((c,i)=>`<button class="ch ${i<mx?'':'lock'}" data-c="${i}" ${i<mx?'':'disabled'}><span>${i<mx?c.ic:'🔒'}</span><b>${i+1}. ${i<mx?c.w:'закрыто'}</b><small>${['легко','легко','средне','средне','сложно','сложно','очень сложно'][i]}</small></button>`).join('')}</div>
+ ${LS.get('rzdone',0)?'<p class="sub" style="color:var(--gold)">★ Все разрулены. Ты — решала баррио.</p>':''}<div class="row"><button id="back">Назад</button></div></div>`;
  $ui.querySelectorAll('.ch').forEach(b=>b.onclick=()=>rzLevel(+b.dataset.c));document.getElementById('back').onclick=showMenu}
 function rzLevel(i){const L=RZL[i],d=i/(RZL.length-1),C=rzCfg(d);state='menu';
  $ui.innerHTML=`<div class="card"><p class="sub">Разрулить · ${i+1} из ${RZL.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${L.ic} ${L.w.toUpperCase()}</h1><div class="warn" style="border-color:#4a3d48;font-size:17px">${L.tx}<br><small>${C.steps} задания · нужно ${C.need}${C.time?' · ⏱ '+C.time+' с на ответ':''}</small></div><div class="row"><button class="pri" id="rgo">Начать</button><button id="rback">К списку</button></div></div>`;
@@ -1402,8 +1402,8 @@ function rzAfter(i,won){state='menu';const last=i===RZL.length-1;$ui.innerHTML=`
 const SHW=[['stick',30],['bottle',40],['chain',80],['bat',120],['knux',150],['dubina',170],['nunchaku',200],['rebar',250],['spike',350],['obrez',450],['pistol',600]];
 const SHI={cap:{n:'Кепка-восьмиклинка',ic:'🧢',p:100,d:'+5% здоровья'},suit:{n:'Костюм «три полоски»',ic:'🎽',p:120,d:'+5% скорости'},snk:{n:'Кроссовки',ic:'👟',p:150,d:'быстрее встаёшь после падения'},
  leather:{n:'Кожанка',ic:'🧥',p:250,d:'−10% входящего урона'},gold:{n:'Золотая цепура',ic:'📿',p:300,d:'+15% песо'},walkman:{n:'Кассетный плеер',ic:'📻',p:350,d:'потихоньку лечит в бою'},
- pager:{n:'Пейджер',ic:'📟',p:400,d:'раз за бой зовёт кореша на подмогу (кроме «каждый сам»)'},ushanka:{n:'Ушанка авторитета',ic:'🪖',p:450,d:'враги промахиваются в 15% ударов'},jacket:{n:'Малиновый пиджак',ic:'👔',p:500,d:'+15% урона по боссам'}};
-const SHC={kefir:{n:'Кефир',ic:'🥛',p:20,d:'+30 здоровья'},tarhun:{n:'Тархун',ic:'🥤',p:25,d:'5 секунд ускорения'},gum:{n:'Жвачка с вкладышем',ic:'🍬',p:15,d:'случайный бонус'}};
+ pager:{n:'Пейджер',ic:'📟',p:400,d:'раз за бой зовёт друга на подмогу (кроме «каждый сам»)'},ushanka:{n:'Ушанка авторитета',ic:'🪖',p:450,d:'враги промахиваются в 15% ударов'},jacket:{n:'Малиновый пиджак',ic:'👔',p:500,d:'+15% урона по боссам'}};
+const SHC={kefir:{n:'Молоко',ic:'🥛',p:20,d:'+30 здоровья'},tarhun:{n:'Газировка',ic:'🥤',p:25,d:'5 секунд ускорения'},gum:{n:'Жвачка с вкладышем',ic:'🍬',p:15,d:'случайный бонус'}};
 const INV=(()=>{const d={kap:0,w:[],sel:'',it:[],eq:[],c:{kefir:0,tarhun:0,gum:0}};try{const o=JSON.parse(localStorage.getItem('svn_inv')||'null');if(o)Object.assign(d,o);d.c=Object.assign({kefir:0,tarhun:0,gum:0},o&&o.c)}catch(e){}return d})();
 if(!Array.isArray(INV.heroes))INV.heroes=[];
 const TEST_ALL=1;/* тестовый режим: все герои открыты; при публикации поставить 0 */
@@ -1420,7 +1420,7 @@ function invHit(a,b,dmg){const me=G.F[0];if(b===me&&a.team!==b.team){if(EQ('usha
 function invTick(f,dt){if(f.boostT>0)f.boostT-=dt;if(f.powT>0)f.powT-=dt;if(f.state==='ko')return;
  if(EQ('walkman')&&f.hp<f.max){f.regA=(f.regA||0)+dt*1.6;if(f.regA>=1){f.hp=Math.min(f.max,f.hp+(f.regA|0));f.regA%=1}}
  if(f.state==='down'&&EQ('snk'))f.stun-=dt*.7;
- const teamMode=mode!=='ffa';if(f.pager&&teamMode&&f.hp<f.max*.35&&!G.over){f.pager=0;const others=HOTH(),k=newFighter(G.F.length,others[Math.random()*3|0],true,0);k.ally=true;k.name='Кореш';k.x=f.x<640?40:1240;k.y=f.y;k.face=k.x<640?1:-1;G.F.push(k);G.FX.push({x:f.x,y:f.y-200,t:0,life:1.4,txt:'📟 КОРЕШ ИДЁТ!',c:'#7cf07c',big:1});SFX.bell()}}
+ const teamMode=mode!=='ffa';if(f.pager&&teamMode&&f.hp<f.max*.35&&!G.over){f.pager=0;const others=HOTH(),k=newFighter(G.F.length,others[Math.random()*3|0],true,0);k.ally=true;k.name='Компа';k.x=f.x<640?40:1240;k.y=f.y;k.face=k.x<640?1:-1;G.F.push(k);G.FX.push({x:f.x,y:f.y-200,t:0,life:1.4,txt:'📟 КОРЕШ ИДЁТ!',c:'#7cf07c',big:1});SFX.bell()}}
 function useItem(){if(G&&G.net)return;if(!G||state!=='play'||RMODE())return;const me=G.F[0];if(me.state==='ko')return;const c=INV.c;let k=null;
  if(c.kefir>0&&me.hp<me.max*.75)k='kefir';else if(c.tarhun>0&&!(me.boostT>0))k='tarhun';else if(c.gum>0)k='gum';else if(c.kefir>0)k='kefir';if(!k){G.FX.push({x:me.x,y:me.y-170,t:0,life:.7,txt:'Карманы пустые',c:'#aaa'});return}
  c[k]--;invSave();SFX.pick();let txt=SHC[k].n;
@@ -1434,7 +1434,7 @@ const TG={id:'',secret:'',c:null,err:''};try{const a=JSON.parse(localStorage.get
 const KRATE=10; /* 10 песо = 1 тагшим */
 async function tgCall(op,body){const r=await fetch(TG_API+op,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({id:TG.id,secret:TG.secret},body||{}))});return r.json()}
 function tgApply(d){if(!d||!d.ok)return false;if(d.secret){TG.secret=d.secret;TG.id=d.id;try{localStorage.setItem('tr_acct',JSON.stringify({id:TG.id,secret:TG.secret}))}catch(e){}}TG.c=d.data.c;return true}
-async function tgHello(){try{let d=TG.id?await tgCall('state'):null;if(!d||!d.ok){TG.id='';TG.secret='';d=await tgCall('hello',{name:'Пацан'})}TG.err=tgApply(d)?'':'нет связи'}catch(e){TG.err='нет связи с банком'}}
+async function tgHello(){try{let d=TG.id?await tgCall('state'):null;if(!d||!d.ok){TG.id='';TG.secret='';d=await tgCall('hello',{name:'Амиго'})}TG.err=tgApply(d)?'':'нет связи'}catch(e){TG.err='нет связи с банком'}}
 async function tgSwap(dir,n){if(TG.c==null)await tgHello();if(TG.c==null)return 'Нет связи с банком Тагшим';
  if(dir==='in'){const kap=n*KRATE;if(INV.kap<kap)return 'Не хватает песо';try{const d=await tgCall('swap',{dir:'in',n,game:'svinec'});if(!d.ok)return d.err==='cap'?'Сегодня больше не меняют — лимит 300 ₮ в день':'Не получилось';tgApply(d);INV.kap-=d.got*KRATE;invSave();return `+${d.got} ₮ тагшим`}catch(e){return 'Нет связи с банком Тагшим'}}
  else{try{const d=await tgCall('swap',{dir:'out',n,game:'svinec'});if(!d.ok)return d.err==='money'?'Не хватает тагшимов':'Не получилось';tgApply(d);INV.kap+=d.got*KRATE;invSave();return `+${d.got*KRATE} <i class="kp"></i> песо`}catch(e){return 'Нет связи с банком Тагшим'}}}
@@ -1444,7 +1444,7 @@ function showShop(msg){state='menu';$ui.hidden=false;document.getElementById('mb
  const tabs=[['w','🔪 Оружие'],['i','👕 Шмот'],['c','🥤 Расходники'],['x','💱 Обмен']];let body='';
  if(SHTAB==='w')body=`<p class="sub">Покупаешь один раз. Выбранное оружие у тебя в руках в начале каждого боя (в гонках не берётся).</p><div class="shg">${SHW.map(([k,p])=>{const own=INV.w.includes(k),on=INV.sel===k;return `<button class="shb ${on?'on':''}" data-w="${k}" ${!own&&INV.kap<p?'disabled':''}><img src="img/w_${k}.webp" style="height:34px;max-width:120px;object-fit:contain"><b>${WEAPONS[k].name}${k==='pistol'?' · 3 патрона':''}</b><small>урон ${WEAPONS[k].dmg}</small><i>${own?(on?'✔ в руках':'взять'):p+' <i class="kp"></i>'}</i></button>`}).join('')}</div>${INV.sel?'<div class="row"><button id="shnone">Начинать с кулаками</button></div>':''}`;
  else if(SHTAB==='i')body=`<p class="sub">Надеть можно 3 вещи сразу (надето: ${INV.eq.length}/3).</p><div class="shg">${Object.entries(SHI).map(([k,I])=>{const own=INV.it.includes(k),on=EQ(k);return `<button class="shb ${on?'on':''}" data-i="${k}" ${!own&&INV.kap<I.p?'disabled':''}><span>${I.ic}</span><b>${I.n}</b><small>${I.d}</small><i>${own?(on?'✔ надето':'надеть'):I.p+' <i class="kp"></i>'}</i></button>`}).join('')}</div>`;
- else if(SHTAB==='c')body=`<p class="sub">В бою — кнопка 🎒 или клавиша Q. Сама выберет: кефир, если ранен, иначе тархун, иначе жвачку.</p><div class="shg">${Object.entries(SHC).map(([k,I])=>`<button class="shb" data-c="${k}" ${INV.kap<I.p?'disabled':''}><span>${I.ic}</span><b>${I.n}</b><small>${I.d}</small><i>${I.p} <i class="kp"></i> · есть ${INV.c[k]}</i></button>`).join('')}</div>`;
+ else if(SHTAB==='c')body=`<p class="sub">В бою — кнопка 🎒 или клавиша Q. Сама выберет: молоко, если ранен, иначе газировку, иначе жвачку.</p><div class="shg">${Object.entries(SHC).map(([k,I])=>`<button class="shb" data-c="${k}" ${INV.kap<I.p?'disabled':''}><span>${I.ic}</span><b>${I.n}</b><small>${I.d}</small><i>${I.p} <i class="kp"></i> · есть ${INV.c[k]}</i></button>`).join('')}</div>`;
  else body=`<p class="sub">Тагшим ₮ — общая валюта всех игр Тагшим. Курс: ${KRATE} <i class="kp"></i> = 1 ₮. Из песо в тагшимы — до 300 ₮ в день.</p><div class="warn" style="border-color:#e8b23a;font-size:18px"><i class="kp"></i> ${INV.kap} песо &nbsp;·&nbsp; ₮ ${TG.c==null?(TG.err||'…'):TG.c} тагшим</div>
   <div class="row"><span style="align-self:center"><i class="kp"></i> → ₮</span>${[10,50,100].map(n=>`<button class="sx" data-d="in" data-n="${n}" ${INV.kap<n*KRATE?'disabled':''}>${n*KRATE} <i class="kp"></i> → ${n} ₮</button>`).join('')}</div>
   <div class="row"><span style="align-self:center">₮ → <i class="kp"></i></span>${[10,50,100].map(n=>`<button class="sx" data-d="out" data-n="${n}" ${TG.c!=null&&TG.c<n?'disabled':''}>${n} ₮ → ${n*KRATE} <i class="kp"></i></button>`).join('')}</div>`;
@@ -1477,7 +1477,7 @@ setInterval(()=>{if(!NETU.on)return;nHello();if(NETU.host){const now=Date.now();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'||!NETU.on)return;const n=Date.now();NETU.lastRx=n;for(const p of NETU.P)NETU.seen[p.id]=n;nHello()});
 function nOnMsg(m){if(!m||!m.t)return;
  if(NETU.host){if(m.t==='hi'){NETU.seen[m.id]=Date.now();let p=NETU.P.find(x=>x.id===m.id);if(!p){if(NETU.P.length>=NMAX||NETU.phase!=='lobby')return nSend({t:'full',id:m.id});p={id:m.id,slot:NETU.P.length};NETU.P.push(p);SFX.pick()}
-  else if(NETU.phase==='game'&&m.ph&&m.ph!=='game'&&NETU.m!=='krz'&&G&&!G.over){nSend({t:'go',m:mode,loc:LOC,p:NETU.P,re:m.id})}const ch=p.name!==m.name||p.hero!==m.hero;p.name=String(m.name||'Пацан').slice(0,12);p.hero=clamp(m.hero|0,0,HEROES.length-1);if(ch&&state==='menu'&&NETU.phase==='lobby')showOnline()}
+  else if(NETU.phase==='game'&&m.ph&&m.ph!=='game'&&NETU.m!=='krz'&&G&&!G.over){nSend({t:'go',m:mode,loc:LOC,p:NETU.P,re:m.id})}const ch=p.name!==m.name||p.hero!==m.hero;p.name=String(m.name||'Амиго').slice(0,12);p.hero=clamp(m.hero|0,0,HEROES.length-1);if(ch&&state==='menu'&&NETU.phase==='lobby')showOnline()}
   else if(m.t==='in'){NETU.seen[m.id]=Date.now();NETU.inp[m.id]=m}else if(m.t==='bye'){NETU.P=NETU.P.filter(p=>p.id!==m.id);if(state==='menu')showOnline()}return}
  NETU.lastRx=Date.now();
  if(m.t==='full'&&m.id===NETU.id){nLeave(true);showMenu();setTimeout(()=>alert('Комната полная или игра уже идёт'),50)}
@@ -1490,7 +1490,7 @@ function nOnMsg(m){if(!m||!m.t)return;
  else if(m.t==='end'&&NETU.phase==='game')nEnd(m.txt,m.win===NETU.id||(m.wteam!=null&&m.wteam===NETU.myTeam))}
 /* ---- лобби ---- */
 function showOnline(msg){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
- if(!NETU.on){$ui.innerHTML=`<div class="card"><h1>ОНЛАЙН</h1><p class="sub">До ${NMAX} пацанов в одной драке. Один создаёт комнату — остальные заходят по коду или ссылке.</p>${msg?`<p class="sub" style="color:var(--gold)">${msg}</p>`:''}
+ if(!NETU.on){$ui.innerHTML=`<div class="card"><h1>ОНЛАЙН</h1><p class="sub">До ${NMAX} бойцов в одной драке. Один создаёт комнату — остальные заходят по коду или ссылке.</p>${msg?`<p class="sub" style="color:var(--gold)">${msg}</p>`:''}
   <div class="row"><input id="nnm" maxlength="12" placeholder="Твоё имя" value="${(NETU.name||'').replace(/"/g,'')}" style="font:700 18px system-ui;padding:10px 14px;border-radius:10px;border:2px solid #4a3d48;background:#1a151c;color:#f3e9dc;width:220px"></div>
   <div class="row"><button class="pri" id="ncr">➕ Создать комнату</button></div>
   <div class="row"><input id="ncode" maxlength="4" placeholder="КОД" style="font:900 22px system-ui;letter-spacing:4px;text-transform:uppercase;padding:10px;border-radius:10px;border:2px solid #4a3d48;background:#1a151c;color:#f3e9dc;width:120px;text-align:center"><button id="njn">Войти</button></div>
@@ -1502,14 +1502,14 @@ function showOnline(msg){state='menu';$ui.hidden=false;document.getElementById('
  const link=location.origin+location.pathname+'?room='+NETU.code;
  $ui.innerHTML=`<div class="card"><p class="sub">Комната</p><h1 style="letter-spacing:8px">${NETU.code}</h1><p class="sub" style="font-size:13px">${link}</p><div class="row"><button id="ncp">📋 Скопировать ссылку</button></div>
   <div class="pbox">${NETU.P.length?NETU.P.map((p,i)=>`<div style="padding:3px 0">${i===0?'👑 ':''}<b>${p.name||'…'}</b> · ${HEROES[p.hero]?HEROES[p.hero].name:''}${p.id===NETU.id?' (ты)':''}</div>`).join(''):'<small>Подключаемся…</small>'}<small>Игроков: ${NETU.P.length}/${NMAX}</small></div>
-  ${NETU.host?`<div class="row"><button class="mm ${NETU.m==='team'?'on':''}" data-nm="team">🤝 Все вместе против ботов</button><button class="mm ${NETU.m==='train'?'on':''}" data-nm="train">🚆 Поезд вместе</button><button class="mm ${NETU.m==='kpz'?'on':''}" data-nm="kpz">🚔 Ментовка вместе</button><button class="mm ${NETU.m==='diskoffa'?'on':''}" data-nm="diskoffa">💃 Дискотека: каждый сам</button></div><div class="row"><button class="mm ${NETU.m==='ffa'?'on':''}" data-nm="ffa">Каждый сам</button><button class="mm ${NETU.m==='pvp'?'on':''}" data-nm="pvp">⚔ Люди на людей</button><button class="mm ${NETU.m==='krz'?'on':''}" data-nm="krz">🚙 Угнать джип</button></div><div class="row"><button class="pri" id="ngo" ${NETU.P.length<2||(NETU.m==='krz'&&NETU.P.length>KRNMAX)?'disabled':''}>${NETU.m==='krz'?'▶ Угнать!':'▶ Начать драку'}</button></div><p class="sub" style="font-size:13px">${NETU.P.length<2?'Ждём хотя бы одного пацана…':NETU.m==='krz'?(NETU.P.length>KRNMAX?'В гонке джипов максимум '+KRNMAX+' игрока':'Каждому свой джип: чёрный, белый, вишнёвый, серебристый. Чем больше вас — тем больше уазиков.'):NETU.m==='diskoffa'?'Каждый сам на танцполе (в медляк не драться!). Кто первым возьмёт 2 раунда — уводит Лену, остальные на улице пытаются её отбить.':NETU.m==='team'?'Все игроки в одной команде, против вас — боты. Их на одного больше, чем вас.':NETU.m==='train'?'Вместе через 4 вагона: вагон, купе, платформа, перрон. Чем больше вас — тем больше заречных.':NETU.m==='kpz'?'Вместе из КПЗ: камера, коридор, дежурка с майором. Чем больше вас — тем больше ментов.':NETU.m==='pvp'?'Люди делятся на две команды, недостающих добавят боты.':'Можно начинать. Не хватает людей — добавятся боты.'}</p>`:`<p class="sub">Режим: <b>${NMODEN[NETU.m]||'Каждый сам'}</b>. Ждём, когда хост начнёт…</p>`}
+  ${NETU.host?`<div class="row"><button class="mm ${NETU.m==='team'?'on':''}" data-nm="team">🤝 Все вместе против ботов</button><button class="mm ${NETU.m==='train'?'on':''}" data-nm="train">🚆 Поезд вместе</button><button class="mm ${NETU.m==='kpz'?'on':''}" data-nm="kpz">🚔 Комисария вместе</button><button class="mm ${NETU.m==='diskoffa'?'on':''}" data-nm="diskoffa">💃 Кантина: каждый сам</button></div><div class="row"><button class="mm ${NETU.m==='ffa'?'on':''}" data-nm="ffa">Каждый сам</button><button class="mm ${NETU.m==='pvp'?'on':''}" data-nm="pvp">⚔ Люди на людей</button><button class="mm ${NETU.m==='krz'?'on':''}" data-nm="krz">🚙 Угнать джип</button></div><div class="row"><button class="pri" id="ngo" ${NETU.P.length<2||(NETU.m==='krz'&&NETU.P.length>KRNMAX)?'disabled':''}>${NETU.m==='krz'?'▶ Угнать!':'▶ Начать драку'}</button></div><p class="sub" style="font-size:13px">${NETU.P.length<2?'Ждём хотя бы одного бойца…':NETU.m==='krz'?(NETU.P.length>KRNMAX?'В гонке джипов максимум '+KRNMAX+' игрока':'Каждому свой джип: чёрный, белый, вишнёвый, серебристый. Чем больше вас — тем больше уазиков.'):NETU.m==='diskoffa'?'Каждый сам на танцполе (в болеро не драться!). Кто первым возьмёт 2 раунда — уводит Лусию, остальные на улице пытаются её отбить.':NETU.m==='team'?'Все игроки в одной команде, против вас — боты. Их на одного больше, чем вас.':NETU.m==='train'?'Вместе через 4 вагона: вагон, купе, платформа, перрон. Чем больше вас — тем больше людей Калеро.':NETU.m==='kpz'?'Вместе из комисарии: камера, коридор, дежурка с комиссаром. Чем больше вас — тем больше полиции.':NETU.m==='pvp'?'Люди делятся на две команды, недостающих добавят боты.':'Можно начинать. Не хватает людей — добавятся боты.'}</p>`:`<p class="sub">Режим: <b>${NMODEN[NETU.m]||'Каждый сам'}</b>. Ждём, когда хост начнёт…</p>`}
   <div class="row"><button id="nlv">Выйти</button></div></div>`;
  document.getElementById('ncp').onclick=()=>{try{navigator.clipboard.writeText(link);showOnline()}catch(e){}};
  document.getElementById('nlv').onclick=()=>{nLeave();showOnline()};
  $ui.querySelectorAll('[data-nm]').forEach(b=>b.onclick=()=>{NETU.m=b.dataset.nm;nHello();showOnline()});
  const g=document.getElementById('ngo');if(g)g.onclick=()=>{au();nHostStart()}}
 /* ---- старт ---- */
-const NMODEN={diskoffa:'Дискотека: каждый сам',ffa:'Каждый сам',team:'Все вместе против ботов',pvp:'Люди на людей',train:'Поезд вместе',kpz:'Комисария вместе',krz:'Угнать джип'};
+const NMODEN={diskoffa:'Кантина: каждый сам',ffa:'Каждый сам',team:'Все вместе против ботов',pvp:'Люди на людей',train:'Поезд вместе',kpz:'Комисария вместе',krz:'Угнать джип'};
 function nHostStart(){if(NETU.m==='krz')return krHostStart();NETU.phase='game';NETU.W={};mode=NETU.m==='pvp'?'team':NETU.m==='diskoffa'?'disko':NETU.m;G=null;CAMP.on=0;start();nSend({t:'go',m:mode,loc:LOC,p:NETU.P})}
 function nCoopCast(F){const P=NETU.P;(mode==='train'?castTrain:castKpz)(F);for(let i=F.length-1;i>0;i--)if(F[i].ally)F.splice(i,1);
  const me=F[0];me.name=(P[0]&&P[0].name)||me.name;P.slice(1).forEach((p,j)=>{const f=newFighter(0,p.hero,false,0);f.rid=p.id;f.name=p.name||HEROES[p.hero].name;f.team=0;f.x=me.x-70+(j%3)*60;f.y=clamp(me.y-110+((j+1)*97)%220,450,650);f.face=1;F.push(f)});
@@ -1551,7 +1551,7 @@ function nRoundOver(winSide){G.lastWS=winSide;const w=NETU.W;if(winSide!=null)w[
  if(winSide!=null&&winSide===sideOf(G.F[0]))gainXP(40);SFX.bell()}
 function nMatchCheck(){const w=NETU.W;let best=null;for(const k in w){const need=+k===0&&mode==='train'?4:+k===0&&mode==='kpz'?3:2;if(w[k]>=need)best=+k}if(best==null)return false;
  if(mode==='disko'){const wf=G.F.find(f=>sideOf(f)===best);if(wf&&!wf.bot){doutNetStart(wf);return true}}
- const winF=G.F.find(f=>sideOf(f)===best),txt=mode==='train'?(best===0?'Доехали! Поезд ваш':'Люди Калеро скинули вас с поезда'):mode==='kpz'?(best===0?'Вырвались из ментовки на волю':'Вас снова закрыли в КПЗ'):NETU.m==='team'?(best===0?'Вместе забрали улицу':'Боты отбили улицу'):mode==='team'?(best===0?'Синие':'Красные')+' забрали улицу':(winF?winF.name:'?')+' — хозяин улицы';
+ const winF=G.F.find(f=>sideOf(f)===best),txt=mode==='train'?(best===0?'Доехали! Поезд ваш':'Люди Калеро скинули вас с поезда'):mode==='kpz'?(best===0?'Вырвались из комисарии на волю':'Вас снова закрыли в камере'):NETU.m==='team'?(best===0?'Вместе забрали улицу':'Боты отбили улицу'):mode==='team'?(best===0?'Синие':'Красные')+' забрали улицу':(winF?winF.name:'?')+' — хозяин улицы';
  nSend({t:'end',txt,win:mode==='ffa'&&winF?winF.rid||(winF===G.F[0]?NETU.id:''):'',wteam:mode!=='ffa'?best:null});nEnd(txt,best===sideOf(G.F[0]));return true}
 function nEnd(txt,won){state='end';NETU.phase='lobby';if(won)gainXP(100);gainKap(won?40:10);document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
  $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'УЛИЦА ТВОЯ':'НЕ В ЭТОТ РАЗ'}</h1><p class="sub">${txt}</p><div class="pbox">${(NETU.P||[]).map(p=>`<div>${p.name} · ${HEROES[p.hero]?HEROES[p.hero].name:''}</div>`).join('')}</div>${progLine()}<div class="row"><button class="pri" id="nlb">В комнату</button><button id="nmn">Выйти в меню</button></div></div>`;
@@ -1586,7 +1586,7 @@ function comboFX(f,txt){G.FX.push({x:f.x+f.face*30,y:f.y-185,t:0,life:.8,txt,c:'
 /* ---------- РЫНОК 2: лоток между этапами, особенности этапов, развилка, свой рынок ---------- */
 WEAPONS.melon={name:'Арбуз',dmg:15,range:700,cd:.5,knock:300,ammo:1,col:'#3a8a3a',throw:1};
 RYN.route=LS.get('rroute','');RYN.def=0;RYN.weap='';RYN.run=0;
-const RHAZ={2:'На прилавках арбузы — подбирай и кидай!',4:'Пол в павильоне скользкий — от ударов улетаешь дальше.',5:'Со штабелей падают ящики — следи за тенью!',6:'Кто-то вызвал ментов: успей за 1:30!'};
+const RHAZ={2:'На прилавках арбузы — подбирай и кидай!',4:'Пол в павильоне скользкий — от ударов улетаешь дальше.',5:'Со штабелей падают ящики — следи за тенью!',6:'Кто-то вызвал полицию: успей за 1:30!'};
 function rynNext(st){return st===4?0:(st===5||st===6)?7:st+1}
 function rynHazInit(){const s=RYN.st;G.tl=0;G.crT=3;G.crates=[];G.melT=0;
  if(RYN.def){G.waves=3;G.msg='НАЛЁТ НА ТВОЙ РЫНОК';G.sub='Отбейся вместе с охраной — 3 волны.';G.msgT=3;return}
@@ -1612,7 +1612,7 @@ function rynStall(next,earned){state='menu';$ui.hidden=false;document.getElement
  const maxHp=(()=>{const P=PROG.h[myHero];return Math.round(HEROES[myHero].hp*HPM*(1+P.up.hp*.08))})(),hp=Math.round(RYN.hp);
  $ui.innerHTML=`<div class="card"><p class="sub">Этап пройден${earned?` · <i class="kp"></i> +${earned}`:''}</p><h1 style="font-size:clamp(30px,6vw,52px)">ЛОТОК У ПРОХОДА</h1><p class="sub">Перед этапом ${next}: ${RST[next-1].loc}. Здоровье: <b>${hp}/${maxHp}</b> (+35% само по себе)</p>
  <div class="warn" style="border-color:#5ad05a;padding:8px;font-size:18px"><b><i class="kp"></i> ${INV.kap}</b> песо</div>
- <div class="shg"><button class="shb" id="stk" ${INV.kap<25||hp>=maxHp?'disabled':''}><img src="img/w_kefir.webp" style="height:34px"><b>Кефир сейчас</b><small>+40 здоровья</small><i>25 <i class="kp"></i></i></button>
+ <div class="shg"><button class="shb" id="stk" ${INV.kap<25||hp>=maxHp?'disabled':''}><img src="img/w_kefir.webp" style="height:34px"><b>Молоко сейчас</b><small>+40 здоровья</small><i>25 <i class="kp"></i></i></button>
  ${RYN.offer.w.map(([k,p])=>`<button class="shb ${RYN.weap===k?'on':''}" data-rw="${k}" ${INV.kap<p&&RYN.weap!==k?'disabled':''}><img src="img/w_${k}.webp" style="height:34px;max-width:120px;object-fit:contain"><b>${WEAPONS[k].name}</b><small>в руках на следующем этапе</small><i>${RYN.weap===k?'✔ взято':p+' <i class="kp"></i>'}</i></button>`).join('')}</div>
  <div class="row"><button class="pri" id="stgo">Дальше ▶</button><button id="stmenu">Меню</button></div></div>`;
  const k=document.getElementById('stk');if(k)k.onclick=()=>{INV.kap-=25;invSave();RYN.hp=Math.min(maxHp,RYN.hp+40);SFX.pick();rynStall(next)};
@@ -1622,7 +1622,7 @@ function rynStall(next,earned){state='menu';$ui.hidden=false;document.getElement
 function rynRoute(earned){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
  $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,52px)">РАЗВИЛКА</h1><p class="sub">До кабинета смотрящего два пути. Выбирай.</p>
  <div class="shg" style="grid-template-columns:1fr 1fr"><button class="shb" id="rsk"><span>📦</span><b>Через склад</b><small>Грузчик Вася, падают ящики, 3 волны людей. Зато песо больше в полтора раза.</small></button>
- <button class="shb" id="rkn"><span>🗄</span><b>Через контору</b><small>Решала с охраной и вызванные менты — 1:30 на всё. Зато людей меньше.</small></button></div></div>`;
+ <button class="shb" id="rkn"><span>🗄</span><b>Через контору</b><small>Решала с охраной и вызванная полиция — 1:30 на всё. Зато людей меньше.</small></button></div></div>`;
  document.getElementById('rsk').onclick=()=>{RYN.route='sklad';LS.set('rroute','sklad');rynStall(5,earned)};document.getElementById('rkn').onclick=()=>{RYN.route='kontora';LS.set('rroute','kontora');rynStall(6,earned)}}
 /* свой рынок: дань и налёты */
 const today=()=>new Date().toISOString().slice(0,10);
@@ -1661,7 +1661,7 @@ function korApply(F){if(!CAMP.on||NETU.on)return;const K=korList().filter(k=>HER
 function korJoin(){if(!G||!G.F)return '';const K=korList(),done=LS.get('korch',[]);if(K.length>=4||done.includes(CAMP.ch))return '';
  const c=G.F.filter(f=>f.bot&&!f.ally&&f.team!==0&&!f.npc&&!f.boss&&!f.spr&&HEROES[f.hero]&&f.hero!==myHero&&!K.some(k=>k.h===f.hero));if(!c.length)return '';
  const f=c.sort((a,b)=>(b.max||0)-(a.max||0))[0],nm=(f.name&&f.name!=='Ты'?f.name:HEROES[f.hero].name).slice(0,14);K.push({h:f.hero,n:nm});LS.set('kor',K);done.push(CAMP.ch);LS.set('korch',done);SFX.pick();
- return `<div class="warn" style="border-color:#7cf07c;text-align:left"><b>🤝 ${nm} зауважал тебя.</b><br>Теперь он твой кореш (${HEROES[f.hero].name}) — будет приходить на помощь в драках сюжета.<br><small>Кореша: ${K.map(k=>k.n).join(', ')}</small></div>`}
+ return `<div class="warn" style="border-color:#7cf07c;text-align:left"><b>🤝 ${nm} зауважал тебя.</b><br>Теперь он твой компа (${HEROES[f.hero].name}) — будет приходить на помощь в драках сюжета.<br><small>Друзья: ${K.map(k=>k.n).join(', ')}</small></div>`}
 /* позвать кореша: раз за раунд, на 7 секунд, бьёт очень сильно, вырубает одного и уходит */
 const KORT=7;
 function korCan(){return !!(G&&!G.net&&!NETU.on&&!RMODE()&&state==='play'&&korList().some(k=>HEROES[k.h]&&k.h!==myHero))}
@@ -1686,7 +1686,7 @@ const CMX=[
  [['zavod0','me',1,'Порт. Ночь. Склад №7.'],['zavod1','n:storozh',0,'Охрана с фонарями…'],['zavod0','n:ded',3,'…и собаки.']],
  [['zavod0','me',1,'Изумруды в джипе. Газ!'],['barrio','n:flaco',0,'Люди Калеро сели на хвост.'],['street','me',0,'Отстреливайся!']],
  [['disko','n:g2',0,'Кантина «Эль Тигре». Музыка.'],['disko','karate',0,'— Это наш порт, гринго.','me',0],['disko','dembel',7,'Музыка сейчас кончится.']],
- [['street','n:druzh',0,'Полиция перекрыла район.'],['dvor','me',1,'Тайники с деньгами — по всему пустырю.'],['dvor','me',0,'Успеть до рассвета.']],
+ [['street','n:druzh',0,'Полиция перекрыла баррио.'],['dvor','me',1,'Тайники с деньгами — по всему пустырю.'],['dvor','me',0,'Успеть до рассвета.']],
  [['train3','me',1,'Ночной поезд на юг.'],['train0','karate',0,'— Калеро передаёт привет.','kaban',7],['train1','me',3,'До станции — четыре вагона.','boxer',0]],
  [['blokpost','n:brig',0,'Полковник Варгас. Все блокпосты — его.'],['blokpost','n:brig',7,'Он не торгуется с теми, кого не уважает.'],['stroika','me',0,'Значит, придётся заслужить.']],
  [['rynok7','n:host',0,'Дон Эрнесто. Он тебя поднял — он решил тебя опустить.'],['rynok7','n:host',3,'С ним охрана. И ствол.'],['rynok1','me',0,'Дон — только начало.']],
@@ -1700,14 +1700,14 @@ const IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 const KEY=(t)=>`<kbd>${t}</kbd>`,BTN=(t,c)=>`<span class="hbtn" style="background:${c}">${t}</span>`;
 let HELPTAB=IS_TOUCH?'phone':'pc';
 function helpBody(t){
- if(t==='pc')return `<table class="htab"><tr><td>${KEY('W')}${KEY('A')}${KEY('S')}${KEY('D')} или стрелки</td><td>ходить</td></tr><tr><td>${KEY('F')} или левая кнопка мыши</td><td>удар</td></tr><tr><td>${KEY('G')} или правая кнопка мыши</td><td>пинок</td></tr><tr><td>${KEY('R')}</td><td>супер-удар, когда шкала полная</td></tr><tr><td>${KEY('E')}</td><td>поменять оружие (стоя рядом с другим) или бросить</td></tr><tr><td>${KEY('Q')}</td><td>карман: кефир, тархун, жвачка</td></tr><tr><td>${KEY('H')}</td><td>показать/скрыть подсказку комбо в бою</td></tr><tr><td>${KEY('Esc')}</td><td>пауза</td></tr></table><p class="sub">Оружие на земле подбирается само, когда подходишь.</p>`;
- if(t==='phone')return `<table class="htab"><tr><td>🕹 джойстик слева</td><td>ходить</td></tr><tr><td>${BTN('УДАР','#a01820')}</td><td>удар</td></tr><tr><td>${BTN('ПИНОК','#8a6a20')}</td><td>пинок</td></tr><tr><td>${BTN('💥','#c9a020')}</td><td>супер-удар — светится, когда готов</td></tr><tr><td>${BTN('🔄','#8a6a20')}</td><td>поменять оружие или бросить</td></tr><tr><td>${BTN('🍾','#2a7a3a')}</td><td>карман: кефир, тархун, жвачка</td></tr><tr><td>${BTN('☰ Меню','#2a2230')}</td><td>пауза</td></tr></table><p class="sub">Играть удобнее, держа телефон горизонтально.</p>`;
+ if(t==='pc')return `<table class="htab"><tr><td>${KEY('W')}${KEY('A')}${KEY('S')}${KEY('D')} или стрелки</td><td>ходить</td></tr><tr><td>${KEY('F')} или левая кнопка мыши</td><td>удар</td></tr><tr><td>${KEY('G')} или правая кнопка мыши</td><td>пинок</td></tr><tr><td>${KEY('R')}</td><td>супер-удар, когда шкала полная</td></tr><tr><td>${KEY('E')}</td><td>поменять оружие (стоя рядом с другим) или бросить</td></tr><tr><td>${KEY('Q')}</td><td>карман: молоко, газировка, жвачка</td></tr><tr><td>${KEY('H')}</td><td>показать/скрыть подсказку комбо в бою</td></tr><tr><td>${KEY('Esc')}</td><td>пауза</td></tr></table><p class="sub">Оружие на земле подбирается само, когда подходишь.</p>`;
+ if(t==='phone')return `<table class="htab"><tr><td>🕹 джойстик слева</td><td>ходить</td></tr><tr><td>${BTN('УДАР','#a01820')}</td><td>удар</td></tr><tr><td>${BTN('ПИНОК','#8a6a20')}</td><td>пинок</td></tr><tr><td>${BTN('💥','#c9a020')}</td><td>супер-удар — светится, когда готов</td></tr><tr><td>${BTN('🔄','#8a6a20')}</td><td>поменять оружие или бросить</td></tr><tr><td>${BTN('🍾','#2a7a3a')}</td><td>карман: молоко, газировка, жвачка</td></tr><tr><td>${BTN('☰ Меню','#2a2230')}</td><td>пауза</td></tr></table><p class="sub">Играть удобнее, держа телефон горизонтально.</p>`;
  if(t==='combo')return `<div class="hcmb"><div><b>ПОДСЕЧКА</b><span>${IS_TOUCH?BTN('УДАР','#a01820')+BTN('УДАР','#a01820')+BTN('ПИНОК','#8a6a20'):KEY('F')+KEY('F')+KEY('G')}</span><small>валит с ног всех перед тобой</small></div>
   <div><b>АППЕРКОТ</b><span>${IS_TOUCH?BTN('ПИНОК','#8a6a20')+BTN('УДАР','#a01820'):KEY('G')+KEY('F')}</span><small>сразу после пинка — удар в 1,7 раза сильнее</small></div>
   <div><b>РЫВОК</b><span>${IS_TOUCH?'🕹 разбег + '+BTN('УДАР','#a01820'):'разбег + '+KEY('F')}</span><small>пробеги полсекунды и ударь — бросок вперёд</small></div></div>
   <p class="sub">Нажимай быстро, без пауз: между ударами меньше секунды.</p>`;
  if(t==='super')return `<p class="sub">Жёлтая шкала под здоровьем копится, когда бьёшь и когда бьют тебя. Полная — ${IS_TOUCH?'жми 💥':'жми '+KEY('R')}.</p><table class="htab">${HEROES.map(h=>`<tr><td><b>${h.name}</b></td><td><b style="color:var(--gold)">${SUPERS[h.id]?SUPERS[h.id].n:''}</b> — ${SUPD[h.id]||''}</td></tr>`).join('')}</table>`;
- return `<table class="htab"><tr><td>▶ Путь наверх</td><td>12 глав сюжета. Между главами — выборы: от них зависит, кто придёт на помощь и какая концовка.</td></tr><tr><td>▶ Рынок</td><td>7 этапов от барыги до смотрящего. Между этапами — лоток, после 4-го — развилка. Победишь — рынок твой.</td></tr><tr><td>🛒 Барахолка</td><td>оружие, шмот и расходники за песо <i class="kp"></i>. Песо дают за бои.</td></tr><tr><td>🗣 Разрулить</td><td>смекалка, напёрстки и разговор вместо драки</td></tr><tr><td>Завод</td><td>прячься от фонарей, бей со спины, унеси ящик</td></tr><tr><td>Видеосалон</td><td>стой в круге у телевизора</td></tr><tr><td>Район / Облава</td><td>вид сверху: держи направление — едешь туда</td></tr><tr><td>🚙 Угнать джип</td><td>взломай замок и уйди от уазиков через весь город до гаража</td></tr><tr><td>🌐 Онлайн</td><td>драка до 6 человек или гонка джипов до 4 — по коду комнаты</td></tr></table>`}
+ return `<table class="htab"><tr><td>▶ Путь наверх</td><td>12 глав сюжета. Между главами — выборы: от них зависит, кто придёт на помощь и какая концовка.</td></tr><tr><td>▶ Рынок</td><td>7 этапов от барыги до смотрящего. Между этапами — лоток, после 4-го — развилка. Победишь — рынок твой.</td></tr><tr><td>🛒 Барахолка</td><td>оружие, шмот и расходники за песо <i class="kp"></i>. Песо дают за бои.</td></tr><tr><td>🗣 Разрулить</td><td>смекалка, напёрстки и разговор вместо драки</td></tr><tr><td>Завод</td><td>прячься от фонарей, бей со спины, унеси ящик</td></tr><tr><td>Видеосалон</td><td>стой в круге у телевизора</td></tr><tr><td>Баррио / Облава</td><td>вид сверху: держи направление — едешь туда</td></tr><tr><td>🚙 Угнать джип</td><td>взломай замок и уйди от уазиков через весь город до гаража</td></tr><tr><td>🌐 Онлайн</td><td>драка до 6 человек или гонка джипов до 4 — по коду комнаты</td></tr></table>`}
 function showHelp(back){const prev=state;state='menu';$ui.hidden=false;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;
  const tabs=[['pc','💻 Компьютер'],['phone','📱 Телефон'],['combo','👊 Комбо'],['super','💥 Супер'],['modes','🗺 Режимы']];
  $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,50px)">КАК ИГРАТЬ</h1><div class="row">${tabs.map(([k,n])=>`<button class="stb ${HELPTAB===k?'on':''}" data-ht="${k}">${n}</button>`).join('')}</div><div class="hbody">${helpBody(HELPTAB)}</div><div class="row"><button class="pri" id="hback">${back?'Назад к бою':'Назад'}</button></div></div>`;
@@ -1774,7 +1774,7 @@ function krLockTick(dt){const L=KL;if(!L)return;const c=document.getElementById(
  g.font='900 22px Impact,sans-serif';g.textAlign='left';const bar=(y,lab,v,col)=>{g.fillStyle='rgba(0,0,0,.65)';g.fillRect(16,y,250,30);g.fillStyle=col;g.fillRect(20,y+4,242*v/100,22);g.fillStyle='#fff';g.fillText(lab,24,y+23)};
  bar(16,'ШУМ',L.noise,'#e0303a');bar(52,(L.o&&L.o.gname)||'🔦 СТОРОЖ',L.guard,'#e8b23a');
  g.textAlign='right';g.fillStyle='rgba(0,0,0,.65)';g.fillRect(470,16,114,40);g.fillStyle=L.t<8?'#ff5a5a':'#fff';g.font='900 30px Impact,sans-serif';g.fillText(Math.max(0,Math.ceil(L.t))+' с',576,47);
- if(L.res){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,230,600,110);g.textAlign='center';g.font='900 46px Impact,sans-serif';g.fillStyle=L.res==='alarm'?'#ff4040':'#e8b23a';const RT=(L.o&&L.o.R)||{alarm:['СИГНАЛКА! ГОНИ!','Уазики уже за углом'],clean:['ТИХО. ДВЕРЬ ОТКРЫТА','Менты проснутся не сразу'],noisy:['ОТКРЫЛ, НО НАШУМЕЛ','Уазики близко']};g.fillText(RT[L.res][0],300,290);g.font='bold 20px system-ui';g.fillStyle='#f3e9dc';g.fillText(RT[L.res][1],300,322)}
+ if(L.res){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,230,600,110);g.textAlign='center';g.font='900 46px Impact,sans-serif';g.fillStyle=L.res==='alarm'?'#ff4040':'#e8b23a';const RT=(L.o&&L.o.R)||{alarm:['СИГНАЛКА! ГОНИ!','Патрули уже за углом'],clean:['ТИХО. ДВЕРЬ ОТКРЫТА','Полиция проснётся не сразу'],noisy:['ОТКРЫЛ, НО НАШУМЕЛ','Патрули близко']};g.fillText(RT[L.res][0],300,290);g.font='bold 20px system-ui';g.fillStyle='#f3e9dc';g.fillText(RT[L.res][1],300,322)}
  g.restore()}
 /* ---- гонка (1 игрок или онлайн до 4: хост считает, остальные шлют руль) ---- */
 const KRNMAX=4;
@@ -1798,7 +1798,7 @@ function krzRace(res,net){const y=KRH-260,[c]=krRoad(y),P=net||[{id:'',name:''}]
  const cars=P.map((p,i)=>krNewCar(c+(i-(n-1)/2)*62,y+(i%2)*80,net?KRCOLS[i%KRCOLS.length][0]:(CAMP.on?'black':KRCOL),p.name||'',p.id||'',res==='clean'?1:0));
  K={t:0,cd:3.2,res,host:net?1:0,cli:0,cars,c:cars[0],cops:[],O:krGen(),fx:[],msg:'',msgT:0,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:n};
  const back=res==='clean'?760:res==='noisy'?420:230;for(let i=0;i<(n>1?n:1);i++)K.cops.push(krCop(y+back+i*130+(i%2)*60,c+(i%2?30:-30)));
- krUI();K.msg=net?'УГОН! '+n+' ДЖИПА — УАЗИКОВ '+K.cops.length:res==='alarm'?'СИГНАЛКА! УАЗИКИ НА ХВОСТЕ':res==='clean'?'ТИХО УШЁЛ — ЕСТЬ ФОРА':'НАШУМЕЛ — УАЗИКИ БЛИЗКО';K.msgT=2.6}
+ krUI();K.msg=net?'УГОН! '+n+' ДЖИПА — ПАТРУЛЕЙ '+K.cops.length:res==='alarm'?'СИГНАЛКА! ПАТРУЛИ НА ХВОСТЕ':res==='clean'?'ТИХО УШЁЛ — ЕСТЬ ФОРА':'НАШУМЕЛ — ПАТРУЛИ БЛИЗКО';K.msgT=2.6}
 function krRestoreUI(){document.getElementById('touch').classList.remove('race');const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='УДАР';bB.textContent='ПИНОК';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display=''}
 function krNitro(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.a++;return}krNitroCar(K.c)}
 function krRam(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.k++;return}krRamCar(K.c)}
@@ -1835,12 +1835,12 @@ function krCarTick(c,dt){const I=krInput(c);const me=c===K.c;if(c.a==null)c.a=0;
   if(T.pick){o.hit=2;if(me)SFX.pick();if(T.pick==='nitro'){c.nitro=Math.min(3,c.nitro+1);krTxt(c,'+НИТРО','#7cf0ff')}else{c.hp=Math.min(100,c.hp+35);krTxt(c,'ПОЧИНИЛ +35','#5ad05a')}continue}
   if(T.oil){if(c.oilT<=0){c.oilT=.9;c.oilD=Math.random()<.5?-1:1;krTxt(c,'ЗАНОС!','#e8b23a');if(me)SFX.whoosh()}continue}
   if(T.bump){if(!(o.bumped||(o.bumped=[])).includes(c)){o.bumped.push(c);krDmg(c,T.dmg,'ТРЯХНУЛО');c.v*=.62;if(me)K.shk=8}continue}
-  if(T.solid&&c.inv<=0){krDmg(c,Math.round(T.dmg*.7*(.6+c.v/KR.GAS*.5)),o.k==='uaz'?'В УАЗИК!':'БАХ!');c.v*=.3;c.slowT=.6;if(me)K.shk=12;SFX.heavy();c.x+=(c.x>o.x?1:-1)*24;
+  if(T.solid&&c.inv<=0){krDmg(c,Math.round(T.dmg*.7*(.6+c.v/KR.GAS*.5)),o.k==='uaz'?'В ПАТРУЛЬ!':'БАХ!');c.v*=.3;c.slowT=.6;if(me)K.shk=12;SFX.heavy();c.x+=(c.x>o.x?1:-1)*24;
    if(T.br){o.hit=2;for(let i=0;i<10;i++)K.fx.push({x:o.x,y:o.y,vx:rnd(-160,160),vy:rnd(-160,60),t:0,life:.7,c:o.k==='barrel'?'#6a4422':o.k==='crates'?'#9a6a3a':'#d8d0c0',s:rnd(4,8)})}}}
  const boxed=K.cops.some(p=>p.stun<=0&&Math.hypot(p.x-c.x,p.y-c.y)<90);if(boxed&&c.v<45)c.stillT+=dt;else c.stillT=Math.max(0,c.stillT-dt*2);
  if(c.stillT>1.5)krCarOut(c,'зажали уазиками — не вырвался');
  else if(c.hp<=0)krCarOut(c,'джип заглох — дальше пешком не уйти');
- else if(c.y<270){c.fin=++K.place;c.why=K.nP>1?(c.fin===1?'первым загнал джип в гараж':'в гараже — '+c.fin+'-м'):'джип в гараже, ворота закрыты — менты остались с носом';krTxt(c,c.fin===1?'ПЕРВЫЙ!':c.fin+'-Й!','#e8b23a');SFX.bell()}}
+ else if(c.y<270){c.fin=++K.place;c.why=K.nP>1?(c.fin===1?'первым загнал джип в гараж':'в гараже — '+c.fin+'-м'):'джип в гараже, ворота закрыты — полиция осталась с носом';krTxt(c,c.fin===1?'ПЕРВЫЙ!':c.fin+'-Й!','#e8b23a');SFX.bell()}}
 function krCarOut(c,why){if(c.out||c.fin)return;c.out=1;c.why=why;c.v*=.3;krTxt(c,'ПРИНЯЛИ','#ff5a5a');if(c===K.c)SFX.siren()}
 function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
  for(const f of K.fx){f.t+=dt;f.x+=(f.vx||0)*dt;f.y+=(f.vy||0)*dt}K.fx=K.fx.filter(f=>f.t<f.life);if(K.msgT>0)K.msgT-=dt;
@@ -1852,9 +1852,9 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
  for(const o of K.O)if(o.vy){o.y+=o.vy*dt;const [oc,oh]=krRoad(o.y);o.x+=(oc+(o.x>oc?1:-1)*oh*.45-o.x)*Math.min(1,dt*.8)}
  const live=act.length?act:K.cars,lowY=Math.max(...live.map(c=>c.y)),lead=live.reduce((a,b)=>a.y<b.y?a:b);
  K.O=K.O.filter(o=>o.y<lowY+900&&o.y>-200);
- // уазики: больше игроков — больше уазиков
+ // патрули: больше игроков — больше уазиков
  const prog=clamp((KRH-260-lead.y)/(KRH-530),0,1),want=(K.nP>1?K.nP:1)+(prog>.4)+(prog>.75);
- if(act.length)while(K.cops.length<want){const yy=lowY+380,[cc]=krRoad(yy);K.cops.push(krCop(yy,cc+rnd(-30,30)));K.msg='ЕЩЁ ОДИН УАЗИК!';K.msgT=1.5}
+ if(act.length)while(K.cops.length<want){const yy=lowY+380,[cc]=krRoad(yy);K.cops.push(krCop(yy,cc+rnd(-30,30)));K.msg='ЕЩЁ ОДИН ПАТРУЛЬ!';K.msgT=1.5}
  let near=0;
  for(const p of K.cops){p.wob+=dt;p.hitT-=dt;const [pc,ph]=krRoad(p.y),poff=false;
   let tg=null,bd=1e9;for(const c of act){const d=Math.hypot(c.x-p.x,(c.y-p.y)*.7);if(d<bd){bd=d;tg=c}}
@@ -1921,7 +1921,7 @@ function krHUD(t){const c=K.c,ts=Math.floor(K.t);
  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(16,14,330,72);ctx.font='900 20px Impact,sans-serif';ctx.textAlign='left';ctx.fillStyle='#f3e9dc';ctx.fillText('ДЖИП  '+'🔥'.repeat(c.nitro)+(c.nitro?'':'· нитро нет'),28,38);
  ctx.fillStyle='#331';ctx.fillRect(28,48,220,14);ctx.fillStyle=c.hp>50?'#5ad05a':c.hp>25?'#e8b23a':'#e0303a';ctx.fillRect(28,48,220*c.hp/100,14);ctx.font='bold 13px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(Math.round(c.hp)+'%',256,60);
  ctx.fillStyle='#9fd0ff';ctx.fillText(c.out?'ПРИНЯЛИ — смотришь за своими':c.fin?'В ГАРАЖЕ · '+c.fin+'-й':((c.v|0)+(c.off?' · У БОРТА!':'')),28,78);
- ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-200,12,400,40);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`${ts/60|0}:${String(ts%60).padStart(2,'0')} · УАЗИКОВ ${K.cops.length} · ТАРАНОВ ${c.rams}`,W/2,40);
+ ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-200,12,400,40);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`${ts/60|0}:${String(ts%60).padStart(2,'0')} · ПАТРУЛЕЙ ${K.cops.length} · ТАРАНОВ ${c.rams}`,W/2,40);
  if(K.nP>1){ctx.textAlign='left';ctx.font='bold 14px system-ui';K.cars.forEach((q,i)=>{const y=104+i*20;ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(16,y-15,200,19);ctx.fillStyle=q===c?'#7cf07c':'#f3e9dc';ctx.fillText((q.fin?'🏁'+q.fin+' ':q.out?'🚨 ':'🚙 ')+(q===c?'Ты':q.name)+' · '+Math.round(q.hp)+'%',22,y)})}
  const bx=W-34,by0=70,by1=H-110;ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(bx-8,by0-10,16,by1-by0+20);const P=y=>by0+(by1-by0)*clamp((y-270)/(KRH-530),0,1);
  ctx.fillStyle='#7cf07c';ctx.fillRect(bx-10,by0-14,20,8);for(const p of K.cops){ctx.fillStyle=((t*3)|0)%2?'#ff3030':'#4a7aff';ctx.beginPath();ctx.arc(bx,P(p.y),5,0,TAU);ctx.fill()}
@@ -1971,7 +1971,7 @@ function rotTryLock(){if(!IS_TOUCH||innerHeight<=innerWidth)return;try{const el=
 function rotCheck(){const n=needRot();if(ROT.hidden===n)ROT.hidden=!n;return n}
 /* ---------- ЭЛЕКТРИЧКА: 4 локации подряд — вагон, купе, открытая платформа, перрон ---------- */
 const TRN=['ВАГОН ПОЕЗДА','КУПЕЙНЫЙ ВАГОН','ОТКРЫТАЯ ПЛАТФОРМА','СТАНЦИЯ'];
-const TRSUB=['Вагон качает и дёргает — держись на ногах!','Купейный вагон. Из купе выскакивают свои — не дай зажать себя у стены.','Ветер сдувает к хвосту платформы — кто за правый край, тот слетел! Толкай туда заречных.','Станция. Старший заречных ждёт на перроне — а скоро нагрянет милиция и будет бить всех подряд.'];
+const TRSUB=['Вагон качает и дёргает — держись на ногах!','Купейный вагон. Из купе выскакивают свои — не дай зажать себя у стены.','Ветер сдувает к хвосту платформы — кто за правый край, тот слетел! Толкай туда людей Калеро.','Станция. Главный у Калеро ждёт на перроне — а скоро нагрянет милиция и будет бить всех подряд.'];
 for(const k of ['train0','train1','train2','train3']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
 function trainLoc(){return Math.min(3,(G&&G.wins&&G.wins.me)||0)}
 function paintTrain(n){return g=>{const i=BGPH['train'+n];if(i&&i.complete&&i.naturalWidth){g.drawImage(i,0,0,W,H);tagAd(g,'train'+n);vignette(g);return}
@@ -1993,7 +1993,7 @@ PAINTERS.train0=paintTrain(0);PAINTERS.train1=paintTrain(1);PAINTERS.train2=pain
 function castTrain(F){const L=trainLoc(),others=HOTH();const me=F[0];me.x=220;me.y=560;me.face=1;me.team=0;
  const al=newFighter(1,others[0],true,0);al.ally=true;al.name='Свой';al.x=170;al.y=470;al.face=1;F.push(al);
  const n=L===3?4:3;for(let i=0;i<n;i++){const f=newFighter(2+i,others[(1+i)%others.length],true,1);f.team=1;f.x=900+i*90;f.y=440+i*70;f.face=-1;F.push(f)}
- if(L===3){const b=F[F.length-1];b.hero=HEROES.findIndex(h=>h.id==='kaban');if(b.hero<0)b.hero=others[0];b.max=b.hp=Math.round(b.max*1.7);b.name='Старший заречных'}}
+ if(L===3){const b=F[F.length-1];b.hero=HEROES.findIndex(h=>h.id==='kaban');if(b.hero<0)b.hero=others[0];b.max=b.hp=Math.round(b.max*1.7);b.name='Главный у Калеро'}}
 function trainInit(){const L=trainLoc();if(L===0)TRC.done=0;if(L===1&&!TRC.done&&!NETU.on){TRC.done=1;setTimeout(()=>{if(G&&mode==='train'&&state==='play')trOfferCards()},60)}G.tr={L,lurchT:rnd(4,6),gustT:rnd(3,5),gust:0,doorT:7,doorN:0,wind:0};G.msg='РАУНД '+G.round+' · '+TRN[L];G.sub=TRSUB[L];G.msgT=3}
 function trainUpdate(dt){const T=G.tr;if(!T||G.over)return;const L=T.L,act=G.F.filter(f=>f.state!=='ko');
  if(L===0){T.lurchT-=dt;if(T.lurchT<=0){T.lurchT=rnd(5,8);const d=Math.random()<.5?-1:1;shake=Math.max(shake,14);SFX.heavy();G.FX.push({x:W/2,y:220,t:0,life:1.1,txt:d>0?'ТОРМОЗИТ!':'ДЁРНУЛО!',c:'#ffd23f',big:1});
@@ -2012,19 +2012,19 @@ function trainUpdate(dt){const T=G.tr;if(!T||G.over)return;const L=T.L,act=G.F.f
 function trainDraw(){if(mode!=='train'||!G||!G.tr)return;const L=G.tr.L;
  if(L===2&&G.tr.gust>0){ctx.save();ctx.globalAlpha=.25;ctx.fillStyle='#cfe0ff';for(let i=0;i<14;i++){const y=340+i*26;ctx.fillRect((G.t*1800+i*137)%(W+300)-220,y,220,2)}ctx.restore()}
  if(L===2){ctx.save();ctx.fillStyle='rgba(255,60,60,.35)';ctx.fillRect(W-56,322,56,176);ctx.restore()}}
-/* ---------- купе: очко с заречными — разрулить картами или драться ---------- */
+/* ---------- купе: очко с людьми Калеро — разрулить картами или драться ---------- */
 const TRC={done:0};
 function trCardDeck(){const R=[['6',6],['7',7],['8',8],['9',9],['10',10],['В',2],['Д',3],['К',4],['Т',11]],S=['♠','♣','♥','♦'],d=[];for(const r of R)for(const su of S)d.push({r:r[0],v:r[1],s:su});return shuf(d)}
 function trSum(h){return h.reduce((a,c)=>a+c.v,0)}
 function trGold(h){return h.length===2&&h.every(c=>c.r==='Т')}
 function trCardHTML(c,hide){if(hide)return '<div class="pcard back"></div>';const red=c.s==='♥'||c.s==='♦';return `<div class="pcard" style="color:${red?'#c8202a':'#1a1418'}"><b>${c.r}</b><i>${c.s}</i></div>`}
 function trOfferCards(){state='menu';if(G)G.msgT=0;$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
- $ui.innerHTML=`<div class="card"><p class="sub">Купейный вагон</p><h1 style="font-size:clamp(28px,5.5vw,48px)">РАЗРУЛИТЬ В КУПЕ</h1><div class="warn" style="border-color:#e8b23a;text-align:left;font-size:17px">В купе трое заречных режутся в карты. Старший кивает: «Сыграем в очко? Выиграешь — сойдём на следующей, купе твоё. Проиграешь — должен будешь, и поговорим по-другому».</div>
+ $ui.innerHTML=`<div class="card"><p class="sub">Купейный вагон</p><h1 style="font-size:clamp(28px,5.5vw,48px)">РАЗРУЛИТЬ В КУПЕ</h1><div class="warn" style="border-color:#e8b23a;text-align:left;font-size:17px">В купе трое людей Калеро режутся в карты. Старший кивает: «Сыграем в очко? Выиграешь — сойдём на следующей, купе твоё. Проиграешь — должен будешь, и поговорим по-другому».</div>
  <div class="col" style="max-width:420px;margin:10px auto"><button class="rza" id="trcy">🃏 Сыграть в очко</button><button class="rza" id="trcn">👊 Не играю — драться</button></div><p class="sub" style="font-size:13px">Очко: набери ближе к 21, чем они, но не больше. Валет 2, дама 3, король 4, туз 11. Два туза — «золотое очко», сразу победа.</p></div>`;
  document.getElementById('trcy').onclick=()=>{au();trCards()};document.getElementById('trcn').onclick=()=>{G.msg='ДРАКА В КОРИДОРЕ';G.sub=TRSUB[1];G.msgT=2;resumePlay()}}
 function trCards(){const D=trCardDeck(),P=[D.pop(),D.pop()],B=[D.pop(),D.pop()];let done=0;
  const draw=(msg)=>{const ps=trSum(P),bs=trSum(B);$ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(26px,5vw,44px)">ОЧКО</h1>
-  <p class="sub">Заречный${done?' · '+bs:''}</p><div class="pcards">${B.map((c,i)=>trCardHTML(c,!done&&i===0)).join('')}</div>
+  <p class="sub">Человек Калеро${done?' · '+bs:''}</p><div class="pcards">${B.map((c,i)=>trCardHTML(c,!done&&i===0)).join('')}</div>
   <p class="sub">Ты · <b>${ps}</b></p><div class="pcards">${P.map(c=>trCardHTML(c)).join('')}</div>
   ${msg?`<div class="warn" style="border-color:var(--gold);font-size:18px">${msg}</div>`:''}
   <div class="row">${done?`<button class="pri" id="trgo">Дальше ▶</button>`:`<button class="pri" id="trhit">Ещё карту</button><button id="trst">Хватит</button>`}</div></div>`;
@@ -2044,7 +2044,7 @@ function trGap(n,done){if(G)G.msgT=0;GP={n,prog:0,bal:0,vb:0,t:0,inL:0,inR:0,hit
  const B=(id,t,bg)=>`<button id="${id}" style="flex:1;min-height:clamp(54px,11vh,84px);font:900 clamp(16px,3.4vmin,24px) system-ui;border-radius:16px;background:${bg};touch-action:none">${t}</button>`;
  $ui.innerHTML=`<div class="card" style="padding:10px"><p class="sub" style="margin:2px">Переход ${n}/3 · ${GPN[n-1]}</p><canvas id="gpc" width="640" height="420" style="width:min(92vw,104vh,640px);height:auto;border-radius:12px;touch-action:none"></canvas>
  <div class="row" style="gap:8px;max-width:640px;margin:6px auto 0">${B('gpL','◀','#3a3040')}${B('gpH','👊 ОТБИТЬ','#a01820')}${B('gpR','▶','#3a3040')}</div>
- <p class="sub" style="font-size:13px;margin:4px">${IS_TOUCH?'◀ ▶ держи равновесие':'← → (A D) держи равновесие'} · ${IS_TOUCH?'👊':'F / Пробел'} — отбей руку заречного. Свалишься — проиграл переход.</p></div>`;
+ <p class="sub" style="font-size:13px;margin:4px">${IS_TOUCH?'◀ ▶ держи равновесие':'← → (A D) держи равновесие'} · ${IS_TOUCH?'👊':'F / Пробел'} — отбей руку человека Калеро. Свалишься — проиграл переход.</p></div>`;
  const hold=(id,k)=>{const el=document.getElementById(id);el.addEventListener('pointerdown',e=>{e.preventDefault();au();GP[k]=1});const up=()=>{if(GP)GP[k]=0};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('pointerleave',up)};
  hold('gpL','inL');hold('gpR','inR');document.getElementById('gpH').addEventListener('pointerdown',e=>{e.preventDefault();au();gpHit()})}
 function gpHit(){const P=GP;if(!P||P.res)return;if(P.grab){const g=P.grab;P.grab=null;P.grabT=rnd(1.1,2)/(1+.15*P.n);SFX.hit();shake=0;P.shk=.15;P.fx.push({x:g.side<0?150:490,y:180,t:0,txt:'ОТБИЛ!',c:'#ffd23f'});P.bal+=g.side*.12}else{P.bal+=(Math.random()-.5)*.25;P.fx.push({x:320,y:150,t:0,txt:'мимо',c:'#a09080'})}}
@@ -2054,7 +2054,7 @@ function gpTick(dt){const P=GP;if(!P)return;const c=document.getElementById('gpc
   P.sw+=dt*(1.3+.2*P.n);const sway=Math.sin(P.sw)*.55+Math.sin(P.sw*2.3)*.35;
   P.vb+=(sway*.8*d+(Math.random()-.5)*1.4*d)*dt+(P.bal*.8*d)*dt;
   if(kL)P.vb-=3.6*dt;if(kR)P.vb+=3.6*dt;P.vb*=Math.pow(.25,dt);P.bal+=P.vb*dt*1.6;
-  // руки заречных
+  // руки людей Калеро
   if(!P.grab){P.grabT-=dt;if(P.grabT<=0){P.grab={side:Math.random()<.5?-1:1,t:1.25-.12*P.n,max:1.25-.12*P.n};SFX.whoosh()}}
   else{P.grab.t-=dt;if(P.grab.t<=0){const s=P.grab.side;P.grab=null;P.grabT=rnd(1.2,2.1);P.vb+=s*-1.5;P.prog=Math.max(0,P.prog-10);P.shk=.35;SFX.heavy();P.fx.push({x:320,y:120,t:0,txt:'ДЁРНУЛИ!',c:'#ff5a5a'});G.F[0].hp=Math.max(1,G.F[0].hp-Math.round(G.F[0].max*.06))}}
   const ok=Math.abs(P.bal)<.45;P.prog+=(ok&&!P.grab?100/P.lim*1.35:ok?100/P.lim*.45:100/P.lim*.15)*dt;
@@ -2079,7 +2079,7 @@ function gpTick(dt){const P=GP;if(!P)return;const c=document.getElementById('gpc
  const H0=HEROES[myHero],SP=PZI[myHero],PX=ART?323:320,PY=ART?264:300,PH=ART?165:210;g.save();g.translate(PX+P.bal*48,PY);g.rotate(P.bal*.75+tilt);
  if(SP&&SP.complete&&SP.naturalWidth){const top=PZTOP[myHero]||60,u=PH/(350-top),fr=P.res==='fall'?5:P.grab?3:Math.abs(P.bal)>.55?5:0;g.drawImage(SP,fr*400,0,400,360,-200*u,-350*u,400*u,360*u)}
  g.restore();
- // рука заречного
+ // рука человека Калеро
  if(P.grab&&imOK(HDI)){const s=P.grab.side,k=1-P.grab.t/P.grab.max,hx=PX+s*(250-175*k),hy=PY-95,sc=.5;g.save();g.translate(hx,hy);g.scale(-s*sc,sc);g.drawImage(HDI,-621,-128);g.restore();
   g.save();g.fillStyle=`rgba(255,40,40,${.5+.5*Math.sin(P.t*20)})`;g.font='900 30px Impact,sans-serif';g.textAlign='center';g.lineWidth=5;g.strokeStyle='#000';g.strokeText('👊 ОТБЕЙ!',hx,hy-60);g.fillText('👊 ОТБЕЙ!',hx,hy-60);g.restore()}
  else if(P.grab){const s=P.grab.side,k=1-P.grab.t/P.grab.max,hx=320+s*(200-140*k),hy=190;g.save();g.strokeStyle='#1f2a6a';g.lineWidth=26;g.lineCap='round';g.beginPath();g.moveTo(320+s*230,170);g.lineTo(hx,hy);g.stroke();g.fillStyle='#e9bd96';g.beginPath();g.arc(hx,hy,18,0,TAU);g.fill();g.strokeStyle='#000';g.lineWidth=3;g.stroke();
@@ -2097,8 +2097,8 @@ function trAfterWin(){const L=trainLoc();if(NETU.on||L<1||L>3)return false;
  trGap(L,r=>{if(r==='fall'){G.wins.them=(G.wins.them||0)+1;if(G.wins.them>=2){state='play';G.over=1;return roundEnd()}}
   newRound();if(r==='ok'){const me=G.F[0];me.hp=Math.min(me.max,Math.round(me.hp*1.25)+Math.round(me.max*.1))}resumePlay()});return true}
 /* ---------- МЕНТОВКА: КПЗ → замок камеры → коридор → дежурка ---------- */
-const KPN=['КПЗ · КАМЕРА','КОРИДОР ОТДЕЛЕНИЯ','ДЕЖУРНАЯ ЧАСТЬ'];
-const KPSUB=['Прописка: блатные проверяют новенького. Отбейся — или не уважают.','Узкий коридор. Менты с дубинками, из кабинетов выбегают ещё.','Майор с Макаровым и дежурные. Держись от ствола — сближайся, пока перезаряжает. Каждые 12 секунд подмога.'];
+const KPN=['КАМЕРА','КОРИДОР КОМИСАРИИ','ДЕЖУРНАЯ ЧАСТЬ'];
+const KPSUB=['Прописка: блатные проверяют новенького. Отбейся — или не уважают.','Узкий коридор. Полицейские с дубинками, из кабинетов выбегают ещё.','Комиссар с револьвером и дежурные. Держись от ствола — сближайся, пока перезаряжает. Каждые 12 секунд подмога.'];
 for(const k of ['kpz0','kpz1','kpz2']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.onerror=()=>{if(!i.rt){i.rt=1;setTimeout(()=>{i.src='img/bg_'+k+'.webp?t='+Date.now()},1500)}};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
 const KPLOCK=new Image();KPLOCK.src='img/kpz_lock.webp';
 function kpzLoc(){return Math.min(2,(G&&G.wins&&G.wins.me)||0)}
@@ -2114,7 +2114,7 @@ function paintKpz(n){return g=>{const i=BGPH['kpz'+n];if(i&&i.complete&&i.natura
   g.fillStyle='#5a5a60';g.fillRect(0,330,W,390)}
  vignette(g)}}
 PAINTERS.kpz0=paintKpz(0);PAINTERS.kpz1=paintKpz(1);PAINTERS.kpz2=paintKpz(2);
-function mkCop(i,x,y,face,boss){const f=newFighter(i,HOTH()[0],true,1);f.team=1;f.spr=boss===2?'majorb':boss?'major':'ment';f.name=boss===2?'Старшина':boss?'Майор':'Полицейский';const B1=boss&&boss!==2;f.weapon=B1?'pistol':'baton';f.ammo=B1?2:0;f.dur=0;f.x=x;f.y=y;f.face=face;if(B1){f.max=f.hp=Math.round(f.max*2.2);f.boss=0}else if(boss===2){f.max=f.hp=Math.round(f.max*1.5)}return f}
+function mkCop(i,x,y,face,boss){const f=newFighter(i,HOTH()[0],true,1);f.team=1;f.spr=boss===2?'majorb':boss?'major':'ment';f.name=boss===2?'Сержант':boss?'Комиссар':'Полицейский';const B1=boss&&boss!==2;f.weapon=B1?'pistol':'baton';f.ammo=B1?2:0;f.dur=0;f.x=x;f.y=y;f.face=face;if(B1){f.max=f.hp=Math.round(f.max*2.2);f.boss=0}else if(boss===2){f.max=f.hp=Math.round(f.max*1.5)}return f}
 function castKpz(F){const L=kpzLoc(),others=HOTH(),me=F[0];me.x=200;me.y=540;me.face=1;me.team=0;
  if(L===0){const names=['Ронко','Клаво','Тристе'];for(let i=0;i<3;i++){const f=newFighter(1+i,others[(i+2)%others.length],true,1);f.team=1;f.name=names[i];f.x=820+i*110;f.y=450+i*70;f.face=-1;F.push(f)}}
  else{const al=newFighter(1,others[0],true,0);al.ally=true;al.name='Сокамерник';al.x=150;al.y=470;al.face=1;F.push(al);
@@ -2188,23 +2188,23 @@ function kpzSneakChain(n){snStart(n,r=>{if(r==='ok'){if(n===0)return kpzSneakCha
  G.wins.them=(G.wins.them||0)+1;if(G.wins.them>=2){state='play';return roundEnd()}
  G.msg='ПОВЯЗАЛИ — ЕЩЁ РАЗ';kpzSneakChain(n)})}
 function kpzSnitch(){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;if(G)G.msgT=0;
- $ui.innerHTML=`<div class="card"><p class="sub">Ментовка · под утро</p><h1 style="font-size:clamp(28px,5.5vw,48px)">СДАЙ БЛАТНЫХ?</h1><div class="warn" style="border-color:#6aa8ff;text-align:left;font-size:17px">Дежурный открывает кормушку: «Слышь, малой. Скажи, у кого из блатных заточка и кто вчера ларёк брал — и пойдёшь домой прямо сейчас. Никто не узнает».</div>
- <div class="col" style="max-width:440px;margin:10px auto"><button class="rza" id="snY">🐀 Сдать блатных — выйти сразу</button><button class="rza" id="snN">🤐 Молчать — бежать самому</button></div><p class="sub" style="font-size:13px">Сдашь — выйдешь без драки, но на районе это узнают: уважение упадёт.</p></div>`;
+ $ui.innerHTML=`<div class="card"><p class="sub">Комисария · под утро</p><h1 style="font-size:clamp(28px,5.5vw,48px)">СДАЙ БЛАТНЫХ?</h1><div class="warn" style="border-color:#6aa8ff;text-align:left;font-size:17px">Дежурный открывает кормушку: «Слышь, малой. Скажи, у кого из блатных заточка и кто вчера ларёк брал — и пойдёшь домой прямо сейчас. Никто не узнает».</div>
+ <div class="col" style="max-width:440px;margin:10px auto"><button class="rza" id="snY">🐀 Сдать блатных — выйти сразу</button><button class="rza" id="snN">🤐 Молчать — бежать самому</button></div><p class="sub" style="font-size:13px">Сдашь — выйдешь без драки, но в баррио это узнают: уважение упадёт.</p></div>`;
  document.getElementById('snY').onclick=()=>{const c=cChoices();for(const k in c)if(c[k]==='good'){c[k]='bad';break}LS.set('cch',c);LS.set('snitch',1);
-  $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(28px,5vw,46px)">СДАЛ</h1><p class="sub">Утром тебя выпустили. Но в КПЗ всё слышно — к вечеру об этом знает весь район.</p><p class="sub">Свои люди: ${'★'.repeat(cRespect())}${'☆'.repeat(3-cRespect())}</p><div class="row"><button class="pri" id="snGo">Дальше ▶</button></div></div>`;
+  $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(28px,5vw,46px)">СДАЛ</h1><p class="sub">Утром тебя выпустили. Но в камере всё слышно — к вечеру об этом знает всё баррио.</p><p class="sub">Свои люди: ${'★'.repeat(cRespect())}${'☆'.repeat(3-cRespect())}</p><div class="row"><button class="pri" id="snGo">Дальше ▶</button></div></div>`;
   document.getElementById('snGo').onclick=()=>{state='play';G.wins.me=3;roundEnd()}};
  document.getElementById('snN').onclick=()=>{au();kpzLockThenSneak()}}
 function kpzLockThenSneak(){krzLock(r=>{G.msgT=0;if(r==='alarm'){G.wins.them=(G.wins.them||0)+1}kpzSneakChain(0)},
-  {sub:'КПЗ · ночь',title:'ВСКРОЙ ЗАМОК КАМЕРЫ',hint:'Дежурный идёт с обходом.',gname:'🚶 ДЕЖУРНЫЙ',img:KPLOCK,
-   R:{alarm:['ДЕЖУРНЫЙ ПОДНЯЛ ШУМ!','Засчитан промах — дальше тихо'],clean:['ДВЕРЬ ОТКРЫТА. ТИХО.','Теперь — по коридору незаметно'],noisy:['ОТКРЫЛ, НО ЛЯЗГНУЛО','Менты насторожились']}})}
-/* ---------- ПОСЛЕ ДИСКОТЕКИ: уходишь с девочкой по лестнице ДК, на улице заречные пытаются её увести ---------- */
+  {sub:'Камера · ночь',title:'ВСКРОЙ ЗАМОК КАМЕРЫ',hint:'Дежурный идёт с обходом.',gname:'🚶 ДЕЖУРНЫЙ',img:KPLOCK,
+   R:{alarm:['ДЕЖУРНЫЙ ПОДНЯЛ ШУМ!','Засчитан промах — дальше тихо'],clean:['ДВЕРЬ ОТКРЫТА. ТИХО.','Теперь — по коридору незаметно'],noisy:['ОТКРЫЛ, НО ЛЯЗГНУЛО','Полиция насторожилась']}})}
+/* ---------- ПОСЛЕ ДИСКОТЕКИ: уходишь с девочкой по лестнице клуба, на улице люди Калеро пытаются её увести ---------- */
 for(const k of ['dstairs','dout']){const i=new Image();i.onload=()=>{if(BGK===k)paintBG()};i.onerror=()=>{};i.src='img/bg_'+k+'.webp';BGPH[k]=i}
-const GIRLN='Лена',GIRLA='Лену';let DOUTF=0,DST=null;
+const GIRLN='Лусия',GIRLA='Лусию';let DOUTF=0,DST=null;
 const girlSpr=()=>nsOK('girl')?'girl':'g2';
 const lerp=(a,b,t)=>a+(b-a)*t;
 function paintDout(g){const sky=g.createLinearGradient(0,0,0,330);sky.addColorStop(0,'#05070f');sky.addColorStop(1,'#141a2c');g.fillStyle=sky;g.fillRect(0,0,W,H);
  g.fillStyle='#3a3530';g.fillRect(260,90,760,240);g.fillStyle='#4a443c';for(let x=300;x<1000;x+=110)g.fillRect(x,110,34,220);g.fillStyle='#2a2622';g.fillRect(240,70,800,30);
- for(let x=330;x<1000;x+=110){g.fillStyle=Math.random()<.6?'#e8c76a':'#1a1a20';g.fillRect(x+44,140,44,60)}g.fillStyle='#c83a6a';g.font='900 26px Impact';g.textAlign='center';g.fillText('ДК «СТРОИТЕЛЬ»',640,92);
+ for(let x=330;x<1000;x+=110){g.fillStyle=Math.random()<.6?'#e8c76a':'#1a1a20';g.fillRect(x+44,140,44,60)}g.fillStyle='#c83a6a';g.font='900 26px Impact';g.textAlign='center';g.fillText('КЛУБ «ЭЛЬ ТИГРЕ»',640,92);
  for(const x of [120,1160]){g.fillStyle='#2a2a30';g.fillRect(x,120,8,210);g.fillStyle='rgba(255,230,150,.9)';g.beginPath();g.arc(x+4,118,12,0,TAU);g.fill();const gr=g.createRadialGradient(x,600,10,x,600,220);gr.addColorStop(0,'rgba(255,220,140,.25)');gr.addColorStop(1,'rgba(255,220,140,0)');g.fillStyle=gr;g.fillRect(x-220,380,440,340)}
  g.fillStyle='#2c2c32';g.fillRect(0,330,W,390);g.fillStyle='rgba(255,255,255,.04)';for(let y=360;y<H;y+=46)g.fillRect(0,y,W,2);vignette(g)}
 PAINTERS.dout=g=>bgPhoto(g,'dout',paintDout);
@@ -2227,40 +2227,40 @@ function dstairsTick(dt){const T=4.8;if(DST.k==null)DST.k=0;if(!DST.ph)DST.ph='w
  const hero=DST.hero!=null?DST.hero:myHero,[x,y,sc]=dstPos(k),moving=DST.ph!=='block'&&k<1;
  const drawSp=(img,fr,top,px,py,h,flip)=>{if(!imOK(img))return;const u=h/(350-top);ctx.save();ctx.translate(px,py);if(flip)ctx.scale(-1,1);ctx.drawImage(img,fr*400,0,400,360,-200*u,-350*u,400*u,360*u);ctx.restore()};
  const wf=moving?((DST.t*1.8*6)|0)%6:0,wk=WKH[hero];
- // заречные на лестнице
+ // люди Калеро на лестнице
  if(!DST.net&&!DST.fought){for(let n=0;n<3;n++){const hi=HEROES.findIndex(h=>h.id===DSTB[n]),hh=hi<0?(n+1)%HEROES.length:hi;let [ex,ey,es]=dstPos(.56+n*.06);
   if(DST.ph==='w2'&&DST.peace){ex+=n%2?-90:120;ey+=n%2?24:-10}else if(DST.ph==='w2')continue;if(DST.ph==='w2'&&DST.peace&&DST.k>.56+n*.06+.08)continue;
   drawSp(PZI[hh],DST.ph==='block'&&DST.bt%1.6<.25?3:0,PZTOP[hh]||60,ex,ey,150*es*FIGS,true)}}
  const gs=girlSpr(),gw=WKN.girl;if(gs==='girl'&&imOK(gw)&&moving)drawSp(gw,(wf+3)%6,NTOP.girl,x-46*sc,y-14*sc,150*sc*FIGS);else if(gs==='girl')drawSp(NSPR.girl,DST.ph==='block'?2:7,NTOP.girl,x-46*sc,y-14*sc,150*sc*FIGS);else drawSp(NSPR[gs],0,NTOP[gs]||20,x-60*sc,y-14*sc,120*sc*FIGS);
  if(moving&&imOK(wk))drawSp(wk,wf,PZTOP[hero]||60,x,y,150*sc*FIGS);else drawSp(PZI[hero],0,PZTOP[hero]||60,x,y,150*sc*FIGS);
- let t1,t2;if(DST.ph==='block'){t1='ЗАРЕЧНЫЕ ПЕРЕКРЫЛИ ЛЕСТНИЦУ';t2='Старший заречных: «Это наша девчонка. Куда повёл?»'}
- else if(DST.ph==='w2'){t1=DST.peace?'ЗАРЕЧНЫЕ РАССТУПИЛИСЬ':'ЛЕСТНИЦА ЧИСТА';t2='Но на улице их ещё больше — защищай '+GIRLA+'!'}
- else{t1=DST.mine===false?(DST.nm||'Он').toUpperCase()+' УВОДИТ '+GIRLA.toUpperCase():GIRLN.toUpperCase()+' УХОДИТ С ТОБОЙ';t2=DST.mine===false?'Отбей её на улице — она будет твоей!':DST.net?'Остальные пацаны попробуют её отбить — защищай!':'Спускаетесь к выходу…'}
+ let t1,t2;if(DST.ph==='block'){t1='ЛЮДИ КАЛЕРО ПЕРЕКРЫЛИ ЛЕСТНИЦУ';t2='Главный у Калеро: «Это наша девчонка. Куда повёл?»'}
+ else if(DST.ph==='w2'){t1=DST.peace?'ЛЮДИ КАЛЕРО РАССТУПИЛИСЬ':'ЛЕСТНИЦА ЧИСТА';t2='Но на улице их ещё больше — защищай '+GIRLA+'!'}
+ else{t1=DST.mine===false?(DST.nm||'Он').toUpperCase()+' УВОДИТ '+GIRLA.toUpperCase():GIRLN.toUpperCase()+' УХОДИТ С ТОБОЙ';t2=DST.mine===false?'Отбей её на улице — она будет твоей!':DST.net?'Остальные парни попробуют её отбить — защищай!':'Спускаетесь к выходу…'}
  ctx.save();ctx.textAlign='center';ctx.font='900 44px Impact,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(t1,W/2,90);ctx.fillStyle='#ff9ad0';ctx.fillText(t1,W/2,90);ctx.font='bold 22px system-ui';ctx.lineWidth=5;ctx.strokeText(t2,W/2,128);ctx.fillStyle='#f3e9dc';ctx.fillText(t2,W/2,128);ctx.restore();
  if(DST.ph!=='block'&&DST.k>=1&&(DST.end||0)>=.4){const net=DST.net;DSTBON=!!DST.peace;DST=null;if(net){if(NETU.host){mode='dout';newRound();resumePlay()}else{state='play';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!IS_TOUCH}}else doutRound()}}
 let DSTBON=false;
-function dstBlockUI(){$ui.hidden=false;$ui.innerHTML=`<div class="card" style="max-width:520px;margin-top:auto;background:rgba(20,14,22,.92)"><p class="sub">Лестница ДК · заречные не пускают</p><div class="row"><button class="pri" id="dsf">👊 Драться на лестнице</button><button id="dsr">🗣 Разрулить</button></div><p class="sub" style="font-size:13px">Разрулишь — пройдёте без драки. Но на улице всё равно ждут.</p></div>`;
+function dstBlockUI(){$ui.hidden=false;$ui.innerHTML=`<div class="card" style="max-width:520px;margin-top:auto;background:rgba(20,14,22,.92)"><p class="sub">Лестница клуба · люди Калеро не пускают</p><div class="row"><button class="pri" id="dsf">👊 Драться на лестнице</button><button id="dsr">🗣 Разрулить</button></div><p class="sub" style="font-size:13px">Разрулишь — пройдёте без драки. Но на улице всё равно ждут.</p></div>`;
  document.getElementById('dsf').onclick=()=>{au();dladRound()};document.getElementById('dsr').onclick=()=>{au();dstTalk(0,0)}}
-const DSTQ=[{q:'«Это наша девчонка, с Заречья. Ты куда её повёл?»',a:['«Она сама выбрала, с кем уходить. Спроси у неё.»','«Я её первый увидел.»','«А ты вообще кто такой?»'],ok:0,r:['Лена кивает: «Я с ним». Старший хмурится.','«Первый, говоришь?» — заречные смеются.','«Я-то? Сейчас узнаешь.» Старший закатывает рукава.']},
- {q:'«Ты на районе никто, новенький. За тебя кто скажет?»',a:['«Узнаете ещё.»','«Спроси за меня у старшего с гаражей — он скажет.»','*промолчать*'],ok:1,r:['«Ну-ну», — не верит старший.','Заречные переглядываются: со старшим с гаражей ссориться не хотят.','Молчание приняли за страх.']},
- {q:'«А если мы сейчас втроём на одного?»',a:['«Давай, попробуй.»','«Я милицию позову.»','«Втроём на одного при девчонке — по-пацански? Весь ДК видит.»'],ok:2,r:['«Попробую!» — старший делает шаг вперёд.','«Стукач!» — теперь точно не отпустят.','Старший сплёвывает: «Ладно. Сегодня — твоя».']}];
-function dstTalk(n,good){if(n>=DSTQ.length){const ok=good>=2;$ui.innerHTML=`<div class="card" style="max-width:520px;margin-top:auto;background:rgba(20,14,22,.92)"><h1 style="font-size:clamp(26px,5vw,40px)">${ok?'РАЗРУЛИЛ':'НЕ ПОВЕРИЛИ'}</h1><p class="sub">${ok?'Заречные расступаются. Лена берёт тебя под руку.':'Старший заречных: «Всё, договорились. Сейчас ответишь.»'}</p><div class="row"><button class="pri" id="dsn">${ok?'Дальше ▶':'👊 Драка на лестнице'}</button></div></div>`;
+const DSTQ=[{q:'«Это наша девчонка, с Заречья. Ты куда её повёл?»',a:['«Она сама выбрала, с кем уходить. Спроси у неё.»','«Я её первый увидел.»','«А ты вообще кто такой?»'],ok:0,r:['Лусия кивает: «Я с ним». Старший хмурится.','«Первый, говоришь?» — люди Калеро смеются.','«Я-то? Сейчас узнаешь.» Старший закатывает рукава.']},
+ {q:'«Ты в баррио никто, новенький. За тебя кто скажет?»',a:['«Узнаете ещё.»','«Спроси за меня у старшего с гаражей — он скажет.»','*промолчать*'],ok:1,r:['«Ну-ну», — не верит старший.','Люди Калеро переглядываются: со старшим с гаражей ссориться не хотят.','Молчание приняли за страх.']},
+ {q:'«А если мы сейчас втроём на одного?»',a:['«Давай, попробуй.»','«Я милицию позову.»','«Втроём на одного при девчонке — по-мужски? Весь клуб видит.»'],ok:2,r:['«Попробую!» — старший делает шаг вперёд.','«Стукач!» — теперь точно не отпустят.','Старший сплёвывает: «Ладно. Сегодня — твоя».']}];
+function dstTalk(n,good){if(n>=DSTQ.length){const ok=good>=2;$ui.innerHTML=`<div class="card" style="max-width:520px;margin-top:auto;background:rgba(20,14,22,.92)"><h1 style="font-size:clamp(26px,5vw,40px)">${ok?'РАЗРУЛИЛ':'НЕ ПОВЕРИЛИ'}</h1><p class="sub">${ok?'Люди Калеро расступаются. Лусия берёт тебя под руку.':'Главный у Калеро: «Всё, договорились. Сейчас ответишь.»'}</p><div class="row"><button class="pri" id="dsn">${ok?'Дальше ▶':'👊 Драка на лестнице'}</button></div></div>`;
   document.getElementById('dsn').onclick=()=>{au();if(ok){$ui.hidden=true;DST.ph='w2';DST.peace=1;gainKap&&gainKap(15)}else dladRound()};return}
- const Q=DSTQ[n];$ui.innerHTML=`<div class="card" style="max-width:560px;margin-top:auto;background:rgba(20,14,22,.92)"><p class="sub">Разговор ${n+1}/3 · нужно 2 верных</p><div class="warn" style="text-align:left;font-size:17px;border-color:#ff9ad0">Старший заречных: ${Q.q}</div><div class="col">${Q.a.map((a,i)=>`<button class="rza" data-a="${i}">${a}</button>`).join('')}</div></div>`;
+ const Q=DSTQ[n];$ui.innerHTML=`<div class="card" style="max-width:560px;margin-top:auto;background:rgba(20,14,22,.92)"><p class="sub">Разговор ${n+1}/3 · нужно 2 верных</p><div class="warn" style="text-align:left;font-size:17px;border-color:#ff9ad0">Главный у Калеро: ${Q.q}</div><div class="col">${Q.a.map((a,i)=>`<button class="rza" data-a="${i}">${a}</button>`).join('')}</div></div>`;
  $ui.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{au();const i=+b.dataset.a,ok=i===Q.ok;SFX[ok?'pick':'heavy']&&SFX[ok?'pick':'heavy']();$ui.innerHTML=`<div class="card" style="max-width:560px;margin-top:auto;background:rgba(20,14,22,.92)"><p class="sub" style="color:${ok?'#7cf07c':'#ff5a5a'}">${ok?'✔ Верно':'✖ Мимо'}</p><p class="sub" style="font-size:17px">${Q.r[i]}</p><div class="row"><button class="pri" id="dsn">Дальше ▶</button></div></div>`;document.getElementById('dsn').onclick=()=>{au();dstTalk(n+1,good+(ok?1:0))}})}
 function dladRound(){$ui.hidden=true;DST=null;mode='dlad';newRound();resumePlay()}
-function castDlad(F){const me=F[0];me.x=300;me.y=560;me.face=1;me.team=0;for(let n=0;n<3;n++){const hi=HEROES.findIndex(h=>h.id===DSTB[n]),f=newFighter(1+n,hi<0?(n+1)%HEROES.length:hi,true,1);f.team=1;f.x=900+n*90;f.y=450+n*90;f.face=-1;f.hp=f.max=Math.round(f.max*(n===0?.9:.6));if(n===0)f.name='Старший заречных';F.push(f)}}
+function castDlad(F){const me=F[0];me.x=300;me.y=560;me.face=1;me.team=0;for(let n=0;n<3;n++){const hi=HEROES.findIndex(h=>h.id===DSTB[n]),f=newFighter(1+n,hi<0?(n+1)%HEROES.length:hi,true,1);f.team=1;f.x=900+n*90;f.y=450+n*90;f.face=-1;f.hp=f.max=Math.round(f.max*(n===0?.9:.6));if(n===0)f.name='Главный у Калеро';F.push(f)}}
 PAINTERS.dlad=g=>{const i=BGPH.dstairs;if(imOK(i)){g.drawImage(i,0,-133,1280,853);g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,0,W,H);vignette(g)}else paintStairs(g)};
 function dladEnd(){if(G.win){DST={t:0,k:.45,ph:'w2',fought:1};state='dstairs';$ui.hidden=true;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true}else{mode='dout';G.win=false;doutFinish(false)}}
 function doutRound(){mode='dout';newRound();resumePlay();rotTryLock&&rotTryLock()}
 function castDout(F){const me=F[0];me.x=360;me.y=560;me.face=1;me.team=0;const others=HOTH();
  const gl=newFighter(1,myHero,true,0);Object.assign(gl,{girl:1,team:0,spr:girlSpr(),name:GIRLN,noHud:1,x:270,y:520,face:1,fear:0,held:null});F.push(gl);
  for(let i=0;i<2;i++){const f=newFighter(2+i,others[(i+1)%others.length],true,1);f.team=1;f.x=1080+i*80;f.y=470+i*110;f.face=-1;f.hp=f.max=Math.round(f.max*.55);if(i===0)f.grab=1;F.push(f)}}
-function doutInit(){G.dout={wave:0,regrabT:0};musPlay('fight');G.msg='РАУНД · УЛИЦА У ДК';G.sub='Заречные хотят увести '+GIRLA+'. Бей того, кто её схватил!';G.msgT=3.2}
+function doutInit(){G.dout={wave:0,regrabT:0};musPlay('fight');G.msg='РАУНД · УЛИЦА У КЛУБА';G.sub='Люди Калеро хотят увести '+GIRLA+'. Бей того, кто её схватил!';G.msgT=3.2}
 function dGirl(){return G&&G.F.find(f=>f.girl)}
 function doutUpdate(dt){const D=G.dout,gl=dGirl();if(!D||!gl||G.over)return;const me=G.F[0];
  const foes=G.F.filter(f=>f.team===1&&f.state!=='ko');
- if(D.wave===0&&foes.length<=1&&!NETU.on&&!DSTBON){D.wave=1;const others=HOTH();for(let i=0;i<1;i++){const f=newFighter(G.F.length,others[(i+3)%others.length],true,1);f.team=1;f.hp=f.max=Math.round(f.max*.55);f.x=-30;f.y=470+i*110;f.face=1;if(i===0){f.weapon='bat';f.dur=WEAPONS.bat.dur||0}G.F.push(f)}G.FX.push({x:W/2,y:220,t:0,life:1.4,txt:'ЕЩЁ ЗАРЕЧНЫЕ СЗАДИ!',c:'#ff5a5a',big:1});SFX.whoosh()}
+ if(D.wave===0&&foes.length<=1&&!NETU.on&&!DSTBON){D.wave=1;const others=HOTH();for(let i=0;i<1;i++){const f=newFighter(G.F.length,others[(i+3)%others.length],true,1);f.team=1;f.hp=f.max=Math.round(f.max*.55);f.x=-30;f.y=470+i*110;f.face=1;if(i===0){f.weapon='bat';f.dur=WEAPONS.bat.dur||0}G.F.push(f)}G.FX.push({x:W/2,y:220,t:0,life:1.4,txt:'ЕЩЁ ЛЮДИ КАЛЕРО СЗАДИ!',c:'#ff5a5a',big:1});SFX.whoosh()}
  if(!G.F.some(f=>f.grab&&f.state!=='ko')){D.regrabT-=dt;if(D.regrabT<=0){const c=foes.sort((a,b)=>Math.abs(a.x-gl.x)-Math.abs(b.x-gl.x))[0];if(c){c.grab=1;c.ai.t=0}D.regrabT=2.5}}
  if(!gl.held)for(const f of G.F)if(f.team===1&&!f.bot&&f.state!=='ko'&&f.state!=='hurt'&&f.state!=='down'&&!(f.stun>0)&&Math.hypot(f.x-gl.x,f.y-gl.y)<52){gl.held=f;G.FX.push({x:gl.x,y:gl.y-190,t:0,life:1.2,txt:f.name.toUpperCase()+' СХВАТИЛ '+GIRLA.toUpperCase()+'!',c:'#ff5a5a',big:1});SFX.whoosh();break}
  const H=gl.held;if(H)G.dHolder=H;
@@ -2268,7 +2268,7 @@ function doutUpdate(dt){const D=G.dout,gl=dGirl();if(!D||!gl||G.over)return;cons
   if(bad){H._lx=null;gl.held=null;H.grab=0;H.ai.t=0;D.regrabT=3;gl.gfr=4;G.FX.push({x:gl.x,y:gl.y-170,t:0,life:1,txt:'ОТБИЛ!',c:'#7cf07c',big:1});SFX.hit()}
   else{if(H._lx!=null&&Math.abs(H.x-H._lx)<60)H.x=H._lx+(H.x-H._lx)*.45;H._lx=H.x;gl.x=H.x-H.face*36;gl.y=H.y+4;gl.face=H.face;gl.fear=Math.min(100,gl.fear+dt*10);gl.gfr=3;if(Math.random()<dt*1.2)G.FX.push({x:gl.x,y:gl.y-170,t:0,life:.8,txt:'ПОМОГИ!',c:'#ff9ad0'})}}
  else{gl.fear=Math.max(0,gl.fear-dt*4);const near=G.F.some(f=>f.team===1&&f.state!=='ko'&&Math.abs(f.x-gl.x)<120&&Math.abs(f.y-gl.y)<60);gl.gfr=near?2:gl.state==='walk'?1:0}
- if(gl.fear>=100||(H&&gl.held&&(H.x<=EDGE+8||H.x>=W-EDGE-8))){G.over=1;G.overT=0;G.win=false;G.dlost=1;G.msg=GIRLA.toUpperCase()+' УВЕЛИ';G.sub='Заречные утащили её в переулок';G.msgT=99;SFX.ko()}}
+ if(gl.fear>=100||(H&&gl.held&&(H.x<=EDGE+8||H.x>=W-EDGE-8))){G.over=1;G.overT=0;G.win=false;G.dlost=1;G.msg=GIRLA.toUpperCase()+' УВЕЛИ';G.sub='Люди Калеро утащили её в переулок';G.msgT=99;SFX.ko()}}
 function doutGrab(f,dt){const gl=dGirl();if(!gl)return null;
  if(gl.held===f){const ex=W+60;const d=Math.sign(ex-f.x);f.face=d;return [d*.5,0]}
  if(gl.held)return null;const dx=gl.x-f.x,dy=gl.y-f.y,dd=Math.hypot(dx,dy)||1;f.face=dx>=0?1:-1;
@@ -2288,9 +2288,9 @@ function nDoutCast(F){const P=NETU.P,wr=DOUTW?DOUTW.rid:NETU.id;let k=0;
  F.forEach((f,i)=>f.idx=i)}
 function doutFinishNet(){const ws=G.dlost?1:G.lastWS,W0=G.F.find(f=>f.team===0&&!f.girl);let txt,win='';
  if(ws===0&&W0){txt=W0.name+' увёл '+GIRLA+' с дискотеки';win=W0.rid||NETU.id}
- else{const h=(G.dHolder&&!G.dHolder.bot)?G.dHolder:G.F.find(f=>f.team===1&&!f.bot&&f.state!=='ko');txt=h?h.name+' отбил '+GIRLA+'!':'Заречные увели '+GIRLA;win=h?(h.rid||NETU.id):''}
+ else{const h=(G.dHolder&&!G.dHolder.bot)?G.dHolder:G.F.find(f=>f.team===1&&!f.bot&&f.state!=='ko');txt=h?h.name+' отбил '+GIRLA+'!':'Люди Калеро увели '+GIRLA;win=h?(h.rid||NETU.id):''}
  nSend({t:'end',txt,win});mode='disko';nEnd(txt,win===NETU.id)}
-function doutFinish(won){DOUTF=1;mode='disko';G.over=1;if(!won){G.wins={me:1,them:2};G.doutL=1}else G.wins.me=Math.max(G.wins.me||0,2);roundEnd();if(LENAQ)mode='lena';const c=$ui.querySelector('.card');if(c){const d=document.createElement('div');d.className='warn';d.style.borderColor=won?'#ff9ad0':'#c8202a';d.innerHTML=won?'💃 '+GIRLN+' ушла с тобой. Заречные остались ни с чем.':'😢 '+GIRLA+' увели заречные. Без неё глава не пройдена — попробуй ещё раз.';const h=c.querySelector('h1');if(h)h.after(d)}}
+function doutFinish(won){DOUTF=1;mode='disko';G.over=1;if(!won){G.wins={me:1,them:2};G.doutL=1}else G.wins.me=Math.max(G.wins.me||0,2);roundEnd();if(LENAQ)mode='lena';const c=$ui.querySelector('.card');if(c){const d=document.createElement('div');d.className='warn';d.style.borderColor=won?'#ff9ad0':'#c8202a';d.innerHTML=won?'💃 '+GIRLN+' ушла с тобой. Люди Калеро остались ни с чем.':'😢 '+GIRLA+' увели люди Калеро. Без неё глава не пройдена — попробуй ещё раз.';const h=c.querySelector('h1');if(h)h.after(d)}}
 
 /* ---------- update ---------- */
 function update(dt){if(RMODE())return rUpdate(dt);G.t+=dt;if(CAMP.on&&!CAMP.rzAsked&&G.t>1.6&&!G.over&&campRzCheck('start'))return;if(G.msgT>0)G.msgT-=dt;
@@ -2381,7 +2381,7 @@ let NPLAYQ=(()=>{try{return new URLSearchParams(location.search).get('play')||''
 let NROOMQ=(()=>{try{return (new URLSearchParams(location.search).get('room')||'').toUpperCase()}catch(e){return ''}})();
 function showMenu(){if(AC&&!(MUS.on&&MUS.kind==='song'))musPlay('song');if(NETU.on&&NETU.phase==='game')nLeave();if(NROOMQ&&NROOMQ.length===4){const c=NROOMQ;NROOMQ='';if(nConnect(c,0))return showOnline()}if(!heroOwned(myHero)){myHero=0;LS.set('hero',0)}if(NPLAYQ){const q=NPLAYQ;NPLAYQ='';if(q==='dout'){G=null;mode='disko';return doutStart()}if(['ffa','team','rayon','oblava','krz','train','kpz','disko','zavod','salon'].includes(q)){mode=q;G=null;return start()}}state='menu';CAMP.on=0;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;$ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(34px,7vw,64px)">СВИНЕЦ ИЛИ СЕРЕБРО</h1><h2 class="ru-only" style="color:#e8b23a">PLOMO O PLATA</h2><p class="sub" style="letter-spacing:1.5px;font-weight:800;color:var(--gold);margin-top:-4px">ВЗЯТКА ИЛИ ПУЛЯ · ГОРОД ИЛИ МОГИЛА · ПОДНИМИСЬ НАВЕРХ</p><div class="row"><button class="pri" id="camp" style="font-size:19px;padding:14px 22px">▶ СЮЖЕТ: ПУТЬ НАВЕРХ <small style="opacity:.8">глава ${campMax()}/${CH.length}</small></button>${LS.get('ryndone',0)?'<button id="mymk" style="font-size:19px;padding:14px 22px;border-color:#e8b23a">🏪 МОЙ РЫНОК</button>':''}<button class="pri" id="rynst" style="font-size:19px;padding:14px 22px;background:#8a5a12;border-color:#e8b23a">▶ МЕРКАДО <small style="opacity:.8">этап ${rynMax()}/7</small></button></div><div class="row"><button id="offb" style="font-size:18px;padding:12px 20px" onclick="svOffline(1)">📥 <span class="ot">ОФЛАЙН</span></button><button id="langb" style="font-size:18px;padding:12px 20px" onclick="I18N.next()">🌐 <span class="nt">RU</span></button><button id="homeb" style="font-size:18px;padding:12px 20px" onclick="location.href='https://games.tagshim.com/'">⌂ ТАГШИМ</button><button id="helpb" style="font-size:18px;padding:12px 20px">❓ КАК ИГРАТЬ</button><button id="shopb" style="font-size:18px;padding:12px 24px">🛒 ЛАВКА <small style="opacity:.8"><i class="kp"></i> ${INV.kap}</small></button></div><p class="sub">Выбери героя</p><div class="heroes" id="hs"></div><div id="pg">${progHTML()}</div>
  <h2 style="margin-top:18px;font-size:20px">Драки, гонки и игры с друзьями</h2><div class="row"><button id="onb" style="font-size:17px;padding:12px 20px">🌐 ОНЛАЙН <small style="opacity:.8">до 6</small></button><button id="rzb" style="font-size:17px;padding:12px 20px">🗣 РАЗРУЛИТЬ <small style="opacity:.8">${rzMax()}/${RZL.length}</small></button></div>
- <div class="row"><button class="mb ${mode==='ffa'?'on':''}" data-m="ffa">Без правил · каждый сам</button><button class="mb ${mode==='team'?'on':''}" data-m="team">Стенка · 2 на 2</button><button class="mb ${mode==='rayon'?'on':''}" data-m="rayon">Район · гонка-драка 3 на 3</button><button class="mb ${mode==='oblava'?'on':''}" data-m="oblava">Облава · уйди от ментов</button><button class="mb ${mode==='krz'?'on':''}" data-m="krz">🚙 Угнать джип</button><button class="mb ${mode==='chase'?'on':''}" data-m="chase">🔫 Погоня · отстреливайся</button><button class="mb ${mode==='train'?'on':''}" data-m="train">🚆 Поезд</button><button class="mb ${mode==='kpz'?'on':''}" data-m="kpz">🚔 Ментовка · КПЗ</button><button class="mb ${mode==='disko'?'on':''}" data-m="disko">Дискотека · 3 на 3</button><button class="mb ${mode==='zavod'?'on':''}" data-m="zavod">Завод · укради ящик</button><button class="mb ${mode==='salon'?'on':''}" data-m="salon">Видеосалон · отожми</button><button class="mb ${mode==='lena'?'on':''}" data-m="lena">💃 Уведи Лену · дискотека → лестница → улица</button></div>
+ <div class="row"><button class="mb ${mode==='ffa'?'on':''}" data-m="ffa">Без правил · каждый сам</button><button class="mb ${mode==='team'?'on':''}" data-m="team">Стенка · 2 на 2</button><button class="mb ${mode==='rayon'?'on':''}" data-m="rayon">Баррио · гонка-драка 3 на 3</button><button class="mb ${mode==='oblava'?'on':''}" data-m="oblava">Облава · уйди от полиции</button><button class="mb ${mode==='krz'?'on':''}" data-m="krz">🚙 Угнать джип</button><button class="mb ${mode==='chase'?'on':''}" data-m="chase">🔫 Погоня · отстреливайся</button><button class="mb ${mode==='train'?'on':''}" data-m="train">🚆 Поезд</button><button class="mb ${mode==='kpz'?'on':''}" data-m="kpz">🚔 Комисария · камера</button><button class="mb ${mode==='disko'?'on':''}" data-m="disko">Кантина · 3 на 3</button><button class="mb ${mode==='zavod'?'on':''}" data-m="zavod">Склад · укради ящик</button><button class="mb ${mode==='salon'?'on':''}" data-m="salon">Видеосалон · отожми</button><button class="mb ${mode==='lena'?'on':''}" data-m="lena">💃 Уведи Лусию · кантина → лестница → улица</button></div>
  ${mode==='rynok'?`<div class="row"><span style="align-self:center;opacity:.8">Этап:</span>${Array.from({length:rynMax()},(_,i)=>`<button class="rs ${RYN.st===i+1?'on':''}" data-s="${i+1}">${i+1}. ${RST[i].b.toLowerCase()}</button>`).join('')}</div>`:''}${mode==='krz'?`<div class="row"><span style="align-self:center;opacity:.8">Джип:</span>${KRCOLS.map(([k,n])=>`<button class="kc ${KRCOL===k?'on':''}" data-kc="${k}">${n}</button>`).join('')}</div>`:''}${RMODE()?`<div class="row"><span style="align-self:center;opacity:.8">Транспорт:</span><button class="vh ${VEHSEL==='skate'?'on':''}" data-v="skate">🛹 Скейт — вёрткий</button><button class="vh ${VEHSEL==='bike'?'on':''}" data-v="bike">🚲 Велик — быстрый</button></div>${mode==='rayon'?`<div class="row"><span style="align-self:center;opacity:.8">Трасса:</span>${RMAPS.map((n,i)=>`<button class="rm ${LS.get('rmap',1)===i?'on':''}" data-r="${i}">${n}</button>`).join('')}</div>`:''}`:''}<div class="row"><button id="bl" class="${BLOOD?'on':''}">Кровь: ${BLOOD?'вкл':'выкл'}</button><button class="pri" id="go">В БОЙ</button></div>
  <p class="sub" style="margin-top:14px;font-size:14px">❓ Управление, комбо и супер-удары — в «Как играть». В бою: ☰ Меню или Esc — пауза.</p></div>`;
  const hs=document.getElementById('hs');HEROES.forEach((h,i)=>{const b=document.createElement('button');b.className='hb'+(i===myHero?' on':'');b.appendChild(heroCanvas(i));const own=heroOwned(i);if(!own)b.classList.add('lockh');b.insertAdjacentHTML('beforeend',`<b>${h.name}</b><small>${h.desc}</small>${own?`<small style="color:var(--gold)">ур. ${PROG.h[i].lv}${PROG.h[i].pts?' · очки: '+PROG.h[i].pts:''}</small>`:`<small style="color:var(--gold)">🔒 ${h.price} <i class="kp"></i></small>`}`);b.onclick=()=>{if(!own){if(INV.kap<h.price){alert(`${h.name} стоит ${h.price} песо. У тебя ${INV.kap}. Песо даётся за бои.`);return}if(!confirm(`Взять в компанию: ${h.name} за ${h.price} песо?`))return;INV.kap-=h.price;INV.heroes.push(h.id);invSave();SFX.bell()}myHero=i;LS.set('hero',i);showMenu()};hs.appendChild(b)});

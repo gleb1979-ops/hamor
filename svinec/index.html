@@ -2506,7 +2506,7 @@ const CHT={sedan:{hp:110,w:2.0,h:1.45,c:['#7a1f24','#2a3a6a','#c8b07a','#2f5a3a'
  truck:{hp:900,w:2.8,h:3.0,c:['#5a2a1a'],spd:.75,fire:[.6,1.1],dmg:[5,9]}};
 const CHIMG=[0,1,2,3].map(i=>{const m=new Image();m.src='img/ch_bg'+i+'.webp';return m});
 const CHCAR={};for(const k of ['sedan','bike','jeep','truck']){const m=new Image();m.src='img/ch_'+k+'.webp';CHCAR[k]=m}
-let CHZ=null;const CHHAND=new Image();CHHAND.src='img/ch_hand.webp';const CHMY=.174;const CHSLEEVE='#5a7ab0';const CH_F=720,CH_HOR=300,CH_CAM=1.55;
+let CHZ=null;const CHHAND=new Image();CHHAND.src='img/ch_hand.webp?v=2';const CHMY=.174;const CHSLEEVE='#5a7ab0';const CH_F=720,CH_HOR=300,CH_CAM=1.55;
 function chaseBegin(){au();state='chase';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=true;
  CHZ={sec:0,secT:0,t:0,dist:0,spd:28,hp:100,max:100,ammo:14,clip:14,rl:0,cd:0,fire:false,ax:W/2,ay:H*.45,E:[],FX:[],cracks:[],kills:0,spawnT:1.5,over:0,overT:0,banner:2.6,shake:0,boss:null,tracers:[],seed:Math.random()*1000}}
 function chOff(z){const f=w=>9*Math.sin(w*.0042+CHZ.seed)+5*Math.sin(w*.011+CHZ.seed*2),d=CHZ.dist,df=(f(d+.5)-f(d-.5));return f(d-z)-f(d)+df*z}

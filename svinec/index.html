@@ -2111,7 +2111,7 @@ function trCardsEnd(r){if(r==='win'){G.wins.me=(G.wins.me||0)+1;gainKap(40);G.FX
  if(r==='lose'){const others=HOTH(),f=newFighter(G.F.length,others[0],true,1);f.team=1;f.x=1100;f.y=560;f.face=-1;G.F.push(f);G.msg='КАРТОЧНЫЙ ДОЛГ';G.sub='Проиграл — теперь их на одного больше. Отбивайся!';G.msgT=3}
  else{G.msg='НИЧЬЯ — ДРАКА';G.sub=TRSUB[1];G.msgT=2}resumePlay()}
 /* ---------- ПЕРЕХОД МЕЖДУ ВАГОНАМИ: держи равновесие и отбивайся одновременно ---------- */
-const GPIMG={bg:new Image(),hand:new Image()};GPIMG.bg.src='img/bg_gap.webp';GPIMG.hand.src='img/gp_hand.webp';let GP=null;const GPN=['В КУПЕЙНЫЙ','НА ПЛАТФОРМУ','К ДВЕРЯМ — НА ПЕРРОН'];
+const GPIMG={bg:new Image(),hand:new Image()};GPIMG.bg.src='img/bg_gap.webp';GPIMG.hand.src='img/gp_hand.webp';let GP=null;const GPZ=.36;const GPN=['В КУПЕЙНЫЙ','НА ПЛАТФОРМУ','К ДВЕРЯМ — НА ПЕРРОН'];
 function trGap(n,done){if(G)G.msgT=0;GP={n,prog:0,bal:0,vb:0,t:0,inL:0,inR:0,hit:0,grab:null,grabT:rnd(1.4,2.2),sw:Math.random()*6,res:null,resT:0,shk:0,fx:[],hp0:G.F[0].hp,done,lim:16+n*2};
  state='trgap';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
  const B=(id,t,bg)=>`<button id="${id}" style="flex:1;min-height:clamp(54px,11vh,84px);font:900 clamp(16px,3.4vmin,24px) system-ui;border-radius:16px;background:${bg};touch-action:none">${t}</button>`;
@@ -2130,7 +2130,7 @@ function gpTick(dt){const P=GP;if(!P)return;const c=document.getElementById('gpc
   // руки людей Калеро
   if(!P.grab){P.grabT-=dt;if(P.grabT<=0){P.grab={side:Math.random()<.5?-1:1,t:1.25-.12*P.n,max:1.25-.12*P.n};SFX.whoosh()}}
   else{P.grab.t-=dt;if(P.grab.t<=0){const s=P.grab.side;P.grab=null;P.grabT=rnd(1.2,2.1);P.vb+=s*-1.5;P.prog=Math.max(0,P.prog-10);P.shk=.35;SFX.heavy();P.fx.push({x:320,y:120,t:0,txt:'ДЁРНУЛИ!',c:'#ff5a5a'});G.F[0].hp=Math.max(1,G.F[0].hp-Math.round(G.F[0].max*.06))}}
-  const ok=Math.abs(P.bal)<.45;P.prog+=(ok&&!P.grab?100/P.lim*1.35:ok?100/P.lim*.45:100/P.lim*.15)*dt;
+  const ok=Math.abs(P.bal)<GPZ;P.prog+=(ok&&!P.grab?100/P.lim*1.35:ok?100/P.lim*.45:100/P.lim*.15)*dt;
   if(Math.abs(P.bal)>=1){P.res='fall';P.resT=1.8;SFX.ko();P.shk=.5}else if(P.prog>=100){P.res='ok';P.resT=1.4;SFX.bell()}}
  else{P.resT-=dt;if(P.resT<=0){const r=P.res,d=P.done;GP=null;d(r);return}}
  for(const f of P.fx)f.t+=dt;P.fx=P.fx.filter(f=>f.t<.8);P.shk=Math.max(0,P.shk-dt);
@@ -2159,7 +2159,7 @@ function gpTick(dt){const P=GP;if(!P)return;const c=document.getElementById('gpc
   g.fillStyle=`rgba(255,40,40,${.5+.5*Math.sin(P.t*20)})`;g.font='900 30px Impact,sans-serif';g.textAlign='center';g.fillText('👊 ОТБЕЙ!',hx,hy-34);g.restore()}
  // шкалы
  g.fillStyle='rgba(0,0,0,.65)';g.fillRect(20,16,600,24);g.fillStyle='#e8b23a';g.fillRect(24,20,592*P.prog/100,16);g.fillStyle='#fff';g.font='900 15px Impact,sans-serif';g.textAlign='left';g.fillText('ПЕРЕХОД '+Math.round(P.prog)+'%',30,34);
- g.fillStyle='rgba(0,0,0,.65)';g.fillRect(120,48,400,22);g.fillStyle='#2f9a3a';g.fillRect(320-200*.45,50,400*.45,18);g.fillStyle='#7a1a22';g.fillRect(122,50,26,18);g.fillRect(492,50,26,18);
+ g.fillStyle='rgba(0,0,0,.65)';g.fillRect(120,48,400,22);g.fillStyle='#2f9a3a';g.fillRect(320-200*GPZ,50,400*GPZ,18);g.fillStyle='#7a1a22';g.fillRect(122,50,26,18);g.fillRect(492,50,26,18);
  g.fillStyle='#fff';g.fillRect(320+P.bal*200-3,44,6,30);g.font='bold 12px system-ui';g.textAlign='center';g.fillText('РАВНОВЕСИЕ',320,86);
  for(const f of P.fx){g.globalAlpha=1-f.t/.8;g.font='900 28px Impact,sans-serif';g.lineWidth=5;g.strokeStyle='#000';g.strokeText(f.txt,f.x,f.y-f.t*40);g.fillStyle=f.c;g.fillText(f.txt,f.x,f.y-f.t*40);g.globalAlpha=1}
  if(P.res){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,150,640,100);g.textAlign='center';g.font='900 44px Impact,sans-serif';g.fillStyle=P.res==='ok'?'#e8b23a':'#ff4040';g.fillText(P.res==='ok'?'ПРОШЁЛ!':'СОРВАЛСЯ!',320,205);g.font='bold 18px system-ui';g.fillStyle='#f3e9dc';g.fillText(P.res==='ok'?'+25% здоровья к следующей драке':'Засчитан проигрыш. Догоняй своих!',320,235)}

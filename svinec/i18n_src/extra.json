@@ -78,5 +78,25 @@
 "ДВОР ДОНА ЭРНЕСТО": [
 "DON ERNESTO'S YARD",
 "PATIO DE DON ERNESTO"
+],
+"ИЗУМРУДЫ ВЫНЕСЛИ!": [
+"EMERALDS OUT!",
+"¡ESMERALDAS FUERA!"
+],
+"ИЗУМРУДЫ": [
+"EMERALDS",
+"ESMERALDAS"
+],
+"Ящик изумрудов — 12 камней.": [
+"A crate of emeralds — 12 stones.",
+"Una caja de esmeraldas — 12 piedras."
+],
+"Делят на троих, старшему двойная доля. Сколько старшему?": [
+"Split three ways, the boss gets a double share. How many for the boss?",
+"Se reparte entre tres, el jefe recibe doble parte. ¿Cuántas para el jefe?"
+],
+"Доли 2+1+1 = 4, одна доля — 3 камня, старшему 6.": [
+"Shares 2+1+1 = 4, one share is 3 stones, the boss gets 6.",
+"Partes 2+1+1 = 4, una parte son 3 piedras, el jefe recibe 6."
 ]
 }

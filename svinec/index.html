@@ -371,7 +371,7 @@ function initObj(){G.tl=mode==='zavod'?100:110;G.obj=0;
  if(mode==='zavod'){G.alarm=0;G.sus=0;G.sl=ZL[LOC].sl(0);G.crate={x:ZL[LOC].crate[0],y:ZL[LOC].crate[1],c:null,cd:0};G.sirT=0;spawnDrop('stone');spawnDrop('stick');spawnDrop('stone')}
  else{G.cap=0;G.zs=2;G.reserve=G.round;G.rfT=8;spawnDrop('bat');spawnDrop(null)}}
 function objIntro(){G.msgT=3.4;if(mode==='zavod'){G.msg='РАУНД '+G.round+' · '+ZNAMES[LOC];G.sub=ZSUB[LOC]}else{G.msg='РАУНД '+G.round+' · '+SNAMES[LOC];G.sub=SSUB[LOC]}}
-function objMsg(win,dead){if(mode==='zavod')return win?'ДЕФИЦИТ ВЫНЕСЛИ!':dead?'ПОВЯЗАЛИ':'РАССВЕЛО — НЕ УСПЕЛИ';return win?'САЛОН ТЕПЕРЬ НАШ!':dead?'ВЫКИНУЛИ НА УЛИЦУ':'НЕ ОТЖАЛИ — ВРЕМЯ ВЫШЛО'}
+function objMsg(win,dead){if(mode==='zavod')return win?'ИЗУМРУДЫ ВЫНЕСЛИ!':dead?'ПОВЯЗАЛИ':'РАССВЕЛО — НЕ УСПЕЛИ';return win?'САЛОН ТЕПЕРЬ НАШ!':dead?'ВЫКИНУЛИ НА УЛИЦУ':'НЕ ОТЖАЛИ — ВРЕМЯ ВЫШЛО'}
 function endTitle(won){if(mode==='kpz')return won?'УШЁЛ ИЗ МЕНТОВКИ':'ОСТАЛСЯ НА НАРАХ';if(mode==='train')return won?'ЭЛЕКТРИЧКА НАША':'ВЫКИНУЛИ НА ХОДУ';if(mode==='boss')return won?'БОСС ПОВЕРЖЕН':'БОСС СИЛЬНЕЕ';if(mode==='disko')return won?'ДИСКОТЕКА НАША':G&&G.doutL?GIRLA.toUpperCase()+' УВЕЛИ':'ВЫКИНУЛИ С ТАНЦПОЛА';if(mode==='zavod')return won?'ЗАВОД ОБНЕСЛИ':'ПОВЯЗАЛИ';if(mode==='salon')return won?'САЛОН ТВОЙ':'ВЫГНАЛИ';return won?'УЛИЦА ТВОЯ':'ОТШИЛИ'}
 
 /* ----- AI helpers ----- */
@@ -489,7 +489,7 @@ function drawCrate(g,x,y,held,t){g.save();g.translate(x,y);
  g.beginPath();g.moveTo(x0+w,0);g.lineTo(x0+w+9,-9);g.lineTo(x0+w+9,-h-9);g.lineTo(x0+w,-h);g.closePath();g.fillStyle='#5e4224';g.fill();g.stroke();
  g.fillStyle='#94683a';g.fillRect(x0,-h,w,h);g.strokeRect(x0,-h,w,h);g.strokeStyle='rgba(0,0,0,.3)';g.lineWidth=2;for(const k of [1,2]){g.beginPath();g.moveTo(x0,-h*k/3);g.lineTo(x0+w,-h*k/3);g.stroke()}
  g.strokeStyle='#6a4a26';g.lineWidth=5;g.strokeRect(x0+4,-h+4,w-8,h-8);g.fillStyle='#8a8e96';for(const [cx,cy] of [[x0+3,-h+3],[x0+w-9,-h+3],[x0+3,-9],[x0+w-9,-9]])g.fillRect(cx,cy,6,6);
- g.fillStyle='#1a1410';g.font='900 10px Impact,sans-serif';g.textAlign='center';g.fillText('ДЕФИЦИТ',0,-h/2+4);g.restore()}
+ g.fillStyle='#1a1410';g.font='900 10px Impact,sans-serif';g.textAlign='center';g.fillText('ИЗУМРУДЫ',0,-h/2+4);g.restore()}
 
 /* ----- drawing: scenes ----- */
 function paintZavod(g){
@@ -626,7 +626,7 @@ const ZSUB=['Укради ящик со склада и вынеси через 
 const SSUB=['Выбей их из круга у телевизора и удержи его.','Зал ДК: займи круг у сцены и удержи его.','Тесный ларёк: займи круг у полок и удержи его.'];
 const ZL=[
  {obst:OBST_Z,crate:[1150,412],ded:[600,452],dogs:[[700,446],[772,476]],paths:[[[520,520],[1040,520]],[[1010,662],[420,662]],[[830,404],[830,500]],[[1010,470],[1010,612]]],
-  sl:t=>({x:640+430*Math.sin(t*.42),y:535+105*Math.sin(t*.31+1),sx:BGPH.zavod0&&BGPH.zavod0.naturalWidth?708:640,sy:BGPH.zavod0&&BGPH.zavod0.naturalWidth?14:108}),lights:[[1155,300,290,.95,.85],[574,368,150,.75,.9],[40,530,110,.5,1]]},
+  sl:t=>({x:640+430*Math.sin(t*.42),y:535+105*Math.sin(t*.31+1),sx:BGPH.zavod0&&BGPH.zavod0.naturalWidth?286:640,sy:BGPH.zavod0&&BGPH.zavod0.naturalWidth?68:108}),lights:[[1155,300,290,.95,.85],[574,368,150,.75,.9],[40,530,110,.5,1]]},
  {obst:[{x:330,y:436,w:120,h:40,k:'machine'},{x:720,y:436,w:120,h:40,k:'machine'},{x:520,y:600,w:120,h:40,k:'machine'},{x:900,y:600,w:120,h:40,k:'machine'},{x:470,y:390,w:90,h:28,k:'table'},{x:190,y:470,w:100,h:30,k:'sheets'}],
   crate:[1150,418],ded:[520,454],dogs:[[640,420],[300,664]],paths:[[[480,520],[1040,520]],[[1050,672],[400,672]],[[650,410],[650,560]],[[1070,470],[1070,640]]],
   sl:t=>{const x=640+470*Math.sin(t*.35);return{x,y:560+60*Math.sin(t*.9),sx:x,sy:BGPH.zavod1&&BGPH.zavod1.naturalWidth?56:160}},lights:[[1160,300,270,.95,.9],[420,330,170,.55,1],[900,330,170,.55,1],[40,530,110,.5,1]]},
@@ -1315,7 +1315,7 @@ const RZQ=[
  {t:1,q:'Жвачка: одна — 20 копеек, три — 50. У тебя рубль. Сколько унесёшь больше всего?',a:['4','5','6'],c:2,why:'Две тройки по 50 копеек — шесть жвачек.'},
  {t:1,q:'Сторож обходит забор за 20 минут, собака — вдвое быстрее. Сколько кругов собака сделает за час?',a:['3','6','4'],c:1,why:'Собаке нужно 10 минут на круг — 6 кругов.'},
  {t:1,q:'Видик ставит фильм на 1 час 30 минут в 22:00. Плёнку зажевало на 15 минут. Когда конец?',a:['23:30','23:45','23:15'],c:1,why:'22:00 + 1:30 + 0:15 = 23:45.'},
- {t:1,q:'Ящик дефицита — 12 пачек. Делят на троих, старшему двойная доля. Сколько старшему?',a:['4','6','8'],c:1,why:'Доли 2+1+1 = 4, одна доля — 3 пачки, старшему 6.'},
+ {t:1,q:'Ящик изумрудов — 12 камней. Делят на троих, старшему двойная доля. Сколько старшему?',a:['4','6','8'],c:1,why:'Доли 2+1+1 = 4, одна доля — 3 камня, старшему 6.'},
  {t:1,q:'В гараже 7 великов и скейтов, колёс всего 20. Сколько скейтов?',a:['3','4','5'],c:0,why:'3 скейта по 4 колеса + 4 велика по 2 = 12 + 8 = 20.'},
  {t:1,q:'Четыре пацана здороваются за руку каждый с каждым. Сколько рукопожатий?',a:['6','8','12'],c:0,why:'Каждый жмёт троим: 4×3 = 12, но каждое рукопожатие посчитано дважды — 6.'},
  /* t2 — сложные */

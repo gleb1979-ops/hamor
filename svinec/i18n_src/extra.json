@@ -98,5 +98,133 @@
 "Доли 2+1+1 = 4, одна доля — 3 камня, старшему 6.": [
 "Shares 2+1+1 = 4, one share is 3 stones, the boss gets 6.",
 "Partes 2+1+1 = 4, una parte son 3 piedras, el jefe recibe 6."
+],
+"Погоня": [
+"Chase",
+"Persecución"
+],
+"ПОГОНЯ": [
+"CHASE",
+"PERSECUCIÓN"
+],
+"Погоня · отстреливайся": [
+"Chase · shoot back",
+"Persecución · dispara"
+],
+"Изумруды в джипе, но люди Калеро сели на хвост. Машину ведёт Флако, ты — на заднем сиденье с пистолетом. Город, порт, шоссе у моря, серпантин — отстреливайся до самых гор.": [
+"The emeralds are in the jeep, but Calero's men are on your tail. Flaco drives, you're in the back seat with a pistol. City, port, coastal highway, mountain road — shoot back all the way to the hills.",
+"Las esmeraldas están en el jeep, pero los hombres de Calero te siguen. Flaco maneja y tú vas atrás con una pistola. Ciudad, puerto, carretera costera, montaña: dispara hasta llegar a los cerros."
+],
+"Изумруды в джипе. Газ!": [
+"Emeralds in the jeep. Floor it!",
+"Esmeraldas en el jeep. ¡Acelera!"
+],
+"Люди Калеро сели на хвост.": [
+"Calero's men are on our tail.",
+"Los de Calero nos siguen."
+],
+"Отстреливайся!": [
+"Shoot back!",
+"¡Dispara!"
+],
+"ДЖИП": [
+"JEEP",
+"JEEP"
+],
+"УЧАСТОК": [
+"STAGE",
+"TRAMO"
+],
+"сбито": [
+"downed",
+"derribados"
+],
+"ПЕРЕЗАРЯДКА": [
+"RELOADING",
+"RECARGANDO"
+],
+"ГРУЗОВИК КАЛЕРО!": [
+"CALERO'S TRUCK!",
+"¡EL CAMIÓN DE CALERO!"
+],
+"до конца участка": [
+"stage ends in",
+"fin del tramo en"
+],
+"с": [
+"s",
+"s"
+],
+"добей погоню": [
+"finish them off",
+"acaba con ellos"
+],
+"ОТОРВАЛИСЬ!": [
+"WE LOST THEM!",
+"¡LOS PERDIMOS!"
+],
+"ОТОРВАЛИСЬ": [
+"WE LOST THEM",
+"LOS PERDIMOS"
+],
+"ДЖИП РАЗБИТ": [
+"JEEP WRECKED",
+"JEEP DESTROZADO"
+],
+"ГОРОД": [
+"CITY",
+"CIUDAD"
+],
+"ПОРТ": [
+"PORT",
+"PUERTO"
+],
+"ШОССЕ У МОРЯ": [
+"COASTAL HIGHWAY",
+"CARRETERA COSTERA"
+],
+"СЕРПАНТИН": [
+"MOUNTAIN ROAD",
+"CAMINO DE MONTAÑA"
+],
+"Веди прицел пальцем и держи — стреляешь": [
+"Drag the crosshair with your finger and hold to shoot",
+"Arrastra la mira con el dedo y mantén para disparar"
+],
+"Веди прицел мышкой и держи кнопку — стреляешь · R — перезарядка": [
+"Aim with the mouse, hold the button to shoot · R — reload",
+"Apunta con el ratón y mantén el botón para disparar · R — recargar"
+],
+"Изумруды целы, погоня осталась позади.": [
+"The emeralds are safe, the chase is behind you.",
+"Las esmeraldas están a salvo, la persecución quedó atrás."
+],
+"Люди Калеро догнали тебя на участке «": [
+"Calero's men caught you on the stage “",
+"Los de Calero te alcanzaron en el tramo «"
+],
+"Сбито машин:": [
+"Cars downed:",
+"Autos derribados:"
+],
+"джип цел на": [
+"jeep intact:",
+"jeep intacto:"
+],
+"ПАУЗА": [
+"PAUSE",
+"PAUSA"
+],
+"Продолжить": [
+"Continue",
+"Continuar"
+],
+"Выйти в меню": [
+"Quit to menu",
+"Salir al menú"
+],
+"Полковник Варгас. Все блокпосты — его.": [
+"Colonel Vargas. Every checkpoint is his.",
+"Coronel Vargas. Todos los retenes son suyos."
 ]
 }

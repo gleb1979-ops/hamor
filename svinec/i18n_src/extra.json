@@ -38,5 +38,37 @@
 "ГОРДО": [
 "GORDO",
 "GORDO"
+],
+"ОФЛАЙН": [
+"OFFLINE",
+"SIN RED"
+],
+"Этот браузер не умеет сохранять игру. Открой в Safari или Chrome.": [
+"This browser can't save the game. Open it in Safari or Chrome.",
+"Este navegador no puede guardar el juego. Ábrelo en Safari o Chrome."
+],
+"Нужен интернет, чтобы скачать игру. Потом она будет работать без сети.": [
+"You need internet to download the game. After that it works offline.",
+"Necesitas internet para descargar el juego. Después funciona sin conexión."
+],
+"Готово! Игра сохранена в телефоне и работает без интернета — в самолёте, на корабле, где угодно.": [
+"Done! The game is saved on your phone and works without internet — on a plane, on a ship, anywhere.",
+"¡Listo! El juego está guardado en tu teléfono y funciona sin internet: en el avión, en el barco, donde sea."
+],
+"Онлайн-бои с друзьями работают только с интернетом.": [
+"Online fights with friends need internet.",
+"Las peleas online con amigos necesitan internet."
+],
+"Скачалось не всё (": [
+"Not everything downloaded (",
+"No se descargó todo ("
+],
+"файлов). Проверь интернет и нажми ещё раз.": [
+"files). Check your connection and tap again.",
+"archivos). Revisa tu conexión y toca otra vez."
+],
+"Чтобы открывать её как приложение: в Safari нажми «Поделиться», затем «На экран Домой». В Chrome открой меню и выбери «Установить приложение».": [
+"To open it like an app: in Safari tap “Share”, then “Add to Home Screen”. In Chrome open the menu and choose “Install app”.",
+"Para abrirlo como app: en Safari toca «Compartir» y luego «Añadir a pantalla de inicio». En Chrome abre el menú y elige «Instalar app»."
 ]
 }

@@ -18,7 +18,7 @@ function piece(n){const y=look(n);if(y!=null)return y;
  return n.split(SPLIT).map(p=>{if(!CYR.test(p))return p;const z=look(p);return z!=null?z:p}).join('')}
 const cache=new Map();
 function tr(s){if(li===0||typeof s!=='string'||!CYR.test(s))return s;let r=cache.get(s);if(r!==undefined)return r;
- r=look(s);if(r==null)r=s.replace(WIDE,m=>{const x=look(m);return x!=null?x:m.replace(NARROW,piece)});
+ r=look(s);if(r==null&&s.indexOf('\n')>=0)r=s.split('\n').map(tr).join('\n');if(r==null)r=s.replace(WIDE,m=>{const x=look(m);return x!=null?x:m.replace(NARROW,piece)});
  if(cache.size>8000)cache.clear();cache.set(s,r);return r}
 const I18N=window.I18N={lang:L,tr,next(){const n=LANGS[(li+1)%3];try{localStorage.setItem('svn_lang',n)}catch(e){}location.reload()}};
 if(li===0){fixBtn();document.addEventListener('DOMContentLoaded',fixBtn);return}

@@ -1,0 +1,1626 @@
+{
+"СТРОИТЕЛЬ": [
+"BUILDER",
+"CONSTRUCTOR"
+],
+"'ВИДЕОПРОКАТ'": [
+"'VIDEO RENTAL'",
+"'VIDEOCLUB'"
+],
+"Укради ящик со склада и вынеси через дыру в заборе. Не попадайся в свет.','Ящик у кладовки мастера. Берегись лампы на кран-балке. Выход — щель в воротах слева.','Ящик в открытом вагоне. С водокачки светит прожектор. Уходи через дыру в заборе.'": [
+"Steal a crate from the warehouse and carry it out through the hole in the fence. Stay out of the light.','The crate is by the foreman's storeroom. Watch out for the lamp on the crane beam. Exit — a gap in the gate on the left.','The crate is in an open boxcar. A searchlight sweeps from the water tower. Escape through the hole in the fence.'",
+"Roba una caja de la bodega y sácala por el hueco de la cerca. No te dejes alumbrar.','La caja está junto al cuarto del capataz. Cuidado con la lámpara de la grúa. Salida — una rendija en el portón de la izquierda.','La caja está en un vagón abierto. Un reflector alumbra desde el tanque de agua. Escapa por el hueco de la cerca.'"
+],
+"Укради ящик со склада и вынеси через дыру в заборе": [
+"Steal a crate from the warehouse and carry it out through the hole in the fence",
+"Roba una caja de la bodega y sácala por el hueco de la cerca"
+],
+"Не попадайся в свет": [
+"Stay out of the light",
+"No te dejes alumbrar"
+],
+"'Ящик у кладовки мастера": [
+"'The crate is by the foreman's storeroom",
+"'La caja está junto al cuarto del capataz"
+],
+"Берегись лампы на кран-балке": [
+"Watch out for the lamp on the crane beam",
+"Cuidado con la lámpara de la grúa"
+],
+"Выход": [
+"Exit",
+"Salida"
+],
+"щель в воротах слева": [
+"a gap in the gate on the left",
+"una rendija en el portón de la izquierda"
+],
+"'Ящик в открытом вагоне": [
+"'The crate is in an open boxcar",
+"'La caja está en un vagón abierto"
+],
+"С водокачки светит прожектор": [
+"A searchlight sweeps from the water tower",
+"Un reflector alumbra desde el tanque de agua"
+],
+"Уходи через дыру в заборе": [
+"Escape through the hole in the fence",
+"Escapa por el hueco de la cerca"
+],
+"Выбей их из круга у телевизора и удержи его.','Зал ДК: займи круг у сцены и удержи его.','Тесный ларёк: займи круг у полок и удержи его.'": [
+"Knock them out of the circle by the TV and hold it.','Club hall: take the circle by the stage and hold it.','Cramped kiosk: take the circle by the shelves and hold it.'",
+"Sácalos del círculo junto a la tele y defiéndelo.','Salón del club: toma el círculo junto al escenario y defiéndelo.','Puesto apretado: toma el círculo junto a los estantes y defiéndelo.'"
+],
+"Выбей их из круга у телевизора и удержи его": [
+"Knock them out of the circle by the TV and hold it",
+"Sácalos del círculo junto a la tele y defiéndelo"
+],
+"'Зал ДК": [
+"'Club hall",
+"'Salón del club"
+],
+"займи круг у сцены и удержи его": [
+"take the circle by the stage and hold it",
+"toma el círculo junto al escenario y defiéndelo"
+],
+"'Тесный ларёк": [
+"'Cramped kiosk",
+"'Puesto apretado"
+],
+"займи круг у полок и удержи его": [
+"take the circle by the shelves and hold it",
+"toma el círculo junto a los estantes y defiéndelo"
+],
+"ТАГШИМ',": [
+"TAGSHIM',",
+"TAGSHIM',"
+],
+"ТАГШИМ'": [
+"TAGSHIM'",
+"TAGSHIM'"
+],
+"ИГРЫ',": [
+"GAMES',",
+"JUEGOS',"
+],
+"ИГРЫ'": [
+"GAMES'",
+"JUEGOS'"
+],
+"игры — у своих!',": [
+"games — with your own!',",
+"juegos — con los tuyos!',"
+],
+"игры — у своих!'": [
+"games — with your own!'",
+"juegos — con los tuyos!'"
+],
+"игры": [
+"games",
+"juegos"
+],
+"у своих": [
+"with your own",
+"con los tuyos"
+],
+"ТАГШИМ": [
+"TAGSHIM",
+"TAGSHIM"
+],
+"Здоровье',": [
+"Health',",
+"Salud',"
+],
+"Здоровье'": [
+"Health'",
+"Salud'"
+],
+"Удар',": [
+"Hit',",
+"Golpe',"
+],
+"Удар'": [
+"Hit'",
+"Golpe'"
+],
+"Скорость',": [
+"Speed',",
+"Velocidad',"
+],
+"Скорость'": [
+"Speed'",
+"Velocidad'"
+],
+"Новичок','Свой','Боец','Уличный','Авторитет','Легенда'": [
+"Rookie','Homie','Fighter','Street','Boss','Legend'",
+"Novato','Compa','Peleador','Callejero','Capo','Leyenda'"
+],
+"Новичок'": [
+"Rookie'",
+"Novato'"
+],
+"'Свой'": [
+"'Homie'",
+"'Compa'"
+],
+"'Боец'": [
+"'Fighter'",
+"'Peleador'"
+],
+"'Уличный'": [
+"'Street'",
+"'Callejero'"
+],
+"'Авторитет'": [
+"'Boss'",
+"'Capo'"
+],
+"'Легенда'": [
+"'Legend'",
+"'Leyenda'"
+],
+"НОВЫЙ УРОВЕНЬ!',": [
+"LEVEL UP!',",
+"NUEVO NIVEL!',"
+],
+"НОВЫЙ УРОВЕНЬ!'": [
+"LEVEL UP!'",
+"NUEVO NIVEL!'"
+],
+"НОВЫЙ УРОВЕНЬ": [
+"LEVEL UP",
+"NUEVO NIVEL"
+],
+"уровень": [
+"level",
+"nivel"
+],
+"опыт": [
+"XP",
+"XP"
+],
+"очки прокачки:": [
+"upgrade points:",
+"puntos de mejora:"
+],
+"очки прокачки": [
+"upgrade points",
+"puntos de mejora"
+],
+"Супер:": [
+"Super:",
+"Súper:"
+],
+"Супер": [
+"Super",
+"Súper"
+],
+"Опыт: нокаут +25, победа в раунде +40 (задание +60), победа в матче +100": [
+"XP: knockout +25, round win +40 (objective +60), match win +100",
+"XP: nocaut +25, ganar la ronda +40 (misión +60), ganar el combate +100"
+],
+"Опыт: нокаут": [
+"XP: knockout",
+"XP: nocaut"
+],
+"победа в раунде": [
+"round win",
+"ganar la ronda"
+],
+"задание": [
+"objective",
+"misión"
+],
+"победа в матче": [
+"match win",
+"ganar el combate"
+],
+"Опыт": [
+"XP",
+"XP"
+],
+"нокаут": [
+"knockout",
+"nocaut"
+],
+"опыта · +": [
+"XP · +",
+"XP · +"
+],
+"опыта": [
+"XP",
+"XP"
+],
+"новых уровней:": [
+"new levels:",
+"niveles nuevos:"
+],
+"новых уровней": [
+"new levels",
+"niveles nuevos"
+],
+"вложи очки в меню": [
+"spend your points in the menu",
+"gasta tus puntos en el menú"
+],
+"т',640,142);": [
+"t',640,142);",
+"t',640,142);"
+],
+"т',640,142": [
+"t',640,142",
+"t',640,142"
+],
+"т'": [
+"t'",
+"t'"
+],
+"ТЕХНИКА БЕЗОПАСНОСТИ —',290,186);": [
+"SAFETY RULES —',290,186);",
+"NORMAS DE SEGURIDAD —',290,186);"
+],
+"ТЕХНИКА БЕЗОПАСНОСТИ —',290,186": [
+"SAFETY RULES —',290,186",
+"NORMAS DE SEGURIDAD —',290,186"
+],
+"ТЕХНИКА БЕЗОПАСНОСТИ —'": [
+"SAFETY RULES —'",
+"NORMAS DE SEGURIDAD —'"
+],
+"ТЕХНИКА БЕЗОПАСНОСТИ": [
+"SAFETY RULES",
+"NORMAS DE SEGURIDAD"
+],
+"ЗАКОН ДЛЯ ВСЕХ!',290,206);": [
+"ONE LAW FOR ALL!',290,206);",
+"UNA LEY PARA TODOS!',290,206);"
+],
+"ЗАКОН ДЛЯ ВСЕХ!',290,206": [
+"ONE LAW FOR ALL!',290,206",
+"UNA LEY PARA TODOS!',290,206"
+],
+"ЗАКОН ДЛЯ ВСЕХ!'": [
+"ONE LAW FOR ALL!'",
+"UNA LEY PARA TODOS!'"
+],
+"ЗАКОН ДЛЯ ВСЕХ": [
+"ONE LAW FOR ALL",
+"UNA LEY PARA TODOS"
+],
+"ДОСКА ПОЧЁТА',580,186);": [
+"HALL OF FAME',580,186);",
+"CUADRO DE HONOR',580,186);"
+],
+"ДОСКА ПОЧЁТА',580,186": [
+"HALL OF FAME',580,186",
+"CUADRO DE HONOR',580,186"
+],
+"ДОСКА ПОЧЁТА'": [
+"HALL OF FAME'",
+"CUADRO DE HONOR'"
+],
+"МАСТЕР',1156,147);": [
+"FOREMAN',1156,147);",
+"CAPATAZ',1156,147);"
+],
+"МАСТЕР',1156,147": [
+"FOREMAN',1156,147",
+"CAPATAZ',1156,147"
+],
+"МАСТЕР'": [
+"FOREMAN'",
+"CAPATAZ'"
+],
+"ДОМ КУЛЬТУРЫ «СТРОИТЕЛЬ» · ВИДЕОЗАЛ',640,100);": [
+"COMMUNITY CENTER “BUILDER” · VIDEO HALL',640,100);",
+"CENTRO CULTURAL «EL CONSTRUCTOR» · SALA DE VIDEO',640,100);"
+],
+"ДОМ КУЛЬТУРЫ «СТРОИТЕЛЬ» · ВИДЕОЗАЛ',640,100": [
+"COMMUNITY CENTER “BUILDER” · VIDEO HALL',640,100",
+"CENTRO CULTURAL «EL CONSTRUCTOR» · SALA DE VIDEO',640,100"
+],
+"ДОМ КУЛЬТУРЫ «СТРОИТЕЛЬ": [
+"COMMUNITY CENTER “BUILDER",
+"CENTRO CULTURAL «EL CONSTRUCTOR"
+],
+"ВИДЕОЗАЛ'": [
+"VIDEO HALL'",
+"SALA DE VIDEO'"
+],
+"ДОМ КУЛЬТУРЫ": [
+"COMMUNITY CENTER",
+"CENTRO CULTURAL"
+],
+"ВХОД',142,139);": [
+"ENTRANCE',142,139);",
+"ENTRADA',142,139);"
+],
+"ВХОД',142,139": [
+"ENTRANCE',142,139",
+"ENTRADA',142,139"
+],
+"СЛУЖЕБНЫЙ',1138,139);": [
+"STAFF ONLY',1138,139);",
+"SOLO PERSONAL',1138,139);"
+],
+"СЛУЖЕБНЫЙ',1138,139": [
+"STAFF ONLY',1138,139",
+"SOLO PERSONAL',1138,139"
+],
+"СЛУЖЕБНЫЙ'": [
+"STAFF ONLY'",
+"SOLO PERSONAL'"
+],
+"ВИДЕОПРОКАТ',96,114);": [
+"VIDEO RENTAL',96,114);",
+"VIDEOCLUB',96,114);"
+],
+"ВИДЕОПРОКАТ',96,114": [
+"VIDEO RENTAL',96,114",
+"VIDEOCLUB',96,114"
+],
+"ВИДЕОПРОКАТ'": [
+"VIDEO RENTAL'",
+"VIDEOCLUB'"
+],
+"КАССЕТЫ · ЗАПИСЬ',300,112);": [
+"TAPES · RECORDING',300,112);",
+"CINTAS · GRABACIÓN',300,112);"
+],
+"КАССЕТЫ · ЗАПИСЬ',300,112": [
+"TAPES · RECORDING',300,112",
+"CINTAS · GRABACIÓN',300,112"
+],
+"КАССЕТЫ": [
+"TAPES",
+"CINTAS"
+],
+"ЗАПИСЬ'": [
+"RECORDING'",
+"GRABACIÓN'"
+],
+"Кассета на сутки — 1 руб.',1025,108);": [
+"Tape for a day — 1 peso.',1025,108);",
+"Cinta por un día — 1 peso.',1025,108);"
+],
+"Кассета на сутки — 1 руб.',1025,108": [
+"Tape for a day — 1 peso.',1025,108",
+"Cinta por un día — 1 peso.',1025,108"
+],
+"Кассета на сутки": [
+"Tape for a day",
+"Cinta por un día"
+],
+"руб.'": [
+"peso.'",
+"peso.'"
+],
+"СТРОЙКА · ПРОХОД ЗАПРЕЩЁН',500,301);": [
+"CONSTRUCTION SITE · NO ENTRY',500,301);",
+"OBRA · PROHIBIDO PASAR',500,301);"
+],
+"СТРОЙКА · ПРОХОД ЗАПРЕЩЁН',500,301": [
+"CONSTRUCTION SITE · NO ENTRY',500,301",
+"OBRA · PROHIBIDO PASAR',500,301"
+],
+"СТРОЙКА": [
+"CONSTRUCTION SITE",
+"OBRA"
+],
+"ПРОХОД ЗАПРЕЩЁН'": [
+"NO ENTRY'",
+"PROHIBIDO PASAR'"
+],
+"СМУ-7',900,300);": [
+"CREW-7',900,300);",
+"CUADRILLA-7',900,300);"
+],
+"СМУ-7',900,300": [
+"CREW-7',900,300",
+"CUADRILLA-7',900,300"
+],
+"СМУ": [
+"CREW",
+"CUADRILLA"
+],
+"т',": [
+"t',",
+"t',"
+],
+"МПС-'+((": [
+"RAIL-'+((",
+"FERRO-'+(("
+],
+"МПС-'": [
+"RAIL-'",
+"FERRO-'"
+],
+"ВЫДАЧА КАССЕТ',": [
+"TAPE PICKUP',",
+"ENTREGA DE CINTAS',"
+],
+"ВЫДАЧА КАССЕТ'": [
+"TAPE PICKUP'",
+"ENTREGA DE CINTAS'"
+],
+"КАБЕЛЬ',": [
+"CABLE',",
+"CABLE',"
+],
+"КАБЕЛЬ'": [
+"CABLE'",
+"CABLE'"
+],
+"Петля через район','Кольцо у гаражей','Зимний квартал'": [
+"Loop through the barrio','Ring by the garages','Winter block'",
+"Vuelta por el barrio','Circuito junto a los garajes','Cuadra de invierno'"
+],
+"Петля через район'": [
+"Loop through the barrio'",
+"Vuelta por el barrio'"
+],
+"'Кольцо у гаражей'": [
+"'Ring by the garages'",
+"'Circuito junto a los garajes'"
+],
+"'Зимний квартал'": [
+"'Winter block'",
+"'Cuadra de invierno'"
+],
+"В ДЕРЕВО!',": [
+"INTO A TREE!',",
+"CONTRA UN ÁRBOL!',"
+],
+"В ДЕРЕВО!'": [
+"INTO A TREE!'",
+"CONTRA UN ÁRBOL!'"
+],
+"В ДЕРЕВО": [
+"INTO A TREE",
+"CONTRA UN ÁRBOL"
+],
+"В БЛОКИ!',": [
+"INTO THE BLOCKS!',",
+"CONTRA LOS BLOQUES!',"
+],
+"В БЛОКИ!'": [
+"INTO THE BLOCKS!'",
+"CONTRA LOS BLOQUES!'"
+],
+"В БЛОКИ": [
+"INTO THE BLOCKS",
+"CONTRA LOS BLOQUES"
+],
+"В САРАЙ!',": [
+"INTO A SHED!',",
+"CONTRA UN COBERTIZO!',"
+],
+"В САРАЙ!'": [
+"INTO A SHED!'",
+"CONTRA UN COBERTIZO!'"
+],
+"В САРАЙ": [
+"INTO A SHED",
+"CONTRA UN COBERTIZO"
+],
+"В ПОКРЫШКИ!',": [
+"INTO THE TIRES!',",
+"CONTRA LAS LLANTAS!',"
+],
+"В ПОКРЫШКИ!'": [
+"INTO THE TIRES!'",
+"CONTRA LAS LLANTAS!'"
+],
+"В ПОКРЫШКИ": [
+"INTO THE TIRES",
+"CONTRA LAS LLANTAS"
+],
+"В ДИВАН!',": [
+"INTO A COUCH!',",
+"CONTRA UN SOFÁ!',"
+],
+"В ДИВАН!'": [
+"INTO A COUCH!'",
+"CONTRA UN SOFÁ!'"
+],
+"В ДИВАН": [
+"INTO A COUCH",
+"CONTRA UN SOFÁ"
+],
+"В КОЛОДЕЦ!'": [
+"INTO A WELL!'",
+"CONTRA UN POZO!'"
+],
+"В КОЛОДЕЦ": [
+"INTO A WELL",
+"CONTRA UN POZO"
+],
+"ГАРАЖИ','СВАЛКА','ДВОРЫ','СТРОЙКА'": [
+"GARAGES','JUNKYARD','BACKYARDS','CONSTRUCTION SITE'",
+"GARAJES','CHATARRERA','PATIOS','OBRA'"
+],
+"ГАРАЖИ'": [
+"GARAGES'",
+"GARAJES'"
+],
+"'СВАЛКА'": [
+"'JUNKYARD'",
+"'CHATARRERA'"
+],
+"'ДВОРЫ'": [
+"'BACKYARDS'",
+"'PATIOS'"
+],
+"'СТРОЙКА'": [
+"'CONSTRUCTION SITE'",
+"'OBRA'"
+],
+"Велик'": [
+"Bike'",
+"Bici'"
+],
+"Скейт'": [
+"Skate'",
+"Patineta'"
+],
+"Ты':": [
+"You':",
+"Tú':"
+],
+"Свой','Малой'": [
+"Homie','Shorty'",
+"Compa','Chiquito'"
+],
+"СБИТ!');": [
+"DOWN!');",
+"CAÍDO!');"
+],
+"ВЫБРАЛСЯ',": [
+"ESCAPED',",
+"ESCAPÓ',"
+],
+"ВЫБРАЛСЯ'": [
+"ESCAPED'",
+"ESCAPÓ'"
+],
+"ВРЕЗАЛСЯ!':'В ГАРАЖИ!')": [
+"CRASHED!':'TO THE GARAGES!')",
+"CHOCASTE!':'A LOS GARAJES!')"
+],
+"ВРЕЗАЛСЯ!':'В ГАРАЖИ!'": [
+"CRASHED!':'TO THE GARAGES!'",
+"CHOCASTE!':'A LOS GARAJES!'"
+],
+"ВРЕЗАЛСЯ": [
+"CRASHED",
+"CHOCASTE"
+],
+"'В ГАРАЖИ": [
+"'TO THE GARAGES",
+"'A LOS GARAJES"
+],
+"КРУГ '+(": [
+"LAP '+(",
+"VUELTA '+("
+],
+"КРУГ '": [
+"LAP '",
+"VUELTA '"
+],
+"ты пришёл первым':": [
+"you came first':",
+"llegaste primero':"
+],
+"ты пришёл первым'": [
+"you came first'",
+"llegaste primero'"
+],
+"пришёл первым':": [
+"came first':",
+"llegó primero':"
+],
+"пришёл первым'": [
+"came first'",
+"llegó primero'"
+],
+"пришёл первым';": [
+"came first';",
+"llegó primero';"
+],
+"В ЛЮК!');": [
+"INTO A MANHOLE!');",
+"CONTRA UNA ALCANTARILLA!');"
+],
+"В ЛЮК!'": [
+"INTO A MANHOLE!'",
+"CONTRA UNA ALCANTARILLA!'"
+],
+"В ЛЮК": [
+"INTO A MANHOLE",
+"CONTRA UNA ALCANTARILLA"
+],
+"В КОРОБКИ!');": [
+"INTO THE BOXES!');",
+"CONTRA LAS CAJAS!');"
+],
+"В КОРОБКИ!'": [
+"INTO THE BOXES!'",
+"CONTRA LAS CAJAS!'"
+],
+"В КОРОБКИ": [
+"INTO THE BOXES",
+"CONTRA LAS CAJAS"
+],
+"ОЛЛИ!',": [
+"OLLIE!',",
+"OLLIE!',"
+],
+"ОЛЛИ!'": [
+"OLLIE!'",
+"OLLIE!'"
+],
+"ОЛЛИ": [
+"OLLIE",
+"OLLIE"
+],
+"ОБОГНАЛ!',": [
+"OVERTOOK!',",
+"ADELANTÓ!',"
+],
+"ОБОГНАЛ!'": [
+"OVERTOOK!'",
+"ADELANTÓ!'"
+],
+"ОБОГНАЛ": [
+"OVERTOOK",
+"ADELANTÓ"
+],
+"все чужие выбиты':'вашу команду выбили';": [
+"all rivals are out':'your team was knocked out';",
+"todos los rivales fuera':'tu equipo quedó fuera';"
+],
+"все чужие выбиты':'вашу команду выбили'": [
+"all rivals are out':'your team was knocked out'",
+"todos los rivales fuera':'tu equipo quedó fuera'"
+],
+"все чужие выбиты'": [
+"all rivals are out'",
+"todos los rivales fuera'"
+],
+"'вашу команду выбили'": [
+"'your team was knocked out'",
+"'tu equipo quedó fuera'"
+],
+"УШЁЛ ОТ МЕНТОВ':'ПРИНЯЛИ'):": [
+"SHOOK THE COPS':'CAUGHT'):",
+"SE ESCAPÓ DE LOS POLICÍAS':'ATRAPADO'):"
+],
+"УШЁЛ ОТ МЕНТОВ':'ПРИНЯЛИ'": [
+"SHOOK THE COPS':'CAUGHT'",
+"SE ESCAPÓ DE LOS POLICÍAS':'ATRAPADO'"
+],
+"УШЁЛ ОТ МЕНТОВ'": [
+"SHOOK THE COPS'",
+"SE ESCAPÓ DE LOS POLICÍAS'"
+],
+"'ПРИНЯЛИ'": [
+"'CAUGHT'",
+"'ATRAPADO'"
+],
+"РАЙОН ТВОЙ':'РАЙОН ЗАБРАЛИ'": [
+"THE DISTRICT IS YOURS':'THE DISTRICT WAS TAKEN'",
+"EL BARRIO ES TUYO':'LES QUITARON EL BARRIO'"
+],
+"РАЙОН ТВОЙ'": [
+"THE DISTRICT IS YOURS'",
+"EL BARRIO ES TUYO'"
+],
+"'РАЙОН ЗАБРАЛИ'": [
+"'THE DISTRICT WAS TAKEN'",
+"'LES QUITARON EL BARRIO'"
+],
+"круг '+": [
+"lap '+",
+"vuelta '+"
+],
+"круг '": [
+"lap '",
+"vuelta '"
+],
+"нычек: '+(": [
+"stashes: '+(",
+"escondites: '+("
+],
+"нычек: '": [
+"stashes: '",
+"escondites: '"
+],
+"нычек": [
+"stashes",
+"escondites"
+],
+"сбил: '+": [
+"knocked down: '+",
+"derribó: '+"
+],
+"сбил: '": [
+"knocked down: '",
+"derribó: '"
+],
+"сбил": [
+"knocked down",
+"derribó"
+],
+"выбыл':''": [
+"out':''",
+"fuera':''"
+],
+"Ещё раз": [
+"Again",
+"Otra vez"
+],
+"УР. '+": [
+"LV. '+",
+"NV. '+"
+],
+"УР. '": [
+"LV. '",
+"NV. '"
+],
+"УР": [
+"LV",
+"NV"
+],
+"Кулаки')+' · '+": [
+"Fists')+' · '+",
+"Puños')+' · '+"
+],
+"КРУГ": [
+"LAP",
+"VUELTA"
+],
+"МЕСТО": [
+"PLACE",
+"LUGAR"
+],
+"Наших:": [
+"Ours:",
+"Nuestros:"
+],
+"Наших": [
+"Ours",
+"Nuestros"
+],
+"Чужих:": [
+"Theirs:",
+"Suyos:"
+],
+"Чужих": [
+"Theirs",
+"Suyos"
+],
+"РАЙОН ТВОЙ!':'РАЙОН ЗАБРАЛИ'):": [
+"THE DISTRICT IS YOURS!':'THE DISTRICT WAS TAKEN'):",
+"EL BARRIO ES TUYO!':'LES QUITARON EL BARRIO'):"
+],
+"РАЙОН ТВОЙ!':'РАЙОН ЗАБРАЛИ'": [
+"THE DISTRICT IS YOURS!':'THE DISTRICT WAS TAKEN'",
+"EL BARRIO ES TUYO!':'LES QUITARON EL BARRIO'"
+],
+"РАЙОН ТВОЙ": [
+"THE DISTRICT IS YOURS",
+"EL BARRIO ES TUYO"
+],
+"ВПЕРЁД!'):": [
+"GO!'):",
+"ADELANTE!'):"
+],
+"ВПЕРЁД!'": [
+"GO!'",
+"ADELANTE!'"
+],
+"ВПЕРЁД": [
+"GO",
+"ADELANTE"
+],
+"Отбей район: приди первым или выбей всех чужих (у каждого 3 жизни)';": [
+"Take back the district: finish first or knock out every rival (everyone has 3 lives)';",
+"Recupera el barrio: llega primero o saca a todos los rivales (cada uno tiene 3 vidas)';"
+],
+"Отбей район: приди первым или выбей всех чужих (у каждого 3 жизни)'": [
+"Take back the district: finish first or knock out every rival (everyone has 3 lives)'",
+"Recupera el barrio: llega primero o saca a todos los rivales (cada uno tiene 3 vidas)'"
+],
+"Отбей район: приди первым или выбей всех чужих": [
+"Take back the district: finish first or knock out every rival",
+"Recupera el barrio: llega primero o saca a todos los rivales"
+],
+"у каждого": [
+"everyone has",
+"cada uno tiene"
+],
+"жизни": [
+"lives",
+"vidas"
+],
+"Отбей район": [
+"Take back the district",
+"Recupera el barrio"
+],
+"приди первым или выбей всех чужих": [
+"finish first or knock out every rival",
+"llega primero o saca a todos los rivales"
+],
+"ПОСЛЕДНИЙ КРУГ! УАЗИКОВ: '+": [
+"LAST LAP! JEEPS: '+",
+"ÚLTIMA VUELTA! JEEPS: '+"
+],
+"ПОСЛЕДНИЙ КРУГ! УАЗИКОВ: '": [
+"LAST LAP! JEEPS: '",
+"ÚLTIMA VUELTA! JEEPS: '"
+],
+"ПОСЛЕДНИЙ КРУГ": [
+"LAST LAP",
+"ÚLTIMA VUELTA"
+],
+"УАЗИКОВ": [
+"JEEPS",
+"JEEPS"
+],
+"КРУГ '+": [
+"LAP '+",
+"VUELTA '+"
+],
+"ЕЩЁ НЫЧКИ · УАЗИКОВ: '+": [
+"MORE STASHES · JEEPS: '+",
+"MÁS ESCONDITES · JEEPS: '+"
+],
+"ЕЩЁ НЫЧКИ": [
+"MORE STASHES",
+"MÁS ESCONDITES"
+],
+"УАЗИКОВ: '": [
+"JEEPS: '",
+"JEEPS: '"
+],
+"разбился — дальше пешком не уйти');": [
+"crashed — you can't escape on foot');",
+"te estrellaste — a pie no escapas');"
+],
+"разбился — дальше пешком не уйти'": [
+"crashed — you can't escape on foot'",
+"te estrellaste — a pie no escapas'"
+],
+"разбился": [
+"crashed",
+"te estrellaste"
+],
+"дальше пешком не уйти'": [
+"you can't escape on foot'",
+"a pie no escapas'"
+],
+"рассвело — не успел');": [
+"dawn broke — too late');",
+"amaneció — muy tarde');"
+],
+"рассвело — не успел'": [
+"dawn broke — too late'",
+"amaneció — muy tarde'"
+],
+"рассвело": [
+"dawn broke",
+"amaneció"
+],
+"не успел'": [
+"too late'",
+"muy tarde'"
+],
+"СПРЯТАЛСЯ',": [
+"HIDDEN',",
+"ESCONDIDO',"
+],
+"СПРЯТАЛСЯ'": [
+"HIDDEN'",
+"ESCONDIDO'"
+],
+"СТОЯТЬ!',": [
+"FREEZE!',",
+"ALTO!',"
+],
+"СТОЯТЬ!'": [
+"FREEZE!'",
+"ALTO!'"
+],
+"СТОЯТЬ": [
+"FREEZE",
+"ALTO"
+],
+"ПРИНЯЛИ!');": [
+"CAUGHT!');",
+"ATRAPADO!');"
+],
+"ПРИНЯЛИ!'": [
+"CAUGHT!'",
+"ATRAPADO!'"
+],
+"ПРИНЯЛИ": [
+"CAUGHT",
+"ATRAPADO"
+],
+"ВЫРВАЛСЯ! ОСТАЛОСЬ ЖИЗНЕЙ: '+": [
+"BROKE FREE! LIVES LEFT: '+",
+"TE ESCAPASTE! VIDAS RESTANTES: '+"
+],
+"ВЫРВАЛСЯ! ОСТАЛОСЬ ЖИЗНЕЙ: '": [
+"BROKE FREE! LIVES LEFT: '",
+"TE ESCAPASTE! VIDAS RESTANTES: '"
+],
+"ВЫРВАЛСЯ": [
+"BROKE FREE",
+"TE ESCAPASTE"
+],
+"ОСТАЛОСЬ ЖИЗНЕЙ": [
+"LIVES LEFT",
+"VIDAS RESTANTES"
+],
+"тебя приняли');": [
+"you got caught');",
+"te atraparon');"
+],
+"тебя приняли'": [
+"you got caught'",
+"te atraparon'"
+],
+"НЫЧКА '+": [
+"STASH '+",
+"ESCONDITE '+"
+],
+"НЫЧКА '": [
+"STASH '",
+"ESCONDITE '"
+],
+"ЕЩЁ ОДИН УАЗИК!';": [
+"ANOTHER JEEP!';",
+"OTRO JEEP!';"
+],
+"ЕЩЁ ОДИН УАЗИК!'": [
+"ANOTHER JEEP!'",
+"OTRO JEEP!'"
+],
+"ЕЩЁ ОДИН УАЗИК": [
+"ANOTHER JEEP",
+"OTRO JEEP"
+],
+"ВСЁ! ГОНИ В ГАРАЖ — СДАТЬ НЫЧКИ':'ВСЁ! ГОНИ В СВОЙ ГАРАЖ';": [
+"DONE! RACE TO THE GARAGE — DROP THE STASHES':'DONE! RACE TO YOUR GARAGE';",
+"LISTO! CORRE AL GARAJE — ENTREGA LOS ESCONDITES':'LISTO! CORRE A TU GARAJE';"
+],
+"ВСЁ! ГОНИ В ГАРАЖ — СДАТЬ НЫЧКИ':'ВСЁ! ГОНИ В СВОЙ ГАРАЖ'": [
+"DONE! RACE TO THE GARAGE — DROP THE STASHES':'DONE! RACE TO YOUR GARAGE'",
+"LISTO! CORRE AL GARAJE — ENTREGA LOS ESCONDITES':'LISTO! CORRE A TU GARAJE'"
+],
+"ВСЁ": [
+"DONE",
+"LISTO"
+],
+"ГОНИ В ГАРАЖ": [
+"RACE TO THE GARAGE",
+"CORRE AL GARAJE"
+],
+"СДАТЬ НЫЧКИ'": [
+"DROP THE STASHES'",
+"ENTREGA LOS ESCONDITES'"
+],
+"'ВСЁ": [
+"'DONE",
+"'LISTO"
+],
+"ГОНИ В СВОЙ ГАРАЖ'": [
+"RACE TO YOUR GARAGE'",
+"CORRE A TU GARAJE'"
+],
+"три круга — все нычки в гараже, менты остались ни с чем')": [
+"three laps — all stashes in the garage, the cops got nothing')",
+"tres vueltas — todos los escondites en el garaje, los policías se quedaron con las manos vacías')"
+],
+"три круга — все нычки в гараже, менты остались ни с чем'": [
+"three laps — all stashes in the garage, the cops got nothing'",
+"tres vueltas — todos los escondites en el garaje, los policías se quedaron con las manos vacías'"
+],
+"три круга": [
+"three laps",
+"tres vueltas"
+],
+"все нычки в гараже": [
+"all stashes in the garage",
+"todos los escondites en el garaje"
+],
+"менты остались ни с чем'": [
+"the cops got nothing'",
+"los policías se quedaron con las manos vacías'"
+],
+"ПИНКА ПО ДВЕРИ!':'ПО ФАРАМ!',": [
+"KICK THE DOOR!':'SMASH THE HEADLIGHTS!',",
+"PATADA A LA PUERTA!':'A LOS FAROS!',"
+],
+"ПИНКА ПО ДВЕРИ!':'ПО ФАРАМ!'": [
+"KICK THE DOOR!':'SMASH THE HEADLIGHTS!'",
+"PATADA A LA PUERTA!':'A LOS FAROS!'"
+],
+"ПИНКА ПО ДВЕРИ": [
+"KICK THE DOOR",
+"PATADA A LA PUERTA"
+],
+"'ПО ФАРАМ": [
+"'SMASH THE HEADLIGHTS",
+"'A LOS FAROS"
+],
+"НЫЧКИ": [
+"STASHES",
+"ESCONDITES"
+],
+"ТЕБЯ ВИДЯТ — УХОДИ!':": [
+"THEY SEE YOU — RUN!':",
+"TE VEN — CORRE!':"
+],
+"ТЕБЯ ВИДЯТ — УХОДИ!'": [
+"THEY SEE YOU — RUN!'",
+"TE VEN — CORRE!'"
+],
+"ТЕБЯ ВИДЯТ": [
+"THEY SEE YOU",
+"TE VEN"
+],
+"УХОДИ": [
+"RUN",
+"CORRE"
+],
+"СПРЯТАЛСЯ В КУСТАХ':'ИЩУТ…',": [
+"HIDING IN THE BUSHES':'SEARCHING…',",
+"ESCONDIDO EN LOS ARBUSTOS':'BUSCANDO…',"
+],
+"СПРЯТАЛСЯ В КУСТАХ':'ИЩУТ…'": [
+"HIDING IN THE BUSHES':'SEARCHING…'",
+"ESCONDIDO EN LOS ARBUSTOS':'BUSCANDO…'"
+],
+"СПРЯТАЛСЯ В КУСТАХ'": [
+"HIDING IN THE BUSHES'",
+"ESCONDIDO EN LOS ARBUSTOS'"
+],
+"'ИЩУТ…'": [
+"'SEARCHING…'",
+"'BUSCANDO…'"
+],
+"УШЁЛ!':'ПРИНЯЛИ'):": [
+"ESCAPED!':'CAUGHT'):",
+"ESCAPASTE!':'ATRAPADO'):"
+],
+"УШЁЛ!':'ПРИНЯЛИ'": [
+"ESCAPED!':'CAUGHT'",
+"ESCAPASTE!':'ATRAPADO'"
+],
+"УШЁЛ": [
+"ESCAPED",
+"ESCAPASTE"
+],
+"ПОГНАЛИ!'):": [
+"LET'S GO!'):",
+"VAMOS!'):"
+],
+"ПОГНАЛИ!'": [
+"LET'S GO!'",
+"VAMOS!'"
+],
+"ПОГНАЛИ": [
+"LET'S GO",
+"VAMOS"
+],
+"Собери 6 нычек и уходи в свой гараж (старт).','Прячься в кустах — стой на месте. Удар по УАЗику — он встанет.'": [
+"Collect 6 stashes and get to your garage (start).','Hide in the bushes — stay put. Hit a jeep — and it stalls.'",
+"Reúne 6 escondites y vete a tu garaje (inicio).','Escóndete en los arbustos — quédate quieto. Golpea un jeep — y se detiene.'"
+],
+"Собери": [
+"Collect",
+"Reúne"
+],
+"нычек и уходи в свой гараж": [
+"stashes and get to your garage",
+"escondites y vete a tu garaje"
+],
+"старт": [
+"start",
+"inicio"
+],
+"Прячься в кустах — стой на месте. Удар по УАЗику — он встанет.'": [
+"Hide in the bushes — stay put. Hit a jeep — and it stalls.'",
+"Escóndete en los arbustos — quédate quieto. Golpea un jeep — y se detiene.'"
+],
+"Прячься в кустах": [
+"Hide in the bushes",
+"Escóndete en los arbustos"
+],
+"стой на месте": [
+"stay put",
+"quédate quieto"
+],
+"Удар по УАЗику": [
+"Hit a jeep",
+"Golpea un jeep"
+],
+"он встанет": [
+"and it stalls",
+"y se detiene"
+],
+"Дружинник',": [
+"Vigilante',",
+"Vigilante',"
+],
+"Дружинник'": [
+"Vigilante'",
+"Vigilante'"
+],
+"МУЗЫКА ОБОРВАЛАСЬ!';": [
+"THE MUSIC CUT OUT!';",
+"SE CORTÓ LA MÚSICA!';"
+],
+"МУЗЫКА ОБОРВАЛАСЬ!'": [
+"THE MUSIC CUT OUT!'",
+"SE CORTÓ LA MÚSICA!'"
+],
+"МУЗЫКА ОБОРВАЛАСЬ": [
+"THE MUSIC CUT OUT",
+"SE CORTÓ LA MÚSICA"
+],
+"Бей заречных!';": [
+"Hit the Riverside crew!';",
+"Dale a los de la ribera!';"
+],
+"Бей заречных!'": [
+"Hit the Riverside crew!'",
+"Dale a los de la ribera!'"
+],
+"Бей заречных": [
+"Hit the Riverside crew",
+"Dale a los de la ribera"
+],
+"МЕДЛЯК';": [
+"SLOW SONG';",
+"BOLERO';"
+],
+"МЕДЛЯК'": [
+"SLOW SONG'",
+"BOLERO'"
+],
+"Драться нельзя — дружинники смотрят!';": [
+"No fighting — the watchmen are looking!';",
+"Prohibido pelear — los vigilantes están mirando!';"
+],
+"Драться нельзя — дружинники смотрят!'": [
+"No fighting — the watchmen are looking!'",
+"Prohibido pelear — los vigilantes están mirando!'"
+],
+"Драться нельзя": [
+"No fighting",
+"Prohibido pelear"
+],
+"дружинники смотрят": [
+"the watchmen are looking",
+"los vigilantes están mirando"
+],
+"ДРУЖИННИКИ!',": [
+"WATCHMEN!',",
+"VIGILANTES!',"
+],
+"ДРУЖИННИКИ!'": [
+"WATCHMEN!'",
+"VIGILANTES!'"
+],
+"ДРУЖИННИКИ": [
+"WATCHMEN",
+"VIGILANTES"
+],
+"ДИСКОТЕКА · ДК «СТРОИТЕЛЬ»',640,108);": [
+"DISCO · THE CLUB “BUILDER”',640,108);",
+"DISCOTECA · CLUB «EL CONSTRUCTOR»',640,108);"
+],
+"ДИСКОТЕКА · ДК «СТРОИТЕЛЬ»',640,108": [
+"DISCO · THE CLUB “BUILDER”',640,108",
+"DISCOTECA · CLUB «EL CONSTRUCTOR»',640,108"
+],
+"ДИСКОТЕКА": [
+"DISCO",
+"DISCOTECA"
+],
+"ДК «СТРОИТЕЛЬ»'": [
+"THE CLUB “BUILDER”'",
+"CLUB «EL CONSTRUCTOR»'"
+],
+"ДК": [
+"CLUB",
+"CLUB"
+],
+"АЙ!',": [
+"OW!',",
+"AY!',"
+],
+"АЙ!'": [
+"OW!'",
+"AY!'"
+],
+"АЙ": [
+"OW",
+"AY"
+],
+"МЕДЛЯК · не дерись — дружинники ·": [
+"SLOW SONG · don't fight — watchmen ·",
+"BOLERO · no pelees — vigilantes ·"
+],
+"МЕДЛЯК · не дерись — дружинники": [
+"SLOW SONG · don't fight — watchmen",
+"BOLERO · no pelees — vigilantes"
+],
+"МЕДЛЯК": [
+"SLOW SONG",
+"BOLERO"
+],
+"не дерись — дружинники": [
+"don't fight — watchmen",
+"no pelees — vigilantes"
+],
+"дружинники": [
+"watchmen",
+"vigilantes"
+],
+"ДРАКА! · до медляка": [
+"BRAWL! · until the slow song",
+"PLEITO! · hasta el bolero"
+],
+"ДРАКА": [
+"BRAWL",
+"PLEITO"
+],
+"до медляка": [
+"until the slow song",
+"hasta el bolero"
+],
+"Ствол',": [
+"Piece',",
+"Pistola',"
+],
+"Ствол'": [
+"Piece'",
+"Pistola'"
+],
+"Баррио',": [
+"Barrio',",
+"Barrio',"
+],
+"Баррио'": [
+"Barrio'",
+"Barrio'"
+],
+"Сан-Хасинто — самый бедный квартал Сьюдад-Оро. Здесь всё решают кулаки. Покажи, что тебя не сломать — и на тебя обратят внимание.'": [
+"San Jacinto — the poorest neighborhood in Ciudad Oro. Here fists decide everything. Show you can't be broken — and they'll take notice.'",
+"San Jacinto — el barrio más pobre de Ciudad Oro. Aquí todo lo deciden los puños. Demuestra que no te quiebran — y se fijarán en ti.'"
+],
+"Сан-Хасинто": [
+"San Jacinto",
+"San Jacinto"
+],
+"самый бедный квартал Сьюдад-Оро": [
+"the poorest neighborhood in Ciudad Oro",
+"el barrio más pobre de Ciudad Oro"
+],
+"Здесь всё решают кулаки": [
+"Here fists decide everything",
+"Aquí todo lo deciden los puños"
+],
+"Покажи": [
+"Show them",
+"Demuestra"
+],
+"что тебя не сломать": [
+"that you can't be broken",
+"que no te pueden quebrar"
+],
+"и на тебя обратят внимание": [
+"and they'll take notice of you",
+"y se fijarán en ti"
+],
+"Свои люди',": [
+"Our People',",
+"Gente de confianza',"
+],
+"Свои люди'": [
+"Our People'",
+"Gente de confianza'"
+],
+"Дон Эрнесто ищет крепких ребят. Проверка простая: двое на двое во дворе за лавкой. Прикроешь своего — возьмут в дело.'": [
+"Don Ernesto is looking for tough kids. The test is simple: two on two in the yard behind the shop. Cover your own — and you're in.'",
+"Don Ernesto busca muchachos duros. La prueba es simple: dos contra dos en el patio detrás de la tienda. Cubre a los tuyos — y entras al negocio.'"
+],
+"Дон Эрнесто ищет крепких ребят": [
+"Don Ernesto is looking for tough kids",
+"Don Ernesto busca muchachos duros"
+],
+"Проверка простая": [
+"The test is simple",
+"La prueba es simple"
+],
+"двое на двое во дворе за лавкой": [
+"two on two in the yard behind the shop",
+"dos contra dos en el patio detrás de la tienda"
+],
+"Прикроешь своего": [
+"Cover your own",
+"Cubre a los tuyos"
+],
+"возьмут в дело": [
+"and you're in",
+"y entras al negocio"
+],
+"Груз',": [
+"Cargo',",
+"Cargamento',"
+],
+"Груз'": [
+"Cargo'",
+"Cargamento'"
+],
+"Первое настоящее дело: угнать джип с изумрудами прямо от ворот меркадо и уйти от полиции через весь город до гаража. Сначала вскрой замок.'": [
+"First real job: steal a jeep full of emeralds right from the mercado gates and shake the police across town to the garage. First, pick the lock.'",
+"Primer trabajo de verdad: robar un jeep con esmeraldas justo en las puertas del mercado y perder a la policía por toda la ciudad hasta el garaje. Primero fuerza la cerradura.'"
+],
+"Первое настоящее дело": [
+"First real job",
+"Primer trabajo de verdad"
+],
+"угнать джип с изумрудами прямо от ворот меркадо и уйти от полиции через весь город до гаража": [
+"steal a jeep full of emeralds right from the mercado gates and shake the police across town to the garage",
+"robar un jeep con esmeraldas justo en las puertas del mercado y perder a la policía por toda la ciudad hasta el garaje"
+],
+"Сначала вскрой замок": [
+"First, pick the lock",
+"Primero fuerza la cerradura"
+],
+"Порт',": [
+"Port',",
+"Puerto',"
+],
+"Порт'": [
+"Port'",
+"Puerto'"
+],
+"Ночь. Склад в порту. Ящик с изумрудами надо вынести мимо охраны и собак. Тихо — или громко, как сам решишь.'": [
+"Night. A warehouse at the port. Get the crate of emeralds past the guards and dogs. Quiet — or loud, your call.'",
+"Noche. Una bodega en el puerto. Hay que sacar la caja de esmeraldas frente a guardias y perros. En silencio — o a lo bestia, como tú decidas.'"
+],
+"Ночь": [
+"Night",
+"Noche"
+],
+"Склад в порту": [
+"A warehouse at the port",
+"Una bodega en el puerto"
+],
+"Ящик с изумрудами надо вынести мимо охраны и собак": [
+"Get the crate of emeralds past the guards and dogs",
+"Hay que sacar la caja de esmeraldas frente a guardias y perros"
+],
+"Тихо": [
+"Quiet",
+"En silencio"
+],
+"или громко": [
+"or loud",
+"o a lo bestia"
+],
+"как сам решишь": [
+"your call",
+"como tú decidas"
+],
+"Кантина',": [
+"Cantina',",
+"Cantina',"
+],
+"Кантина'": [
+"Cantina'",
+"Cantina'"
+],
+"Кантина «Эль Тигре». Люди из картеля Калеро пришли выяснить, чей теперь порт. Пока играет музыка — не дерись.'": [
+"Cantina “El Tigre”. Calero cartel men came to find out whose port this is now. While the music plays — don't fight.'",
+"Cantina «El Tigre». Los hombres del cártel de Calero vinieron a ver de quién es ahora el puerto. Mientras suene la música — no pelees.'"
+],
+"Кантина": [
+"Cantina",
+"Cantina"
+],
+"Эль Тигре": [
+"El Tigre",
+"El Tigre"
+],
+"Люди из картеля Калеро пришли выяснить": [
+"Calero cartel men came to find out",
+"Los hombres del cártel de Calero vinieron a averiguar"
+],
+"чей теперь порт": [
+"whose port this is now",
+"de quién es ahora el puerto"
+],
+"Пока играет музыка": [
+"While the music plays",
+"Mientras suene la música"
+],
+"Облава',": [
+"Raid',",
+"Redada',"
+],
+"Облава'": [
+"Raid'",
+"Redada'"
+],
+"После порта на ушах вся полиция. Тайники с деньгами раскиданы по району — собери и уйди, пока не рассвело.'": [
+"After the port job the whole police force is on edge. Cash stashes are scattered around the district — grab them and get out before dawn.'",
+"Tras lo del puerto toda la policía está en pie de guerra. Los escondites con dinero están regados por el barrio — recógelos y lárgate antes del amanecer.'"
+],
+"После порта на ушах вся полиция": [
+"After the port job the whole police force is on edge",
+"Tras lo del puerto toda la policía está en pie de guerra"
+],
+"Тайники с деньгами раскиданы по району": [
+"Cash stashes are scattered around the district",
+"Los escondites con dinero están regados por el barrio"
+],
+"собери и уйди": [
+"grab them and get out",
+"recógelos y lárgate"
+],
+"пока не рассвело": [
+"before dawn",
+"antes de que amanezca"
+],
+"Поезд',": [
+"Train',",
+"Tren',"
+],
+"Поезд'": [
+"Train'",
+"Tren'"
+],
+"Ночной поезд на юг. Люди Калеро сели в тот же состав. Вагон, купе, платформа, станция — пробейся через всё.'": [
+"Night train south. Calero's men boarded the same train. Car, compartment, platform, station — fight through it all.'",
+"Tren nocturno al sur. Los hombres de Calero subieron al mismo tren. Vagón, compartimiento, andén, estación — ábrete paso por todo.'"
+],
+"Ночной поезд на юг": [
+"Night train south",
+"Tren nocturno al sur"
+],
+"Люди Калеро сели в тот же состав": [
+"Calero's men boarded the same train",
+"Los hombres de Calero subieron al mismo tren"
+],
+"Вагон": [
+"Car",
+"Vagón"
+],
+"купе": [
+"compartment",
+"compartimiento"
+],
+"платформа": [
+"platform",
+"andén"
+],
+"станция": [
+"station",
+"estación"
+],
+"пробейся через всё": [
+"fight through it all",
+"ábrete paso por todo"
+],
+"Полковник',": [
+"Colonel',",
+"Coronel',"
+],
+"Полковник'": [
+"Colonel'",
+"Coronel'"
+],
+"Полковник Варгас держит все блокпосты города. Он не берёт деньги у тех, кого не уважает. Значит, сначала — уважение.'": [
+"Colonel Vargas controls every checkpoint in the city. He takes no money from those he doesn't respect. So respect comes first.'",
+"El coronel Vargas controla todos los retenes de la ciudad. No acepta dinero de quienes no respeta. Así que primero, respeto.'"
+],
+"Полковник Варгас держит все блокпосты города": [
+"Colonel Vargas controls every checkpoint in the city",
+"El coronel Vargas controla todos los retenes de la ciudad"
+],
+"Он не берёт деньги у тех": [
+"He takes no money from those",
+"No acepta dinero de quienes"
+],
+"кого не уважает": [
+"he doesn't respect",
+"no respeta"
+],
+"Значит": [
+"So",
+"Entonces"
+],
+"сначала": [
+"first",
+"primero"
+],
+"уважение": [
+"respect",
+"respeto"
+],
+"Дон',": [
+"Don',",
+"Don',"
+],
+"Дон'": [
+"Don'",
+"Don'"
+],
+"Дон Эрнесто решил, что ты стал слишком большим. Серьёзный разговор. С ним охрана, а у него самого — ствол.'": [
+"Don Ernesto decided you've grown too big. A serious talk. He has guards with him, and he himself has — a gun.'",
+"Don Ernesto decidió que te has hecho demasiado grande. Una charla seria. Viene con guardias, y él mismo lleva — pistola.'"
+],
+"Дон Эрнесто решил": [
+"Don Ernesto has decided",
+"Don Ernesto ha decidido"
+],
+"что ты стал слишком большим": [
+"you've grown too big",
+"que te has hecho demasiado grande"
+],
+"Серьёзный разговор": [
+"A serious talk",
+"Una charla seria"
+],
+"С ним охрана": [
+"He has guards with him",
+"Viene con guardias"
+],
+"а у него самого": [
+"and he himself has",
+"y él mismo lleva"
+],
+"ствол": [
+"a gun",
+"pistola"
+],
+"Эль Патрон',": [
+"El Patrón',",
+"El Patrón',"
+],
+"Эль Патрон'": [
+"El Patrón'",
+"El Patrón'"
+],
+"Дон Эрнесто работал на другого. Эль Патрон — хозяин всего побережья: вилла с бегемотами, золотой телефон, полиция на зарплате. Он предлагает выбор: работать на него — или занять его место.'": [
+"Don Ernesto worked for someone else. El Patrón — master of the whole coast: a villa with hippos, a gold telephone, cops on the payroll. He offers a choice: work for him — or take his place.'",
+"Don Ernesto trabajaba para otro. El Patrón — dueño de toda la costa: una villa con hipopótamos, un teléfono de oro, policía en nómina. Ofrece una elección: trabajar para él — o quedarte con su lugar.'"
+],
+"Дон Эрнесто работал на другого": [
+"Don Ernesto worked for someone else",
+"Don Ernesto trabajaba para otro"
+],
+"Эль Патрон": [
+"El Patrón",
+"El Patrón"
+],
+"хозяин всего побережья": [
+"master of the whole coast",
+"dueño de toda la costa"
+],
+"вилла с бегемотами": [
+"a villa with hippos",
+"una villa con hipopótamos"
+],
+"золотой телефон": [
+"a gold telephone",
+"un teléfono de oro"
+]
+}

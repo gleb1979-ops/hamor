@@ -1,0 +1,1626 @@
+{
+"Две сделки по рублю прибыли": [
+"Two deals earning a peso each",
+"Dos tratos con un peso de ganancia"
+],
+"и": [
+"and",
+"y"
+],
+"Напёрсточник: «Шарик под одним из 3 стаканов. Ты выбрал, я поднял пустой из двух других. Менять выбор?»',": [
+"Shell man: “The ball is under one of 3 cups. You picked, I lifted an empty one of the other two. Switch?”',",
+"Cubiletero: “La bola está bajo uno de 3 vasos. Elegiste, levanté uno vacío de los otros dos. ¿Cambias?”',"
+],
+"Напёрсточник: «Шарик под одним из 3 стаканов. Ты выбрал, я поднял пустой из двух других. Менять выбор?»'": [
+"Shell man: “The ball is under one of 3 cups. You picked, I lifted an empty one of the other two. Switch?”'",
+"Cubiletero: “La bola está bajo uno de 3 vasos. Elegiste, levanté uno vacío de los otros dos. ¿Cambias?”'"
+],
+"Напёрсточник: «Шарик под одним из": [
+"Shell man: “The ball is under one of",
+"Cubiletero: “La bola está bajo uno de"
+],
+"стаканов. Ты выбрал, я поднял пустой из двух других. Менять выбор?»'": [
+"cups. You picked, I lifted an empty one of the other two. Switch?”'",
+"vasos. Elegiste, levanté uno vacío de los otros dos. ¿Cambias?”'"
+],
+"Напёрсточник": [
+"Shell man",
+"Cubiletero"
+],
+"Шарик под одним из": [
+"The ball is under one of",
+"La bola está bajo uno de"
+],
+"стаканов": [
+"cups",
+"vasos"
+],
+"Ты выбрал": [
+"You picked",
+"Elegiste"
+],
+"я поднял пустой из двух других": [
+"I lifted an empty one of the other two",
+"levanté uno vacío de los otros dos"
+],
+"Менять выбор": [
+"Switch the pick",
+"Cambiar elección"
+],
+"Без разницы','Менять','Не менять'": [
+"Doesn't matter','Switch','Don't switch'",
+"Da igual','Cambiar','No cambiar'"
+],
+"Без разницы'": [
+"Doesn't matter'",
+"Da igual'"
+],
+"'Менять'": [
+"'Switch'",
+"'Cambiar'"
+],
+"'Не менять'": [
+"'Don't switch'",
+"'No cambiar'"
+],
+"Сменишь — выиграешь в 2 случаях из 3.'": [
+"If you switch — you win in 2 cases out of 3.'",
+"Si cambias, ganas en 2 de 3 casos.'"
+],
+"Сменишь — выиграешь в": [
+"If you switch — you win in",
+"Si cambias, ganas en"
+],
+"случаях из": [
+"cases out of",
+"casos de"
+],
+"Сменишь": [
+"If you switch",
+"Si cambias"
+],
+"выиграешь в": [
+"you win in",
+"ganas en"
+],
+"У смотрящего 9 монет, одна фальшивая — легче. Сколько взвешиваний на чашечных весах хватит наверняка?',": [
+"The overseer has 9 coins, one fake — lighter. How many weighings on a balance scale are enough for sure?',",
+"El vigilante tiene 9 monedas, una falsa, más ligera. ¿Cuántas pesadas en balanza bastan con seguridad?',"
+],
+"У смотрящего 9 монет, одна фальшивая — легче. Сколько взвешиваний на чашечных весах хватит наверняка?'": [
+"The overseer has 9 coins, one fake — lighter. How many weighings on a balance scale are enough for sure?'",
+"El vigilante tiene 9 monedas, una falsa, más ligera. ¿Cuántas pesadas en balanza bastan con seguridad?'"
+],
+"У смотрящего": [
+"The overseer has",
+"El vigilante tiene"
+],
+"монет, одна фальшивая — легче. Сколько взвешиваний на чашечных весах хватит наверняка?'": [
+"coins, one fake — lighter. How many weighings on a balance scale are enough for sure?'",
+"monedas, una falsa, más ligera. ¿Cuántas pesadas en balanza bastan con seguridad?'"
+],
+"монет": [
+"coins",
+"monedas"
+],
+"одна фальшивая": [
+"one fake",
+"una falsa"
+],
+"легче": [
+"lighter",
+"más ligera"
+],
+"Сколько взвешиваний на чашечных весах хватит наверняка": [
+"How many weighings on a balance scale are enough for sure",
+"¿Cuántas pesadas en balanza bastan con seguridad"
+],
+"Делим на тройки: первое взвешивание находит тройку, второе — монету.'": [
+"Split into threes: the first weighing finds the group, the second finds the coin.'",
+"Dividir en tres: la primera pesada halla el grupo, la segunda la moneda.'"
+],
+"Делим на тройки": [
+"Split into threes",
+"Dividir en tres"
+],
+"первое взвешивание находит тройку": [
+"the first weighing finds the group",
+"la primera pesada halla el grupo"
+],
+"второе": [
+"second",
+"segunda"
+],
+"монету": [
+"the coin",
+"la moneda"
+],
+"Ты чё сюда пришёл? Это моя точка.',": [
+"What the hell are you here for? This is my corner.',",
+"¿Para qué demonios viniste? Esta es mi esquina.',"
+],
+"Ты чё сюда пришёл? Это моя точка.'": [
+"What the hell are you here for? This is my corner.'",
+"¿Para qué demonios viniste? Esta es mi esquina.'"
+],
+"Ты чё сюда пришёл": [
+"What the hell are you here for",
+"¿Para qué demonios viniste"
+],
+"Это моя точка": [
+"This is my corner",
+"Esta es mi esquina"
+],
+"Пришёл поговорить по-людски. Без шума.',1": [
+"Came to talk like a person. No noise.',1",
+"Vine a hablar como la gente. Sin ruido.',1"
+],
+"Пришёл поговорить по-людски. Без шума.'": [
+"Came to talk like a person. No noise.'",
+"Vine a hablar como la gente. Sin ruido.'"
+],
+"Пришёл поговорить по-людски": [
+"Came to talk like a person",
+"Vine a hablar como la gente"
+],
+"Без шума": [
+"No noise",
+"Sin ruido"
+],
+"Извините, я уйду, только не бейте…',0": [
+"Sorry, I'll leave, just don't hit me…',0",
+"Perdón, ya me voy, no me pegues…',0"
+],
+"Извините, я уйду, только не бейте…'": [
+"Sorry, I'll leave, just don't hit me…'",
+"Perdón, ya me voy, no me pegues…'"
+],
+"Извините": [
+"Sorry",
+"Perdón"
+],
+"я уйду": [
+"I'll leave",
+"me voy"
+],
+"только не бейте…'": [
+"just don't hit me…'",
+"no me pegues…'"
+],
+"Твоя? Сейчас будет моя, понял?',-1": [
+"Yours? Mine's coming up, got it?',-1",
+"¿Tuya? Ahora viene la mía, ¿entiendes?',-1"
+],
+"Твоя? Сейчас будет моя, понял?'": [
+"Yours? Mine's coming up, got it?'",
+"¿Tuya? Ahora viene la mía, ¿entiendes?'"
+],
+"Твоя": [
+"Yours",
+"Tuya"
+],
+"Сейчас будет моя": [
+"Mine is coming up",
+"Ahora viene la mía"
+],
+"понял": [
+"got it",
+"entendido"
+],
+"С какого района будешь?',": [
+"What district are you from?',",
+"¿De qué barrio eres?',"
+],
+"С какого района будешь?'": [
+"What district are you from?'",
+"¿De qué barrio eres?'"
+],
+"С какого района будешь": [
+"What district are you from",
+"¿De qué barrio eres"
+],
+"С гаражей. Меня там знают — спроси.',1": [
+"From the garages. They know me there — ask around.',1",
+"De los talleres. Allá me conocen, pregunta.',1"
+],
+"С гаражей. Меня там знают — спроси.'": [
+"From the garages. They know me there — ask around.'",
+"De los talleres. Allá me conocen, pregunta.'"
+],
+"С гаражей": [
+"From the garages",
+"De los talleres"
+],
+"Меня там знают": [
+"They know me there",
+"Allá me conocen"
+],
+"спроси": [
+"ask around",
+"pregunta"
+],
+"Тебе какая разница?',-1": [
+"What's it to you?',-1",
+"¿Qué te importa?',-1"
+],
+"Тебе какая разница?'": [
+"What's it to you?'",
+"¿Qué te importa?'"
+],
+"Тебе какая разница": [
+"What's it to you",
+"¿Qué te importa"
+],
+"Да я ни с какого… я сам по себе…',0": [
+"I'm with nobody… I'm on my own…',0",
+"No soy de nadie… ando solo…',0"
+],
+"Да я ни с какого… я сам по себе…'": [
+"I'm with nobody… I'm on my own…'",
+"No soy de nadie… ando solo…'"
+],
+"Ты чё, пугать меня пришёл?',": [
+"What, you came to scare me?',",
+"¿Qué, viniste a asustarme?',"
+],
+"Ты чё, пугать меня пришёл?'": [
+"What, you came to scare me?'",
+"¿Qué, viniste a asustarme?'"
+],
+"Ты чё": [
+"What the hell",
+"¿Qué demonios"
+],
+"пугать меня пришёл": [
+"came to scare me",
+"viniste a asustarme"
+],
+"Нет. Пришёл предложить разойтись без драки.',1": [
+"No. I came to offer we part ways without a fight.',1",
+"No. Vine a proponer que nos separemos sin pelea.',1"
+],
+"Нет. Пришёл предложить разойтись без драки.'": [
+"No. I came to offer we part ways without a fight.'",
+"No. Vine a proponer que nos separemos sin pelea.'"
+],
+"Нет": [
+"No",
+"No"
+],
+"Пришёл предложить разойтись без драки": [
+"Came to offer we part ways without a fight",
+"Vine a proponer que nos separemos sin pelea"
+],
+"А ты испугался?',-1": [
+"Scared, are you?',-1",
+"¿Tienes miedo?',-1"
+],
+"А ты испугался?'": [
+"Scared, are you?'",
+"¿Tienes miedo?'"
+],
+"А ты испугался": [
+"Scared, are you",
+"¿Tienes miedo"
+],
+"Нет-нет, что вы…',0": [
+"No, no, what are you saying…',0",
+"No, no, qué dices…',0"
+],
+"Нет-нет, что вы…'": [
+"No, no, what are you saying…'",
+"No, no, qué dices…'"
+],
+"Нет-нет": [
+"No, no",
+"No, no"
+],
+"что вы…'": [
+"what are you saying…'",
+"qué dices…'"
+],
+"А мне с этого что?',": [
+"What's in it for me?',",
+"¿Y yo qué gano?',"
+],
+"А мне с этого что?'": [
+"What's in it for me?'",
+"¿Y yo qué gano?'"
+],
+"А мне с этого что": [
+"What's in it for me",
+"¿Y yo qué gano"
+],
+"Ты не лезешь к нашим, мы — к твоим. Всем выгодно.',1": [
+"You stay off ours, we stay off yours. Everybody wins.',1",
+"Tú no te metes con los nuestros, nosotros con los tuyos. Todos ganan.',1"
+],
+"Ты не лезешь к нашим, мы — к твоим. Всем выгодно.'": [
+"You stay off ours, we stay off yours. Everybody wins.'",
+"Tú no te metes con los nuestros, nosotros con los tuyos. Todos ganan.'"
+],
+"Ты не лезешь к нашим": [
+"You stay off ours",
+"No te metes con los nuestros"
+],
+"мы": [
+"we",
+"nosotros"
+],
+"к твоим": [
+"yours",
+"los tuyos"
+],
+"Всем выгодно": [
+"Everybody wins",
+"Todos ganan"
+],
+"Отдам всё, что есть…',0": [
+"I'll give you everything I've got…',0",
+"Te doy todo lo que tengo…',0"
+],
+"Отдам всё, что есть…'": [
+"I'll give you everything I've got…'",
+"Te doy todo lo que tengo…'"
+],
+"Отдам всё": [
+"I'll give you everything",
+"Te doy todo"
+],
+"что есть…'": [
+"what I've got…'",
+"lo que tengo…'"
+],
+"Целые зубы тебе с этого.',-1": [
+"Your teeth stay whole, that's what you get.',-1",
+"Con eso te quedas con los dientes enteros.',-1"
+],
+"Целые зубы тебе с этого.'": [
+"Your teeth stay whole, that's what you get.'",
+"Con eso te quedas con los dientes enteros.'"
+],
+"Целые зубы тебе с этого": [
+"Your teeth stay whole, that's what you get",
+"Con eso te quedas con los dientes enteros"
+],
+"Ну… уважение, наверное.',0": [
+"Well… respect, I guess.',0",
+"Pues… respeto, supongo.',0"
+],
+"Ну… уважение, наверное.'": [
+"Well… respect, I guess.'",
+"Pues… respeto, supongo.'"
+],
+"Ну… уважение": [
+"Well… respect",
+"Pues… respeto"
+],
+"наверное": [
+"I guess",
+"supongo"
+],
+"Старшие твои знают, что ты тут?',": [
+"Do your elders know you're here?',",
+"¿Tus mayores saben que estás aquí?',"
+],
+"Старшие твои знают, что ты тут?'": [
+"Do your elders know you're here?'",
+"¿Tus mayores saben que estás aquí?'"
+],
+"Старшие твои знают": [
+"Your elders know",
+"Tus mayores saben"
+],
+"что ты тут": [
+"you're here",
+"estás aquí"
+],
+"Знают. Просили решить по-тихому.',1": [
+"They know. They asked to settle it quietly.',1",
+"Lo saben. Pidieron arreglarlo en silencio.',1"
+],
+"Знают. Просили решить по-тихому.'": [
+"They know. They asked to settle it quietly.'",
+"Lo saben. Pidieron arreglarlo en silencio.'"
+],
+"Знают": [
+"They know",
+"Lo saben"
+],
+"Просили решить по-тихому": [
+"They asked to settle it quietly",
+"Pidieron arreglarlo en silencio"
+],
+"Не говорите им, пожалуйста…',0": [
+"Please don't tell them…',0",
+"Por favor no les digas…',0"
+],
+"Не говорите им, пожалуйста…'": [
+"Please don't tell them…'",
+"Por favor no les digas…'"
+],
+"Не говорите им": [
+"Don't tell them",
+"No les digas"
+],
+"пожалуйста…'": [
+"please…'",
+"por favor…'"
+],
+"Мне старшие не указ.',-1": [
+"Elders don't tell me what to do.',-1",
+"Los mayores no me mandan.',-1"
+],
+"Мне старшие не указ.'": [
+"Elders don't tell me what to do.'",
+"Los mayores no me mandan.'"
+],
+"Мне старшие не указ": [
+"Elders don't tell me what to do",
+"Los mayores no me mandan"
+],
+"А твои про тебя знают?',-1": [
+"Do your people know about you?',-1",
+"¿Tu gente sabe de ti?',-1"
+],
+"А твои про тебя знают?'": [
+"Do your people know about you?'",
+"¿Tu gente sabe de ti?'"
+],
+"А твои про тебя знают": [
+"Do your people know about you",
+"¿Tu gente sabe de ti"
+],
+"Докажи, что ты не трепло.',": [
+"Prove you're not all talk.',",
+"Demuestra que no eres puro hablar.',"
+],
+"Докажи, что ты не трепло.'": [
+"Prove you're not all talk.'",
+"Demuestra que no eres puro hablar.'"
+],
+"Докажи": [
+"Prove it",
+"Demuéstralo"
+],
+"что ты не трепло": [
+"you're not all talk",
+"no eres puro hablar"
+],
+"Слово дал — сделаю. Проверь.',1": [
+"Gave my word — I'll do it. Check.',1",
+"Di mi palabra: lo haré. Compruébalo.',1"
+],
+"Слово дал — сделаю. Проверь.'": [
+"Gave my word — I'll do it. Check.'",
+"Di mi palabra: lo haré. Compruébalo.'"
+],
+"Слово дал": [
+"Gave my word",
+"Di mi palabra"
+],
+"сделаю": [
+"I'll do it",
+"lo haré"
+],
+"Проверь": [
+"Check",
+"Revisa"
+],
+"Я тебе ничего доказывать не буду.',-1": [
+"I won't prove anything to you.',-1",
+"No te voy a demostrar nada.',-1"
+],
+"Я тебе ничего доказывать не буду.'": [
+"I won't prove anything to you.'",
+"No te voy a demostrar nada.'"
+],
+"Я тебе ничего доказывать не буду": [
+"I won't prove anything to you",
+"No te voy a demostrar nada"
+],
+"А как? Скажите — всё сделаю…',0": [
+"And how? Tell me — I'll do it…',0",
+"¿Y cómo? Dime y lo hago…',0"
+],
+"А как? Скажите — всё сделаю…'": [
+"And how? Tell me — I'll do it…'",
+"¿Y cómo? Dime y lo hago…'"
+],
+"А как": [
+"And how",
+"¿Y cómo"
+],
+"Скажите": [
+"Tell me",
+"Dime"
+],
+"всё сделаю…'": [
+"I'll do it all…'",
+"lo haré todo…'"
+],
+"Мамой клянусь!',0": [
+"I swear on my mother!',0",
+"¡Lo juro por mi madre!',0"
+],
+"Мамой клянусь!'": [
+"I swear on my mother!'",
+"¡Lo juro por mi madre!'"
+],
+"Мамой клянусь": [
+"I swear on my mother",
+"Lo juro por mi madre"
+],
+"Мои люди говорят, ты нашего обидел. Было?',": [
+"My people say you hurt one of ours. Did you?',",
+"Mi gente dice que lastimaste a uno de los nuestros. ¿Es cierto?',"
+],
+"Мои люди говорят, ты нашего обидел. Было?'": [
+"My people say you hurt one of ours. Did you?'",
+"Mi gente dice que lastimaste a uno de los nuestros. ¿Es cierto?'"
+],
+"Мои люди говорят": [
+"My people say",
+"Mi gente dice"
+],
+"ты нашего обидел": [
+"you hurt one of ours",
+"lastimaste a uno de los nuestros"
+],
+"Было": [
+"It happened",
+"Pasó"
+],
+"Было. Он первый полез — свидетели есть. Разберёмся честно.',1": [
+"It happened. He started it — there are witnesses. We'll sort it out fair.',1",
+"Pasó. Él empezó, hay testigos. Lo arreglamos parejo.',1"
+],
+"Было. Он первый полез — свидетели есть. Разберёмся честно.'": [
+"It happened. He started it — there are witnesses. We'll sort it out fair.'",
+"Pasó. Él empezó, hay testigos. Lo arreglamos parejo.'"
+],
+"Он первый полез": [
+"He started it",
+"Él empezó"
+],
+"свидетели есть": [
+"there are witnesses",
+"hay testigos"
+],
+"Разберёмся честно": [
+"We'll sort it out fair",
+"Lo arreglamos parejo"
+],
+"Не было! Это не я! Честно!',0": [
+"It didn't happen! Not me! Honest!',0",
+"¡No pasó! ¡No fui yo! ¡Te lo juro!',0"
+],
+"Не было! Это не я! Честно!'": [
+"It didn't happen! Not me! Honest!'",
+"¡No pasó! ¡No fui yo! ¡Te lo juro!'"
+],
+"Не было": [
+"It didn't happen",
+"No pasó"
+],
+"Это не я": [
+"It wasn't me",
+"No fui yo"
+],
+"Честно": [
+"Honest",
+"Honesto"
+],
+"Ну обидел. И чё?',-1": [
+"Yeah, I hurt him. So what?',-1",
+"Pues sí, lo lastimé. ¿Y qué?',-1"
+],
+"Ну обидел. И чё?'": [
+"Yeah, I hurt him. So what?'",
+"Pues sí, lo lastimé. ¿Y qué?'"
+],
+"Ну обидел": [
+"Yeah, I hurt him",
+"Pues sí, lo lastimé"
+],
+"И чё": [
+"So what",
+"¿Y qué"
+],
+"Давай я тебе денег дам — и забыли.',0": [
+"Let me give you some money — and we forget it.',0",
+"Te doy dinero y lo olvidamos.',0"
+],
+"Давай я тебе денег дам — и забыли.'": [
+"Let me give you some money — and we forget it.'",
+"Te doy dinero y lo olvidamos.'"
+],
+"Давай я тебе денег дам": [
+"Let me give you some money",
+"Te doy dinero"
+],
+"и забыли": [
+"and we forget it",
+"y lo olvidamos"
+],
+"Я с тобой говорить не буду. Пусть старший приходит.',": [
+"I won't talk to you. Let your boss come.',",
+"No hablaré contigo. Que venga tu jefe.',"
+],
+"Я с тобой говорить не буду. Пусть старший приходит.'": [
+"I won't talk to you. Let your boss come.'",
+"No hablaré contigo. Que venga tu jefe.'"
+],
+"Я с тобой говорить не буду": [
+"I won't talk to you",
+"No hablaré contigo"
+],
+"Пусть старший приходит": [
+"Let your boss come",
+"Que venga tu jefe"
+],
+"Старший прислал меня. Значит, и говорить со мной.',1": [
+"The boss sent me. So talk to me.',1",
+"Me mandó el jefe. Así que habla conmigo.',1"
+],
+"Старший прислал меня. Значит, и говорить со мной.'": [
+"The boss sent me. So talk to me.'",
+"Me mandó el jefe. Así que habla conmigo.'"
+],
+"Старший прислал меня": [
+"The boss sent me",
+"Me mandó el jefe"
+],
+"и говорить со мной": [
+"and talk to me",
+"y hablar conmigo"
+],
+"Хорошо, я сейчас сбегаю за ним…',0": [
+"Okay, I'll run and get him…',0",
+"Está bien, voy por él…',0"
+],
+"Хорошо, я сейчас сбегаю за ним…'": [
+"Okay, I'll run and get him…'",
+"Está bien, voy por él…'"
+],
+"Хорошо": [
+"Okay",
+"Está bien"
+],
+"я сейчас сбегаю за ним…'": [
+"I'll run and get him now…'",
+"voy por él ahora…'"
+],
+"Тогда по-другому поговорим.',-1": [
+"Then we'll talk differently.',-1",
+"Entonces hablaremos de otra forma.',-1"
+],
+"Тогда по-другому поговорим.'": [
+"Then we'll talk differently.'",
+"Entonces hablaremos de otra forma.'"
+],
+"Тогда по-другому поговорим": [
+"Then we'll talk differently",
+"Entonces hablaremos de otra forma"
+],
+"Да ладно тебе, чего ты…',0": [
+"Come on, man, what's with you…',0",
+"Ándale, hombre, ¿qué te pasa…',0"
+],
+"Да ладно тебе, чего ты…'": [
+"Come on, man, what's with you…'",
+"Ándale, hombre, ¿qué te pasa…'"
+],
+"Да ладно тебе": [
+"Come on, man",
+"Ándale, hombre"
+],
+"чего ты…'": [
+"what's with you…'",
+"qué te pasa…'"
+],
+"Тебе тут всё равно ничего не светит. Чего ты хочешь?',": [
+"You've got nothing here anyway. What do you want?',",
+"Aquí no te toca nada. ¿Qué quieres?',"
+],
+"Тебе тут всё равно ничего не светит. Чего ты хочешь?'": [
+"You've got nothing here anyway. What do you want?'",
+"Aquí no te toca nada. ¿Qué quieres?'"
+],
+"Тебе тут всё равно ничего не светит": [
+"You've got nothing here anyway",
+"Aquí no te toca nada"
+],
+"Чего ты хочешь": [
+"What do you want",
+"¿Qué quieres"
+],
+"Половину точки — и ни одной драки на районе.',1": [
+"Half the turf — and not one fight in the district.',1",
+"La mitad del territorio y ni una pelea en el barrio.',1"
+],
+"Половину точки — и ни одной драки на районе.'": [
+"Half the turf — and not one fight in the district.'",
+"La mitad del territorio y ni una pelea en el barrio.'"
+],
+"Половину точки": [
+"Half the turf",
+"La mitad del territorio"
+],
+"и ни одной драки на районе": [
+"and not one fight in the district",
+"y ni una pelea en el barrio"
+],
+"Всё. Целиком.',-1": [
+"All. The whole thing.',-1",
+"Todo. Completo.',-1"
+],
+"Всё. Целиком.'": [
+"All. The whole thing.'",
+"Todo. Completo.'"
+],
+"Всё": [
+"All",
+"Todo"
+],
+"Целиком": [
+"The whole thing",
+"Completo"
+],
+"Ничего… я просто посмотреть…',0": [
+"Nothing… just looking…',0",
+"Nada… solo estoy mirando…',0"
+],
+"Ничего… я просто посмотреть…'": [
+"Nothing… just looking…'",
+"Nada… solo estoy mirando…'"
+],
+"А что предложишь?',0": [
+"What are you offering?',0",
+"¿Qué ofreces?',0"
+],
+"А что предложишь?'": [
+"What are you offering?'",
+"¿Qué ofreces?'"
+],
+"А что предложишь": [
+"What are you offering",
+"¿Qué ofreces"
+],
+"Если я соглашусь — мне перед своими как объяснить?',": [
+"If I agree — how do I explain it to my own people?',",
+"Si acepto, ¿cómo se lo explico a los míos?',"
+],
+"Если я соглашусь — мне перед своими как объяснить?'": [
+"If I agree — how do I explain it to my own people?'",
+"Si acepto, ¿cómo se lo explico a los míos?'"
+],
+"Если я соглашусь": [
+"If I agree",
+"Si acepto"
+],
+"мне перед своими как объяснить": [
+"how do I explain it to my own people",
+"cómo se lo explico a los míos"
+],
+"Скажешь: договорились по-честному. Это не слабость.',1": [
+"You'll say: we agreed fair and square. That's not weakness.',1",
+"Dirás: quedamos de manera justa. Eso no es debilidad.',1"
+],
+"Скажешь: договорились по-честному. Это не слабость.'": [
+"You'll say: we agreed fair and square. That's not weakness.'",
+"Dirás: quedamos de manera justa. Eso no es debilidad.'"
+],
+"Скажешь": [
+"You'll say",
+"Dirás"
+],
+"договорились по-честному": [
+"agreed fair and square",
+"quedamos de manera justa"
+],
+"Это не слабость": [
+"That's not weakness",
+"Eso no es debilidad"
+],
+"Это твои проблемы.',-1": [
+"That's your problem.',-1",
+"Es tu problema.',-1"
+],
+"Это твои проблемы.'": [
+"That's your problem.'",
+"Es tu problema.'"
+],
+"Это твои проблемы": [
+"That's your problem",
+"Es tu problema"
+],
+"Скажи, что я тебя побил.',0": [
+"Say I beat you up.',0",
+"Di que te di una paliza.',0"
+],
+"Скажи, что я тебя побил.'": [
+"Say I beat you up.'",
+"Di que te di una paliza.'"
+],
+"Скажи": [
+"Say",
+"Di"
+],
+"что я тебя побил": [
+"I beat you up",
+"te di una paliza"
+],
+"Можешь ничего не объяснять.',0": [
+"You don't have to explain.',0",
+"No tienes que explicar.',0"
+],
+"Можешь ничего не объяснять.'": [
+"You don't have to explain.'",
+"No tienes que explicar.'"
+],
+"Можешь ничего не объяснять": [
+"You don't have to explain",
+"No tienes que explicar"
+],
+"Спокойно, честно и по делу — так уважают.','0':'Слабость или пустые слова — тут не прокатит.','-1':'Нахамил — разговор окончен.'": [
+"Calm, honest and to the point — that's how you earn respect.','0':'Weakness or empty words — that won't fly here.','-1':'Got rude — conversation over.'",
+"Con calma, honestidad y al grano: así se gana el respeto.','0':'Debilidad o palabras vacías: aquí no cuela.','-1':'Se puso grosero: se acabó la plática.'"
+],
+"Спокойно, честно и по делу — так уважают.','": [
+"Calm, honest and to the point — that's how you earn respect.','",
+"Con calma, honestidad y al grano: así se gana el respeto.','"
+],
+"Слабость или пустые слова — тут не прокатит.','": [
+"Weakness or empty words — that won't fly here.','",
+"Debilidad o palabras vacías: aquí no cuela.','"
+],
+"Нахамил — разговор окончен.'": [
+"Got rude — conversation over.'",
+"Se puso grosero: se acabó la plática.'"
+],
+"Спокойно": [
+"Easy",
+"Con calma"
+],
+"честно и по делу": [
+"honest and to the point",
+"honesto y al grano"
+],
+"так уважают": [
+"that's how you earn respect",
+"así se gana el respeto"
+],
+"Слабость или пустые слова": [
+"Weakness or empty words",
+"Debilidad o palabras vacías"
+],
+"тут не прокатит": [
+"that won't fly here",
+"aquí no cuela"
+],
+"Нахамил": [
+"Got rude",
+"Se puso grosero"
+],
+"разговор окончен": [
+"conversation over",
+"se acabó la plática"
+],
+"кассета'": [
+"tape'",
+"casete'"
+],
+"джинсы'": [
+"jeans'",
+"jeans'"
+],
+"наушники'": [
+"headphones'",
+"audífonos'"
+],
+"часы'": [
+"watch'",
+"reloj'"
+],
+"арбуз'": [
+"watermelon'",
+"sandía'"
+],
+"одеколон'": [
+"cologne'",
+"colonia'"
+],
+"кепка'": [
+"cap'",
+"gorra'"
+],
+"приёмник'": [
+"radio'",
+"radio'"
+],
+"Барыга',": [
+"Hustler',",
+"Traficante',"
+],
+"Барыга'": [
+"Hustler'",
+"Traficante'"
+],
+"Барыга у ларька торгует жвачкой. Простой разговор, простые вопросы.'": [
+"The hustler at the stand sells gum. Easy talk, easy questions.'",
+"El traficante del puesto vende chicle. Plática fácil, preguntas fáciles.'"
+],
+"Барыга у ларька торгует жвачкой": [
+"The hustler at the stand sells gum",
+"El traficante del puesto vende chicle"
+],
+"Простой разговор": [
+"Easy talk",
+"Plática fácil"
+],
+"простые вопросы": [
+"easy questions",
+"preguntas fáciles"
+],
+"Напёрсточник',": [
+"Shell man',",
+"Cubiletero',"
+],
+"Напёрсточник'": [
+"Shell man'",
+"Cubiletero'"
+],
+"Ловкость рук и никакого мошенства. Следи за стаканами.'": [
+"Quick hands, no cheating. Watch the cups.'",
+"Manos rápidas y sin trampa. Vigila los vasos.'"
+],
+"Ловкость рук и никакого мошенства": [
+"Quick hands, no cheating",
+"Manos rápidas y sin trampa"
+],
+"Следи за стаканами": [
+"Watch the cups",
+"Vigila los vasos"
+],
+"Фарцовщик',": [
+"Dealer',",
+"Vendedor',"
+],
+"Фарцовщик'": [
+"Dealer'",
+"Vendedor'"
+],
+"Джинсы, кассеты, проценты. Считать надо быстро — пошёл таймер.'": [
+"Jeans, tapes, percentages. Count fast — the timer's running.'",
+"Jeans, casetes, porcentajes. Cuenta rápido: corre el reloj.'"
+],
+"кассеты": [
+"tapes",
+"casetes"
+],
+"проценты": [
+"percentages",
+"porcentajes"
+],
+"Считать надо быстро": [
+"You have to count fast",
+"Hay que contar rápido"
+],
+"пошёл таймер": [
+"the timer's running",
+"corre el reloj"
+],
+"Мясник',": [
+"Butcher',",
+"Carnicero',"
+],
+"Мясник'": [
+"Butcher'",
+"Carnicero'"
+],
+"Весы у него с подвохом. Вопросы на время.'": [
+"His scale is rigged. Timed questions.'",
+"Su balanza está arreglada. Preguntas contra reloj.'"
+],
+"Весы у него с подвохом": [
+"His scale is rigged",
+"Su balanza está arreglada"
+],
+"Вопросы на время": [
+"Timed questions",
+"Preguntas contra reloj"
+],
+"Решала',": [
+"Fixer',",
+"Arreglador',"
+],
+"Решала'": [
+"Fixer'",
+"Arreglador'"
+],
+"Каждое слово с подвохом. Ошибёшься в разговоре — пиши пропало.'": [
+"Every word is a trap. Slip up in the talk and you're done.'",
+"Cada palabra es una trampa. Si fallas en la plática, estás acabado.'"
+],
+"Каждое слово с подвохом": [
+"Every word is a trap",
+"Cada palabra es una trampa"
+],
+"Ошибёшься в разговоре": [
+"Slip up in the talk",
+"Si fallas en la plática"
+],
+"пиши пропало": [
+"you're done for",
+"estás acabado"
+],
+"Хозяин рынка',": [
+"Market boss',",
+"Jefe del mercado',"
+],
+"Хозяин рынка'": [
+"Market boss'",
+"Jefe del mercado'"
+],
+"Опытный и хитрый. Таймер короткий, товара много.'": [
+"Seasoned and sly. Short timer, lots of goods.'",
+"Veterano y astuto. Poco tiempo, mucha mercancía.'"
+],
+"Опытный и хитрый": [
+"Seasoned and sly",
+"Veterano y astuto"
+],
+"Таймер короткий": [
+"Short timer",
+"Poco tiempo"
+],
+"товара много": [
+"lots of goods",
+"mucha mercancía"
+],
+"Смотрящий',": [
+"Overseer',",
+"Vigilante',"
+],
+"Смотрящий'": [
+"Overseer'",
+"Vigilante'"
+],
+"Последний. Нужно ответить на всё без единой ошибки.'": [
+"Last one. You need to answer everything without a single mistake.'",
+"El último. Debes responder todo sin un solo error.'"
+],
+"Последний": [
+"Last one",
+"El último"
+],
+"Нужно ответить на всё без единой ошибки": [
+"You need to answer everything without a single mistake",
+"Debes responder todo sin un solo error"
+],
+"РАЗРУЛИТЬ ·": [
+"TALK IT OUT ·",
+"NEGOCIAR ·"
+],
+"РАЗРУЛИТЬ": [
+"TALK IT OUT",
+"NEGOCIAR"
+],
+"легко','средне','сложно'": [
+"easy','medium','hard'",
+"fácil','medio','difícil'"
+],
+"легко'": [
+"easy'",
+"fácil'"
+],
+"'средне'": [
+"'medium'",
+"'medio'"
+],
+"'сложно'": [
+"'hard'",
+"'difícil'"
+],
+"с':''": [
+"with':''",
+"con':''"
+],
+"с'": [
+"with'",
+"con'"
+],
+"Нужно": [
+"You need to",
+"Debes"
+],
+"В точку':'": [
+"Bullseye':'",
+"En el clavo':'"
+],
+"В точку'": [
+"Bullseye'",
+"En el clavo'"
+],
+"Мимо'": [
+"Missed'",
+"Fallaste'"
+],
+"Дальше':'Итог'": [
+"Next':'Result'",
+"Siguiente':'Resultado'"
+],
+"Дальше'": [
+"Next'",
+"Siguiente'"
+],
+"'Итог'": [
+"'Result'",
+"'Resultado'"
+],
+"Вопрос на смекалку": [
+"Brain teaser",
+"Acertijo"
+],
+"Правильно: '+": [
+"Correct: '+",
+"Correcto: '+"
+],
+"Правильно: '": [
+"Correct: '",
+"Correcto: '"
+],
+"Правильно": [
+"Correct",
+"Correcto"
+],
+"Время вышло. Правильно: '+": [
+"Time's up. Correct: '+",
+"Se acabó el tiempo. Correcto: '+"
+],
+"Время вышло. Правильно: '": [
+"Time's up. Correct: '",
+"Se acabó el tiempo. Correcto: '"
+],
+"Время вышло": [
+"Time's up",
+"Se acabó el tiempo"
+],
+"Разговор": [
+"Talk",
+"Plática"
+],
+"Замолчал — значит, сказать нечего.'))": [
+"Went quiet — nothing to say.'))",
+"Se calló: no tiene nada que decir.'))"
+],
+"Замолчал — значит, сказать нечего.'": [
+"Went quiet — nothing to say.'",
+"Se calló: no tiene nada que decir.'"
+],
+"Замолчал": [
+"Went quiet",
+"Se calló"
+],
+"значит": [
+"so",
+"entonces"
+],
+"сказать нечего": [
+"nothing to say",
+"no tiene nada que decir"
+],
+"Напёрстки": [
+"Shell game",
+"Cubiletes"
+],
+"Напёрсточник крутит стаканы": [
+"The shell man shuffles the cups",
+"El cubiletero mueve los vasos"
+],
+"и всё быстрее':''": [
+"and ever faster':''",
+"y cada vez más rápido':''"
+],
+"и всё быстрее'": [
+"and ever faster'",
+"y cada vez más rápido'"
+],
+"Следи за шариком!": [
+"Watch the ball!",
+"¡Vigila la bola!"
+],
+"Следи за шариком": [
+"Watch the ball",
+"Vigila la bola"
+],
+"Глаз — алмаз. Напёрсточник зауважал.':'Шарик был под другим стаканом. Ловкость рук…')": [
+"Sharp eye. The shell man is impressed.':'The ball was under another cup. Quick hands…')",
+"Ojo de águila. El cubiletero te respeta.':'La bola estaba bajo otro vaso. Manos rápidas…')"
+],
+"Глаз — алмаз. Напёрсточник зауважал.':'Шарик был под другим стаканом. Ловкость рук…'": [
+"Sharp eye. The shell man is impressed.':'The ball was under another cup. Quick hands…'",
+"Ojo de águila. El cubiletero te respeta.':'La bola estaba bajo otro vaso. Manos rápidas…'"
+],
+"Глаз": [
+"Eye",
+"Ojo"
+],
+"алмаз": [
+"diamond",
+"diamante"
+],
+"Напёрсточник зауважал": [
+"The shell man is impressed",
+"El cubiletero te respeta"
+],
+"'Шарик был под другим стаканом": [
+"'The ball was under another cup",
+"'La bola estaba bajo otro vaso"
+],
+"Ловкость рук…'": [
+"Quick hands…'",
+"Manos rápidas…'"
+],
+"Запомни товар": [
+"Memorize the goods",
+"Memoriza la mercancía"
+],
+"показывает": [
+"shows",
+"muestra"
+],
+"вещ": [
+"stuff",
+"cosas"
+],
+"и':'ей'": [
+"and':'her'",
+"y':'ella'"
+],
+"и'": [
+"and'",
+"y'"
+],
+"'ей'": [
+"'her'",
+"'ella'"
+],
+"по очереди. Потом нажми в том же порядке.": [
+"in turn. Then press in the same order.",
+"por turnos. Luego presiona en el mismo orden."
+],
+"по очереди. Потом нажми в том же порядке": [
+"in turn. Then press in the same order",
+"por turnos. Luego presiona en el mismo orden"
+],
+"по очереди": [
+"in turn",
+"por turnos"
+],
+"Потом нажми в том же порядке": [
+"Then press in the same order",
+"Luego presiona en el mismo orden"
+],
+"Твоя очередь": [
+"Your turn",
+"Tu turno"
+],
+"Всё запомнил — по-деловому.')": [
+"Got it all memorized — strictly business.')",
+"Todo memorizado, como en los negocios.')"
+],
+"Всё запомнил — по-деловому.'": [
+"Got it all memorized — strictly business.'",
+"Todo memorizado, como en los negocios.'"
+],
+"Всё запомнил": [
+"Got it all memorized",
+"Todo memorizado"
+],
+"по-деловому": [
+"businesslike",
+"como en los negocios"
+],
+"Порядок был: '+": [
+"There was order: '+",
+"Había orden: '+"
+],
+"Порядок был: '": [
+"There was order: '",
+"Había orden: '"
+],
+"Порядок был": [
+"There was order",
+"Había orden"
+],
+"РАЗРУЛИЛ!':'НЕ ВЫШЛО'": [
+"TALKED OUT!':'FAILED'",
+"¡NEGOCIADO!':'FALLÓ'"
+],
+"'НЕ ВЫШЛО'": [
+"'FAILED'",
+"'FALLÓ'"
+],
+"нужно": [
+"need",
+"necesitas"
+],
+"Вопрос решён без драки.':'Разговор не сложился — значит, по-другому.'": [
+"Settled without a fight.':'The talk went nowhere — so it's the other way.'",
+"Resuelto sin pelea.':'La plática no funcionó: será de otra manera.'"
+],
+"Вопрос решён без драки": [
+"Settled without a fight",
+"Resuelto sin pelea"
+],
+"'Разговор не сложился": [
+"'The talk went nowhere",
+"'La plática no funcionó"
+],
+"по-другому": [
+"differently",
+"de otra forma"
+],
+"Дальше':'Дальше'": [
+"Next':'Next'",
+"Siguiente':'Siguiente'"
+],
+"'Дальше'": [
+"'Next'",
+"'Siguiente'"
+],
+"Впереди": [
+"Ahead",
+"Adelante"
+],
+"Можно решить кулаками. А можно": [
+"We could settle it with fists. Or we could",
+"Podemos arreglarlo a golpes. O podemos"
+],
+"Можно решить кулаками": [
+"We could settle it with fists",
+"Podemos arreglarlo a golpes"
+],
+"А можно": [
+"Can I",
+"¿Puedo"
+],
+"разрулить": [
+"talk it out",
+"negociar"
+],
+"задания: напёрстки, смекалка и разговор, нужно": [
+"missions: shell games, wits and talk, you need",
+"misiones: cubiletes, ingenio y plática, necesitas"
+],
+"задания": [
+"missions",
+"misiones"
+],
+"напёрстки": [
+"shell games",
+"cubiletes"
+],
+"смекалка и разговор": [
+"wits and talk",
+"ingenio y plática"
+],
+"Сложность:": [
+"Difficulty:",
+"Dificultad:"
+],
+"Сложность": [
+"Difficulty",
+"Dificultad"
+],
+"лёгкая','средняя','высокая'": [
+"light','medium','high'",
+"ligera','media','alta'"
+],
+"лёгкая'": [
+"light'",
+"ligera'"
+],
+"'средняя'": [
+"'medium'",
+"'media'"
+],
+"'высокая'": [
+"'high'",
+"'alta'"
+],
+"с на ответ':''": [
+"with answer':''",
+"con respuesta':''"
+],
+"с на ответ'": [
+"with answer'",
+"con respuesta'"
+],
+"Не выйдет — всё равно драка.": [
+"No way — it's a fight anyway.",
+"Ni modo: de todas formas hay pelea."
+],
+"Не выйдет — всё равно драка": [
+"No way — it's a fight anyway",
+"Ni modo: de todas formas hay pelea"
+],
+"Не выйдет": [
+"No way",
+"Ni modo"
+],
+"всё равно драка": [
+"it's a fight anyway",
+"de todas formas hay pelea"
+],
+"Драться": [
+"Fight",
+"Pelear"
+],
+"Разрулить": [
+"Talk it out",
+"Negociar"
+],
+"Без драки: напёрстки, смекалка, память и разговор по понятиям. Каждый следующий — сложнее.": [
+"No fighting: shell games, wits, memory and talking by street rules. Each one is harder.",
+"Sin pelea: caso de cubiletes, ingenio, memoria y plática a la manera de la calle. Cada uno es más difícil."
+],
+"Без драки: напёрстки, смекалка, память и разговор по понятиям. Каждый следующий — сложнее": [
+"No fighting: shell games, wits, memory and talking by street rules. Each one is harder",
+"Sin pelea: caso de cubiletes, ingenio, memoria y plática a la manera de la calle. Cada uno es más difícil"
+],
+"Без драки": [
+"No fighting",
+"Sin pelea"
+],
+"смекалка": [
+"wits",
+"ingenio"
+],
+"память и разговор по понятиям": [
+"memory and talking by street rules",
+"memoria y plática a la manera de la calle"
+],
+"Каждый следующий": [
+"Each next one",
+"Cada siguiente"
+],
+"сложнее": [
+"harder",
+"más difícil"
+],
+"легко','легко','средне','средне','сложно','сложно','очень сложно'": [
+"easy','easy','medium','medium','hard','hard','very hard'",
+"fácil','fácil','medio','medio','difícil','difícil','muy difícil'"
+],
+"'легко'": [
+"'easy'",
+"'fácil'"
+],
+"'очень сложно'": [
+"'very hard'",
+"'muy difícil'"
+],
+"Все разрулены. Ты — решала района.": [
+"All talked out. You're the district's fixer.",
+"Todos negociados. Eres el negociador del barrio."
+],
+"Все разрулены. Ты — решала района": [
+"All talked out. You're the district's fixer",
+"Todos negociados. Eres el negociador del barrio"
+],
+"Все разрулены": [
+"All talked out",
+"Todos negociados"
+],
+"Ты": [
+"You",
+"Tú"
+],
+"решала района": [
+"district's fixer",
+"negociador del barrio"
+],
+"Разрулить ·": [
+"Talk it out ·",
+"Negociar ·"
+],
+"задания · нужно": [
+"missions · need",
+"misiones · necesitas"
+],
+"Начать": [
+"Start",
+"Empezar"
+],
+"К списку": [
+"To the list",
+"A la lista"
+],
+"ТЫ — РЕШАЛА':'РАЗРУЛИЛ'):'НЕ ВЫШЛО'": [
+"YOU'RE THE FIXER':'TALKED OUT'):'FAILED'",
+"ERES EL ARREGLADOR':'NEGOCIADO'):'FALLÓ'"
+],
+"ТЫ — РЕШАЛА':'РАЗРУЛИЛ'": [
+"YOU'RE THE FIXER':'TALKED OUT'",
+"ERES EL ARREGLADOR':'NEGOCIADO'"
+],
+"НЕ ВЫШЛО'": [
+"FAILED'",
+"FALLÓ'"
+],
+"ТЫ": [
+"YOU",
+"TÚ"
+],
+"'РАЗРУЛИЛ'": [
+"'TALKED OUT'",
+"'NEGOCIADO'"
+],
+"Даже смотрящий признал: с тобой можно иметь дело.':": [
+"Even the overseer admitted: you're someone to do business with.':",
+"Hasta el vigilante reconoció: contigo se puede hacer negocios.':"
+],
+"Даже смотрящий признал: с тобой можно иметь дело.'": [
+"Even the overseer admitted: you're someone to do business with.'",
+"Hasta el vigilante reconoció: contigo se puede hacer negocios.'"
+],
+"Даже смотрящий признал": [
+"Even the overseer admitted",
+"Hasta el vigilante reconoció"
+],
+"с тобой можно иметь дело": [
+"you can do business with",
+"contigo se puede hacer negocios"
+],
+"Открыт следующий:": [
+"Next unlocked:",
+"Siguiente desbloqueado:"
+],
+"Открыт следующий": [
+"Next unlocked",
+"Siguiente desbloqueado"
+],
+"Попробуй ещё раз — вопросы будут другие.'": [
+"Try again — the questions will be different.'",
+"Inténtalo otra vez: las preguntas serán otras.'"
+],
+"Попробуй ещё раз": [
+"Try again",
+"Inténtalo otra vez"
+],
+"вопросы будут другие": [
+"the questions will be different",
+"las preguntas serán otras"
+],
+"К списку':'Ещё раз'": [
+"To the list':'Again'",
+"A la lista':'Otra vez'"
+],
+"К списку'": [
+"To the list'",
+"A la lista'"
+],
+"'Ещё раз'": [
+"'Again'",
+"'Otra vez'"
+],
+"Кепка-восьмиклинка',": [
+"Eight-panel cap',",
+"Gorra de ocho gajos',"
+],
+"Кепка-восьмиклинка'": [
+"Eight-panel cap'",
+"Gorra de ocho gajos'"
+],
+"здоровья'": [
+"health'",
+"vida'"
+],
+"Костюм «три полоски»',": [
+"“Three stripes” tracksuit',",
+"Pants de “tres rayas”',"
+]
+}

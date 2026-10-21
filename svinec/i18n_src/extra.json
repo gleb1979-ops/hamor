@@ -698,5 +698,61 @@
 " — тихо вырубить": [
 " — silent takedown",
 " — noqueo silencioso"
+],
+"Свой": [
+"Homie",
+"Compa"
+],
+"ПОМОГИ!": [
+"HELP!",
+"¡AYUDA!"
+],
+"СПАСИБО, ПАРСЕ!": [
+"THANKS, PARCE!",
+"¡GRACIAS, PARCE!"
+],
+"ВПИСАЛСЯ ЗА ТЕБЯ": [
+"HE'S GOT YOUR BACK",
+"TE CUBRE LA ESPALDA"
+],
+"ОБЪЕЛСЯ ЭМПАНАД! СИЛА ×1.5": [
+"STUFFED WITH EMPANADAS! POWER ×1.5",
+"¡LLENO DE EMPANADAS! FUERZA ×1.5"
+],
+"Бутылка": [
+"Bottle",
+"Botella"
+],
+"ДЗЫНЬ!": [
+"CRASH!",
+"¡CRASH!"
+],
+"БАХ!": [
+"BOOM!",
+"¡PUM!"
+],
+"А-А-А!": [
+"AAAH!",
+"¡AAAH!"
+],
+"В НОКАУТ!": [
+"KNOCKOUT!",
+"¡NOCAUT!"
+],
+"Время": [
+"Time",
+"Tiempo"
+],
+"спасено своих": [
+"homies saved",
+"compas rescatados"
+],
+"разбито ящиков и бочек": [
+"crates and barrels smashed",
+"cajas y barriles rotos"
+],
+"бонус": [
+"bonus",
+"bono"
 ]
 }

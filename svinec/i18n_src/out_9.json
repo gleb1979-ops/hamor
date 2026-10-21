@@ -1,0 +1,1354 @@
+{
+ "Чашка тинто (кофе) на рынке — 5 песо. Сколько чашек купишь на 22 песо": [
+  "A cup of tinto (coffee) at the market costs 5 pesos. How many cups can you buy with 22 pesos",
+  "Una taza de tinto (café) en el mercado cuesta 5 pesos. ¿Cuántas tazas compras con 22 pesos"
+ ],
+ "Чашка тинто": [
+  "Cup of tinto",
+  "Taza de tinto"
+ ],
+ "кофе": [
+  "coffee",
+  "café"
+ ],
+ "на рынке": [
+  "at the market",
+  "en el mercado"
+ ],
+ "песо. Сколько чашек купишь на": [
+  "pesos. How many cups can you buy with",
+  "pesos. ¿Cuántas tazas compras con"
+ ],
+ "Сколько чашек купишь на": [
+  "How many cups can you buy with",
+  "¿Cuántas tazas compras con"
+ ],
+ "чашки — 20 песо, 2 песо останется": [
+  "cups — 20 pesos, 2 pesos left",
+  "tazas — 20 pesos, sobran 2 pesos"
+ ],
+ "чашки": [
+  "cups",
+  "tazas"
+ ],
+ "песо останется": [
+  "pesos left",
+  "pesos sobran"
+ ],
+ "Что тяжелее — килограмм бананов или килограмм кофе": [
+  "Which is heavier — a kilo of bananas or a kilo of coffee",
+  "¿Qué pesa más — un kilo de bananos o un kilo de café"
+ ],
+ "килограмм бананов или килограмм кофе": [
+  "a kilo of bananas or a kilo of coffee",
+  "un kilo de bananos o un kilo de café"
+ ],
+ "Бананы": [
+  "Bananas",
+  "Bananos"
+ ],
+ "Кофе": [
+  "Coffee",
+  "Café"
+ ],
+ "Арепа — 3 песо. Пятеро друзей берут по одной. Платят 20. Сколько сдачи": [
+  "An arepa costs 3 pesos. Five friends take one each. They pay 20. How much change",
+  "Una arepa cuesta 3 pesos. Cinco amigos compran una cada uno. Pagan 20. ¿Cuánto les devuelven"
+ ],
+ "Арепа": [
+  "Arepa",
+  "Arepa"
+ ],
+ "песо. Пятеро друзей берут по одной. Платят": [
+  "pesos. Five friends take one each. They pay",
+  "pesos. Cinco amigos compran una cada uno. Pagan"
+ ],
+ "Пятеро друзей берут по одной": [
+  "Five friends take one each",
+  "Cinco amigos compran una cada uno"
+ ],
+ "Платят": [
+  "They pay",
+  "Pagan"
+ ],
+ "3 песо": [
+  "3 pesos",
+  "3 pesos"
+ ],
+ "7 песо": [
+  "7 pesos",
+  "7 pesos"
+ ],
+ "ареп — 15 песо, сдача 5": [
+  "arepas — 15 pesos, change 5",
+  "arepas — 15 pesos, vueltas 5"
+ ],
+ "ареп": [
+  "arepas",
+  "arepas"
+ ],
+ "песо, сдача": [
+  "pesos, change",
+  "pesos, vueltas"
+ ],
+ "Автобус-чива везёт 30 человек. Внизу 18, остальные на крыше. Сколько на крыше": [
+  "The chiva bus carries 30 people. 18 inside, the rest on the roof. How many on the roof",
+  "La chiva lleva 30 personas. Abajo van 18, el resto en el techo. ¿Cuántos van en el techo"
+ ],
+ "Автобус-чива везёт": [
+  "The chiva bus carries",
+  "La chiva lleva"
+ ],
+ "человек. Внизу": [
+  "people. Inside",
+  "personas. Abajo"
+ ],
+ "остальные на крыше. Сколько на крыше": [
+  "the rest on the roof. How many on the roof",
+  "el resto en el techo. ¿Cuántos van en el techo"
+ ],
+ "человек": [
+  "people",
+  "personas"
+ ],
+ "Внизу": [
+  "Inside",
+  "Abajo"
+ ],
+ "остальные на крыше": [
+  "the rest on the roof",
+  "el resto en el techo"
+ ],
+ "Сколько на крыше": [
+  "How many on the roof",
+  "¿Cuántos van en el techo"
+ ],
+ "На крыше чивы — обычное дело": [
+  "On a chiva's roof — business as usual",
+  "En el techo de la chiva — lo de siempre"
+ ],
+ "На крыше чивы": [
+  "On a chiva's roof",
+  "En el techo de la chiva"
+ ],
+ "обычное дело": [
+  "business as usual",
+  "lo de siempre"
+ ],
+ "Грузчик в порту носит 3 мешка кофе за раз, мешков 20. Сколько ходок минимум": [
+  "A dock porter carries 3 sacks of coffee at a time, 20 sacks. Minimum trips",
+  "Un cargador del puerto lleva 3 bultos de café por viaje, hay 20 bultos. ¿Cuántos viajes mínimo"
+ ],
+ "Грузчик в порту носит": [
+  "A dock porter carries",
+  "Un cargador del puerto lleva"
+ ],
+ "мешка кофе за раз, мешков": [
+  "sacks of coffee at a time, sacks",
+  "bultos de café por viaje, bultos"
+ ],
+ "мешка кофе за раз": [
+  "sacks of coffee at a time",
+  "bultos de café por viaje"
+ ],
+ "мешков": [
+  "sacks",
+  "bultos"
+ ],
+ "ходок — 18 мешков, нужна седьмая": [
+  "trips — 18 sacks, a seventh is needed",
+  "viajes — 18 bultos, hace falta un séptimo"
+ ],
+ "мешков, нужна седьмая": [
+  "sacks, a seventh is needed",
+  "bultos, hace falta un séptimo"
+ ],
+ "Матч «Атлетико» начался в 19:30 и шёл 2 часа с перерывом. Когда конец": [
+  "The Atlético match started at 19:30 and ran 2 hours with a break. When did it end",
+  "El partido del Atlético empezó a las 19:30 y duró 2 horas con descanso. ¿A qué hora terminó"
+ ],
+ "Матч «Атлетико» начался в": [
+  "The Atlético match started at",
+  "El partido del Atlético empezó a las"
+ ],
+ "и шёл": [
+  "and ran",
+  "y duró"
+ ],
+ "часа с перерывом. Когда конец": [
+  "hours with a break. When did it end",
+  "horas con descanso. ¿A qué hora terminó"
+ ],
+ "Матч": [
+  "Match",
+  "Partido"
+ ],
+ "Атлетико": [
+  "Atlético",
+  "Atlético"
+ ],
+ "начался в": [
+  "started at",
+  "empezó a las"
+ ],
+ "часа с перерывом": [
+  "hours with a break",
+  "horas con descanso"
+ ],
+ "часа": [
+  "hours",
+  "horas"
+ ],
+ "Эмпанада — 2 песо, три — 5. У тебя 11 песо. Сколько эмпанад унесёшь больше всего": [
+  "An empanada costs 2 pesos, three for 5. You have 11 pesos. Most empanadas you can carry off",
+  "Una empanada cuesta 2 pesos, tres por 5. Tienes 11 pesos. ¿Cuántas empanadas te llevas como máximo"
+ ],
+ "Эмпанада": [
+  "Empanada",
+  "Empanada"
+ ],
+ "песо, три": [
+  "pesos, three for",
+  "pesos, tres por"
+ ],
+ "песо. Сколько эмпанад унесёшь больше всего": [
+  "pesos. Most empanadas you can carry off",
+  "pesos. ¿Cuántas empanadas te llevas como máximo"
+ ],
+ "Сколько эмпанад унесёшь больше всего": [
+  "Most empanadas you can carry off",
+  "¿Cuántas empanadas te llevas como máximo"
+ ],
+ "Две тройки по 5 песо — шесть эмпанад, 1 песо останется": [
+  "Two threes at 5 pesos — six empanadas, 1 peso left",
+  "Dos tríos de 5 pesos — seis empanadas, sobra 1 peso"
+ ],
+ "песо — шесть эмпанад": [
+  "pesos — six empanadas",
+  "pesos — seis empanadas"
+ ],
+ "шесть эмпанад": [
+  "six empanadas",
+  "seis empanadas"
+ ],
+ "Охранник обходит склад за 20 минут, его собака — вдвое быстрее. Сколько кругов собака сделает за час": [
+  "A guard walks the warehouse in 20 minutes, his dog twice as fast. How many laps does the dog do in an hour",
+  "Un vigilante recorre la bodega en 20 minutos, su perro el doble de rápido. ¿Cuántas vueltas da el perro en una hora"
+ ],
+ "Охранник обходит склад за": [
+  "A guard walks the warehouse in",
+  "Un vigilante recorre la bodega en"
+ ],
+ "минут, его собака — вдвое быстрее. Сколько кругов собака сделает за час": [
+  "minutes, his dog twice as fast. How many laps does the dog do in an hour",
+  "minutos, su perro el doble de rápido. ¿Cuántas vueltas da el perro en una hora"
+ ],
+ "его собака": [
+  "his dog",
+  "su perro"
+ ],
+ "Катер выходит из порта в 22:00, плыть 1 час 30 минут, но шторм задержал на 15 минут. Когда на месте": [
+  "A launch leaves port at 22:00, a 1 hour 30 minute trip, but a storm delayed it 15 minutes. When does it arrive",
+  "Una lancha sale del puerto a las 22:00, el viaje dura 1 hora 30 minutos, pero una tormenta la retrasó 15 minutos. ¿Cuándo llega"
+ ],
+ "Катер выходит из порта в": [
+  "A launch leaves port at",
+  "Una lancha sale del puerto a las"
+ ],
+ "плыть": [
+  "sails for",
+  "navega"
+ ],
+ "минут, но шторм задержал на": [
+  "minutes, but a storm delayed it",
+  "minutos, pero una tormenta la retrasó"
+ ],
+ "минут. Когда на месте": [
+  "minutes. When does it arrive",
+  "minutos. ¿Cuándo llega"
+ ],
+ "но шторм задержал на": [
+  "but a storm delayed it",
+  "pero una tormenta la retrasó"
+ ],
+ "Когда на месте": [
+  "When does it arrive",
+  "¿Cuándo llega"
+ ],
+ "Ящик изумрудов — 12 камней. Делят на троих, главному двойная доля. Сколько главному": [
+  "A crate of emeralds — 12 stones. Split three ways, the boss gets a double share. How many for the boss",
+  "Una caja de esmeraldas — 12 piedras. Se reparte entre tres, el jefe recibe doble parte. ¿Cuántas le tocan al jefe"
+ ],
+ "камней. Делят на троих, главному двойная доля. Сколько главному": [
+  "stones. Split three ways, the boss gets a double share. How many for the boss",
+  "piedras. Se reparte entre tres, el jefe recibe doble parte. ¿Cuántas le tocan al jefe"
+ ],
+ "главному двойная доля": [
+  "the boss gets a double share",
+  "el jefe recibe doble parte"
+ ],
+ "Сколько главному": [
+  "How many for the boss",
+  "¿Cuántas le tocan al jefe"
+ ],
+ "одна доля — 3 камня, главному 6": [
+  "one share — 3 stones, the boss gets 6",
+  "una parte — 3 piedras, el jefe 6"
+ ],
+ "камня, главному": [
+  "stones, the boss gets",
+  "piedras, el jefe"
+ ],
+ "главному": [
+  "the boss",
+  "el jefe"
+ ],
+ "Билет лотереи «Чанс» — 10 песо, выигрыш — в 70 раз больше ставки. Сколько получишь, если угадаешь": [
+  "Lottery ticket “Chance” — 10 pesos, the prize is 70 times the stake. How much do you get if you guess right",
+  "Billete de la lotería “Chance” — 10 pesos, el premio es 70 veces la apuesta. ¿Cuánto ganas si aciertas"
+ ],
+ "Билет лотереи «Чанс": [
+  "Lottery ticket “Chance",
+  "Billete de la lotería “Chance"
+ ],
+ "песо, выигрыш — в": [
+  "pesos, the prize is",
+  "pesos, el premio es"
+ ],
+ "раз больше ставки. Сколько получишь, если угадаешь": [
+  "times the stake. How much do you get if you guess right",
+  "veces la apuesta. ¿Cuánto ganas si aciertas"
+ ],
+ "Билет лотереи": [
+  "Lottery ticket",
+  "Billete de lotería"
+ ],
+ "Чанс": [
+  "Chance",
+  "Chance"
+ ],
+ "выигрыш": [
+  "the prize",
+  "el premio"
+ ],
+ "раз больше ставки": [
+  "times the stake",
+  "veces la apuesta"
+ ],
+ "Сколько получишь": [
+  "How much do you get",
+  "¿Cuánto ganas"
+ ],
+ "если угадаешь": [
+  "if you guess right",
+  "si aciertas"
+ ],
+ "В тежо бросают диск на 18 метров. Попал в фитиль — бах! Сколько метров пролетят 3 броска": [
+  "In tejo they throw a disc 18 meters. Hit the fuse — boom! How many meters do 3 throws cover",
+  "En el tejo se lanza el disco a 18 metros. Le das a la mecha — ¡pum! ¿Cuántos metros recorren 3 lanzamientos"
+ ],
+ "В тежо бросают диск на": [
+  "In tejo they throw a disc",
+  "En el tejo se lanza un disco a"
+ ],
+ "метров. Попал в фитиль — бах! Сколько метров пролетят": [
+  "meters. Hit the fuse — boom! How many meters do",
+  "metros. Le das a la mecha — ¡pum! ¿Cuántos metros recorren"
+ ],
+ "броска": [
+  "throws",
+  "lanzamientos"
+ ],
+ "метров": [
+  "meters",
+  "metros"
+ ],
+ "Попал в фитиль": [
+  "Hit the fuse",
+  "Le das a la mecha"
+ ],
+ "бах": [
+  "boom",
+  "pum"
+ ],
+ "Сколько метров пролетят": [
+  "How many meters do",
+  "¿Cuántos metros recorren"
+ ],
+ "метра": [
+  "meters",
+  "metros"
+ ],
+ "Трое скинулись по 10 песо на бутылку рома — 30. Продавец вернул 5: каждому по одному песо, 2 себе. 9×3": [
+  "Three chipped in 10 pesos each for a bottle of rum — 30. The seller gave back 5: one peso each, 2 for himself. 9×3",
+  "Tres pusieron 10 pesos cada uno para una botella de ron — 30. El vendedor devolvió 5: un peso a cada uno, 2 para él. 9×3"
+ ],
+ "песо на бутылку рома": [
+  "pesos for a bottle of rum",
+  "pesos por una botella de ron"
+ ],
+ "Продавец вернул": [
+  "The seller gave back",
+  "El vendedor devolvió"
+ ],
+ "Продавец спрятал": [
+  "The seller pocketed",
+  "El vendedor se quedó con"
+ ],
+ "Потерялся": [
+  "Lost",
+  "Se perdió"
+ ],
+ "В 27 уже сидят те 2 песо продавца. Складывать их ещё раз нельзя": [
+  "The seller's 2 pesos are already in 27. You can't add them again",
+  "Los 2 pesos del vendedor ya están en los 27. No se pueden sumar otra vez"
+ ],
+ "песо продавца. Складывать их ещё раз нельзя": [
+  "pesos of the seller's. You can't add them again",
+  "pesos del vendedor. No se pueden sumar otra vez"
+ ],
+ "песо продавца": [
+  "the seller's pesos",
+  "los pesos del vendedor"
+ ],
+ "Торговец купил мешок кофе за 6, продал за 7, выкупил за 8, продал за 9. Сколько заработал": [
+  "A merchant bought a sack of coffee for 6, sold it for 7, bought it back for 8, sold it for 9. How much did he earn",
+  "Un comerciante compró un bulto de café por 6, lo vendió por 7, lo recompró por 8, lo vendió por 9. ¿Cuánto ganó"
+ ],
+ "Торговец купил мешок кофе за": [
+  "A merchant bought a sack of coffee for",
+  "Un comerciante compró un bulto de café por"
+ ],
+ "Болитеро: «Шарик под одним из 3 стаканчиков. Ты выбрал, я поднял пустой из двух других. Менять выбор": [
+  "Bolitero: “The ball is under one of 3 cups. You picked, I lifted an empty one of the other two. Switch your pick",
+  "Bolitero: «La bolita está bajo uno de 3 vasos. Tú elegiste, yo levanté uno vacío de los otros dos. ¿Cambias tu elección"
+ ],
+ "Болитеро: «Шарик под одним из": [
+  "Bolitero: “The ball is under one of",
+  "Bolitero: «La bolita está bajo uno de"
+ ],
+ "стаканчиков. Ты выбрал, я поднял пустой из двух других. Менять выбор": [
+  "cups. You picked, I lifted an empty one of the other two. Switch your pick",
+  "vasos. Tú elegiste, yo levanté uno vacío de los otros dos. ¿Cambias tu elección"
+ ],
+ "Болитеро": [
+  "Bolitero",
+  "Bolitero"
+ ],
+ "стаканчиков": [
+  "cups",
+  "vasos"
+ ],
+ "У ювелира 9 изумрудов, один фальшивый — легче. Сколько взвешиваний на весах без гирь хватит, чтобы найти его": [
+  "The jeweler has 9 emeralds, one fake — lighter. How many weighings on a balance without weights are enough to find it",
+  "El joyero tiene 9 esmeraldas, una falsa — más liviana. ¿Cuántas pesadas en una balanza sin pesas bastan para encontrarla"
+ ],
+ "У ювелира": [
+  "The jeweler has",
+  "El joyero tiene"
+ ],
+ "изумрудов, один фальшивый — легче. Сколько взвешиваний на весах без гирь хватит, чтобы найти его": [
+  "emeralds, one fake — lighter. How many weighings on a balance without weights are enough to find it",
+  "esmeraldas, una falsa — más liviana. ¿Cuántas pesadas en una balanza sin pesas bastan para encontrarla"
+ ],
+ "изумрудов": [
+  "emeralds",
+  "esmeraldas"
+ ],
+ "один фальшивый": [
+  "one fake",
+  "una falsa"
+ ],
+ "Сколько взвешиваний на весах без гирь хватит": [
+  "How many weighings on a balance without weights are enough",
+  "¿Cuántas pesadas en una balanza sin pesas bastan"
+ ],
+ "чтобы найти его": [
+  "to find it",
+  "para encontrarla"
+ ],
+ "Делишь на три кучки по 3: одно взвешивание — нашёл кучку, второе — камень": [
+  "Split into three piles of 3: one weighing finds the pile, the second the stone",
+  "Divides en tres montones de 3: una pesada halla el montón, la segunda la piedra"
+ ],
+ "Делишь на три кучки по": [
+  "Split into three piles of",
+  "Divides en tres montones de"
+ ],
+ "одно взвешивание — нашёл кучку, второе — камень": [
+  "one weighing finds the pile, the second the stone",
+  "una pesada halla el montón, la segunda la piedra"
+ ],
+ "одно взвешивание": [
+  "one weighing",
+  "una pesada"
+ ],
+ "нашёл кучку": [
+  "found the pile",
+  "halló el montón"
+ ],
+ "камень": [
+  "stone",
+  "piedra"
+ ],
+ "Мешок кофе весит 60 кг и ещё половину мешка. Сколько весит мешок": [
+  "A sack of coffee weighs 60 kg plus half a sack. How much does the sack weigh",
+  "Un bulto de café pesa 60 kg más medio bulto. ¿Cuánto pesa el bulto"
+ ],
+ "Мешок кофе весит": [
+  "A sack of coffee weighs",
+  "Un bulto de café pesa"
+ ],
+ "кг и ещё половину мешка. Сколько весит мешок": [
+  "kg plus half a sack. How much does the sack weigh",
+  "kg más medio bulto. ¿Cuánto pesa el bulto"
+ ],
+ "кг и ещё половину мешка": [
+  "kg plus half a sack",
+  "kg más medio bulto"
+ ],
+ "Сколько весит мешок": [
+  "How much does the sack weigh",
+  "¿Cuánto pesa el bulto"
+ ],
+ "120 кг": [
+  "120 kg",
+  "120 kg"
+ ],
+ "60 кг": [
+  "60 kg",
+  "60 kg"
+ ],
+ "Половина мешка — 60 кг, значит, весь — 120": [
+  "Half a sack is 60 kg, so the whole is 120",
+  "Medio bulto son 60 kg, así que entero son 120"
+ ],
+ "Половина мешка": [
+  "Half a sack",
+  "Medio bulto"
+ ],
+ "кг, значит, весь": [
+  "kg, so the whole is",
+  "kg, así que entero son"
+ ],
+ "весь": [
+  "the whole",
+  "entero"
+ ],
+ "Петух на рассвете кричит каждые 15 минут, начиная с 5:00. Сколько раз крикнет до 6:00 включительно": [
+  "A rooster crows at dawn every 15 minutes, starting at 5:00. How many times does it crow up to 6:00 inclusive",
+  "Un gallo canta al amanecer cada 15 minutos, desde las 5:00. ¿Cuántas veces canta hasta las 6:00 inclusive"
+ ],
+ "Петух на рассвете кричит каждые": [
+  "A rooster crows at dawn every",
+  "Un gallo canta al amanecer cada"
+ ],
+ "минут, начиная с": [
+  "minutes, starting at",
+  "minutos, desde las"
+ ],
+ "Сколько раз крикнет до": [
+  "How many times does it crow up to",
+  "¿Cuántas veces canta hasta las"
+ ],
+ "включительно": [
+  "inclusive",
+  "inclusive"
+ ],
+ "начиная с": [
+  "starting at",
+  "desde las"
+ ],
+ "пять раз": [
+  "five times",
+  "cinco veces"
+ ],
+ "Эй, парсе, ты чего на моём углу? Тут торгую я": [
+  "Hey, parce, what are you doing on my corner? I sell here",
+  "Ey, parce, ¿qué haces en mi esquina? Aquí vendo yo"
+ ],
+ "Эй": [
+  "Hey",
+  "Ey"
+ ],
+ "парсе": [
+  "parce",
+  "parce"
+ ],
+ "ты чего на моём углу": [
+  "what are you doing on my corner",
+  "¿qué haces en mi esquina"
+ ],
+ "Тут торгую я": [
+  "I sell here",
+  "Aquí vendo yo"
+ ],
+ "Пришёл поговорить спокойно. Без шума": [
+  "I came to talk calmly. No noise",
+  "Vine a hablar tranquilo. Sin ruido"
+ ],
+ "Пришёл поговорить спокойно": [
+  "I came to talk calmly",
+  "Vine a hablar tranquilo"
+ ],
+ "Простите, я уйду, только не трогайте": [
+  "Sorry, I'll leave, just don't touch me",
+  "Perdone, ya me voy, pero no me toquen"
+ ],
+ "Простите": [
+  "Sorry",
+  "Perdone"
+ ],
+ "только не трогайте": [
+  "just don't touch me",
+  "solo no me toquen"
+ ],
+ "Твоём? Сейчас будет моим": [
+  "Yours? It's about to be mine",
+  "¿Tuya? Ya va a ser mía"
+ ],
+ "Твоём": [
+  "Yours",
+  "¿Tuya"
+ ],
+ "Сейчас будет моим": [
+  "It's about to be mine",
+  "Ya va a ser mía"
+ ],
+ "Ты из какого баррио": [
+  "Which barrio are you from",
+  "¿De qué barrio eres"
+ ],
+ "Из Сан-Хасинто. Спроси у Дона Эрнесто — меня знают": [
+  "San Jacinto. Ask Don Ernesto — they know me",
+  "De San Jacinto. Pregúntale a Don Ernesto, me conocen"
+ ],
+ "Из Сан-Хасинто": [
+  "From San Jacinto",
+  "De San Jacinto"
+ ],
+ "Спроси у Дона Эрнесто": [
+  "Ask Don Ernesto",
+  "Pregúntale a Don Ernesto"
+ ],
+ "меня знают": [
+  "they know me",
+  "me conocen"
+ ],
+ "Тебе какое дело": [
+  "What's it to you",
+  "¿Y a ti qué te importa"
+ ],
+ "Да я ни откуда… сам по себе": [
+  "I'm from nowhere… on my own",
+  "No soy de ninguna parte… voy solo"
+ ],
+ "Ты что, пугать меня пришёл, чико": [
+  "What, did you come to scare me, chico",
+  "¿Qué, vienes a asustarme, chico"
+ ],
+ "Ты что": [
+  "What",
+  "¿Qué"
+ ],
+ "чико": [
+  "chico",
+  "chico"
+ ],
+ "Нет. Пришёл предложить разойтись по-хорошему": [
+  "No. I came to offer a peaceful split",
+  "No. Vine a ofrecer que nos repartamos en paz"
+ ],
+ "Пришёл предложить разойтись по-хорошему": [
+  "I came to offer a peaceful split",
+  "Vine a ofrecer que nos repartamos en paz"
+ ],
+ "Нет-нет, что вы, сеньор": [
+  "No, no, of course not, señor",
+  "No, no, para nada, señor"
+ ],
+ "что вы": [
+  "of course not",
+  "para nada"
+ ],
+ "А мне с этого что, амиго": [
+  "And what's in it for me, amigo",
+  "¿Y a mí qué me toca, amigo"
+ ],
+ "Ты не трогаешь наших, мы — твоих. Всем выгодно": [
+  "You don't touch ours, we don't touch yours. Everybody wins",
+  "Tú no tocas a los nuestros, nosotros no tocamos a los tuyos. Todos ganan"
+ ],
+ "Ты не трогаешь наших": [
+  "You don't touch ours",
+  "Tú no tocas a los nuestros"
+ ],
+ "твоих": [
+  "yours",
+  "a los tuyos"
+ ],
+ "Дон Эрнесто знает, что ты здесь": [
+  "Don Ernesto knows you're here",
+  "Don Ernesto sabe que estás aquí"
+ ],
+ "Дон Эрнесто знает": [
+  "Don Ernesto knows",
+  "Don Ernesto sabe"
+ ],
+ "что ты здесь": [
+  "you're here",
+  "que estás aquí"
+ ],
+ "Знает. Просил решить тихо": [
+  "He knows. He asked to settle it quietly",
+  "Lo sabe. Pidió arreglarlo en silencio"
+ ],
+ "Знает": [
+  "He knows",
+  "Lo sabe"
+ ],
+ "Просил решить тихо": [
+  "He asked to settle it quietly",
+  "Pidió arreglarlo en silencio"
+ ],
+ "Не говорите ему, пожалуйста": [
+  "Please don't tell him",
+  "Por favor, no le digan"
+ ],
+ "Не говорите ему": [
+  "Don't tell him",
+  "No le digan"
+ ],
+ "Мне Дон не указ": [
+  "The Don doesn't give me orders",
+  "Un Don no me manda a mí"
+ ],
+ "А твой хозяин про тебя знает": [
+  "And does your boss know about you",
+  "¿Y tu patrón sabe de ti"
+ ],
+ "Докажи, что ты не болтун": [
+  "Prove you're not a blabbermouth",
+  "Demuestra que no eres un chismoso"
+ ],
+ "что ты не болтун": [
+  "that you're not a blabbermouth",
+  "que no eres un chismoso"
+ ],
+ "Клянусь Девой Марией": [
+  "I swear by the Virgin Mary",
+  "Lo juro por la Virgen"
+ ],
+ "Ты что, из полиции? Тут «томбо» не любят": [
+  "You a cop? We don't like “tombos” here",
+  "¿Eres de la policía? Aquí no queremos “tombos”"
+ ],
+ "из полиции": [
+  "from the police",
+  "de la policía"
+ ],
+ "Тут": [
+  "Here",
+  "Aquí"
+ ],
+ "томбо": [
+  "tombos",
+  "tombos"
+ ],
+ "не любят": [
+  "don't like",
+  "no queremos"
+ ],
+ "Я из баррио, как и ты. Томбо мне не друзья": [
+  "I'm from the barrio, like you. Tombos are no friends of mine",
+  "Soy del barrio, como tú. Los tombos no son mis amigos"
+ ],
+ "Я из баррио": [
+  "I'm from the barrio",
+  "Soy del barrio"
+ ],
+ "как и ты": [
+  "like you",
+  "como tú"
+ ],
+ "Томбо мне не друзья": [
+  "Tombos are no friends of mine",
+  "Los tombos no son mis amigos"
+ ],
+ "Нет-нет, я никому не скажу": [
+  "No, no, I won't tell anyone",
+  "No, no, no le digo a nadie"
+ ],
+ "я никому не скажу": [
+  "I won't tell anyone",
+  "no le digo a nadie"
+ ],
+ "А если и так — что сделаешь": [
+  "And if I am — what will you do",
+  "¿Y si lo soy, qué vas a hacer"
+ ],
+ "А если и так": [
+  "And if I am",
+  "¿Y si lo soy"
+ ],
+ "что сделаешь": [
+  "what will you do",
+  "qué vas a hacer"
+ ],
+ "Может, и из полиции": [
+  "Maybe a cop",
+  "Puede que de la policía"
+ ],
+ "Может": [
+  "Maybe",
+  "Puede"
+ ],
+ "и из полиции": [
+  "and a cop",
+  "y de la policía"
+ ],
+ "Ну обидел. И что": [
+  "Well, you offended me. So what",
+  "Pues me ofendiste. ¿Y qué"
+ ],
+ "И что": [
+  "So what",
+  "¿Y qué"
+ ],
+ "Давай я тебе песо дам — и забыли": [
+  "Let me give you some pesos — and we forget it",
+  "Te doy unos pesos y lo olvidamos"
+ ],
+ "Давай я тебе песо дам": [
+  "Let me give you some pesos",
+  "Te doy unos pesos"
+ ],
+ "Я с мальчишкой говорить не буду. Пусть хозяин приходит": [
+  "I won't talk to a kid. Let the boss come",
+  "No hablo con un chamaco. Que venga el patrón"
+ ],
+ "Я с мальчишкой говорить не буду": [
+  "I won't talk to a kid",
+  "No hablo con un chamaco"
+ ],
+ "Пусть хозяин приходит": [
+  "Let the boss come",
+  "Que venga el patrón"
+ ],
+ "Хозяин прислал меня. Значит, и говоришь со мной": [
+  "The boss sent me. So you talk to me",
+  "El patrón me mandó. Así que hablas conmigo"
+ ],
+ "Хозяин прислал меня": [
+  "The boss sent me",
+  "El patrón me mandó"
+ ],
+ "и говоришь со мной": [
+  "so you talk to me",
+  "así que hablas conmigo"
+ ],
+ "Тогда поговорим по-другому": [
+  "Then we'll talk differently",
+  "Entonces hablamos de otra forma"
+ ],
+ "Здесь тебе ничего не светит. Чего ты хочешь": [
+  "You've got nothing here. What do you want",
+  "Aquí no te espera nada. ¿Qué quieres"
+ ],
+ "Здесь тебе ничего не светит": [
+  "You've got nothing here",
+  "Aquí no te espera nada"
+ ],
+ "Если соглашусь — как мне объяснить своим": [
+  "If I agree — how do I explain it to my people",
+  "Si acepto, ¿cómo se lo explico a los míos"
+ ],
+ "Если соглашусь": [
+  "If I agree",
+  "Si acepto"
+ ],
+ "как мне объяснить своим": [
+  "how do I explain it to my people",
+  "¿cómo se lo explico a los míos"
+ ],
+ "Скажешь: договорились честно. Это не слабость, это бизнес": [
+  "Say: we made a fair deal. It's not weakness, it's business",
+  "Diles: hicimos un trato justo. No es debilidad, es negocio"
+ ],
+ "договорились честно": [
+  "we made a fair deal",
+  "hicimos un trato justo"
+ ],
+ "это бизнес": [
+  "it's business",
+  "es negocio"
+ ],
+ "Калеро платит мне больше. Почему я должен быть с тобой": [
+  "Calero pays me more. Why should I side with you",
+  "Calero me paga más. ¿Por qué debería estar contigo"
+ ],
+ "Калеро платит мне больше": [
+  "Calero pays me more",
+  "Calero me paga más"
+ ],
+ "Почему я должен быть с тобой": [
+  "Why should I side with you",
+  "¿Por qué debería estar contigo"
+ ],
+ "Калеро платит, пока ты нужен. Мы своих не бросаем": [
+  "Calero pays while you're useful. We don't abandon our own",
+  "Calero paga mientras le sirves. Nosotros no abandonamos a los nuestros"
+ ],
+ "Калеро платит": [
+  "Calero pays",
+  "Calero paga"
+ ],
+ "пока ты нужен": [
+  "while you're useful",
+  "mientras le sirves"
+ ],
+ "Мы своих не бросаем": [
+  "We don't abandon our own",
+  "Nosotros no abandonamos a los nuestros"
+ ],
+ "Я заплачу вдвое! Втрое": [
+  "I'll pay double! Triple",
+  "¡Pago el doble! El triple"
+ ],
+ "Я заплачу вдвое": [
+  "I'll pay double",
+  "¡Pago el doble"
+ ],
+ "Втрое": [
+  "Triple",
+  "El triple"
+ ],
+ "Потому что иначе пожалеешь": [
+  "Because otherwise you'll regret it",
+  "Porque si no, te vas a arrepentir"
+ ],
+ "Ну… не знаю": [
+  "Well… I don't know",
+  "Pues… no sé"
+ ],
+ "манго": [
+  "mango",
+  "mango"
+ ],
+ "бананы": [
+  "bananas",
+  "bananos"
+ ],
+ "изумруд": [
+  "emerald",
+  "esmeralda"
+ ],
+ "кокос": [
+  "coconut",
+  "coco"
+ ],
+ "ром": [
+  "rum",
+  "ron"
+ ],
+ "билет «Чанс": [
+  "“Chance” ticket",
+  "billete “Chance”"
+ ],
+ "радио": [
+  "radio",
+  "radio"
+ ],
+ "арепа": [
+  "arepa",
+  "arepa"
+ ],
+ "петух": [
+  "rooster",
+  "gallo"
+ ],
+ "Продавец лотереи": [
+  "Lottery Seller",
+  "Vendedor de lotería"
+ ],
+ "Продаёт билеты «Чанс» на углу. Простой разговор, простые вопросы": [
+  "Sells “Chance” tickets on the corner. Simple talk, simple questions",
+  "Vende billetes de “Chance” en la esquina. Charla sencilla, preguntas sencillas"
+ ],
+ "Продаёт билеты": [
+  "Sells tickets",
+  "Vende billetes"
+ ],
+ "на углу": [
+  "on the corner",
+  "en la esquina"
+ ],
+ "Игра «Ла болита»: шарик под стаканчиком. Ловкость рук — следи внимательно": [
+  "“La bolita” game: a ball under a cup. Sleight of hand — watch closely",
+  "Juego de la «bolita»: una bolita bajo un vaso. Rapidez de manos, mira bien"
+ ],
+ "Игра": [
+  "Game",
+  "Juego"
+ ],
+ "Ла болита": [
+  "La bolita",
+  "La bolita"
+ ],
+ "шарик под стаканчиком": [
+  "ball under a cup",
+  "bolita bajo un vaso"
+ ],
+ "Ловкость рук": [
+  "Sleight of hand",
+  "Rapidez de manos"
+ ],
+ "следи внимательно": [
+  "watch closely",
+  "mira bien"
+ ],
+ "Торговка с рынка": [
+  "Market Woman",
+  "Vendedora del mercado"
+ ],
+ "Фрукты, кофе, сдача. Считать надо быстро — пошёл таймер": [
+  "Fruit, coffee, change. Count fast — the timer is running",
+  "Frutas, café, vueltas. Cuenta rápido, el tiempo corre"
+ ],
+ "Фрукты": [
+  "Fruit",
+  "Frutas"
+ ],
+ "Хозяин гальеры": [
+  "Gallera Owner",
+  "Dueño de la gallera"
+ ],
+ "Держит петушиные бои. Ставки, проценты — вопросы на время": [
+  "Runs the cockfights. Bets, percentages — timed questions",
+  "Maneja las peleas de gallos. Apuestas, porcentajes: preguntas contra reloj"
+ ],
+ "Держит петушиные бои": [
+  "Runs the cockfights",
+  "Maneja las peleas de gallos"
+ ],
+ "Ставки": [
+  "Bets",
+  "Apuestas"
+ ],
+ "вопросы на время": [
+  "timed questions",
+  "preguntas contra reloj"
+ ],
+ "Король тежо": [
+  "Tejo King",
+  "Rey del tejo"
+ ],
+ "В клубе тежо все с порохом и пивом. Каждое слово с подвохом": [
+  "At the tejo club everyone has gunpowder and beer. Every word is a trap",
+  "En el club de tejo todos andan con pólvora y cerveza. Cada palabra es una trampa"
+ ],
+ "В клубе тежо все с порохом и пивом": [
+  "At the tejo club everyone has gunpowder and beer",
+  "En el club de tejo todos andan con pólvora y cerveza"
+ ],
+ "Опытный и хитрый полицейский. Таймер короткий, вопросов много": [
+  "A seasoned, cunning cop. Short timer, many questions",
+  "Un tombo curtido y astuto. Poco tiempo, muchas preguntas"
+ ],
+ "Опытный и хитрый полицейский": [
+  "A seasoned, cunning cop",
+  "Un tombo curtido y astuto"
+ ],
+ "вопросов много": [
+  "many questions",
+  "muchas preguntas"
+ ],
+ "Эль Капо": [
+  "El Capo",
+  "El Capo"
+ ],
+ "Болитеро крутит стаканчики": [
+  "Bolitero spins the cups",
+  "El Bolitero mueve los vasos"
+ ],
+ "Глаз — алмаз. Болитеро зауважал": [
+  "Eagle eye. Bolitero respects you now",
+  "Ojo de águila. El Bolitero ya te respeta"
+ ],
+ "Шарик был под другим стаканом. Ловкость рук": [
+  "The ball was under another cup. Sleight of hand",
+  "La bolita estaba bajo otro vaso. Rapidez de manos"
+ ],
+ "Болитеро зауважал": [
+  "Bolitero respects you now",
+  "El Bolitero ya te respeta"
+ ],
+ "Запомни заказ": [
+  "Remember the order",
+  "Memoriza el pedido"
+ ],
+ "Без драки: «Ла болита», смекалка, память и разговор по законам улицы. Каждый следующий — сложнее": [
+  "No fights: “La bolita,” wits, memory and talking by street rules. Each one harder than the last",
+  "Sin pelea: «La bolita», astucia, memoria y charla por las reglas de la calle. Cada uno más difícil"
+ ],
+ "Все разрулены. Тебя уважает всё баррио": [
+  "Everyone's talked down. The whole barrio respects you",
+  "Todos negociados. Todo el barrio te respeta"
+ ],
+ "Тебя уважает всё баррио": [
+  "The whole barrio respects you",
+  "Todo el barrio te respeta"
+ ],
+ "СЕРЕБРО — торговаться (просит": [
+  "SILVER — haggle (asks",
+  "PLATA — regatear (pide"
+ ],
+ "СЕРЕБРО — торговаться": [
+  "SILVER — haggle",
+  "PLATA — regatear"
+ ],
+ "просит": [
+  "asks",
+  "pide"
+ ],
+ "торговаться": [
+  "haggle",
+  "regatear"
+ ],
+ "Чиновник": [
+  "Official",
+  "Funcionario"
+ ],
+ "Хм. За такое дело": [
+  "Hm. For a job like that",
+  "Mmm. Por un trabajo así"
+ ],
+ "Ну что, амиго. Это будет стоить": [
+  "Well, amigo. This will cost",
+  "Bueno, amigo. Esto va a costar"
+ ],
+ "Деньги вперёд, сеньор. Мне нужно": [
+  "Money up front, señor. I need",
+  "Plata adelantada, señor. Necesito"
+ ],
+ "Хм": [
+  "Hm",
+  "Mmm"
+ ],
+ "За такое дело": [
+  "For a job like that",
+  "Por un trabajo así"
+ ],
+ "Ну что": [
+  "Well",
+  "Bueno"
+ ],
+ "Это будет стоить": [
+  "This will cost",
+  "Esto va a costar"
+ ],
+ "Деньги вперёд": [
+  "Money up front",
+  "Plata adelantada"
+ ],
+ "Мне нужно": [
+  "I need",
+  "Necesito"
+ ],
+ "ТОРГ": [
+  "HAGGLE",
+  "REGATEO"
+ ],
+ "Терпение чиновника. Предложишь мало — обидится. Кончится терпение — сделки не будет": [
+  "The official's patience. Offer too little and he's insulted. Patience runs out — no deal",
+  "La paciencia del funcionario. Ofrece poco y se ofende. Si se acaba, no hay trato"
+ ],
+ "Терпение чиновника": [
+  "The official's patience",
+  "La paciencia del funcionario"
+ ],
+ "Предложишь мало": [
+  "Offer too little",
+  "Ofrece poco"
+ ],
+ "обидится": [
+  "he's insulted",
+  "se ofende"
+ ],
+ "Кончится терпение": [
+  "Patience runs out",
+  "Si se acaba la paciencia"
+ ],
+ "сделки не будет": [
+  "no deal",
+  "no hay trato"
+ ],
+ "Пригрозить": [
+  "Threaten",
+  "Amenazar"
+ ],
+ "Хватит — свинец": [
+  "Enough — lead",
+  "Basta — plomo"
+ ],
+ "Ты ушёл с пустыми руками — и с пистолетом": [
+  "You left empty-handed — and with a gun",
+  "Te fuiste con las manos vacías, y con una pistola"
+ ],
+ "Ты ушёл с пустыми руками": [
+  "You left empty-handed",
+  "Te fuiste con las manos vacías"
+ ],
+ "и с пистолетом": [
+  "and with a gun",
+  "y con una pistola"
+ ],
+ "взял": [
+  "took",
+  "se llevó"
+ ],
+ "песо. Ты сэкономил": [
+  "pesos. You saved",
+  "pesos. Ahorraste"
+ ],
+ "Ты сэкономил": [
+  "You saved",
+  "Ahorraste"
+ ],
+ "песо — хорошо поторговался": [
+  "pesos — good haggling",
+  "pesos — buen regateo"
+ ],
+ "хорошо поторговался": [
+  "good haggling",
+  "buen regateo"
+ ],
+ "песо. Переплатил, зато быстро": [
+  "pesos. Overpaid, but fast",
+  "pesos. Pagaste de más, pero rápido"
+ ],
+ "Переплатил": [
+  "Overpaid",
+  "Pagaste de más"
+ ],
+ "зато быстро": [
+  "but fast",
+  "pero rápido"
+ ],
+ "Ты меня оскорбить решил?! Убирайся": [
+  "You think you can insult me?! Get out",
+  "¡¿Me quieres ofender?! Lárgate"
+ ],
+ "Ты меня оскорбить решил": [
+  "You think you can insult me",
+  "¿Me quieres ofender"
+ ],
+ "Убирайся": [
+  "Get out",
+  "Lárgate"
+ ],
+ "обиделся — разговор окончен": [
+  "got offended — talk's over",
+  "se ofendió — se acabó la charla"
+ ],
+ "обиделся": [
+  "got offended",
+  "se ofendió"
+ ],
+ "Ты смеёшься надо мной. Ладно": [
+  "You're laughing at me. Fine",
+  "Te estás burlando de mí. Está bien"
+ ],
+ "Ты смеёшься надо мной": [
+  "You're laughing at me",
+  "Te estás burlando de mí"
+ ],
+ "и не песо меньше": [
+  "and not a peso less",
+  "y ni un peso menos"
+ ],
+ "Мало, амиго. У меня семья": [
+  "Too little, amigo. I have a family",
+  "Muy poco, amigo. Tengo familia"
+ ],
+ "Мало": [
+  "Too little",
+  "Muy poco"
+ ],
+ "У меня семья": [
+  "I have a family",
+  "Tengo familia"
+ ],
+ "За": [
+  "For",
+  "Por"
+ ],
+ "я даже не повернусь": [
+  "I won't even turn around",
+  "ni me voltearía"
+ ],
+ "моё последнее слово. Ну, почти": [
+  "my final word. Well, almost",
+  "mi última palabra. Bueno, casi"
+ ],
+ "моё последнее слово": [
+  "my final word",
+  "mi última palabra"
+ ],
+ "Ну": [
+  "Well",
+  "Bueno"
+ ],
+ "Тихо, тихо… Ладно. Договоримся": [
+  "Easy, easy… Fine. We'll work it out",
+  "Calma, calma… Bueno. Nos entendemos"
+ ],
+ "тихо… Ладно": [
+  "easy… Fine",
+  "calma… Bueno"
+ ],
+ "Договоримся": [
+  "We'll work it out",
+  "Nos entendemos"
+ ],
+ "Угрожать мне?! Охрана": [
+  "Threaten me?! Guards",
+  "¡¿Amenazarme?! Guardias"
+ ],
+ "Угрожать мне": [
+  "Threaten me",
+  "¿Amenazarme"
+ ],
+ "не испугался — теперь он твой враг": [
+  "wasn't scared — now he's your enemy",
+  "no se asustó — ahora es tu enemigo"
+ ],
+ "не испугался": [
+  "wasn't scared",
+  "no se asustó"
+ ],
+ "теперь он твой враг": [
+  "now he's your enemy",
+  "ahora es tu enemigo"
+ ],
+ "Ты знаешь, кому угрожаешь? Цена выросла: '+(": [
+  "Do you know who you're threatening? The price went up: '+(",
+  "¿Sabes a quién amenazas? El precio subió: '+("
+ ],
+ "Ты знаешь, кому угрожаешь? Цена выросла": [
+  "Do you know who you're threatening? The price went up",
+  "¿Sabes a quién amenazas? El precio subió"
+ ],
+ "Ты знаешь": [
+  "Do you know",
+  "¿Sabes"
+ ],
+ "кому угрожаешь": [
+  "who you're threatening",
+  "a quién amenazas"
+ ],
+ "Цена выросла": [
+  "The price went up",
+  "El precio subió"
+ ]
+}

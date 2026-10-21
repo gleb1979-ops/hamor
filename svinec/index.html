@@ -1135,21 +1135,39 @@ const SNG=(()=>{const NN={C:0,D:2,E:4,F:5,G:7,A:9,B:11},mf=n=>{const m=n.match(/
  const R={c:['F','G','Em','Am','Dm','G','C','E'],m:['A5 - - G5 F5 - E5 -','D5 - - E5 F5 - G5 -','G5 - - F5 E5 - D5 -','C5 - - - A4 - . .','F5 - - E5 D5 - C5 -','B4 - - C5 D5 - G5 -','E5 - - D5 C5 - B4 -','B4 - - - G#4 - . .']};
  const parts=[I,V,R,V,R,I],bars=[];for(const P of parts)P.c.forEach((c,i)=>bars.push({c:CH[c],m:(P.m[i]||'. . . . . . . .').split(' ')}));
  return {bars,mf,len:bars.length*8}})();
-function songNote(t,st){const spb=60/96/2,b=SNG.bars[(st>>3)%SNG.bars.length],e=st%8,[root,ch]=b.c,f=SNG.mf;
- if(e===0)for(const n of ch)mOsc(t,f(n),spb*8.2,'triangle',.018,0,.35);
- mOsc(t,f(root)*(e%2?2:1),spb*.9,'sawtooth',.03);
- if(e%2===0)mOsc(t,120,.14,'sine',.22,45);if(e===2||e===6){mHit(t,.18,.09,0);mHit(t,.05,.03,1)}if(e%2===1)mHit(t,.03,.025,1);
- mOsc(t+spb*.5,f(ch[(st>>1)%3])*2,spb*.45,'sine',.012);
- const tok=b.m[e];if(tok&&tok!=='-'&&tok!=='.'){let L=1;while(e+L<8&&b.m[e+L]==='-')L++;const d=spb*L*.95,fr=f(tok);mOsc(t,fr,d,'square',.022,0,.02);mOsc(t,fr*1.003,d,'triangle',.03,0,.02)}}
+/* «Plata o plomo» — своя инструментальная кумбия: конги, гуачарака, бас, пиано-монтуно, труба. 8 тактов по 8 восьмых, по кругу */
+const CUMB=(()=>{const mf=m=>440*Math.pow(2,(m-69)/12);
+ // аккорды (midi): Am Dm G C | Am Dm E7 Am
+ const C=[[57,[69,72,76]],[50,[62,65,69]],[55,[67,71,74]],[48,[60,64,67]],[57,[69,72,76]],[50,[62,65,69]],[52,[64,68,71,74]],[57,[69,72,76]]];
+ // труба: midi или 0 (пауза), по 8 восьмых на такт
+ const T=[[76,0,74,72,0,74,0,0],[77,0,76,74,0,72,0,0],[74,0,79,0,77,76,74,0],[72,0,0,0,0,0,0,0],[76,0,74,72,0,74,76,0],[77,0,81,79,77,0,76,0],[74,0,76,0,68,0,71,0],[69,0,0,0,0,0,0,0]];
+ return{mf,C,T,len:64}})();
+function songNote(t,st){const spb=60/96/2,bar=(st>>3)%8,e=st%8,[root,ch]=CUMB.C[bar],f=CUMB.mf,loop=(st>>6)&1;
+ // бас кумбии: корень на 1, квинта на 3, подход на «и» четвёртой
+ if(e===0)mOsc(t,f(root-12),spb*1.8,'triangle',.11,0,.01);if(e===4)mOsc(t,f(root-5),spb*1.6,'triangle',.09,0,.01);if(e===7)mOsc(t,f(root-10),spb*.8,'triangle',.06,0,.01);
+ // гуачарака: «чика-чика» каждую восьмую, длинный-короткий
+ mHit(t,e%2?.035:.09,e%2?.022:.04,1);
+ // конги: тумбао
+ if(e===3||e===7)mOsc(t,190,.16,'sine',.09,120);if(e===6)mOsc(t,260,.1,'sine',.07,180);if(e===2)mOsc(t,330,.06,'sine',.05,260);
+ // ковбелл (клаве 3-2 упрощённо)
+ if((bar%2===0&&(e===0||e===3||e===6))||(bar%2===1&&(e===2||e===4)))mOsc(t,800,.07,'square',.016,560);
+ // кик на 1 и 3, слегка
+ if(e===0||e===4)mOsc(t,110,.15,'sine',.16,45);
+ // пиано-монтуно: синкопы по аккорду
+ if(e===1||e===2||e===4||e===5||e===7){const n=ch[(st+(e>3?1:0))%ch.length];mOsc(t,f(n),spb*.8,'triangle',.022,0,.004);mOsc(t,f(n+12),spb*.6,'sine',.01,0,.004)}
+ // аккордеон-подклад раз в такт
+ if(e===0)for(const n of ch.slice(0,3))mOsc(t,f(n-12),spb*7.5,'sawtooth',.0045,0,.25);
+ // труба — во втором проходе круга (первый — только ритм, «заманивает»)
+ if(loop){const m=CUMB.T[bar][e];if(m){let L=1;while(e+L<8&&CUMB.T[bar][e+L]===0&&L<3)L++;mOsc(t,f(m),spb*L*.9,'sawtooth',.016,0,.03);mOsc(t,f(m)*1.004,spb*L*.9,'square',.008,0,.03)}}}
 const MPROG=[[220,261.6,329.6],[174.6,220,261.6],[261.6,329.6,392],[196,246.9,293.7]];
 function musNote(t,st){if(MUS.kind==='song'){MUS.sstep=st+1;return songNote(t,st)}if(MUS.kind==='slow'){const ch=MPROG[(st>>3)%4];if(st%8===0)for(const f of ch)mOsc(t,f/2,3.2,'triangle',.022,0,.6);mOsc(t,ch[st%3]*(st%8>3?2:1),.5,'sine',.028,0,.02)}
  else{const ch=MPROG[(st>>4)%4];if(st%4===0)mOsc(t,150,.16,'sine',.3,40);if(st%8===4)mHit(t,.12,.12,0);if(st%2===1)mHit(t,.04,.035,1);if(st%4===2||st%8===7)mOsc(t,ch[0]/2,.13,'sawtooth',.05);if(st%16===0)mOsc(t,ch[2]*2,.3,'square',.025)}}
 setInterval(()=>{if(!AC||!MUS.on||MUS.ext)return;const spb=MUS.kind==='song'?60/96/2:MUS.kind==='slow'?60/70/2:60/128/4;if(MUS.next<AC.currentTime)MUS.next=AC.currentTime+.05;while(MUS.next<AC.currentTime+.15){musNote(MUS.next,MUS.step);MUS.next+=spb;MUS.step++}},40);
 /* «Седая ночь над ДК» — песня (ElevenLabs Music), играет файлом; если файл не загрузился — синтезаторная «Огни ДК» */
-const SONGA=new Audio('snd/song.mp3');SONGA.loop=true;SONGA.volume=.5;SONGA.preload='auto';let SONGOK=true;SONGA.addEventListener('error',()=>{SONGOK=false});
+const SONGA=new Audio();SONGA.loop=true;SONGA.volume=.5;let SONGOK=false;SONGA.addEventListener('error',()=>{SONGOK=false});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')SONGA.pause();else if(MUS.on&&MUS.ext)SONGA.play().catch(()=>{})});
-function musPlay(k){au();if(k==='song'&&SONGOK){if(MUS.on&&MUS.ext)return;MUS.on=1;MUS.kind='song';MUS.ext=1;const p=SONGA.play();if(p&&p.catch)p.catch(()=>{MUS.ext=0;MUS.step=(MUS.sstep||0)%SNG.len;MUS.next=AC?AC.currentTime+.05:0});return}
- if(MUS.ext){SONGA.pause();MUS.ext=0}if(MUS.on&&MUS.kind===k&&k==='song')return;MUS.on=1;MUS.kind=k;MUS.step=k==='song'?(MUS.sstep||0)%SNG.len:0;MUS.next=AC?AC.currentTime+.05:0}
+function musPlay(k){au();if(k==='song'&&SONGOK){if(MUS.on&&MUS.ext)return;MUS.on=1;MUS.kind='song';MUS.ext=1;const p=SONGA.play();if(p&&p.catch)p.catch(()=>{MUS.ext=0;MUS.step=(MUS.sstep||0)%(CUMB.len*2);MUS.next=AC?AC.currentTime+.05:0});return}
+ if(MUS.ext){SONGA.pause();MUS.ext=0}if(MUS.on&&MUS.kind===k&&k==='song')return;MUS.on=1;MUS.kind=k;MUS.step=k==='song'?(MUS.sstep||0)%(CUMB.len*2):0;MUS.next=AC?AC.currentTime+.05:0}
 function musStop(){MUS.on=0;if(MUS.ext){SONGA.pause();MUS.ext=0}}
 function musScratch(){if(!AC)return;const t=AC.currentTime;mOsc(t,420,.35,'sawtooth',.08,60);mHit(t,.3,.15,0)}
 /* phases */

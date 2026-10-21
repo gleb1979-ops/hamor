@@ -1,7 +1,7 @@
 import json
 s=open('runtime.js').read()
 D={}
-for i in range(9): D.update(json.load(open(f'out_{i}.json')))
+for i in range(10): D.update(json.load(open(f'out_{i}.json')))
 D.update(json.load(open('extra.json')))
 for k,v in list(D.items()):
     c=k.strip(" '\"")

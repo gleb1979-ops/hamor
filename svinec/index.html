@@ -2215,7 +2215,7 @@ function paintStairs(g){g.fillStyle='#1a1418';g.fillRect(0,0,W,H);g.fillStyle='#
 function doutStart(){DOUTF=0;DSTBON=false;DST={t:0};state='dstairs';$ui.hidden=true;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;musPlay&&musPlay('song')}
 function dstairsSkip(){if(state!=='dstairs'||!DST||DST.t<.6)return;if(DST.ph==='w1')DST.k=DST.net?1:.45;else if(DST.ph==='w2')DST.k=1}
 addEventListener('keydown',e=>{if(state==='dstairs'&&!e.repeat)dstairsSkip()});addEventListener('pointerdown',()=>dstairsSkip());
-function dstPos(k){const ART=imOK(BGPH.dstairs);if(ART){const P=[[250,275],[933,637],[1090,633]];const L1=Math.hypot(P[1][0]-P[0][0],P[1][1]-P[0][1]),L2=P[2][0]-P[1][0],d=k*(L1+L2);let x,y;
+function dstPos(k){const ART=imOK(BGPH.dstairs);if(ART){const P=[[440,140],[750,495],[1110,525]];const L1=Math.hypot(P[1][0]-P[0][0],P[1][1]-P[0][1]),L2=P[2][0]-P[1][0],d=k*(L1+L2);let x,y;
   if(d<L1){const q=d/L1;x=lerp(P[0][0],P[1][0],q);y=lerp(P[0][1],P[1][1],q)}else{const q=(d-L1)/L2;x=lerp(P[1][0],P[2][0],q);y=lerp(P[1][1],P[2][1],q)}return [x,y,lerp(.72,.98,k)]}
  return [lerp(200,1010,k),lerp(300,640,k),lerp(.82,1.05,k)]}
 const DSTB=['kaban','karate','boxer'];

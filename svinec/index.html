@@ -2502,7 +2502,7 @@ function chDraw(t){const Z=CHZ;if(!Z)return;const g=ctx,S=CHS[Z.sec];g.save();co
  g.globalAlpha=1;
  // столбы/пальмы по краям
  const step=22,w0=Math.floor(Z.dist/step)*step;
- for(let k=0;k<9;k++){const w=w0-k*step,z=Z.dist-w;if(z<3||z>150)continue;for(const sd of [-1,1]){const p=chProj(sd*8.5,z),s=p.s;g.fillStyle='rgba(10,10,14,.85)';
+ for(let k=0;k<9&&!HASIMG;k++){const w=w0-k*step,z=Z.dist-w;if(z<3||z>150)continue;for(const sd of [-1,1]){const p=chProj(sd*8.5,z),s=p.s;g.fillStyle='rgba(10,10,14,.85)';
   if(S.prop==='palm'||S.prop==='tree'){g.fillRect(p.x-.15*s,p.y-6*s,.3*s,6*s);g.fillStyle=S.prop==='palm'?'#1f4a2a':'#16351f';g.beginPath();g.ellipse(p.x,p.y-6*s,1.8*s,.8*s,0,0,7);g.fill()}
   else{g.fillRect(p.x-.08*s,p.y-6*s,.16*s,6*s);g.fillStyle='rgba(255,220,140,.9)';g.beginPath();g.arc(p.x-sd*.5*s,p.y-6*s,.25*s,0,7);g.fill()}}}
  // враги (дальние первыми)

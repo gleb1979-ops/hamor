@@ -2662,7 +2662,7 @@ function msTick(dt){const M=G.ms;if(!M)return;const me=G.F[0];M.cdT=Math.max(0,(
  if(M.host&&!M.host.freed)for(const f of G.F){const dx=f.x-M.host.x,dy=f.y-M.host.y;if(f.state!=='ko'&&Math.abs(dx)<44&&Math.abs(dy)<18)f.x=M.host.x+Math.sign(dx||1)*44}
  /* удары по ящикам и по верёвкам */
  for(const f of G.F){const st=f.atkT>0||f.kickT>0;if(st&&!f._msA&&f.state!=='ko'){const w=WEAPONS[f.weapon]||WEAPONS.fist,rg=(w.gun?70:(w.range||58))+30;
-   for(const p of M.props){if(p.hp<=0)continue;const d=(p.x-f.x)*f.face;if(d>-10&&d<rg+p.w/2&&Math.abs(p.y-f.y)<42)msHitProp(p,f.kickT>0||w.dmg>12?2:1,f)}
+   for(const p of M.props){if(p.hp<=0)continue;const d=(p.x-f.x)*f.face;if(d>-30&&d<rg+p.w/2+30&&Math.abs(p.y-f.y)<75)msHitProp(p,f.kickT>0||w.dmg>12?2:1,f)}
    if(f===me&&M.host&&!M.host.freed){const d=(M.host.x-f.x)*f.face;if(d>-10&&d<rg+30&&Math.abs(M.host.y-f.y)<44)msFreeHost()}}f._msA=st}
  /* пули по ящикам */
  for(let i=G.B.length-1;i>=0;i--){const b=G.B[i];for(const p of M.props)if(p.hp>0&&Math.abs(b.x-p.x)<p.w/2&&Math.abs((b.yy||b.y)-p.y)<34){msHitProp(p,b.salt?1:2,b.o);G.B.splice(i,1);break}}

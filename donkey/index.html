@@ -156,6 +156,7 @@ function step(){const now=performance.now();ctx.clearRect(0,0,W,H);for(const p o
   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,p.life*2));ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.drawImage(sprite(p.e),-p.sz/2,-p.sz/2,p.sz,p.sz);ctx.restore()}
   parts=parts.filter(p=>p.life>0&&p.y<H+200);if(parts.length)requestAnimationFrame(step);else{running=false;ctx.clearRect(0,0,W,H)}}
 let ac;function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume();sfxLoad()}catch(e){}}
+['pointerdown','touchend','keydown'].forEach(ev=>addEventListener(ev,()=>{if(!ac||ac.state!=='running')audio()},{capture:true,passive:true}));
 // Sounds: Kenney Music Jingles / Interface Sounds (CC0)
 const SFXN=['win','lose','medal','click','err','pick','go'],SB={};let sfxLoading=false;
 function sfxLoad(){if(sfxLoading||!ac)return;sfxLoading=true;SFXN.forEach(n=>fetch('../sfx/'+n+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((res,rej)=>ac.decodeAudioData(b,res,rej))).then(buf=>{SB[n]=buf}).catch(()=>{}))}

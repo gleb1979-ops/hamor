@@ -2232,8 +2232,11 @@ const SNOI={};for(const k in SNO){const i=new Image();i.src='img/sn_'+k+'.webp';
 function snObjs(L){return L.o.map(([k,x,y])=>({k,x,y,...SNO[k]}))}
 function snBlock(O,x,y,pad){for(const o of O)if(x>o.x-o.w/2-pad&&x<o.x+o.w/2+pad&&y>o.y-o.d-6&&y<o.y+6)return o;return null}
 function snBehind(O,me){for(const o of O)if(Math.abs(me.x-o.x)<o.w/2-6&&me.y<=o.y-o.d+2&&me.y>o.y-o.d-46)return o;return null}
-function snLOS(O,g,p){/* предмет на линии взгляда: между ними по x и на глубине игрока */
- for(const o of O){if((o.x-g.x)*(p.x-o.x)<=0)continue;if(p.y>o.y-o.d-30&&p.y<o.y+14&&Math.abs(p.x-o.x)<o.w/2+70&&(o.h>=200||p.crouch))return false}return true}
+function snSegRect(ax,ay,bx,by,x0,y0,x1,y1){let t0=0,t1=1;const dx=bx-ax,dy=by-ay;for(const [p,q] of [[-dx,ax-x0],[dx,x1-ax],[-dy,ay-y0],[dy,y1-ay]]){if(p===0){if(q<0)return false}else{const r=q/p;if(p<0){if(r>t1)return false;if(r>t0)t0=r}else{if(r<t0)return false;if(r<t1)t1=r}}}return true}
+function snNear(o,p,pad){const dx=Math.max(0,Math.abs(p.x-o.x)-o.w/2),dy=Math.max(0,o.y-o.d-p.y,p.y-o.y);return dx<pad&&dy<pad}
+function snLOS(O,g,p){/* предмет между ментом и тобой — с любой стороны. Высокий прячет всегда, низкий — если сидишь рядом */
+ for(const o of O){const tall=o.h>=200;if(!tall&&!(p.crouch&&snNear(o,p,46)))continue;const pd=tall?16:22;if(snNear(o,g,4))continue;
+  if(snSegRect(g.x,g.y-(tall?0:6),p.x,p.y,o.x-o.w/2-pd,o.y-o.d-pd,o.x+o.w/2+pd,o.y+pd))return false}return true}
 function snDrawObj(g,o){const im=SNOI[o.k],x=o.x-o.w/2,y=o.y-o.h;
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(o.x,o.y-4,o.w*.58,14,0,0,7);g.fill();
  if(im&&im.naturalWidth){const s=o.h/im.naturalHeight,ww=im.naturalWidth*s;g.drawImage(im,o.x-ww/2,y,ww,o.h);return}
@@ -2275,9 +2278,8 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
  let mx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,my=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my;
  mx=clamp(mx,-1,1);my=clamp(my,-1,1);const mv=Math.hypot(mx,my)>.15;const sp=150;
  {const nx=clamp(me.x+mx*sp*dt,40,SNW-40),bx=snBlock(S.O,nx,me.y,22);if(!bx)me.x=nx;else if(Math.abs(my)<.2&&Math.abs(mx)>.2){const up=me.y-(bx.y-bx.d-8),dn=bx.y+8-me.y,dir=(up<dn&&bx.y-bx.d-8>SNY0)||bx.y+8>SNY1?-1:1;const ny=clamp(me.y+dir*sp*.6*dt,SNY0,SNY1);if(!snBlock(S.O,me.x,ny,22))me.y=ny}const ny=clamp(me.y+my*sp*.6*dt,SNY0,SNY1);if(!snBlock(S.O,me.x,ny,22))me.y=ny}me.crouch=!mv;if(mv){me.state='walk';if(Math.abs(mx)>.1)me.face=mx>0?1:-1}else me.state='idle';
- if(!mv){S.stT=(S.stT||0)+dt;if(S.stT>.2){let best=null,bd=1e9;for(const o of S.O){if(o.h>=200||o.y-o.d-22<SNY0+2)continue;const ty=o.y-o.d-22,dx=Math.max(0,Math.abs(me.x-o.x)-o.w/2),dy=Math.abs(me.y-ty);if(dx<80&&dy<95&&dx+dy<bd){const inFront=me.y>o.y-o.d-6&&Math.abs(me.x-o.x)<o.w/2+22&&me.y>o.y-o.d+4;if(!inFront){bd=dx+dy;best=o}}}
-   if(best){const ty=best.y-best.d-22,tx=clamp(me.x,best.x-Math.max(0,best.w/2-44),best.x+Math.max(0,best.w/2-44)),st=260*dt;if(Math.abs(me.y-ty)>2)me.y+=clamp(ty-me.y,-st,st);else if(Math.abs(me.x-tx)>2){me.x+=clamp(tx-me.x,-st,st);me.face=tx>me.x?1:-1}}}}else S.stT=0;
- const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;{const low=bh&&bh.h<200&&!mv;if(low)S.ckO=bh;me.ck=(me.ck||0)+((low?1:0)-(me.ck||0))*Math.min(1,dt*12);if(me.ck<.02&&!low)S.ckO=null}
+
+ const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;S.adj=!mv&&!bh&&S.O.some(o=>snNear(o,me,46))?1:0;me.sq=(me.sq||0)+((S.adj?1:0)-(me.sq||0))*Math.min(1,dt*12);{const low=bh&&bh.h<200&&!mv;if(low)S.ckO=bh;me.ck=(me.ck||0)+((low?1:0)-(me.ck||0))*Math.min(1,dt*12);if(me.ck<.02&&!low)S.ckO=null}
  let seen=0;
  for(const g of S.gs){if(g.out){g.downT=(g.downT||0)+dt;continue}g.anim+=dt;
   if(g.chase){const vis=(!S.hid&&Math.hypot(me.x-g.x,(me.y-g.y)*1.5)<SNR+80&&snLOS(S.O,g,me))||Math.hypot(me.x-g.x,(me.y-g.y)*1.5)<75;
@@ -2299,7 +2301,7 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
 function snDraw(t){const S=SN;if(!S)return;ctx.save();ctx.drawImage(S.bg,S.cam,0,W,H,0,0,W,H);ctx.translate(-S.cam,0);
  for(const g of S.gs){if(g.out)continue;const gr=ctx.createLinearGradient(g.x,0,g.x+g.face*SNR,0);gr.addColorStop(0,`rgba(255,240,170,${.32+.4*(g.sus||0)})`);gr.addColorStop(1,'rgba(255,240,170,0)');ctx.fillStyle=g.chase?'rgba(255,60,60,.25)':gr;ctx.beginPath();ctx.moveTo(g.x+g.face*20,g.y-6);ctx.lineTo(g.x+g.face*SNR,g.y-80-SNR*.17);ctx.lineTo(g.x+g.face*SNR,g.y+80+SNR*.17);ctx.closePath();ctx.fill()}
  const all=[...S.gs,G.F[0],...S.O].sort((a,b)=>a.y-b.y),me=G.F[0];
- for(const f of all){if(f.k){snDrawObj(ctx,f);continue}ctx.save();if(f===me&&S.hid)ctx.globalAlpha=.6;if(f===me&&me.ck>.02&&S.ckO){const o=S.ckO,sink=clamp(o.y-me.y+150*FIGS-o.h-34,0,130)*me.ck;ctx.beginPath();ctx.rect(me.x-260,0,520,o.k==='desk'?o.y-o.h*.72:o.y-2);ctx.clip();ctx.translate(0,sink)}drawFighter(ctx,f,t);ctx.restore();
+ for(const f of all){if(f.k){snDrawObj(ctx,f);continue}ctx.save();if(f===me&&S.hid)ctx.globalAlpha=.6;if(f===me&&me.sq>.02&&!(me.ck>.02)){ctx.translate(me.x,me.y);ctx.scale(1+.06*me.sq,1-.24*me.sq);ctx.translate(-me.x,-me.y)}if(f===me&&me.ck>.02&&S.ckO){const o=S.ckO,sink=clamp(o.y-me.y+150*FIGS-o.h-34,0,130)*me.ck;ctx.beginPath();ctx.rect(me.x-260,0,520,o.k==='desk'?o.y-o.h*.72:o.y-2);ctx.clip();ctx.translate(0,sink)}drawFighter(ctx,f,t);ctx.restore();
   if(f!==me&&!f.out&&(f.sus>.05||f.chase)){ctx.fillStyle=f.chase?'#ff3030':'#ffd23f';ctx.font='900 34px Impact';ctx.textAlign='center';ctx.fillText(f.chase?'!':'?',f.x,f.y-215)}}
  for(const f of S.fx){ctx.globalAlpha=1-f.t/1.1;ctx.font='900 26px Impact';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(f.txt,f.x,f.y-f.t*40);ctx.fillStyle=f.c;ctx.fillText(f.txt,f.x,f.y-f.t*40);ctx.globalAlpha=1}
  ctx.restore();

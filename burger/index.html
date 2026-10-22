@@ -2003,10 +2003,11 @@ function cellBot(b,dt,brain){if(b.stun>0)return [0,0];let tx=b.x,ty=b.y;
   const dx=tx-b.x,dy=ty-b.y,d=Math.hypot(dx,dy);if(d<20)return [0,0];const sl=b.bot&&TM==='team'?.85:.8;return [dx/d*sl,dy/d*sl]}
 function pzNew(n){const a=[];if(n===3){const p=[0,1,2,3].sort(()=>Math.random()-.5);return p.slice(0,3)}for(let i=0;i<n;i++)a.push(Math.floor(Math.random()*4));return a}
 function pzNeed(b){return TM==='team'?G.rc.map((t,i)=>G.pl[i]?-1:t).filter(t=>t>=0):b.rc.map((t,i)=>b.pl[i]?-1:t).filter(t=>t>=0)}
-function ratTick(dt){const P=G.P;for(const T of G.TC){T.rt=(T.rt||0)-dt;if(T.rt<=0){T.rt=3;T.raid=Math.random()<.35}if(T.st===2){T.tt-=dt;if(T.kvx||T.kvy){T.x+=T.kvx*dt;T.y+=T.kvy*dt;const f=Math.pow(.03,dt);T.kvx*=f;T.kvy*=f;if(Math.abs(T.kvx)+Math.abs(T.kvy)<8)T.kvx=T.kvy=0;collide(T,34)}if(T.tt<=0){T.st=0;T.tx=null;T.kvx=T.kvy=0}continue}if(T.rest>0){T.rest-=dt;gMove(T,T.x+T.fx*300,T.y+T.fy*300,170,dt);continue}
-    let tg=null,td=1e9;for(const id in P){const b=P[id];if(!b.bag||b.stun>0)continue;const d=Math.hypot(b.x-T.x,b.y-T.y);if(d<300&&d<td){td=d;tg=id}}
-    if(tg){const b=P[tg];T.st=1;gMove(T,b.x,b.y,188,dt);if(td<CH[b.c].r+30){b.bag=0;trainHit(tg,b.hat==='ushanka'?.3:.6);evq.push(['RA',tg,Math.round(b.x),Math.round(b.y)]);T.rest=1.2;T.st=0}}
-    else if(G.pl.some(x=>x)&&T.raid){T.st=1;gMove(T,PZ_T.x,PZ_T.y,145,dt);if(Math.hypot(T.x-PZ_T.x,T.y-PZ_T.y)<PZ_T.r+48){const idx=G.pl.lastIndexOf(1);G.pl[idx]=0;evq.push(['RT',Math.round(T.x),Math.round(T.y)]);T.rest=1.5;T.st=0}}
+function ratTick(dt){const P=G.P;if(G.TC.length<4&&!G.TC.some(T=>T.k!=='rat')){G.ratN=(G.ratN||0)+dt;if(G.ratN>(G.TC.length<3?22:50)){G.ratN=0;const p=PZ_SP[Math.floor(Math.random()*PZ_SP.length)];G.TC.push({k:'rat',x:p[0],y:p[1],fx:1,fy:0,st:0,tt:2,tx:null,ty:null,rest:1});evq.push(['RN',p[0],p[1]])}}
+  for(const T of G.TC){T.rt=(T.rt||0)-dt;if(T.rt<=0){T.rt=2.4;T.raid=Math.random()<.6}if(T.st===2){T.tt-=dt;if(T.kvx||T.kvy){T.x+=T.kvx*dt;T.y+=T.kvy*dt;const f=Math.pow(.03,dt);T.kvx*=f;T.kvy*=f;if(Math.abs(T.kvx)+Math.abs(T.kvy)<8)T.kvx=T.kvy=0;collide(T,34)}if(T.tt<=0){T.st=0;T.tx=null;T.kvx=T.kvy=0}continue}if(T.rest>0){T.rest-=dt;gMove(T,T.x+T.fx*300,T.y+T.fy*300,170,dt);continue}
+    let tg=null,td=1e9;for(const id in P){const b=P[id];if(!b.bag||b.stun>0)continue;const d=Math.hypot(b.x-T.x,b.y-T.y);if(d<400&&d<td){td=d;tg=id}}
+    if(tg){const b=P[tg];T.st=1;gMove(T,b.x,b.y,212,dt);if(td<CH[b.c].r+30){b.bag=0;trainHit(tg,b.hat==='ushanka'?.4:.8);evq.push(['RA',tg,Math.round(b.x),Math.round(b.y)]);T.rest=.9;T.st=0}}
+    else if(G.pl.some(x=>x)&&T.raid){T.st=1;gMove(T,PZ_T.x,PZ_T.y,170,dt);if(Math.hypot(T.x-PZ_T.x,T.y-PZ_T.y)<PZ_T.r+48){const idx=G.pl.lastIndexOf(1);G.pl[idx]=0;evq.push(['RT',Math.round(T.x),Math.round(T.y)]);T.rest=1.5;T.st=0}}
     else{T.st=0;if(T.tx==null||Math.hypot(T.tx-T.x,T.ty-T.y)<30){const p=PZ_SP[Math.floor(Math.random()*PZ_SP.length)];T.tx=p[0];T.ty=p[1]}if(!gMove(T,T.tx,T.ty,140,dt))T.tx=null}}}
 function pizzaBot(b,dt,brain){const P=G.P;if(b.stun>0)return [0,0];
   if(brain.react<=0){brain.react=.4+Math.random()*.4;brain.mode=null;const nd=pzNeed(b);
@@ -2024,10 +2025,10 @@ function pizzaBot(b,dt,brain){const P=G.P;if(b.stun>0)return [0,0];
   let dx=tx-b.x,dy=ty-b.y;const d=Math.hypot(dx,dy)||1;dx/=d;dy/=d;
   if(TM==='team')for(const T of G.TC){if(T.st===2)continue;const ox=b.x-T.x,oy=b.y-T.y,dd=Math.hypot(ox,oy)||1;if(dd<115&&Math.random()<dt*3)hostPush(b.id);if(b.bag&&dd<200){dx+=ox/dd*1.1;dy+=oy/dd*1.1}}
   if(Math.hypot(tx-b.x,ty-b.y)>PZ_T.r+70)[dx,dy]=steer(b,dx,dy);brain.wob+=dt*3;dx+=Math.cos(brain.wob)*.15;dy+=Math.sin(brain.wob)*.15;const l=Math.hypot(dx,dy)||1;return [dx/l*.64,dy/l*.64]}
-GMS.pizza={paint:f=>PZC()?paintCellar(f):paintPizzaMap(f),maps:['kitchen','cellar'],secs:()=>PZC()?75:TM==='team'?60:50,unit:'🍕',btn:()=>T(PZC()?'btnCatch':TM==='team'?'btnShoo':'btnHit'),tip:()=>T(PZC()?'tipPzC':TM==='team'?'tipPzT':'tipPzF'),
+GMS.pizza={paint:f=>PZC()?paintCellar(f):paintPizzaMap(f),maps:['kitchen','cellar'],secs:()=>PZC()?75:TM==='team'?100:50,unit:'🍕',btn:()=>T(PZC()?'btnCatch':TM==='team'?'btnShoo':'btnHit'),tip:()=>T(PZC()?'tipPzC':TM==='team'?'tipPzT':'tipPzF'),
   modeName:v=>T(v==='team'?'pzTeam':'pzFfa'),mapName:v=>T(v==='cellar'?'mapCellar':'mapKitchen'),share:tr=>T(tr?'sharePzT':'sharePz'),teamTitle:tr=>T(tr==='win'?'pzWin':'pzLose'),tables:()=>[PZ_T],rects:()=>PZC()?[]:PZ_CR.map(([x,y])=>({x:x-45,y:y-25,w:90,h:50})),
   spd:b=>b.bag?.95:1,
-  setup(rr){if(PZC())return cellSetup(rr);G.res=null;G.team=0;G.goal=Math.max(3,rr.length);G.TC=[];
+  setup(rr){if(PZC())return cellSetup(rr);G.res=null;G.team=0;G.goal=TM==='team'?Math.max(5,rr.length+2):Math.max(3,rr.length);G.TC=[];
     if(TM==='team'){G.rc=pzNew(4);G.pl=[0,0,0,0];G.TC=[[300,520],[1200,520]].map(([x,y],i)=>({k:'rat',x,y,fx:i?-1:1,fy:0,st:0,tt:2,tx:null,ty:null,rest:3}))}
     else for(const id in G.P){G.P[id].rc=pzNew(3);G.P[id].pl=[0,0,0]}},
   tick(dt){if(PZC())return cellTick(dt);const P=G.P,now=performance.now();if(TM==='team'){ratTick(dt);if(G.t<=0&&!G.res)G.res='lose'}
@@ -2050,7 +2051,7 @@ GMS.pizza={paint:f=>PZC()?paintCellar(f):paintPizzaMap(f),maps:['kitchen','cella
     if(e[0]==='PZ'){burst(e[2],e[3]-40,'star',16,1.2);emote(e[1],'laugh');pops.push({x:e[2],y:e[3]-20,t:-.05,txt:'🍕 +1',big:1});if(!sfx('buy',.65))tone(880,.2,'square',.1);if(e[1]===me.id)vib([40,30,80]);return true}
     if(e[0]==='NO'){if(e[1]===me.id){pops.push({x:e[2],y:e[3],t:-.05,txt:T('notNeeded'),big:1});tone(200,.2,'sawtooth',.1,120)}return true}
     if(e[0]==='RA'){emote(e[1],'anger');pops.push({x:e[2],y:e[3],t:-.05,txt:T('ratAte'),big:1});sfx('punch',.5,1.3);if(e[1]===me.id)vib([100,40,100]);return true}
-    if(e[0]==='RT'){pops.push({x:e[1],y:e[2]-40,t:-.05,txt:T('ratStole'),big:1});tone(1200,.12,'square',.08,600);return true}return false},
+    if(e[0]==='RN'){pops.push({x:e[1],y:e[2]-60,t:0,txt:'+🐀',big:1});return true}if(e[0]==='RT'){pops.push({x:e[1],y:e[2]-40,t:-.05,txt:T('ratStole'),big:1});tone(1200,.12,'square',.08,600);return true}return false},
   hud(){const x=gmV;if(!x)return '';if(x.c)return x.t?`<span>🍕 ${x.t[0]}/${x.t[1]}</span>`:'';if(x.r)return `<span>🍕 ${x.t[0]}/${x.t[1]} · ${x.r.map((t,i)=>x.p[i]?'✅':PZ_EM[t]).join('')}</span>`;const m=x.f&&x.f[me.id];return m?`<span>🍕 ${m[0].map((t,i)=>m[1][i]?'✅':PZ_EM[t]).join('')}</span>`:''},
   state(){if(PZC())return {c:1,t:TM==='team'?[G.team,G.goal]:null};if(TM==='team')return {r:G.rc,p:G.pl,t:[G.team,G.goal]};const f={};for(const id in G.P)f[id]=[G.P[id].rc,G.P[id].pl];return {f}},apply(x){gmV=x}};
 

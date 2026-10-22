@@ -2260,6 +2260,8 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
  let mx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,my=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my;
  mx=clamp(mx,-1,1);my=clamp(my,-1,1);const mv=Math.hypot(mx,my)>.15;const sp=150;
  {const nx=clamp(me.x+mx*sp*dt,40,SNW-40);if(!snBlock(S.O,nx,me.y,22))me.x=nx;const ny=clamp(me.y+my*sp*.6*dt,SNY0,SNY1);if(!snBlock(S.O,me.x,ny,22))me.y=ny}me.crouch=!mv;if(mv){me.state='walk';if(Math.abs(mx)>.1)me.face=mx>0?1:-1}else me.state='idle';
+ if(!mv){S.stT=(S.stT||0)+dt;if(S.stT>.2){let best=null,bd=1e9;for(const o of S.O){if(o.h>=200)continue;const ty=o.y-o.d-22,dx=Math.max(0,Math.abs(me.x-o.x)-o.w/2),dy=Math.abs(me.y-ty);if(dx<80&&dy<95&&dx+dy<bd){const inFront=me.y>o.y-o.d-6&&Math.abs(me.x-o.x)<o.w/2+22&&me.y>o.y-o.d+4;if(!inFront){bd=dx+dy;best=o}}}
+   if(best){const ty=best.y-best.d-22,tx=clamp(me.x,best.x-Math.max(0,best.w/2-44),best.x+Math.max(0,best.w/2-44)),st=260*dt;if(Math.abs(me.y-ty)>2)me.y+=clamp(ty-me.y,-st,st);else if(Math.abs(me.x-tx)>2){me.x+=clamp(tx-me.x,-st,st);me.face=tx>me.x?1:-1}}}}else S.stT=0;
  const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;{const low=bh&&bh.h<200&&!mv;if(low)S.ckO=bh;me.ck=(me.ck||0)+((low?1:0)-(me.ck||0))*Math.min(1,dt*12);if(me.ck<.02&&!low)S.ckO=null}
  let seen=0;
  for(const g of S.gs){if(g.out){g.downT=(g.downT||0)+dt;continue}g.anim+=dt;

@@ -1150,7 +1150,7 @@ let evq=[],stAcc=0,botBrain={};
 let T0=null; // tournament
 function hostStart(){phase='play';const r=[];const used=new Set();
   for(const [id,p] of lobbyPlayers){r.push([id,p.c,p.name,0]);used.add(p.c)}
-  if((FIXED==='sniper'||FIXED==='race'||(GMS[FIXED]&&GMS[FIXED].teamBots))&&TM==='team'){const pool=GMS[FIXED]&&GMS[FIXED].night?NIGHT.filter(c=>!used.has(c)):['tall','nerd','fat','girl','donkey','kid'];for(let i=0;i<lobbyPlayers.size;i++){const c=pool[i%pool.length];r.push(['bot-'+i+c,c,'🤖 '+T('names')[c],1])}}
+  if((FIXED==='sniper'||FIXED==='race'||(GMS[FIXED]&&GMS[FIXED].teamBots))&&TM==='team'){const pool=GMS[FIXED]&&GMS[FIXED].night?NIGHT.filter(c=>!used.has(c)):['tall','nerd','fat','girl','donkey','kid'];const h=lobbyPlayers.size,tot=FIXED==='sniper'?Math.max(2*h,Math.min(4,h+(+useBots||0))):2*h,en=FIXED==='sniper'?Math.ceil(tot/2):h,al=FIXED==='sniper'?Math.max(0,tot-h-en):0;for(let i=0;i<en+al;i++){const c=pool[i%pool.length],a=i>=en;r.push(['bot-'+(a?'a':'')+i+c,c,'🤖 '+T('names')[c],1])}}
   else botSlots().forEach(c=>{if(!used.has(c))r.push(['bot-'+c,c,'🤖 '+T('names')[c],1])});
   if(FIXED==='box'&&BXM!=='classic'){const need=BXM==='b33'?6:4,pool=['tall','nerd','fat','girl','donkey','kid'];let i=0;while(r.length>need&&r.some(x=>x[3]))r.splice(r.findIndex(x=>x[3]),1);while(r.length<need){const c=pool.find(x=>!r.some(y=>y[1]===x))||pool[i%6];r.push(['bot-b'+i+c,c,'🤖 '+T('names')[c],1]);i++}}
   if(FIXED==='soccer'&&SM==='m22'){const pool=['tall','nerd','fat','girl','donkey','kid'];let i=0;while(r.length>4&&r.some(x=>x[3]))r.splice(r.findIndex(x=>x[3]),1);while(r.length<4){const c=pool.find(x=>!r.some(y=>y[1]===x))||pool[i%6];r.push(['bot-s'+i+c,c,'🤖 '+T('names')[c],1]);i++}}
@@ -2124,7 +2124,7 @@ function snBot(b,dt,brain){if(b.stun>0||b.rsp>0){brain.tg=null;return [0,0]}if(b
   return [0,0]}
 GMS.sniper={icons:['🎯','💣','snGren'],paint:paintSniper,maps:['city','forest'],secs:()=>TM==='team'?90:75,unit:'🎯',btn:()=>T('snFire'),tip:()=>T(TM==='team'?'tipSnT':'tipSnF'),
   modeName:v=>T(v==='team'?'snTeam':'snFfa'),mapName:v=>T(v==='forest'?'snForest':'snCity'),share:tr=>T(tr?'shareSnT':'shareSn'),teamTitle:tr=>T(tr==='win'?'snWin':'snLose'),tables:()=>[],rects:()=>[],
-  setup(rr){G.res=null;G.ts=[0,0];G.gf=[];const hu=rr.filter(x=>!x[3]).length;let al=0;if(TM==='team'){const bs=Object.keys(G.P).filter(id=>G.P[id].bot);al=Math.max(0,Math.floor((hu+bs.length)/2)-hu);bs.forEach((id,i)=>G.P[id].ally=i<al?1:0)}G.goal=TM==='team'?8+2*(hu+al):0;const pl=snPlace(rr,T0.round),S=snS();
+  setup(rr){G.res=null;G.ts=[0,0];G.gf=[];const hu=rr.filter(x=>!x[3]).length;let al=0;if(TM==='team'){for(const id in G.P){const a=G.P[id].bot&&id.startsWith('bot-a');G.P[id].ally=a?1:0;if(a)al++}}G.goal=TM==='team'?8+2*(hu+al):0;const pl=snPlace(rr,T0.round),S=snS();
     for(const id in G.P){const b=G.P[id],s=S[pl[id]];b.si=pl[id];b.x=s[0];b.y=s[1];b.face=s[0]<AW/2?1:-1;b.rv=0;b.rsp=0;b.gcd=performance.now()+4000;b.fcd=0}},
   place(r,rn){const pl=snPlace(r,rn),S=snS();for(const id in view){const s=S[pl[id]];if(!s)continue;const v=view[id];v.x=v.tx=s[0];v.y=v.ty=s[1];v.face=s[0]<AW/2?1:-1}
     if(mine&&view[me.id]){mine.x=view[me.id].x;mine.y=view[me.id].y;mine.face=view[me.id].face}snA={x:mine&&mine.x<AW/2?1050:450,y:520};snFx=[];snGl={};snFl=[];lowCd=performance.now()+4000;snPcd=1100},

@@ -2152,10 +2152,10 @@ function kpzAfterWin(){if(NETU.on||kpzLoc()!==1)return false;kpzSnitch();return 
 const SNW=2160,SNY0=470,SNY1=660;
 /* укрытия: k — вид, x — центр, y — линия пола (низ предмета), w — ширина, h — высота, d — глубина */
 const SNR=400;const SNO={crate:{w:120,h:118,d:46},stack:{w:150,h:220,d:50},barrel:{w:76,h:128,d:40},cab:{w:98,h:210,d:44},desk:{w:170,h:120,d:56},wall:{w:160,h:300,d:40}};
-const SNL=[{name:'КОРИДОР ОТДЕЛЕНИЯ',o:[['crate',300,575],['barrel',470,520],['stack',640,640],['desk',880,560],['cab',1060,515],['barrel',1250,625],['crate',1420,540],['wall',1620,600],['crate',1820,520],['barrel',1960,620]],
-  g:[[320,800,1,600],[560,1100,-1,470],[760,1360,-1,520],[1320,1980,1,575],[1500,2060,-1,650]]},
- {name:'ДЕЖУРНАЯ ЧАСТЬ',o:[['desk',260,600],['cab',420,512],['crate',600,640],['barrel',760,540],['wall',960,600],['stack',1160,520],['crate',1330,630],['barrel',1480,548],['desk',1680,612],['cab',1860,515],['crate',1990,600]],
-  g:[[330,760,1,560],[380,900,-1,480],[540,1120,-1,620],[1060,1620,1,500],[1240,1800,-1,655],[1500,2000,-1,580]]}];
+const SNL=[{name:'КОРИДОР ОТДЕЛЕНИЯ',o:[['crate',330,560],['barrel',760,560],['desk',1180,560],['crate',1600,560],['barrel',1990,560],['stack',540,652],['cab',960,652],['crate',1390,652],['wall',1800,652]],
+  g:[[320,900,1,482],[700,1300,-1,590],[1200,1800,1,482],[1500,2060,-1,590],[900,1500,1,660]]},
+ {name:'ДЕЖУРНАЯ ЧАСТЬ',o:[['desk',300,560],['crate',720,560],['barrel',1140,560],['desk',1560,560],['crate',1960,560],['cab',520,652],['stack',930,652],['wall',1350,652],['cab',1760,652]],
+  g:[[330,900,1,482],[600,1200,-1,590],[1000,1600,1,482],[1300,1900,-1,590],[1500,2050,1,660],[200,800,-1,660]]}];
 const SNOI={};for(const k in SNO){const i=new Image();i.src='img/sn_'+k+'.webp';SNOI[k]=i}
 function snObjs(L){return L.o.map(([k,x,y])=>({k,x,y,...SNO[k]}))}
 function snBlock(O,x,y,pad){for(const o of O)if(x>o.x-o.w/2-pad&&x<o.x+o.w/2+pad&&y>o.y-o.d-6&&y<o.y+6)return o;return null}
@@ -2197,7 +2197,7 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
  let mx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,my=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my;
  mx=clamp(mx,-1,1);my=clamp(my,-1,1);const mv=Math.hypot(mx,my)>.15;const sp=150;
  {const nx=clamp(me.x+mx*sp*dt,40,SNW-40),bx=snBlock(S.O,nx,me.y,22);if(!bx)me.x=nx;else if(Math.abs(my)<.2&&Math.abs(mx)>.2){const up=me.y-(bx.y-bx.d-8),dn=bx.y+8-me.y,dir=(up<dn&&bx.y-bx.d-8>SNY0)||bx.y+8>SNY1?-1:1;const ny=clamp(me.y+dir*sp*.6*dt,SNY0,SNY1);if(!snBlock(S.O,me.x,ny,22))me.y=ny}const ny=clamp(me.y+my*sp*.6*dt,SNY0,SNY1);if(!snBlock(S.O,me.x,ny,22))me.y=ny}me.crouch=!mv;if(mv){me.state='walk';if(Math.abs(mx)>.1)me.face=mx>0?1:-1}else me.state='idle';
- if(!mv){S.stT=(S.stT||0)+dt;if(S.stT>.2){let best=null,bd=1e9;for(const o of S.O){if(o.h>=200)continue;const ty=o.y-o.d-22,dx=Math.max(0,Math.abs(me.x-o.x)-o.w/2),dy=Math.abs(me.y-ty);if(dx<80&&dy<95&&dx+dy<bd){const inFront=me.y>o.y-o.d-6&&Math.abs(me.x-o.x)<o.w/2+22&&me.y>o.y-o.d+4;if(!inFront){bd=dx+dy;best=o}}}
+ if(!mv){S.stT=(S.stT||0)+dt;if(S.stT>.2){let best=null,bd=1e9;for(const o of S.O){if(o.h>=200||o.y-o.d-22<SNY0+2)continue;const ty=o.y-o.d-22,dx=Math.max(0,Math.abs(me.x-o.x)-o.w/2),dy=Math.abs(me.y-ty);if(dx<80&&dy<95&&dx+dy<bd){const inFront=me.y>o.y-o.d-6&&Math.abs(me.x-o.x)<o.w/2+22&&me.y>o.y-o.d+4;if(!inFront){bd=dx+dy;best=o}}}
    if(best){const ty=best.y-best.d-22,tx=clamp(me.x,best.x-Math.max(0,best.w/2-44),best.x+Math.max(0,best.w/2-44)),st=260*dt;if(Math.abs(me.y-ty)>2)me.y+=clamp(ty-me.y,-st,st);else if(Math.abs(me.x-tx)>2){me.x+=clamp(tx-me.x,-st,st);me.face=tx>me.x?1:-1}}}}else S.stT=0;
  const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;{const low=bh&&bh.h<200&&!mv;if(low)S.ckO=bh;me.ck=(me.ck||0)+((low?1:0)-(me.ck||0))*Math.min(1,dt*12);if(me.ck<.02&&!low)S.ckO=null}
  let seen=0;

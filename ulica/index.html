@@ -2209,7 +2209,7 @@ function snDraw(t){const S=SN;if(!S)return;ctx.save();ctx.drawImage(S.bg,S.cam,0
  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-230,12,460,62);ctx.textAlign='center';ctx.font='900 20px Impact';ctx.fillStyle='#6aa8ff';ctx.fillText('🚔 ПОБЕГ '+(S.n+1)+'/2 · '+S.L.name+' · вырубил: '+S.ko,W/2,36);
  ctx.fillStyle='#331';ctx.fillRect(W/2-150,46,300,14);ctx.fillStyle=S.sus>.7?'#e0303a':S.sus>.3?'#e8b23a':'#5ad05a';ctx.fillRect(W/2-150,46,300*S.sus,14);ctx.font='bold 12px system-ui';ctx.fillStyle='#fff';ctx.fillText(S.hid?'СПРЯТАЛСЯ':'ЗАМЕТНОСТЬ',W/2,70-12);
  const P=(me.x-90)/(SNW-210);ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(W/2-150,80,300,6);ctx.fillStyle='#e8b23a';ctx.fillRect(W/2-150,80,300*clamp(P,0,1),6);
- if(S.t<7){ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.95)';ctx.fillText('Иди к ВЫХОДУ справа · присядь за ящиком, бочкой или шкафом — не увидят · сзади '+(IS_TOUCH?'УДАР':'F')+' — тихо вырубить',W/2,H-80)}
+ if(S.t<7){ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.95)';ctx.fillText(IS_TOUCH?'К ВЫХОДУ → · присядь за ящиком — не увидят · сзади УДАР — вырубить':'Иди к ВЫХОДУ справа · присядь за ящиком, бочкой или шкафом — не увидят · сзади F — тихо вырубить',IS_TOUCH?W/2-90:W/2,IS_TOUCH?H-150:H-80)}
  if(S.msgT>0){ctx.font='900 52px Impact';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(S.msg,W/2,250);ctx.fillStyle='#f3e9dc';ctx.fillText(S.msg,W/2,250)}
  if(S.res){ctx.font='900 56px Impact';ctx.lineWidth=9;ctx.strokeStyle='#000';const tx=S.res==='ok'?'ПРОШЁЛ':'ПОВЯЗАЛИ';ctx.strokeText(tx,W/2,300);ctx.fillStyle=S.res==='ok'?'#e8b23a':'#e0303a';ctx.fillText(tx,W/2,300)}}
 addEventListener('keydown',e=>{if(state==='kpzsneak'&&(e.code==='KeyF'||e.code==='Space')&&!e.repeat){e.preventDefault();snHit()}});
@@ -2732,11 +2732,12 @@ let _dfMS;{const _df=drawFighter;_dfMS=_df;drawFighter=function(g,f,t){
    else{g.fillStyle=MST.nadeC;g.beginPath();g.rect(-20,-10,40,20);g.fill();g.stroke();g.fillStyle='rgba(0,0,0,.25)';g.fillRect(-20,2,40,3);g.fillStyle='rgba(255,255,255,.25)';g.fillRect(-18,-8,36,3)}g.restore()}
   for(const c of M.fx){g.save();g.globalAlpha=Math.max(0,1-c.t/1.4);g.translate(c.x,c.y);g.rotate(c.r);g.font='34px sans-serif';g.textAlign='center';g.fillText(c.txt,0,0);g.restore()}
   const me=G.F[0];if(me&&!IS_TOUCH){g.save();g.fillStyle='rgba(0,0,0,.55)';g.fillRect(16,104,150,24);g.font='bold 14px system-ui';g.textAlign='left';g.fillStyle='#f3e9dc';g.fillText(MST.nade+' ×'+M.nades+' · T',24,121);g.restore()}
-  const bt=document.getElementById('bT');if(bt){bt.hidden=!IS_TOUCH;const s=bt.querySelector('small');if(s)s.textContent='×'+M.nades}}
-  else{const bt=document.getElementById('bT');if(bt&&!bt.hidden)bt.hidden=true}}catch(e){console.error(e)}return r}}
+  const bt=document.getElementById('bT');if(bt){const s=bt.querySelector('small');if(s)s.textContent='×'+M.nades}}
+  }catch(e){console.error(e)}return r}}
+setInterval(()=>{const sn=state==='kpzsneak';for(const id of ['bB','bC','bD','bE','bK']){const e=document.getElementById(id);if(e){const v=sn?'hidden':'';if(e.style.visibility!==v)e.style.visibility=v}}const bt=document.getElementById('bT');if(!bt)return;const on=IS_TOUCH&&state==='play'&&G&&G.ms;const dv=on?'flex':'none';if(bt.style.display!==dv)bt.style.display=dv},250);
 addEventListener('keydown',e=>{if(e.code==='KeyT'&&!e.repeat&&state==='play'&&G&&G.ms){e.preventDefault();msThrow()}});
 {const tc=document.getElementById('touch');if(tc&&!document.getElementById('bT')){const b=document.createElement('div');b.className='tb';b.id='bT';b.hidden=true;b.innerHTML=(MS_SV?'🍾':'🧱')+'<small>×3</small>';
- b.style.cssText='right:calc(var(--sr) + min(92px,21vmin) + 22px);bottom:calc(30px + min(80px,18vmin));width:min(58px,13vmin);height:min(58px,13vmin);font-size:22px;background:rgba(160,110,40,.6);display:flex;flex-direction:column;align-items:center;justify-content:center';
+ b.style.cssText='right:calc(var(--sr) + min(92px,21vmin) + 22px);bottom:calc(30px + min(80px,18vmin));width:min(58px,13vmin);height:min(58px,13vmin);font-size:22px;background:rgba(160,110,40,.6);display:none;flex-direction:column;align-items:center;justify-content:center';
  b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();msThrow()});tc.appendChild(b)}}
 function msEnd(won){if(!MSS.t0||!(mode==='ffa'||mode==='team'||mode==='boss')||NETU.on)return '';const sec=Math.round((performance.now()-MSS.t0)/1000),me=G&&G.F[0];
  let st=won?1:0;if(won&&me&&me.hp>me.max*.4)st++;if(won&&(sec<150||MSS.freed>0))st++;

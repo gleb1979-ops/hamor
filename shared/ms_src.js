@@ -116,11 +116,12 @@ let _dfMS;{const _df=drawFighter;_dfMS=_df;drawFighter=function(g,f,t){
    else{g.fillStyle=MST.nadeC;g.beginPath();g.rect(-20,-10,40,20);g.fill();g.stroke();g.fillStyle='rgba(0,0,0,.25)';g.fillRect(-20,2,40,3);g.fillStyle='rgba(255,255,255,.25)';g.fillRect(-18,-8,36,3)}g.restore()}
   for(const c of M.fx){g.save();g.globalAlpha=Math.max(0,1-c.t/1.4);g.translate(c.x,c.y);g.rotate(c.r);g.font='34px sans-serif';g.textAlign='center';g.fillText(c.txt,0,0);g.restore()}
   const me=G.F[0];if(me&&!IS_TOUCH){g.save();g.fillStyle='rgba(0,0,0,.55)';g.fillRect(16,104,150,24);g.font='bold 14px system-ui';g.textAlign='left';g.fillStyle='#f3e9dc';g.fillText(MST.nade+' ×'+M.nades+' · T',24,121);g.restore()}
-  const bt=document.getElementById('bT');if(bt){bt.hidden=!IS_TOUCH;const s=bt.querySelector('small');if(s)s.textContent='×'+M.nades}}
-  else{const bt=document.getElementById('bT');if(bt&&!bt.hidden)bt.hidden=true}}catch(e){console.error(e)}return r}}
+  const bt=document.getElementById('bT');if(bt){const s=bt.querySelector('small');if(s)s.textContent='×'+M.nades}}
+  }catch(e){console.error(e)}return r}}
+setInterval(()=>{const sn=state==='kpzsneak';for(const id of ['bB','bC','bD','bE','bK']){const e=document.getElementById(id);if(e){const v=sn?'hidden':'';if(e.style.visibility!==v)e.style.visibility=v}}const bt=document.getElementById('bT');if(!bt)return;const on=IS_TOUCH&&state==='play'&&G&&G.ms;const dv=on?'flex':'none';if(bt.style.display!==dv)bt.style.display=dv},250);
 addEventListener('keydown',e=>{if(e.code==='KeyT'&&!e.repeat&&state==='play'&&G&&G.ms){e.preventDefault();msThrow()}});
 {const tc=document.getElementById('touch');if(tc&&!document.getElementById('bT')){const b=document.createElement('div');b.className='tb';b.id='bT';b.hidden=true;b.innerHTML=(MS_SV?'🍾':'🧱')+'<small>×3</small>';
- b.style.cssText='right:calc(var(--sr) + min(92px,21vmin) + 22px);bottom:calc(30px + min(80px,18vmin));width:min(58px,13vmin);height:min(58px,13vmin);font-size:22px;background:rgba(160,110,40,.6);display:flex;flex-direction:column;align-items:center;justify-content:center';
+ b.style.cssText='right:calc(var(--sr) + min(92px,21vmin) + 22px);bottom:calc(30px + min(80px,18vmin));width:min(58px,13vmin);height:min(58px,13vmin);font-size:22px;background:rgba(160,110,40,.6);display:none;flex-direction:column;align-items:center;justify-content:center';
  b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();msThrow()});tc.appendChild(b)}}
 function msEnd(won){if(!MSS.t0||!(mode==='ffa'||mode==='team'||mode==='boss')||NETU.on)return '';const sec=Math.round((performance.now()-MSS.t0)/1000),me=G&&G.F[0];
  let st=won?1:0;if(won&&me&&me.hp>me.max*.4)st++;if(won&&(sec<150||MSS.freed>0))st++;

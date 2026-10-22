@@ -758,5 +758,13 @@
 "¡TOMA!": [
 "TAKE THAT!",
 "¡TOMA!"
+],
+"К ВЫХОДУ → · присядь за ящиком — не увидят · сзади УДАР — вырубить": [
+"To the EXIT → · crouch behind a crate — unseen · from behind PUNCH — takedown",
+"A la SALIDA → · agáchate tras una caja — no te ven · por detrás GOLPE — noqueo"
+],
+"Иди к ВЫХОДУ справа · присядь за ящиком, бочкой или шкафом — не увидят · сзади F — тихо вырубить": [
+"Get to the EXIT on the right · crouch behind a crate, barrel or cabinet — they won't see you · from behind F — silent takedown",
+"Llega a la SALIDA a la derecha · agáchate tras una caja, un barril o un archivador — no te verán · por detrás F — noqueo silencioso"
 ]
 }

@@ -2409,10 +2409,10 @@ function hCart(){const C=HC(),ln=C.lanes[Math.random()*C.lanes.length|0],d=Math.
   if(HW())G.H.push({id:hzId++,k:2,x:ln,y:d>0?TOP-60:AH+60,vx:0,vy:d*360});else G.H.push({id:hzId++,k:2,x:d>0?-80:AW+80,y:ln,vx:d*430,vy:0});evq.push(['CT'])}
 function hJar(){const ids=Object.keys(G.P).filter(i=>G.P[i].stun<=0);let x,y;if(ids.length&&Math.random()<.65){const b=G.P[ids[Math.random()*ids.length|0]];x=b.x+(Math.random()-.5)*120;y=b.y+(Math.random()-.5)*80}else{const p=freeSpot(0);if(!p)return;[x,y]=p}
   x=clamp(x,60,AW-60);y=clamp(y,TOP+40,AH-40);G.H.push({id:hzId++,k:0,x,y,w:.95,w0:.95})}
-function hWet(){if(G.H.filter(h=>h.k===3).length>=2)return;for(let i=0;i<20;i++){const x=300+Math.random()*900,y=TOP+130+Math.random()*(AH-TOP-260);if(Math.hypot(x-HC().toi.x,y-HC().toi.y)<170)continue;if(RECTS.some(q=>x>q.x-60&&x<q.x+q.w+60&&y>q.y-50&&y<q.y+q.h+50))continue;if(G.H.some(h=>Math.hypot(h.x-x,h.y-y)<160))continue;G.H.push({id:hzId++,k:3,x,y,life:8});return}}
+function hWet(){if(G.H.filter(h=>h.k===3).length>=(TM==='team'?2:1))return;for(let i=0;i<20;i++){const x=300+Math.random()*900,y=TOP+130+Math.random()*(AH-TOP-260);if(Math.hypot(x-HC().toi.x,y-HC().toi.y)<170)continue;if(RECTS.some(q=>x>q.x-60&&x<q.x+q.w+60&&y>q.y-50&&y<q.y+q.h+50))continue;if(G.H.some(h=>Math.hypot(h.x-x,h.y-y)<160))continue;G.H.push({id:hzId++,k:3,x,y,life:8});return}}
 function hInPuddle(h,b){const dx=(b.x-h.x)/58,dy=(b.y-h.y)/26;return dx*dx+dy*dy<1}
 function hzTick(dt){const P=G.P,W=HW(),now=hNow();
-  G.cartT-=dt;if(G.cartT<=0){hCart();G.cartT=(W?4.2:3.8)+Math.random()*1.6}
+  G.cartT-=dt;if(G.cartT<=0){hCart();G.cartT=(W?(TM==='team'?4.2:5.4):3.8)+Math.random()*1.6}
   if(!W){G.jarT-=dt;if(G.jarT<=0){hJar();G.jarT=(TM==='team'?1.5:1.25)+Math.random()*.8}}else{G.wetT-=dt;if(G.wetT<=0){hWet();G.wetT=2.6+Math.random()*1.4}}
   for(let i=G.H.length-1;i>=0;i--){const h=G.H[i];
     if(h.k===0){h.w-=dt;if(h.w<=0){for(const id in P){const b=P[id];if(Math.hypot(b.x-h.x,(b.y-h.y)*1.3)<64)hHit(id,1.1,'jar',h.x,h.y)}evq.push(['J',Math.round(h.x),Math.round(h.y)]);G.H.splice(i,1)}continue}
@@ -2440,7 +2440,7 @@ function gpTick(dt){const P=G.P;for(const T of G.TC){if(T.k!=='grandpa')continue
   const w=GPW[T.wp],dx=w[0]-T.x,dy=w[1]-T.y,d=Math.hypot(dx,dy);if(d<8){T.wp=(T.wp+(T.rev?GPW.length-1:1))%GPW.length}else{const sp=T.rev?140:125;T.fx=dx/d;T.fy=dy/d;T.x+=T.fx*Math.min(d,sp*dt);T.y+=T.fy*Math.min(d,sp*dt)}
   for(const id in P){const b=P[id];if(Math.abs(b.x-T.x)<82&&Math.abs(b.y-T.y)<42)hHit(id,.9,'cart')}
   T.fartT=(T.fartT==null?(T.rev?5:3):T.fartT)-dt;if(T.fartT<=0){T.fartT=3.6+Math.random()*2.6;G.H.push({id:hzId++,k:6,x:T.x-T.fx*80,y:T.y-T.fy*40,life:3.6});evq.push(['FT',Math.round(T.x-T.fx*80),Math.round(T.y)])}}}
-function hLow(aid){const A=G&&G.P[aid];if(!A||A.stun>0||!(A.pl>0))return;A.pl--;const f=A.face||1;G.H.push({id:hzId++,k:5,x:clamp(A.x-f*58,40,AW-40),y:clamp(A.y+6,TOP+30,AH-30),life:15,own:aid,arm:hNow()+500});evq.push(['PD',aid])}
+function hLow(aid){const A=G&&G.P[aid];if(!A||A.stun>0||!(A.pl>0))return;A.pl--;const f=A.face||1;G.H.push({id:hzId++,k:5,x:clamp(A.x-f*58,40,AW-40),y:clamp(A.y+6,TOP+30,AH-30),life:HW()&&TM!=='team'?11:15,own:aid,arm:hNow()+500});evq.push(['PD',aid])}
 function hThrow(){const n=gmV&&gmV.pl&&gmV.pl[me.id]||0;if(!n){if(mine)pops.push({x:mine.x,y:mine.y-200,t:-.05,txt:T('hoNeedPatch')});return 400}if(isHost)hLow(me.id);else send({t:'low'});tone(500,.12,'triangle',.1,250);vib(25);return 700}
 /* ---------- bots ---------- */
 function hAvoid(b,dx,dy){const W=HW();for(const h of G.H){const ox=b.x-h.x,oy=b.y-h.y,d=Math.hypot(ox,oy)||1;
@@ -2480,12 +2480,12 @@ GMS.hospital={paint:paintHosp,icons:['💥','🩹','btnPatch'],throwG:hThrow,low
   setup(rr){const W=HW(),n=rr.length;G.H=[];G.team=0;G.res=null;G.bagT=0;G.cartT=1.5;G.jarT=1.2;G.wetT=.5;
     G.SNZ=0;G.TC=W?[]:(TM==='team'||n>2?[{k:'nurse',x:750,y:470,fx:0,fy:1,st:0,tt:2,tx:null,ty:null,rest:2},{k:'nurse',x:750,y:800,fx:0,fy:-1,st:0,tt:2,tx:null,ty:null,rest:2.6}]:[{k:'nurse',x:750,y:470,fx:0,fy:1,st:0,tt:2,tx:null,ty:null,rest:2}]);
     if(!W)G.TC.push({k:'sneezer',x:SNW[0][0],y:SNW[0][1],fx:1,fy:0,st:0,tt:0,wp:1,snT:4});
-    G.goal=W?Math.max(6,3*n):Math.max(10,4*n);for(let i=0;i<(W?3:3);i++)hSpawnItem();if(W){hWet();hWet();G.TC=[{k:'grandpa',x:GPW[0][0],y:GPW[0][1],fx:1,fy:0,st:0,tt:0,wp:1},{k:'grandpa',x:GPW[2][0],y:GPW[2][1],fx:-1,fy:0,st:0,tt:0,wp:1,rev:1}];G.fartT=3}G.pp=null;G.ppT=4},
+    G.goal=W?Math.max(6,3*n):Math.max(10,4*n);for(let i=0;i<(W?3:3);i++)hSpawnItem();if(W){hWet();if(TM==='team')hWet();G.TC=[{k:'grandpa',x:GPW[0][0],y:GPW[0][1],fx:1,fy:0,st:0,tt:0,wp:1},{k:'grandpa',x:GPW[2][0],y:GPW[2][1],fx:-1,fy:0,st:0,tt:0,wp:1,rev:1}];G.fartT=3}G.pp=null;G.ppT=4},
   tick(dt){const P=G.P,W=HW(),C=HC(),now=hNow();
     if(!W){const all=G.TC;G.TC=all.filter(T=>T.k==='nurse');guardTick(dt,{isT:b=>b.stun<=0&&!((b.shotU||0)>now),see:420,near:210,spP:125,spC:198,spots:C.spots,catchR:34,onCatch:hShot});G.TC=all;snTick(dt);crTick()}
     hzTick(dt);if(W)gpTick(dt);
     if(!G.pp){G.ppT-=dt;if(G.ppT<=0)G.pp={x:750,y:W?540:520}}
-    for(const id in P){const b=P[id];if(b.stun>0||!G.pp)continue;if(Math.hypot(G.pp.x-b.x,G.pp.y-b.y)<CH[b.c].r+40+(b.hat==='top'?30:0)){b.pl=Math.min(5,(b.pl||0)+3);G.pp=null;G.ppT=9;evq.push(['PP',id,Math.round(b.x),Math.round(b.y)])}}
+    for(const id in P){const b=P[id];if(b.stun>0||!G.pp)continue;if(Math.hypot(G.pp.x-b.x,G.pp.y-b.y)<CH[b.c].r+40+(b.hat==='top'?30:0)){b.pl=Math.min(5,(b.pl||0)+(W&&TM!=='team'?2:3));G.pp=null;G.ppT=W&&TM!=='team'?12:9;evq.push(['PP',id,Math.round(b.x),Math.round(b.y)])}}
     for(const id in P){const b=P[id];if(b.stun>0)continue;const reach=CH[b.c].r+28+(b.hat==='top'?30:0);
       if(W){if(!b.bag){for(let i=G.B.length-1;i>=0;i--){const g=G.B[i];if(Math.hypot(g.x-b.x,g.y-b.y)<reach){G.B.splice(i,1);b.bag=1;evq.push(['PK',id,Math.round(g.x),Math.round(g.y)]);break}}}
         else if(Math.hypot(C.toi.x-b.x,C.toi.y-b.y)<110){b.bag=0;b.score++;if(TM==='team'){G.team++;if(G.team>=G.goal)G.res='win'}evq.push(['FL',id,C.toi.x,C.toi.y])}}

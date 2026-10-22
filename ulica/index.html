@@ -2188,7 +2188,7 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
  let mx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,my=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my;
  mx=clamp(mx,-1,1);my=clamp(my,-1,1);const mv=Math.hypot(mx,my)>.15;const sp=150;
  {const nx=clamp(me.x+mx*sp*dt,40,SNW-40);if(!snBlock(S.O,nx,me.y,22))me.x=nx;const ny=clamp(me.y+my*sp*.6*dt,SNY0,SNY1);if(!snBlock(S.O,me.x,ny,22))me.y=ny}me.crouch=!mv;if(mv){me.state='walk';if(Math.abs(mx)>.1)me.face=mx>0?1:-1}else me.state='idle';
- const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;
+ const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;{const low=bh&&bh.h<200&&!mv;if(low)S.ckO=bh;me.ck=(me.ck||0)+((low?1:0)-(me.ck||0))*Math.min(1,dt*12);if(me.ck<.02&&!low)S.ckO=null}
  let seen=0;
  for(const g of S.gs){if(g.out){g.downT=(g.downT||0)+dt;continue}g.anim+=dt;
   if(g.chase){const dx=me.x-g.x,dy=me.y-g.y;g.face=dx>0?1:-1;g.state='walk';{const nx=g.x+Math.sign(dx)*220*dt;if(!snBlock(S.O,nx,g.y,26))g.x=nx;else g.y+=(g.y<(snBlock(S.O,nx,g.y,26).y-25)?-1:1)*140*dt}g.y=clamp(g.y+clamp(dy,-1,1)*Math.min(Math.abs(dy),110*dt),SNY0,SNY1);if(Math.abs(dx)<50&&Math.abs(dy)<35){S.res='caught';S.resT=1.6;SFX.siren&&SFX.siren()}continue}
@@ -2202,7 +2202,7 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
 function snDraw(t){const S=SN;if(!S)return;ctx.save();ctx.drawImage(S.bg,S.cam,0,W,H,0,0,W,H);ctx.translate(-S.cam,0);
  for(const g of S.gs){if(g.out)continue;const gr=ctx.createLinearGradient(g.x,0,g.x+g.face*SNR,0);gr.addColorStop(0,`rgba(255,240,170,${.32+.4*(g.sus||0)})`);gr.addColorStop(1,'rgba(255,240,170,0)');ctx.fillStyle=g.chase?'rgba(255,60,60,.25)':gr;ctx.beginPath();ctx.moveTo(g.x+g.face*20,g.y-6);ctx.lineTo(g.x+g.face*SNR,g.y-80-SNR*.17);ctx.lineTo(g.x+g.face*SNR,g.y+80+SNR*.17);ctx.closePath();ctx.fill()}
  const all=[...S.gs,G.F[0],...S.O].sort((a,b)=>a.y-b.y),me=G.F[0];
- for(const f of all){if(f.k){snDrawObj(ctx,f);continue}ctx.save();if(f===me&&S.hid)ctx.globalAlpha=.6;if(f===me&&me.crouch&&S.cover){ctx.translate(me.x,me.y);ctx.scale(1,.8);ctx.translate(-me.x,-me.y)}drawFighter(ctx,f,t);ctx.restore();
+ for(const f of all){if(f.k){snDrawObj(ctx,f);continue}ctx.save();if(f===me&&S.hid)ctx.globalAlpha=.6;if(f===me&&me.ck>.02&&S.ckO){const o=S.ckO,sink=clamp(o.y-me.y+150*FIGS-o.h-34,0,130)*me.ck;ctx.beginPath();ctx.rect(me.x-260,0,520,o.k==='desk'?o.y-o.h*.72:o.y-2);ctx.clip();ctx.translate(0,sink)}drawFighter(ctx,f,t);ctx.restore();
   if(f!==me&&!f.out&&(f.sus>.05||f.chase)){ctx.fillStyle=f.chase?'#ff3030':'#ffd23f';ctx.font='900 34px Impact';ctx.textAlign='center';ctx.fillText(f.chase?'!':'?',f.x,f.y-215)}}
  for(const f of S.fx){ctx.globalAlpha=1-f.t/1.1;ctx.font='900 26px Impact';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(f.txt,f.x,f.y-f.t*40);ctx.fillStyle=f.c;ctx.fillText(f.txt,f.x,f.y-f.t*40);ctx.globalAlpha=1}
  ctx.restore();

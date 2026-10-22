@@ -2223,11 +2223,11 @@ function kpzAfterWin(){if(NETU.on||kpzLoc()!==1)return false;kpzSnitch();return 
 /* ---------- МЕНТОВКА: тихий побег — две длинные локации, прячься и вырубай со спины ---------- */
 const SNW=2160,SNY0=470,SNY1=660;
 /* укрытия: k — вид, x — центр, y — линия пола (низ предмета), w — ширина, h — высота, d — глубина */
-const SNR=400;const SNO={crate:{w:124,h:118,d:46},stack:{w:170,h:220,d:50},barrel:{w:70,h:128,d:40},cab:{w:90,h:210,d:44},desk:{w:150,h:120,d:56},wall:{w:90,h:300,d:40}};
+const SNR=330;const SNO={crate:{w:124,h:118,d:46},stack:{w:170,h:220,d:50},barrel:{w:70,h:128,d:40},cab:{w:90,h:210,d:44},desk:{w:150,h:120,d:56},wall:{w:90,h:300,d:40}};
 const SNL=[{name:'КОРИДОР ОТДЕЛЕНИЯ',o:[['crate',330,560],['barrel',760,560],['desk',1180,560],['crate',1600,560],['barrel',1990,560],['stack',540,652],['cab',960,652],['crate',1390,652],['wall',1800,652]],
-  g:[[320,900,1,482],[700,1300,-1,590],[1200,1800,1,482],[1500,2060,-1,590],[900,1500,1,660]]},
+  g:[[400,950,1,482],[800,1350,-1,590],[1300,1900,1,482],[1500,2060,-1,660]]},
  {name:'ДЕЖУРНАЯ ЧАСТЬ',o:[['desk',300,560],['crate',720,560],['barrel',1140,560],['desk',1560,560],['crate',1960,560],['cab',520,652],['stack',930,652],['wall',1350,652],['cab',1760,652]],
-  g:[[330,900,1,482],[600,1200,-1,590],[1000,1600,1,482],[1300,1900,-1,590],[1500,2050,1,660],[200,800,-1,660]]}];
+  g:[[420,950,1,482],[700,1250,-1,590],[1100,1650,1,482],[1400,1950,-1,660],[1600,2050,1,590]]}];
 const SNOI={};for(const k in SNO){const i=new Image();i.src='img/sn_'+k+'.webp';SNOI[k]=i}
 function snObjs(L){return L.o.map(([k,x,y])=>({k,x,y,...SNO[k]}))}
 function snBlock(O,x,y,pad){for(const o of O)if(x>o.x-o.w/2-pad&&x<o.x+o.w/2+pad&&y>o.y-o.d-6&&y<o.y+6)return o;return null}
@@ -2274,11 +2274,11 @@ function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(c
  const bh=snBehind(S.O,me);S.hid=!!bh&&(!mv||bh.h>=200);S.cover=bh;{const low=bh&&bh.h<200&&!mv;if(low)S.ckO=bh;me.ck=(me.ck||0)+((low?1:0)-(me.ck||0))*Math.min(1,dt*12);if(me.ck<.02&&!low)S.ckO=null}
  let seen=0;
  for(const g of S.gs){if(g.out){g.downT=(g.downT||0)+dt;continue}g.anim+=dt;
-  if(g.chase){const dx=me.x-g.x,dy=me.y-g.y;g.face=dx>0?1:-1;g.state='walk';{const nx=g.x+Math.sign(dx)*220*dt,bx=snBlock(S.O,nx,g.y,26);if(!bx){g.x=nx;g.y=clamp(g.y+clamp(dy,-1,1)*Math.min(Math.abs(dy),110*dt),SNY0,SNY1)}else{if(!g.det||g.detO!==bx){g.detO=bx;const up=bx.y-bx.d-12,dn=bx.y+12;g.det=(Math.abs(g.y-up)<Math.abs(g.y-dn)&&up>SNY0)||dn>SNY1?-1:1}g.y=clamp(g.y+g.det*170*dt,SNY0,SNY1)}if(!bx)g.det=0}if(Math.abs(dx)<50&&Math.abs(dy)<35){S.res='caught';S.resT=1.6;SFX.siren&&SFX.siren()}continue}
-  g.lk=(g.lk==null?rnd(2,5):g.lk)-dt;if(g.lk<=0&&g.wait<=0&&!g.back){g.back=rnd(1.1,1.8);g.face=-g.face;g.lk=rnd(3,6)}
-  if(g.back>0){g.back-=dt;g.state='idle';if(g.back<=0){g.back=0;g.face=-g.face}}else if(g.wait>0){g.wait-=dt;g.state='idle';if(g.wait<=0)g.face=-g.face}else{g.state='walk';{const nx=g.x+g.face*85*dt;if(snBlock(S.O,nx,g.y,30)){g.wait=rnd(1,2)}else g.x=nx}if(g.x>g.b){g.x=g.b;g.wait=rnd(1,2)}if(g.x<g.a){g.x=g.a;g.wait=rnd(1,2)}}
-  if(snSees(g,me,S.hid)){seen=1;g.sus=Math.min(1,(g.sus||0)+dt*(2.4-Math.min(1,Math.abs(me.x-g.x)/SNR)*1.2));if(g.sus>=1){g.chase=1;SFX.metal();S.fx.push({x:g.x,y:g.y-150,t:0,txt:'СТОЯТЬ!',c:'#ff5a5a'})}}
-  else g.sus=Math.max(0,(g.sus||0)-dt*.3)}
+  if(g.chase){const dx=me.x-g.x,dy=me.y-g.y;g.face=dx>0?1:-1;g.state='walk';{const nx=g.x+Math.sign(dx)*195*dt,bx=snBlock(S.O,nx,g.y,26);if(!bx){g.x=nx;g.y=clamp(g.y+clamp(dy,-1,1)*Math.min(Math.abs(dy),110*dt),SNY0,SNY1)}else{if(!g.det||g.detO!==bx){g.detO=bx;const up=bx.y-bx.d-12,dn=bx.y+12;g.det=(Math.abs(g.y-up)<Math.abs(g.y-dn)&&up>SNY0)||dn>SNY1?-1:1}g.y=clamp(g.y+g.det*170*dt,SNY0,SNY1)}if(!bx)g.det=0}if(Math.abs(dx)<50&&Math.abs(dy)<35){S.res='caught';S.resT=1.6;SFX.siren&&SFX.siren()}continue}
+  g.lk=(g.lk==null?rnd(4,8):g.lk)-dt;if(g.lk<=0&&g.wait<=0&&!g.back){g.back=rnd(.9,1.4);g.face=-g.face;g.lk=rnd(5,9)}
+  if(g.back>0){g.back-=dt;g.state='idle';if(g.back<=0){g.back=0;g.face=-g.face}}else if(g.wait>0){g.wait-=dt;g.state='idle';if(g.wait<=0)g.face=-g.face}else{g.state='walk';{const nx=g.x+g.face*72*dt;if(snBlock(S.O,nx,g.y,30)){g.wait=rnd(1,2)}else g.x=nx}if(g.x>g.b){g.x=g.b;g.wait=rnd(1,2)}if(g.x<g.a){g.x=g.a;g.wait=rnd(1,2)}}
+  if(snSees(g,me,S.hid)){seen=1;g.sus=Math.min(1,(g.sus||0)+dt*(1.5-Math.min(1,Math.abs(me.x-g.x)/SNR)*.8));if(g.sus>=1){g.chase=1;SFX.metal();S.fx.push({x:g.x,y:g.y-150,t:0,txt:'СТОЯТЬ!',c:'#ff5a5a'})}}
+  else g.sus=Math.max(0,(g.sus||0)-dt*.5)}
  S.sus=Math.max(...S.gs.map(g=>g.chase?1:g.sus||0),0);
  if(me.x>SNW-120){S.res='ok';S.resT=1.4;SFX.bell()}
  S.cam=clamp(me.x-W*.4,0,SNW-W)}

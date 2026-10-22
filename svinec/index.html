@@ -2262,9 +2262,13 @@ function snGo(g,tx,ty,sp,dt){const dx=tx-g.x,dy=ty-g.y;if(Math.abs(dx)>4)g.face=
 function snCone(g){return {x:g.x,y:g.y,d:g.face,r:300}}
 function snSees(g,p,hid){if(hid||g.out)return false;const dx=(p.x-g.x)*g.face;return dx>20&&dx<SNR&&Math.abs(p.y-g.y)<80+dx*.17&&snLOS(SN.O,g,p)}
 function snHit(){if(!SN||SN.res)return;const me=G.F[0];me.atkT=me.atkDur=.25;SFX.whoosh();
- for(const g of SN.gs){if(g.out)continue;const dx=me.x-g.x,behind=dx*g.face<0;if(Math.abs(dx)<85&&Math.abs(me.y-g.y)<45){
-   if(behind&&!g.chase){g.out=1;g.state='ko';g.downT=0;SN.ko++;SFX.hit();SN.fx.push({x:g.x,y:g.y-150,t:0,txt:'ТИХО ВЫРУБИЛ',c:'#7cf07c'})}
-   else{g.chase=1;SN.sus=1;SFX.metal();SN.fx.push({x:g.x,y:g.y-150,t:0,txt:'ЗАМЕТИЛ!',c:'#ff5a5a'})}return}}}
+ let best=null,bd=1e9;for(const g of SN.gs){if(g.out)continue;const dx=g.x-me.x,dy=g.y-me.y;if(Math.abs(dx)<125&&Math.abs(dy)<75){const d=Math.abs(dx)+Math.abs(dy)*1.3;if(d<bd){bd=d;best=g}}}
+ if(!best){SN.fx.push({x:me.x+me.face*60,y:me.y-150,t:0,txt:'мимо',c:'#cfc6b8'});return}
+ const g=best,dx=me.x-g.x;me.face=dx<0?1:-1;
+ {const tx=g.x+(dx<0?-48:48);if(!snBlock(SN.O,tx,me.y,22))me.x=tx;me.y+=clamp(g.y-me.y,-40,40)}
+ const behind=dx*g.face<0;
+ if(behind&&!g.chase){g.out=1;g.state='ko';g.downT=0;g.srch=0;g.ret=0;SN.ko++;SFX.hit();shake=Math.max(shake||0,4);SN.fx.push({x:g.x,y:g.y-150,t:0,txt:'ТИХО ВЫРУБИЛ',c:'#7cf07c'})}
+ else{g.chase=1;g.lost=0;g.lx=me.x;g.lyy=me.y;SN.sus=1;SFX.metal();SN.fx.push({x:g.x,y:g.y-150,t:0,txt:'ЗАМЕТИЛ!',c:'#ff5a5a'})}}
 function snTick(dt){const S=SN;if(!S)return;S.t+=dt;if(S.msgT>0)S.msgT-=dt;for(const f of S.fx)f.t+=dt;S.fx=S.fx.filter(f=>f.t<1.1);
  const me=G.F[0];me.anim+=dt;if(me.atkT>0)me.atkT-=dt;
  if(S.res){S.resT-=dt;if(S.resT<=0){const r=S.res,d=S.done;SN=null;d(r)}return}

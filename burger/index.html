@@ -1315,7 +1315,7 @@ function gMove(T,tx,ty,sp,dt){let dx=tx-T.x,dy=ty-T.y;const d=Math.hypot(dx,dy)|
   for(const q of RECTS){const cx=clamp(T.x,q.x,q.x+q.w),cy=clamp(T.y,q.y,q.y+q.h),ox=T.x-cx,oy=T.y-cy,od=Math.hypot(ox,oy)||1;if(od<70){dx+=ox/od*.8;dy+=oy/od*.8}}
   const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const ox=T.x,oy=T.y;T.x+=dx*sp*dt;T.y+=dy*sp*dt;
   const k=Math.min(1,dt*6);T.fx+=(dx-T.fx)*k;T.fy+=(dy-T.fy)*k;const fl=Math.hypot(T.fx,T.fy)||1;T.fx/=fl;T.fy/=fl;collide(T,34);return Math.hypot(T.x-ox,T.y-oy)>sp*dt*.3}
-function guardTick(dt,o){for(const T of G.TC){if(T.st===2){T.tt-=dt;if(T.tt<=0){T.st=0;T.tx=null}continue}if(T.rest>0){T.rest-=dt;continue}
+function guardTick(dt,o){for(const T of G.TC){if(T.st===2){T.tt-=dt;if(T.kvx||T.kvy){T.x+=T.kvx*dt;T.y+=T.kvy*dt;const f=Math.pow(.03,dt);T.kvx*=f;T.kvy*=f;if(Math.abs(T.kvx)+Math.abs(T.kvy)<8)T.kvx=T.kvy=0;collide(T,34)}if(T.tt<=0){T.st=0;T.tx=null;T.kvx=T.kvy=0}continue}if(T.rest>0){T.rest-=dt;continue}
   let tg=null,td=1e9;for(const id in G.P){const b=G.P[id];if(!o.isT(b,id))continue;const vx=b.x-T.x,vy=b.y-T.y,d=Math.hypot(vx,vy);
     const seen=d<(o.near||200)||(d<(b.hat==='top'?o.see*.65:o.see)&&(vx*T.fx+vy*T.fy)/(d||1)>.5)||(T.tgt===id&&d<o.see*1.2);if(seen&&d<td){td=d;tg=id}}
   T.tgt=tg;
@@ -1413,12 +1413,12 @@ function boomTick(dt){const M=G.BM;if(!M)return;if(M.ch<1)M.ch=Math.min(1,M.ch+d
 function boomTry(A,aid){const M=G.BM;if(!M||M.ch<1||Math.hypot(A.x-M.x,A.y-M.y)>CH[A.c].r+80)return false;M.ch=0;
   const bonus=LOC==='box'?10:LOC==='balloon'?1:2;A.score=LOC==='balloon'?Math.min(4,A.score+bonus):A.score+bonus;
   const hit=[];for(const id in G.P){if(id===aid)continue;const b=G.P[id];if(LOC==='balloon'&&TM==='ffa'&&b.score<=0)continue;if(sameSide(aid,id))continue;trainHit(id,b.hat==='ushanka'?.9:1.5);hit.push(id)}
-  if(G.TC&&LOC==='train')for(const T of G.TC){const dx=T.x-M.x,dy=T.y-M.y,d=Math.hypot(dx,dy)||1;const f=Math.max(380,900-d*.6);T.kvx=dx/d*f;T.kvy=dy/d*f;T.st=2;T.tt=2.6;T.tgt=null;T.tx=null}
+  if(G.TC&&(LOC==='train'||(GM()&&TM==='team'&&G.goal>0)))for(const T of G.TC){const dx=T.x-M.x,dy=T.y-M.y,d=Math.hypot(dx,dy)||1;const f=Math.max(380,900-d*.6);T.kvx=dx/d*f;T.kvy=dy/d*f;T.st=2;T.tt=2.6;T.tgt=null;T.tx=null}
   else if(G.TC&&boomCoop())for(const T of G.TC){const dx=T.x-M.x,dy=T.y-M.y,d=Math.hypot(dx,dy)||1;if(d<520){T.x+=dx/d*Math.max(0,240-d*.3);T.y+=dy/d*Math.max(0,240-d*.3);T.rest=Math.max(T.rest||0,2.2);T.stun=2.2;T.tx=null}}
   evq.push(['BM',aid,M.x,M.y,bonus,hit]);return true}
 /* gong in 'together vs bots' modes: hits only the other side (bots / monsters), never your own team */
 function boomCoop(){return coT()||(TM==='team'&&(!!GM()||LOC==='train'))||m22()||bteam()}
-function sameSide(a,b){if(!boomCoop())return false;if(LOC==='train'&&TM==='team')return true;if((coT()||m22()||bteam())&&TEAM22&&TEAM22[a]!=null&&TEAM22[b]!=null)return TEAM22[a]===TEAM22[b];const A=G.P[a],B=G.P[b];return !!A&&!!B&&!!A.bot===!!B.bot}
+function sameSide(a,b){if(!boomCoop())return false;if(TM==='team'&&G&&G.goal>0&&LOC!=='sniper')return true;if((coT()||m22()||bteam())&&TEAM22&&TEAM22[a]!=null&&TEAM22[b]!=null)return TEAM22[a]===TEAM22[b];const A=G.P[a],B=G.P[b];return !!A&&!!B&&!!A.bot===!!B.bot}
 function boomBot(b,brain){const M=G&&G.BM;if(!M||M.ch<1){brain.bm=null;return null}if(brain.bm==null)brain.bm=Math.random()<.4;if(!brain.bm||b.stun>0)return null;
   let dx=M.x-b.x,dy=M.y-b.y;const d=Math.hypot(dx,dy)||1;if(d>700)return null;return [dx/d*.8,dy/d*.8]}
 function drawBoom(g,t){const M=boomV;if(!M)return;const ch=M.ch,full=ch>=1,p=full?.5+.5*Math.sin(t*8):0;g.save();g.translate(M.x,M.y);
@@ -2003,7 +2003,7 @@ function cellBot(b,dt,brain){if(b.stun>0)return [0,0];let tx=b.x,ty=b.y;
   const dx=tx-b.x,dy=ty-b.y,d=Math.hypot(dx,dy);if(d<20)return [0,0];const sl=b.bot&&TM==='team'?.85:.8;return [dx/d*sl,dy/d*sl]}
 function pzNew(n){const a=[];if(n===3){const p=[0,1,2,3].sort(()=>Math.random()-.5);return p.slice(0,3)}for(let i=0;i<n;i++)a.push(Math.floor(Math.random()*4));return a}
 function pzNeed(b){return TM==='team'?G.rc.map((t,i)=>G.pl[i]?-1:t).filter(t=>t>=0):b.rc.map((t,i)=>b.pl[i]?-1:t).filter(t=>t>=0)}
-function ratTick(dt){const P=G.P;for(const T of G.TC){T.rt=(T.rt||0)-dt;if(T.rt<=0){T.rt=3;T.raid=Math.random()<.35}if(T.st===2){T.tt-=dt;if(T.tt<=0){T.st=0;T.tx=null}continue}if(T.rest>0){T.rest-=dt;gMove(T,T.x+T.fx*300,T.y+T.fy*300,170,dt);continue}
+function ratTick(dt){const P=G.P;for(const T of G.TC){T.rt=(T.rt||0)-dt;if(T.rt<=0){T.rt=3;T.raid=Math.random()<.35}if(T.st===2){T.tt-=dt;if(T.kvx||T.kvy){T.x+=T.kvx*dt;T.y+=T.kvy*dt;const f=Math.pow(.03,dt);T.kvx*=f;T.kvy*=f;if(Math.abs(T.kvx)+Math.abs(T.kvy)<8)T.kvx=T.kvy=0;collide(T,34)}if(T.tt<=0){T.st=0;T.tx=null;T.kvx=T.kvy=0}continue}if(T.rest>0){T.rest-=dt;gMove(T,T.x+T.fx*300,T.y+T.fy*300,170,dt);continue}
     let tg=null,td=1e9;for(const id in P){const b=P[id];if(!b.bag||b.stun>0)continue;const d=Math.hypot(b.x-T.x,b.y-T.y);if(d<300&&d<td){td=d;tg=id}}
     if(tg){const b=P[tg];T.st=1;gMove(T,b.x,b.y,188,dt);if(td<CH[b.c].r+30){b.bag=0;trainHit(tg,b.hat==='ushanka'?.3:.6);evq.push(['RA',tg,Math.round(b.x),Math.round(b.y)]);T.rest=1.2;T.st=0}}
     else if(G.pl.some(x=>x)&&T.raid){T.st=1;gMove(T,PZ_T.x,PZ_T.y,145,dt);if(Math.hypot(T.x-PZ_T.x,T.y-PZ_T.y)<PZ_T.r+48){const idx=G.pl.lastIndexOf(1);G.pl[idx]=0;evq.push(['RT',Math.round(T.x),Math.round(T.y)]);T.rest=1.5;T.st=0}}

@@ -418,7 +418,14 @@ function salonThink(f,dt){const en=alive().filter(b=>sideOf(b)!==sideOf(f)&&b.st
 
 /* ----- objective updates ----- */
 function coneOf(f){return{x:f.x+f.face*18,y:f.y-2,a:(f.face>0?0:Math.PI)+Math.sin(G.t*1.2+f.idx*1.7)*.3,h:.42,R:300}}
-function seesIt(c,e){const dx=e.x-c.x,dy=(e.y-c.y)/.55,d=Math.hypot(dx,dy);if(d<55)return true;if(d>c.R)return false;let df=Math.atan2(dy,dx)-c.a;df=Math.atan2(Math.sin(df),Math.cos(df));if(Math.abs(df)>c.h)return false;
+const ZVH={crates:95,pipes:70,booth:150,machine:80,table:50,sheets:45,container:130,sleepers:40,barrel:85,car:90,bench:45};
+function zvCover(f,dt,mv){if(mv||f.carry||f.state==='ko'||f.state==='down'||f.atkT>0||f.kickT>0){f.zst=0;f.zck=Math.max(0,(f.zck||0)-dt*8);if(f.zck<=0)f.zcO=null;return}
+ f.zst=(f.zst||0)+dt;let o=f.zcO;
+ if(!o&&f.zst>.2){let bd=1e9;for(const q of OBST){const Hh=ZVH[q.k]||0;if(Hh<40||Hh>=140)continue;const cx=q.x+q.w/2,dx=Math.max(0,Math.abs(f.x-cx)-q.w/2),dy=Math.abs(f.y-(q.y-8));const inFront=f.y>q.y+4&&Math.abs(f.x-cx)<q.w/2+16;if(!inFront&&dx<70&&dy<70&&dx+dy<bd){bd=dx+dy;o=q}}
+  if(o){f.zcO=o;if(f===G.F[0])G.FX.push({x:f.x,y:f.y-170,t:0,life:.8,txt:'СПРЯТАЛСЯ',c:'#7cf07c'})}}
+ if(!o){if(f.zst>.2)f.zst=-.6;return}const ty=o.y-8,tx=clamp(f.x,o.x+Math.min(50,o.w/2),o.x+o.w-Math.min(50,o.w/2)),st=240*dt;
+ if(Math.abs(f.y-ty)>2)f.y+=clamp(ty-f.y,-st,st);else if(Math.abs(f.x-tx)>2){f.x+=clamp(tx-f.x,-st,st)}else f.zck=Math.min(1,(f.zck||0)+dt*8)}
+function seesIt(c,e){const dx=e.x-c.x,dy=(e.y-c.y)/.55,d=Math.hypot(dx,dy);if(d<55)return true;if(e.zcO&&e.zck>.5&&c.y>e.zcO.y-30)return false;if(d>c.R)return false;let df=Math.atan2(dy,dx)-c.a;df=Math.atan2(Math.sin(df),Math.cos(df));if(Math.abs(df)>c.h)return false;
  for(let k=1;k<10;k++){const px=c.x+(e.x-c.x)*k/10,py=c.y+(e.y-c.y)*k/10;for(const o of OBST)if(px>o.x-4&&px<o.x+o.w+4&&py>o.y-36&&py<o.y+o.h+4)return false}return true}
 function raiseAlarm(){if(mode!=='zavod'||G.alarm||G.over)return;G.alarm=1;G.sus=1;SFX.bell();G.msg='ТРЕВОГА!';G.sub='Хватай ящик и беги к дыре в заборе!';G.msgT=2;
  for(const f of G.F){if(f.npc==='dog'&&f.sleep){f.sleep=0;f.face=-1}if(f.shuher)f.shuher=0}SFX.bark()}
@@ -2419,7 +2426,7 @@ function update(dt){if(RMODE())return rUpdate(dt);if(G.hs>0){G.hs-=dt;return}G.t
     for(const h of holesNow())if(Math.hypot(f.x-h.x,(f.y-h.y)*2)<h.r){bail(f,mode==='bike'?'В ЯМУ!':'В ЛЮК!');if(mode!=='bike')f.x+=f.face*50}}
    if(f.x<42||f.x>W-42)f.mvx*=-.5;if(f.y<FLOOR0+52||f.y>FLOOR1-2)f.mvy*=-.5}
   else{f.x+=(mx*sp+f.vx)*dt;f.y+=my*sp*.62*dt;f.vx*=Math.pow(.004,dt)}
-  if(!f.bot&&!f.onBoard&&Math.abs(mx)>.2&&(f.atkT<=0||f.atkT<(f.atkDur||.3)*.45))f.face=mx>0?1:-1;
+  if(!f.bot&&!f.onBoard&&Math.abs(mx)>.2&&(f.atkT<=0||f.atkT<(f.atkDur||.3)*.45))f.face=mx>0?1:-1;if(mode==='zavod'&&!f.bot&&!f.npc)zvCover(f,dt,Math.hypot(mx,my)>.15);
   f.x=clamp(f.x,mode==='bike'?-20:EDGE,W-EDGE);f.y=clamp(f.y,FLOOR0+50,FLOOR1);
   for(const o of OBST){if(f.x>o.x-14&&f.x<o.x+o.w+14&&f.y>o.y-6&&f.y<o.y+o.h+6){const dl=f.x-(o.x-14),dr=o.x+o.w+14-f.x,du=f.y-(o.y-6),dd=o.y+o.h+6-f.y,m=Math.min(dl,dr,du,dd);if(m===dl)f.x=o.x-14;else if(m===dr)f.x=o.x+o.w+14;else if(m===du)f.y=o.y-6;else f.y=o.y+o.h+6}}
   if(f.state==='down'||f.state==='ko')continue;
@@ -2802,6 +2809,7 @@ let _dfMS;{const _df=drawFighter;_dfMS=_df;drawFighter=function(g,f,t){
  if(G&&G.ms&&g===ctx&&state==='play'){const M=G.ms;M._dr=M._dr||new Set();
   for(const p of M.props)if(p.hp>0&&!M._dr.has(p)&&p.y<=f.y){M._dr.add(p);msDrawProp(g,p,t)}
   if(M.host&&!M._dr.has(M.host)&&M.host.y<=f.y){M._dr.add(M.host);msDrawHost(g,M.host,t)}}
+ if(f.zck>.02&&f.zcO&&g===ctx&&mode==='zavod'){const o=f.zcO,sink=clamp(o.y+o.h-(ZVH[o.k]||80)-42-(f.y-215*(f.bscale||1)),0,170)*f.zck;g.save();g.beginPath();g.rect(f.x-260,0,520,o.y+o.h-4);g.clip();g.translate(0,sink);const r=_df.apply(this,arguments);g.restore();return r}
  if(f.flyT!=null){const k=Math.min(1,f.flyT/1.1);g.save();g.translate(f.x+f.flyS*k*120,f.y-Math.sin(Math.PI*k)*170);g.rotate(f.flyS*k*Math.PI*2.2);g.translate(-f.x,-f.y);const r=_df.apply(this,arguments);g.restore();return r}
  const r=_df.apply(this,arguments);
  if(f.idleK&&!f.alert&&f.state!=='ko'&&G&&G.ms){const hx=f.x+f.face*16,hy=f.y-150*(f.bscale||1)*FIGS*.98;g.save();

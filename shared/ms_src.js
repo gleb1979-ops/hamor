@@ -97,7 +97,7 @@ let _dfMS;{const _df=drawFighter;_dfMS=_df;drawFighter=function(g,f,t){
  if(G&&G.ms&&g===ctx&&state==='play'){const M=G.ms;M._dr=M._dr||new Set();
   for(const p of M.props)if(p.hp>0&&!M._dr.has(p)&&p.y<=f.y){M._dr.add(p);msDrawProp(g,p,t)}
   if(M.host&&!M._dr.has(M.host)&&M.host.y<=f.y){M._dr.add(M.host);msDrawHost(g,M.host,t)}}
- if(f.zck>.02&&f.zcO&&g===ctx&&mode==='zavod'){const o=f.zcO,sink=clamp(o.y+o.h-(ZVH[o.k]||80)-42-(f.y-215*(f.bscale||1)),0,170)*f.zck;g.save();g.beginPath();g.rect(f.x-260,0,520,o.y+o.h-4);g.clip();g.translate(0,sink);const r=_df.apply(this,arguments);g.restore();return r}
+ if(f.zck>.02&&f.zcO&&g===ctx&&mode==='zavod'){const o=f.zcO,sink=clamp(o.y+o.h-(ZVH[o.k]||80)-42-(f.y-215*(f.bscale||1)*(typeof DEPK==='function'&&DEPN()?DEPK(f.y):1)),0,170)*f.zck;g.save();g.beginPath();g.rect(f.x-260,0,520,o.y+o.h-4);g.clip();g.translate(0,sink);const r=_df.apply(this,arguments);g.restore();return r}
  if(f.flyT!=null){const k=Math.min(1,f.flyT/1.1);g.save();g.translate(f.x+f.flyS*k*120,f.y-Math.sin(Math.PI*k)*170);g.rotate(f.flyS*k*Math.PI*2.2);g.translate(-f.x,-f.y);const r=_df.apply(this,arguments);g.restore();return r}
  const r=_df.apply(this,arguments);
  if(f.idleK&&!f.alert&&f.state!=='ko'&&G&&G.ms){const hx=f.x+f.face*16,hy=f.y-150*(f.bscale||1)*FIGS*.98;g.save();

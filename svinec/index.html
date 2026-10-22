@@ -241,6 +241,11 @@ function drawFighter(g,f,t){const SK=f.spr||NSK[f.npc];if(f.npc&&!nsOK(SK))retur
 /* длина оружия в руке — в единицах тела героя (рост ≈150): нож ~ кисть+предплечье, бита ~ полруки-до пояса */
 const WSP={stick:[-7,66,.5],bat:[-9,70,.5],spike:[-9,72,.52],rebar:[-7,80,.5],chain:[-6,70,.5],knux:[-9,11,.55],nunchaku:[-6,64,.5],bottle:[-7,27,.5],knife:[-7,29,.5],stone:[-9,9,.5],pistol:[-3,25,.2],baton:[-8,56,.2],dubina:[-8,60,.2],obrez:[-7,44,.42],salt:[-12,74,.35],kefir:[-22,22,.5]},WIMG={};
 /* цепь: звенья по кривой, при замахе поднимается, при ударе хлещет вниз; в покое висит */
+/* перспектива: кто ближе к камере (ниже на экране) — крупнее, кто у дальней стены — мельче. Только картинка, удары и столкновения не меняются */
+function DEPN(){return !['rayon','oblava','krz','chase'].includes(mode)&&state!=='kpzsneak'}
+function DEPK(y){return .86+.46*clamp((y-FLOOR0)/(FLOOR1-FLOOR0),0,1)}
+let DEPIN=0;function depWrap(fn){return function(g,f){if(DEPIN||g!==ctx||!f||!DEPN())return fn.apply(this,arguments);const k=DEPK(f.y),x=f.x,y=f.y;DEPIN=1;g.save();g.translate(x,y);g.scale(k,k);g.translate(-x,-y);try{return fn.apply(this,arguments)}finally{g.restore();DEPIN=0}}}
+drawFighter=depWrap(drawFighter);drawNPC=depWrap(drawNPC);
 function drawChainHeld(g,t,atk,bl){const im=WIMG.chain,ok=im&&im.complete&&im.naturalWidth,N=9,seg=9.4;let th0,curl;
  if(atk>0){const p=1-atk;if(p<.38){const q=p/.38;th0=1.35+(-2.5-1.35)*q*q;curl=.16}else{const q=(p-.38)/.62,e=1-(1-q)*(1-q);th0=-2.5+(.55+2.5)*e;curl=-.2*(1-q)}}else{th0=1.25+Math.sin(t*2.6)*.08;curl=.03}
  let x=0,y=0;g.fillStyle='#2a2a30';g.beginPath();g.arc(0,0,4,0,TAU);g.fill();
@@ -2835,7 +2840,7 @@ let _dfMS;{const _df=drawFighter;_dfMS=_df;drawFighter=function(g,f,t){
  if(G&&G.ms&&g===ctx&&state==='play'){const M=G.ms;M._dr=M._dr||new Set();
   for(const p of M.props)if(p.hp>0&&!M._dr.has(p)&&p.y<=f.y){M._dr.add(p);msDrawProp(g,p,t)}
   if(M.host&&!M._dr.has(M.host)&&M.host.y<=f.y){M._dr.add(M.host);msDrawHost(g,M.host,t)}}
- if(f.zck>.02&&f.zcO&&g===ctx&&mode==='zavod'){const o=f.zcO,sink=clamp(o.y+o.h-(ZVH[o.k]||80)-42-(f.y-215*(f.bscale||1)),0,170)*f.zck;g.save();g.beginPath();g.rect(f.x-260,0,520,o.y+o.h-4);g.clip();g.translate(0,sink);const r=_df.apply(this,arguments);g.restore();return r}
+ if(f.zck>.02&&f.zcO&&g===ctx&&mode==='zavod'){const o=f.zcO,sink=clamp(o.y+o.h-(ZVH[o.k]||80)-42-(f.y-215*(f.bscale||1)*(typeof DEPK==='function'&&DEPN()?DEPK(f.y):1)),0,170)*f.zck;g.save();g.beginPath();g.rect(f.x-260,0,520,o.y+o.h-4);g.clip();g.translate(0,sink);const r=_df.apply(this,arguments);g.restore();return r}
  if(f.flyT!=null){const k=Math.min(1,f.flyT/1.1);g.save();g.translate(f.x+f.flyS*k*120,f.y-Math.sin(Math.PI*k)*170);g.rotate(f.flyS*k*Math.PI*2.2);g.translate(-f.x,-f.y);const r=_df.apply(this,arguments);g.restore();return r}
  const r=_df.apply(this,arguments);
  if(f.idleK&&!f.alert&&f.state!=='ko'&&G&&G.ms){const hx=f.x+f.face*16,hy=f.y-150*(f.bscale||1)*FIGS*.98;g.save();

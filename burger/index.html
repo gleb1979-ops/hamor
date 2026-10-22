@@ -2719,7 +2719,7 @@ GMS.bike={rejoin(b){const o=Object.values(G.P).filter(p=>p!==b).sort((a,c)=>c.y-
   setup(rr0){G.fin={};G.nf=0;G.hd=0;G.PS={};const R=bkRng((Math.random()*1e6)|0);
     const fy=[1200,1480,1760,2050,2350,2650,2950,3250,5800,6250,6700,7150,8200,8600,9000,9400],dy=[3900,4300,4700,5100];
     G.F=fy.map(y=>[y,0]).concat(dy.map(y=>[y,1])).map(([y,dk],i)=>({id:i,y:BKM(y+R()*90),x:BK_X0+30+R()*(BK_X1-BK_X0-60),d:R()<.5?1:-1,t:R()*.8,st:0,cd:0,duck:dk}));
-    G.C=BK_COPS.map(([y0,k],i)=>{const y=BKM(y0),hx=k===3?AW/2:(i%2?BK_X1+20:BK_X0-20);return {id:i,x:hx,y,hx,hy:y,k,st:0,t:0,face:i%2?-1:1,said:0}});
+    G.C=(rr0.filter(x=>!x[3]).length<=1?BK_COPS.concat([[2100,2],[3650,0],[5300,1],[6300,3],[7750,1],[9150,2]]).sort((a,b)=>a[0]-b[0]):BK_COPS).map(([y0,k],i)=>{const y=BKM(y0),hx=k===3?AW/2:(i%2?BK_X1+20:BK_X0-20);return {id:i,x:hx,y,hx,hy:y,k,st:0,t:0,face:i%2?-1:1,said:0}});
     rr0.forEach((x,i)=>{const b=G.P[x[0]];if(!b)return;const [sx,sy]=bkStart(i);b.x=sx;b.y=sy;b.v=0;b.frogs=0;b.pp=0;b.hopU=0;b.splU=0;b.trkU=0;b.face=1})},
   place(r){r.forEach((x,i)=>{const v=view[x[0]];if(!v)return;const [sx,sy]=bkStart(i);v.x=v.tx=sx;v.y=v.ty=sy;v.face=1});
     if(mine&&view[me.id]){mine.x=view[me.id].x;mine.y=view[me.id].y;mine.v=0;mine.hopU=0;mine.face=1}bkFx=[];bkFoc=null;bkCam=0;bkLV={F:{},C:{}};lowCd=0},
@@ -2741,10 +2741,10 @@ GMS.bike={rejoin(b){const o=Object.values(G.P).filter(p=>p!==b).sort((a,c)=>c.y-
     for(const c of G.C){const say=(code)=>evq.push(['SY',code,Math.round(c.x),Math.round(c.y)]);
       if(c.st===2||c.st===3||c.st===4||c.st===5){c.t-=dt;if(c.t<=0){if(c.st===2&&c.k===0)say(0);c.st=0}continue}
       if(c.k===3){let best=null,bd=900;for(const id in P){const b=P[id];if(G.fin[id])continue;const ah=b.y-c.y;if(ah<-60||ah>900)continue;if(ah<bd){bd=ah;best=b}}
-        const tx=best?best.x:c.hx;if(best&&c.st===0){c.st=1;evq.push(['WH',c.id,Math.round(c.x),Math.round(c.y),3])}if(!best)c.st=0;if(!best||bd>260)c.x+=clamp(tx-c.x,-110*dt,110*dt);c.x=clamp(c.x,BK_X0+90,BK_X1-90);
+        const tx=best?best.x:c.hx;if(best&&c.st===0){c.st=1;evq.push(['WH',c.id,Math.round(c.x),Math.round(c.y),3])}if(!best)c.st=0;if(!best||bd>260)c.x+=clamp(tx-c.x,-140*dt,140*dt);c.x=clamp(c.x,BK_X0+90,BK_X1-90);
         for(const id in P){const b=P[id];if(b.stun>0||G.fin[id])continue;if(Math.abs(b.x-c.x)<108&&Math.abs(b.y-c.y)<52){let nx=clamp(b.x<c.x?c.x-118:c.x+118,BK_X0,BK_X1);if(Math.abs(nx-c.x)<110)nx=c.x+(c.x<750?118:-118);trainHit(id,b.hat==='ushanka'?.5:.85,nx,b.y);b.v=0;c.st=3;c.t=1.6;evq.push(['CA',id,Math.round(b.x),Math.round(b.y)])}}continue}
-      let best=null,bd=c.k===2?600:c.k===0?320:400;c.cool=c.cool||{};for(const id in P){const b=P[id];if(G.fin[id]||(c.cool[id]||0)>now)continue;if(b.y<c.y-(c.k===2?480:240))continue;const d=Math.hypot(b.x-c.x,(b.y-c.y)*1.1);if(d<bd){bd=d;best=b}}
-      if(best){if(c.st===0){c.st=1;evq.push(['WH',c.id,Math.round(c.x),Math.round(c.y),c.k])}const sp=c.k===2?225:c.k===0?118:160,dx=best.x-c.x,dy=best.y-(c.k===2?60:30)-c.y,l=Math.hypot(dx,dy)||1;c.x+=dx/l*sp*dt;c.y+=dy/l*sp*dt;c.face=dx<0?-1:1;
+      let best=null,bd=c.k===2?660:c.k===0?370:450;c.cool=c.cool||{};for(const id in P){const b=P[id];if(G.fin[id]||(c.cool[id]||0)>now)continue;if(b.y<c.y-(c.k===2?480:240))continue;const d=Math.hypot(b.x-c.x,(b.y-c.y)*1.1);if(d<bd){bd=d;best=b}}
+      if(best){if(c.st===0){c.st=1;evq.push(['WH',c.id,Math.round(c.x),Math.round(c.y),c.k])}const sp=c.k===2?248:c.k===0?134:180,dx=best.x-c.x,dy=best.y-(c.k===2?60:30)-c.y,l=Math.hypot(dx,dy)||1;c.x+=dx/l*sp*dt;c.y+=dy/l*sp*dt;c.face=dx<0?-1:1;
         if(c.k!==2)for(const q of bkObs())if((q.k==='puddle'||q.k==='mud')&&Math.abs(q.y-c.y)<q.r&&Math.hypot((c.x-q.x)/q.r,(c.y-q.y)/(q.r*.6))<.9&&Math.random()<dt*3){c.st=4;c.t=1.6;evq.push(['SL',c.id,Math.round(c.x),Math.round(c.y)]);break}
         if(c.k===1&&c.st===1)for(const f of G.F)if(!f.st&&!f.duck&&Math.hypot(f.x-c.x,f.y-c.y)<30){c.st=4;c.t=1.6;evq.push(['TR',c.id,Math.round(c.x),Math.round(c.y)]);break}
         if(c.st===1&&Math.hypot(best.x-c.x,best.y-c.y)<50&&bkHopH(best,now)<10&&!(best.stun>0)){trainHit(best.id,best.hat==='ushanka'?.7:1.2);best.v=0;c.st=3;c.t=2.2;c.cool[best.id]=now+6500;evq.push(['CA',best.id,Math.round(best.x),Math.round(best.y)])}}

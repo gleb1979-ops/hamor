@@ -1862,6 +1862,8 @@ GMS.balloon={rejoin(b){b.score=2},paint:paintBalMap,maps:['fair','roof'],secs:()
 const GHMAP={hall:{t:[{x:420,y:400,r:34},{x:1080,y:400,r:34},{x:420,y:690,r:34},{x:1080,y:690,r:34}],r:[{x:640,y:480,w:220,h:60},{x:690,y:150,w:130,h:120}],dark:.82,spots:[[300,300],[1200,300],[300,780],[1200,780],[750,320],[750,720],[560,560],[940,560]]},
   crypt:{t:[{x:560,y:330,r:30},{x:940,y:330,r:30},{x:560,y:750,r:30},{x:940,y:750,r:30}],r:[{x:290,y:490,w:150,h:50},{x:1060,y:490,w:150,h:50},{x:655,y:150,w:215,h:420}],dark:.9,spots:[[300,300],[1200,300],[300,780],[1200,780],[380,640],[750,740],[560,560],[940,560]]}};
 const GHC=()=>GHMAP[mapOf('ghost')];GCONE.ghost=0;
+function ghNearMe(){if(!mine)return false;for(const id in view){const v=view[id];if(id===me.id||v.bag!==1)continue;if(Math.hypot(v.x-mine.x,v.y-mine.y)<200&&ghostAlpha(v.x,v.y)>.25)return true}return false}
+setInterval(()=>{if(LOC!=='ghost'||TM==='team')return;const el=document.getElementById('pushL');if(!el)return;const t=pushLabel();if(el.textContent!==t)el.textContent=t},200);
 function drawGhostShape(g,x,y,t,a,face,bow,mv,stn){if(a<=.02)return;{const im=PNI.ghost;if(im&&im.complete&&im.naturalWidth){const u=PNPC.ghost.u*.95,fi=stn?6:mv?1+Math.floor(t*6)%4:0;g.save();g.globalAlpha=a;g.fillStyle='rgba(0,0,0,.14)';g.beginPath();g.ellipse(x,y+2,30,8,0,0,7);g.fill();g.translate(x,y-10-Math.sin(t*3+x*.01)*6);if(face<0)g.scale(-1,1);if(bow){g.shadowColor=bow;g.shadowBlur=16}g.drawImage(im,fi*400,0,400,360,-200*u,-350*u,400*u,360*u);g.restore();return}}g.save();g.globalAlpha=a;g.fillStyle='rgba(0,0,0,.14)';g.beginPath();g.ellipse(x,y+2,30,8,0,0,7);g.fill();g.translate(x,y-26+Math.sin(t*3+x*.01)*6);g.scale(face<0?-1:1,1);
   g.beginPath();g.moveTo(-38,-8);g.quadraticCurveTo(-42,-124,0,-126);g.quadraticCurveTo(42,-124,38,-8);for(let i=0;i<4;i++){const x0=38-i*19;g.quadraticCurveTo(x0-9,8+Math.sin(t*6+i)*3,x0-19,-6)}g.closePath();
   g.fillStyle='#f4f6ff';g.fill();g.lineWidth=3;g.strokeStyle='#2b1b30';g.stroke();g.fillStyle='rgba(150,180,255,.3)';g.beginPath();g.ellipse(-16,-98,8,16,-.3,0,7);g.fill();
@@ -1897,7 +1899,7 @@ function ghostBot(b,dt,brain){const P=G.P;
   let dx=tx-b.x,dy=ty-b.y;const d=Math.hypot(dx,dy)||1;dx/=d;dy/=d;const th=[];if(TM==='team'){for(const T of G.TC)if(T.st!==2)th.push(T)}else for(const id in P){if(P[id].bag===1&&P[id].stun<=0)th.push(P[id])}
   for(const T of th){const ox=b.x-T.x,oy=b.y-T.y,dd=Math.hypot(ox,oy)||1;if(dd>230)continue;if(dd<(TM==='team'?125:95)&&Math.random()<dt*3)hostPush(b.id);dx+=ox/dd*1.2;dy+=oy/dd*1.2}
   [dx,dy]=steer(b,dx,dy);brain.wob+=dt*3;dx+=Math.cos(brain.wob)*.18;dy+=Math.sin(brain.wob)*.18;const l=Math.hypot(dx,dy)||1;return [dx/l*.62,dy/l*.62]}
-GMS.ghost={paint:paintGhostMap,maps:['hall','crypt'],secs:()=>TM==='team'?60:50,get unit(){return TM==='team'?'🕯':'⭐'},btn:()=>TM==='team'?T('btnLamp'):(view[me.id]&&view[me.id].bag===1?T('btnBoo'):T('btnCatch')),tip:()=>T(TM==='team'?'tipGhT':'tipGhF'),
+GMS.ghost={paint:paintGhostMap,maps:['hall','crypt'],secs:()=>TM==='team'?60:50,get unit(){return TM==='team'?'🕯':'⭐'},btn:()=>TM==='team'?T('btnLamp'):(view[me.id]&&view[me.id].bag===1?T('btnBoo'):(ghNearMe()?T('btnCatch'):T('btnShove'))),tip:()=>T(TM==='team'?'tipGhT':'tipGhF'),
   modeName:v=>T(v==='team'?'ghTeam':'ghFfa'),mapName:v=>T(v==='hall'?'mapHall':'mapCrypt'),share:tr=>T(tr?'shareGhT':'shareGh'),teamTitle:tr=>T(tr==='win'?'ghWin':'ghLose'),tables:()=>GHC().t,rects:()=>GHC().r,
   spd:b=>b.bag===1?1.06:1,
   setup(rr){G.team=0;G.goal=Math.max(8,4*rr.length);G.bagT=0;G.res=null;G.TC=[];

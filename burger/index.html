@@ -1306,7 +1306,7 @@ function gmLobby(){const g=GMS[FIXED],st=on=>on?'background:#ffc531;color:#2b1b3
   const cur=mapOf(FIXED),maps=g.maps.length>1?(isHost?`<div class="botsel">${g.maps.map(v=>`<button type="button" class="mpb ghost${cur===v?' on':''}" data-v="${v}" style="${st(cur===v)}">${g.mapName(v)}</button>`).join('')}</div>`:`<p class="status">${g.mapName(cur)}</p>`):'';
   return mode+maps}
 const artCache={};function artSprite(k,st,f,fn,w=180,h=260,oy=240){const key=k+'|'+st+'|'+f;if(artCache[key])return artCache[key];const cv=document.createElement('canvas');cv.width=w*SPR;cv.height=h*SPR;const g=cv.getContext('2d');g.scale(SPR,SPR);g.translate(w/2,oy);fn(g,f,st);return artCache[key]=cv}
-function guardMark(g,x,hy,st){if(st===2){const s=T('ouch');g.font='900 30px Rubik, sans-serif';g.textAlign='center';g.textBaseline='middle';g.direction=/[֐-׿]/.test(s)?'rtl':'ltr';const w=g.measureText(s).width+26;
+function guardMark(g,x,hy,st){if(st===2){{const tt=performance.now()/1000;g.save();g.font='22px sans-serif';g.textAlign='center';g.textBaseline='middle';for(let i=0;i<3;i++){const a=tt*4+i*2.094;g.globalAlpha=.6+.4*Math.sin(a);g.fillText('⭐',x+Math.cos(a)*34,hy+46+Math.sin(a)*10)}g.restore()}const s=T('ouch');g.font='900 30px Rubik, sans-serif';g.textAlign='center';g.textBaseline='middle';g.direction=/[֐-׿]/.test(s)?'rtl':'ltr';const w=g.measureText(s).width+26;
     g.fillStyle='#fff';g.strokeStyle=OUT;g.lineWidth=3;g.beginPath();g.roundRect?g.roundRect(x-w/2,hy-58,w,44,16):g.rect(x-w/2,hy-58,w,44);g.fill();g.stroke();g.fillStyle='#e8412c';g.fillText(s,x,hy-35);g.textBaseline='alphabetic'}
   else if(st===1){g.font='900 46px Rubik, sans-serif';g.textAlign='center';g.textBaseline='middle';g.lineWidth=6;g.strokeStyle='#fff';g.strokeText('!',x,hy-30);g.fillStyle='#e8412c';g.fillText('!',x,hy-30);g.textBaseline='alphabetic'}}
 function drawGuardSprite(g,tv,t,k,fn,top,w=180,h=260,oy=240){const f=tv.st===2?0:(tv.moving===false?0:1+Math.floor((t*9)%6)),jump=tv.st===2?Math.abs(Math.sin(t*12))*20:0;g.save();g.translate(tv.x,tv.y-jump);if(Math.cos(tv.a)<0)g.scale(-1,1);g.drawImage(artSprite(k,tv.st===1?1:tv.st===2?2:0,f,fn,w,h,oy),-w/2,-oy,w,h);g.restore();guardMark(g,tv.x,tv.y+top-jump,tv.st)}
@@ -1362,7 +1362,7 @@ function trainCatch(T,id){const b=G.P[id];if(!b)return;const x=Math.round(b.x),y
     if(Object.keys(G.P).every(i=>G.jail[i]))G.res='lose'}
   else{trainHit(id,b.hat==='ushanka'?.75:1.5);evq.push(['R',id,x,y])}}
 function machTick(dt){for(const T of G.TC){
-  if(T.st===2){T.tt-=dt;if(T.tt<=0){T.st=0;T.tx=null}continue}
+  if(T.st===2){T.tt-=dt;if(T.kvx||T.kvy){T.x+=T.kvx*dt;T.y+=T.kvy*dt;const f=Math.pow(.03,dt);T.kvx*=f;T.kvy*=f;if(Math.abs(T.kvx)+Math.abs(T.kvy)<8)T.kvx=T.kvy=0;collide(T,34)}if(T.tt<=0){T.st=0;T.tx=null;T.kvx=T.kvy=0}continue}
   if(T.rest>0){T.rest-=dt;continue}
   let tg=null,td=1e9;for(const id in G.P){const b=G.P[id];if(!b.bag||G.jail[id]||b.stun>0)continue;const vx=b.x-T.x,vy=b.y-T.y,d=Math.hypot(vx,vy);
     const seen=d<200||(d<(b.hat==='top'?280:430)&&(vx*T.fx+vy*T.fy)/(d||1)>.5)||(T.tgt===id&&d<520);if(seen&&d<td){td=d;tg=id}}
@@ -1413,7 +1413,8 @@ function boomTick(dt){const M=G.BM;if(!M)return;if(M.ch<1)M.ch=Math.min(1,M.ch+d
 function boomTry(A,aid){const M=G.BM;if(!M||M.ch<1||Math.hypot(A.x-M.x,A.y-M.y)>CH[A.c].r+80)return false;M.ch=0;
   const bonus=LOC==='box'?10:LOC==='balloon'?1:2;A.score=LOC==='balloon'?Math.min(4,A.score+bonus):A.score+bonus;
   const hit=[];for(const id in G.P){if(id===aid)continue;const b=G.P[id];if(LOC==='balloon'&&TM==='ffa'&&b.score<=0)continue;if(sameSide(aid,id))continue;trainHit(id,b.hat==='ushanka'?.9:1.5);hit.push(id)}
-  if(G.TC&&boomCoop())for(const T of G.TC){const dx=T.x-M.x,dy=T.y-M.y,d=Math.hypot(dx,dy)||1;if(d<520){T.x+=dx/d*Math.max(0,240-d*.3);T.y+=dy/d*Math.max(0,240-d*.3);T.rest=Math.max(T.rest||0,2.2);T.stun=2.2;T.tx=null}}
+  if(G.TC&&LOC==='train')for(const T of G.TC){const dx=T.x-M.x,dy=T.y-M.y,d=Math.hypot(dx,dy)||1;const f=Math.max(380,900-d*.6);T.kvx=dx/d*f;T.kvy=dy/d*f;T.st=2;T.tt=2.6;T.tgt=null;T.tx=null}
+  else if(G.TC&&boomCoop())for(const T of G.TC){const dx=T.x-M.x,dy=T.y-M.y,d=Math.hypot(dx,dy)||1;if(d<520){T.x+=dx/d*Math.max(0,240-d*.3);T.y+=dy/d*Math.max(0,240-d*.3);T.rest=Math.max(T.rest||0,2.2);T.stun=2.2;T.tx=null}}
   evq.push(['BM',aid,M.x,M.y,bonus,hit]);return true}
 /* gong in 'together vs bots' modes: hits only the other side (bots / monsters), never your own team */
 function boomCoop(){return coT()||(TM==='team'&&(!!GM()||LOC==='train'))||m22()||bteam()}

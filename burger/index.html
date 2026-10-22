@@ -2713,6 +2713,7 @@ function bkSplat(g,x,y,t,s,cop){s=s||1;const B=['#6b4423','#7d5230','#5a3818'];f
   g.fillStyle='#222';for(let k=0;k<3;k++){const a=t*6+k*2.1;g.beginPath();g.arc(x+Math.cos(a)*30*s,y-30*s+Math.sin(a*1.4)*10,2.2,0,7);g.fill()}}
 function bkSay(x,y,txt,big){bkFx.push({k:'say',x,y,txt,t:0,life:big?2:1.5,big})}
 const BK_COPS=[[1700,0],[2400,1],[2950,3],[3300,2],[4150,1],[4850,0],[5900,2],[6600,1],[7300,3],[8350,2],[8900,0],[9350,1]];
+const BKI={};for(const c of ['girl','fat','tall','nerd','kid','donkey']){const i=new Image();i.src='img/bk_'+c+'.webp';BKI[c]=i}
 GMS.bike={rejoin(b){const o=Object.values(G.P).filter(p=>p!==b).sort((a,c)=>c.y-a.y)[0];if(o){b.x=o.x;b.y=o.y}b.v=0;b.frogs=b.frogs||0;b.hopU=0},teamBots:true,
   paint(f){f.fillStyle='#69bd4a';f.fillRect(0,0,AW,AH)},maps:['road'],secs:()=>100,unit:'⭐',btn:()=>T('bkPush'),icons:['🤚','🦘','bkHop'],tip:()=>T(TM==='team'?'tipBkT':'tipBkF'),
   modeName:v=>T(v==='team'?'bkTeam':'bkFfa'),mapName:()=>T('bkRoad'),share:tr=>T(tr?'shareBkT':'shareBk'),teamTitle:tr=>T(tr==='win'?'bkWin':'bkLose'),tables:()=>[],rects:()=>[],
@@ -2798,6 +2799,7 @@ GMS.bike={rejoin(b){const o=Object.values(G.P).filter(p=>p!==b).sort((a,c)=>c.y-
     const sp=own?(mine.v||0):(v.moving?165:0);v.wr=(v.wr||0)+sp/18/60;const x=v.x+bkRel(v.y),y=v.y-h,pond=BKM(v.y)>BK_POND+60,col=CH[v.c].col,lean=clamp((x-(v._px==null?x:v._px))*.05,-.18,.18);v._px=x;v._ln=(v._ln||0)+(lean-(v._ln||0))*.2;
     g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(x+6,v.y-30,26*(1-h/120),60*(1-h/120),0,0,7);g.fill();
     if(pond){g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=3;for(let r=0;r<2;r++){const kk=((t*.8+r*.5)%1);g.beginPath();g.ellipse(x,y-14,30+kk*40,10+kk*12,0,0,7);g.stroke()}g.save();g.translate(x,y-10);g.scale(1.05,1.05);drawHero(g,{id:v.id,c:v.c,hat:v.hat,x:0,y:0,moving:false,face:1,stun:v.stun},t);g.restore();g.fillStyle='rgba(60,160,220,.8)';g.beginPath();g.ellipse(x,y-10,52,18,0,0,7);g.fill()}
+    else if(BKI[v.c]&&BKI[v.c].complete&&BKI[v.c].naturalWidth){const BI=BKI[v.c],k=.52,w=BI.naturalWidth*k,hh=BI.naturalHeight*k,pd=Math.sin((v.wr||0)*6);g.save();g.translate(x,y+34);g.rotate(v._ln);g.scale(1+pd*.015,1-pd*.015);g.drawImage(BI,-w/2,-hh,w,hh);if(v.bag&16)bkSplat(g,0,-hh*.55,t,.9);g.restore()}
     else{const BS=bkBackSpr(v.c,v.hat),Bd=BODY[v.c]||BODY.girl,hy=-22+Bd.sh[1]*1.05+4,pd=Math.sin((v.wr||0)*6)*5;g.save();g.translate(x,y);g.rotate(v._ln);bkBikeFar(g,0,0,v.wr,col,hy);
       g.save();g.translate(0,-22+Math.abs(pd)*.3);g.scale(1.05,1.05);g.drawImage(BS.cv,-BS.ox,-BS.oy);g.restore();
       g.lineCap='round';for(const s of [-1,1]){const sx=s*Bd.sh[0]*.9,sy=-22+Bd.sh[1]*1.05+12;g.strokeStyle=OUT;g.lineWidth=11;g.beginPath();g.moveTo(sx,sy);g.lineTo(s*38,hy);g.stroke();g.strokeStyle=col;g.lineWidth=7;g.stroke()}g.lineCap='butt';

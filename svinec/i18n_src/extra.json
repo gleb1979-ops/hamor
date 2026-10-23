@@ -1002,5 +1002,33 @@
 "E/Enter огонь": [
 "E/Enter fire",
 "E/Enter fuego"
+],
+"ФЛАКО НАШЁЛ АПТЕЧКУ!": [
+"FLACO FOUND A MEDKIT!",
+"¡FLACO ENCONTRÓ UN BOTIQUÍN!"
+],
+"ТАПНИ": [
+"TAP",
+"TOCA"
+],
+"💣 — граната в прицел (3 шт.)": [
+"💣 — grenade at the crosshair (3)",
+"💣 — granada a la mira (3)"
+],
+"G — граната (3 шт.)": [
+"G — grenade (3)",
+"G — granada (3)"
+],
+"H — аптечка": [
+"H — medkit",
+"H — botiquín"
+],
+"Левым пальцем води по экрану, как по тачпаду, — прицел двигается. Держи «ОГОНЬ» справа — стреляешь. 💣 — граната в прицел (3 шт.)": [
+"Slide your left finger like on a touchpad to move the crosshair. Hold FIRE on the right to shoot. 💣 — grenade at the crosshair (3)",
+"Desliza el dedo izquierdo como en un touchpad para mover la mira. Mantén FUEGO a la derecha para disparar. 💣 — granada a la mira (3)"
+],
+"Веди прицел мышкой и держи кнопку — стреляешь · R — перезарядка · G — граната (3 шт.) · H — аптечка": [
+"Aim with the mouse and hold the button to shoot · R — reload · G — grenade (3) · H — medkit",
+"Apunta con el ratón y mantén el botón para disparar · R — recargar · G — granada (3) · H — botiquín"
 ]
 }

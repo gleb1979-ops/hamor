@@ -2628,9 +2628,9 @@ const CHIMG=[0,1,2,3].map(i=>{const m=new Image();m.src='img/ch_bg'+i+'.webp';re
 const CHCAR={};for(const k of ['sedan','bike','jeep','truck']){const m=new Image();m.src='img/ch_'+k+'.webp';CHCAR[k]=m}
 let CHZ=null;const CHHAND=new Image();CHHAND.src='img/ch_hand.webp?v=3';const CHMY=.174;const CHSLEEVE='#5a7ab0';const CH_F=720,CH_HOR=300,CH_CAM=1.55;
 function chaseBegin(){au();state='chase';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=true;
- CHZ={sec:0,secT:0,t:0,dist:0,spd:28,hp:100,max:100,ammo:14,clip:14,rl:0,cd:0,fire:false,ax:W/2,ay:H*.45,E:[],FX:[],cracks:[],kills:0,spawnT:1.5,over:0,overT:0,banner:2.6,shake:0,boss:null,tracers:[],seed:Math.random()*1000,gren:3,GR:[],med:0,medSec:-1,medAt:.3+Math.random()*.25}}
+ CHZ={sec:0,secT:0,t:0,dist:0,spd:28,hp:100,max:100,ammo:14,clip:14,rl:0,cd:0,fire:false,ax:W/2,ay:H*.45,E:[],FX:[],cracks:[],kills:0,spawnT:1.5,over:0,overT:0,banner:2.6,shake:0,boss:null,tracers:[],seed:Math.random()*1000,gren:CH_GN,GR:[],med:0,medSec:-1,medAt:.3+Math.random()*.25}}
 /* гранаты (3 на погоню) и аптечка (одна на участок, +25%) */
-const CH_MED=25,CH_GDMG=150;
+const CH_MED=25;let CH_GDMG=150,CH_GN=3,CH_STACK=1;
 function chGrenade(){const Z=CHZ;if(!Z||Z.over||Z.gren<=0)return;let tx=Z.ax,ty=Z.ay;{let bd=IS_TOUCH?110:70,bt=null;for(const e of Z.E){if(e.dead)continue;const r=chRect(e),cx=r.x+r.w/2,cy=r.y+r.h*.7,d=Math.hypot(cx-Z.ax,cy-Z.ay)-Math.max(r.w,r.h)/2;if(d<bd){bd=d;bt=e}}
   if(bt){const p=chProj(bt.x,bt.z);tx=p.x;ty=p.y;Z.gren--;Z.GR.push({t:0,T:.6,wx:bt.x,wz:bt.z,trk:bt,sx:W/2+170,sy:H-20});SFX.whoosh();return}}
  const yy=Math.max(ty,CH_HOR+14),z=Math.min(120,CH_CAM*CH_F/(yy-CH_HOR)),s2=CH_F/z,wx=(tx-W/2)/s2-chOff(z);Z.gren--;Z.GR.push({t:0,T:.6,wx,wz:z,sx:W/2+170,sy:H-20});SFX.whoosh()}
@@ -2638,7 +2638,7 @@ function chGrTick(dt){const Z=CHZ;for(const g of Z.GR){g.t+=dt;if(g.trk&&!g.trk.
   if(g.t>=g.T&&!g.done){g.done=1;const p=chProj(g.wx,g.wz);Z.FX.push({x:p.x,y:p.y-30*p.s/20,t:0,life:1.3,k:'boom',s:Math.max(160,p.s*9)});Z.FX.push({x:p.x,y:p.y,t:0,life:.5,k:'gring',s:p.s});Z.shake=1;SFX.heavy();noise(.5,300,.5);
    for(const e of Z.E){if(e.dead)continue;if(Math.abs(e.x-g.wx)<3.8&&Math.abs(e.z-g.wz)<Math.max(5,g.wz*.32)){e.hp-=CH_GDMG;e.hitT=.2;if(e.hp<=0){e.dead=1;e.dx=(Math.random()*2-1)*5;e.spin=.3;Z.kills++;const r=chRect(e);Z.FX.push({x:r.x+r.w/2,y:r.y+r.h/2,t:0,life:1.1,k:'boom',s:r.w});if(e.boss){Z.boss=null;Z.bossDead=1}}}}}}
  Z.GR=Z.GR.filter(g=>g.t<g.T+.05)}
-function chMedUse(){const Z=CHZ;if(!Z||Z.over||!Z.med)return;Z.med=0;const was=Z.hp;Z.hp=Math.min(Z.max,Z.hp+CH_MED);Z.FX.push({x:240,y:H*.7,t:0,life:1.4,k:'txt',txt:'+'+Math.round(Z.hp-was)+'% ДЖИП',c:'#5ad05a'});SFX.pick();tone(880,.1,'square',.1)}
+function chMedUse(){const Z=CHZ;if(!Z||Z.over||!Z.med)return;Z.med--;const was=Z.hp;Z.hp=Math.min(Z.max,Z.hp+CH_MED);Z.FX.push({x:240,y:H*.7,t:0,life:1.4,k:'txt',txt:'+'+Math.round(Z.hp-was)+'% ДЖИП',c:'#5ad05a'});SFX.pick();tone(880,.1,'square',.1)}
 function chOff(z){const f=w=>9*Math.sin(w*.0042+CHZ.seed)+5*Math.sin(w*.011+CHZ.seed*2),d=CHZ.dist,df=(f(d+.5)-f(d-.5));return f(d-z)-f(d)+df*z}
 function chProj(x,z){const s=CH_F/z;return{x:W/2+(chOff(z)+x)*s,y:CH_HOR+CH_CAM*s,s}}
 function chSpawn(type){const T=CHT[type],e={type,hp:T.hp,max:T.hp,x:(Math.random()*2-1)*3.2,z:120+Math.random()*30,tz:type==='truck'?11:6+Math.random()*9,ph:Math.random()*6,ft:1.5+Math.random()*2,col:T.c[Math.random()*T.c.length|0],dead:0,flash:0,hitT:0,spin:0};CHZ.E.push(e);return e}
@@ -2662,7 +2662,7 @@ function chTick(dt){const Z=CHZ;if(!Z)return;Z.t+=dt;if(Z.banner>0)Z.banner-=dt;
  Z.E=Z.E.filter(e=>e.z<200);
  if(Z.shells){for(const c of Z.shells){c.t-=dt;c.x+=c.vx*dt;c.y+=c.vy*dt;c.vy+=900*dt;c.r+=c.vr*dt}Z.shells=Z.shells.filter(c=>c.t>0)}
  for(const c of Z.cracks)c.t-=dt;Z.cracks=Z.cracks.filter(c=>c.t>0);for(const f of Z.FX)f.t+=dt;Z.FX=Z.FX.filter(f=>f.t<f.life);for(const r of Z.tracers)r.t-=dt;Z.tracers=Z.tracers.filter(r=>r.t>0);
- if(Z.medSec!==Z.sec&&Z.secT>=S.t*Z.medAt){Z.medSec=Z.sec;Z.med=1;Z.medT=0;Z.FX.push({x:W/2,y:H*.36,t:0,life:1.8,k:'txt',txt:'ФЛАКО НАШЁЛ АПТЕЧКУ!',c:'#7cf07c'});SFX.bell()}if(Z.med)Z.medT=(Z.medT||0)+dt;
+ if(Z.medSec!==Z.sec&&Z.secT>=S.t*Z.medAt){Z.medSec=Z.sec;Z.med=CH_STACK?Z.med+1:1;Z.medT=0;Z.FX.push({x:W/2,y:H*.36,t:0,life:1.8,k:'txt',txt:'ФЛАКО НАШЁЛ АПТЕЧКУ!',c:'#7cf07c'});SFX.bell()}if(Z.med)Z.medT=(Z.medT||0)+dt;
  chGrTick(dt);
  // стрельба
  Z.cd-=dt;if(Z.rl>0){Z.rl-=dt;if(Z.rl<=0){Z.ammo=Z.clip;tone(700,.05,'square',.08)}}
@@ -2675,7 +2675,7 @@ function chTick(dt){const Z=CHZ;if(!Z)return;Z.t+=dt;if(Z.banner>0)Z.banner-=dt;
  if(Z.hp<=0){Z.hp=0;Z.over=-1;SFX.ko();return}
  // конец участка
  const clear=!Z.E.some(e=>!e.dead&&e.z<90);
- if(Z.secT>=S.t&&(!S.boss||Z.bossDead)&&clear){if(Z.sec===CHS.length-1){Z.over=1;SFX.bell()}else{Z.sec++;Z.secT=0;Z.banner=2.6;Z.med=0;Z.hp=Math.min(Z.max,Z.hp+12);SFX.bell();Z.E=Z.E.filter(e=>e.dead)}}}
+ if(Z.secT>=S.t&&(!S.boss||Z.bossDead)&&clear){if(Z.sec===CHS.length-1){Z.over=1;SFX.bell()}else{Z.sec++;Z.secT=0;Z.banner=2.6;if(!CH_STACK)Z.med=0;Z.hp=Math.min(Z.max,Z.hp+12);SFX.bell();Z.E=Z.E.filter(e=>e.dead)}}}
 const CHA={};function chSolid(e,u,v){const img=CHCAR[e.type];if(!img||!img.naturalWidth)return true;let A=CHA[e.type];
  if(!A){const c=document.createElement('canvas');c.width=64;c.height=64;const q=c.getContext('2d');q.drawImage(img,0,0,64,64);A=CHA[e.type]={d:q.getImageData(0,0,64,64).data,ar:img.naturalHeight/img.naturalWidth}}
  /* спрайт рисуется по ширине и прижат к низу прямоугольника */
@@ -2748,7 +2748,7 @@ function chDraw(t){const Z=CHZ;if(!Z)return;const g=ctx,S=CHS[Z.sec];g.save();co
  for(const c of Z.shells||[]){g.fillStyle='#e8b23a';g.save();g.translate(c.x,c.y);g.rotate(c.r);g.fillRect(-4,-2,8,4);g.restore()}
  g.restore();
  // аптечка на багажнике и кнопка гранат
- if(Z.med&&!Z.over){const b=1+.08*Math.sin(Z.t*7),[mx,my,mr]=CH_MB();g.save();g.translate(mx,my);g.scale(b,b);g.fillStyle='rgba(90,208,90,.25)';g.beginPath();g.arc(0,0,mr+14,0,7);g.fill();g.fillStyle='#f4f4f0';g.strokeStyle='#c82020';g.lineWidth=4;g.beginPath();g.roundRect?g.roundRect(-mr,-mr*.75,mr*2,mr*1.5,10):g.rect(-mr,-mr*.75,mr*2,mr*1.5);g.fill();g.stroke();g.fillStyle='#d82020';g.fillRect(-mr*.18,-mr*.55,mr*.36,mr*1.1);g.fillRect(-mr*.55,-mr*.18,mr*1.1,mr*.36);g.restore();g.textAlign='center';g.font='bold 18px sans-serif';g.fillStyle='#7cf07c';g.fillText((IS_TOUCH?'ТАПНИ':'H')+' · +'+CH_MED+'%',mx,my+mr+30)}
+ if(Z.med&&!Z.over){const b=1+.08*Math.sin(Z.t*7),[mx,my,mr]=CH_MB();g.save();g.translate(mx,my);g.scale(b,b);g.fillStyle='rgba(90,208,90,.25)';g.beginPath();g.arc(0,0,mr+14,0,7);g.fill();g.fillStyle='#f4f4f0';g.strokeStyle='#c82020';g.lineWidth=4;g.beginPath();g.roundRect?g.roundRect(-mr,-mr*.75,mr*2,mr*1.5,10):g.rect(-mr,-mr*.75,mr*2,mr*1.5);g.fill();g.stroke();g.fillStyle='#d82020';g.fillRect(-mr*.18,-mr*.55,mr*.36,mr*1.1);g.fillRect(-mr*.55,-mr*.18,mr*1.1,mr*.36);g.restore();g.textAlign='center';g.font='bold 18px sans-serif';g.fillStyle='#7cf07c';g.fillText((IS_TOUCH?'ТАПНИ':'H')+' · +'+CH_MED+'%',mx,my+mr+30);if(Z.med>1){g.font='900 26px Impact,sans-serif';g.lineWidth=5;g.strokeStyle='#000';g.strokeText('×'+Z.med,mx+mr+6,my-mr*.55);g.fillStyle='#7cf07c';g.fillText('×'+Z.med,mx+mr+6,my-mr*.55)}}
  {const [gx,gy,gr]=CH_GB();g.save();g.globalAlpha=Z.gren>0?.85:.35;g.fillStyle='#3a4a2a';g.beginPath();g.arc(gx,gy,gr,0,7);g.fill();g.lineWidth=4;g.strokeStyle='rgba(255,255,255,.85)';g.stroke();g.globalAlpha=1;g.font=(gr*.8|0)+'px serif';g.textAlign='center';g.fillText('💣',gx,gy+gr*.28);g.font='900 22px Impact,sans-serif';g.fillStyle='#ffe066';g.strokeStyle='#000';g.lineWidth=4;g.strokeText('×'+Z.gren,gx+gr*.75,gy-gr*.6);g.fillText('×'+Z.gren,gx+gr*.75,gy-gr*.6);if(!IS_TOUCH){g.font='bold 14px sans-serif';g.fillStyle='#fff';g.fillText('G',gx,gy+gr+18)}g.restore()}
  // прицел
  const ax=Z.ax,ay=Z.ay;g.strokeStyle=Z.rl>0?'rgba(255,255,255,.4)':'#ffe066';g.lineWidth=3;g.beginPath();g.arc(ax,ay,22,0,7);g.moveTo(ax-34,ay);g.lineTo(ax-12,ay);g.moveTo(ax+12,ay);g.lineTo(ax+34,ay);g.moveTo(ax,ay-34);g.lineTo(ax,ay-12);g.moveTo(ax,ay+12);g.lineTo(ax,ay+34);g.stroke();

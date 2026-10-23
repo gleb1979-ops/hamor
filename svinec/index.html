@@ -1304,13 +1304,13 @@ function bossHUD(){const b=G.F.find(f=>f.boss);if(!b)return;ctx.save();ctx.fillS
 /* ---------- РЫНОК: 7 этапов от барыги до смотрящего ---------- */
 const RYN={st:clamp(LS.get('ryn',1),1,7),carry:0,hp:0};
 const RST=[
- {loc:'Ворота рынка',b:'БАРЫГА',spr:'baryga',w:'stick',hp:130,sc:1.12,tip:'Ларёчник у ворот. Машет палкой — не подходи в лоб.'},
- {loc:'Овощные ряды',b:'НАПЁРСТОЧНИК',spr:'naper',w:'bottle',hp:150,sc:1.1,tip:'Шустрый и вёрткий. Бей ногой — отбрасывает.'},
- {loc:'Вещевой ряд',b:'ФАРЦОВЩИК',spr:'farc',w:'chain',hp:175,sc:1.15,tip:'Джинсы, кассеты и цепь. Длинные руки — держи дистанцию.'},
- {loc:'Мясной павильон',b:'МЯСНИК',spr:'myasnik',w:'knife',hp:235,sc:1.32,tip:'Огромный, с тесаком. Медленный — бей и отходи.'},
- {loc:'Задворки и склад',b:'ГРУЗЧИК ВАСЯ',spr:'vasya',kind:'brig',w:'rebar',hp:280,sc:1.36,tip:'Увидишь «!!!» — отбегай. Издалека кидается кирпичами.'},
- {loc:'Контора рынка',b:'РЕШАЛА',spr:'reshala',w:'knux',hp:260,sc:1.25,guards:2,tip:'Решала с охраной. Сначала вырубай охрану.'},
- {loc:'Кабинет смотрящего',b:'СМОТРЯЩИЙ',spr:'smotr',kind:'host',w:'bpistol',hp:380,sc:1.36,tip:'Стреляет издалека, на половине здоровья зовёт охрану. Бей вплотную.'}];
+ {loc:'Ворота рынка',b:'ЭЛЬ РЕГАТЕРО',spr:'baryga',w:'stick',hp:130,sc:1.12,tip:'Хозяин ворот, торгуется палкой. Не подходи в лоб.'},
+ {loc:'Фруктовые ряды',b:'ЭЛЬ ТРИЛЕРО',spr:'naper',w:'bottle',hp:150,sc:1.1,tip:'Шустрый и вёрткий. Бей ногой — отбрасывает.'},
+ {loc:'Вещевой ряд',b:'ЭЛЬ КАСЕТЕ',spr:'farc',w:'chain',hp:175,sc:1.15,tip:'Контрабанда: джинсы, кассеты и цепь. Длинные руки — держи дистанцию.'},
+ {loc:'Мясной павильон',b:'ЭЛЬ КАРНИСЕРО',spr:'myasnik',w:'knife',hp:235,sc:1.32,tip:'Огромный, с тесаком. Медленный — бей и отходи.'},
+ {loc:'Задворки и склад',b:'ТИО БРУТО',spr:'vasya',kind:'brig',w:'rebar',hp:280,sc:1.36,tip:'Увидишь «!!!» — отбегай. Издалека кидается кирпичами.'},
+ {loc:'Контора рынка',b:'ЭЛЬ ЛИСЕНСИАДО',spr:'reshala',w:'knux',hp:260,sc:1.25,guards:2,tip:'Решала рынка, с охраной. Сначала вырубай охрану.'},
+ {loc:'Кабинет дона',b:'ДОН АНИБАЛ',spr:'smotr',kind:'host',w:'bpistol',hp:380,sc:1.36,tip:'Стреляет издалека, на половине здоровья зовёт охрану. Бей вплотную.'}];
 const RNAMES=['Торгаш','Грузчик','Шнырь','Кидала','Меняла','Носильщик','Сторож','Шестёрка'];
 function rynMax(){return clamp(LS.get('ryn',1),1,7)}
 function castRynok(F){const me=F[0];me.x=180;me.y=540;me.face=1;G0wave(F,1);if(RYN.def){const others=HOTH();for(let i=0;i<2;i++){const a=newFighter(F.length,others[i],true,0);a.ally=true;a.name='Охрана';a.x=120+i*60;a.y=470+i*120;a.face=1;F.push(a)}}}
@@ -1329,7 +1329,7 @@ function rynUpdate(dt){if(G.over)return;rynHaz(dt);if(G.over)return;const en=G.F
  else{G.over=1;G.overT=0;G.win=true;G.msg=RYN.st<7?'ЭТАП ПРОЙДЕН':'РЫНОК ТВОЙ!';G.sub='';G.msgT=99;SFX.bell();gainXP(60)}}
 function rynokEnd(){const me=G.F[0];if(RYN.def)return rynDefEnd();if(G.win&&RYN.st<7){RYN.hp=me.hp;let e=MKAP-(RYN.k0||0);if(RYN.st===5&&RYN.route==='sklad'){const b=Math.round(e*.5)+30;gainKap(b);e+=b}const nx=rynNext(RYN.st);if(!nx)return rynRoute(e);if(nx>rynMax())LS.set('ryn',nx);return rynStall(nx,e)}
  state='end';document.getElementById('mb').hidden=true;$ui.hidden=false;document.getElementById('touch').hidden=true;const won=G.win;if(won){gainXP(200);LS.set('ryndone',1)}
- $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'РЫНОК ТВОЙ':'ВЫКИНУЛИ С РЫНКА'}</h1><p class="sub">${won?'Смотрящий повержен. Теперь на рынке смотришь ты.':'Этап '+RYN.st+': '+RST[RYN.st-1].loc+'. Можно начать с этого этапа заново.'}</p>${progLine()}
+ $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'РЫНОК ТВОЙ':'ВЫКИНУЛИ С РЫНКА'}</h1><p class="sub">${won?'Дон Анибал повержен. Теперь рынок держишь ты.':'Этап '+RYN.st+': '+RST[RYN.st-1].loc+'. Можно начать с этого этапа заново.'}</p>${progLine()}
  <div class="row"><button class="pri" id="again">${won?'Сначала':'Ещё раз с этапа '+RYN.st}</button><button id="menu">Меню</button></div></div>`;
  document.getElementById('again').onclick=()=>{if(won)RYN.st=1;RYN.carry=0;G=null;start()};document.getElementById('menu').onclick=showMenu}
 function rynHUD(){if(G.F.some(f=>f.boss&&f.state!=='ko'))return bossHUD();ctx.save();ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-250,12,500,52);ctx.textAlign='center';ctx.font='900 20px Impact,sans-serif';ctx.fillStyle='#e8b23a';
@@ -1339,7 +1339,7 @@ function paintRynok(g,s){const out=s<=3||s===5;
  if(out){const sk=g.createLinearGradient(0,0,0,300);sk.addColorStop(0,s===5?'#0a0c1a':'#1a2a4a');sk.addColorStop(1,s===5?'#2a2030':'#e8a060');g.fillStyle=sk;g.fillRect(0,0,W,H);
   g.fillStyle='rgba(30,30,40,.8)';for(let x=0;x<W;x+=rnd(60,120)){const h=rnd(60,140);g.fillRect(x,200-h,rnd(50,90),h)}}
  else{g.fillStyle=s===4?'#d8d8cc':s===6?'#6a7a6a':'#4a2a1a';g.fillRect(0,0,W,330);g.fillStyle='rgba(0,0,0,.12)';for(let x=0;x<W;x+=40)g.fillRect(x,0,2,330)}
- if(s===1){g.fillStyle='#5a5a60';g.fillRect(380,40,20,290);g.fillRect(880,40,20,290);rr(g,360,40,560,60,4,'#b81c24',3);g.fillStyle='#ffe28a';g.font='900 34px Impact,sans-serif';g.textAlign='center';g.fillText('РЫНОК «КОЛХОЗНЫЙ»',640,84);
+ if(s===1){g.fillStyle='#5a5a60';g.fillRect(380,40,20,290);g.fillRect(880,40,20,290);rr(g,360,40,560,60,4,'#b81c24',3);g.fillStyle='#ffe28a';g.font='900 34px Impact,sans-serif';g.textAlign='center';g.fillText('МЕРКАДО САН-ХАСИНТО',640,84);
   for(const [x,c] of [[40,'#2a6a3a'],[960,'#2a4a8a']]){rr(g,x,170,260,160,3,'#c8c0a8',3);rr(g,x+20,200,220,70,2,'#2a3a4a',2);g.fillStyle=c;g.fillRect(x-10,150,280,24);g.fillStyle='#fff';g.font='bold 15px system-ui';g.fillText(x<500?'ТАБАК · ЖВАЧКА':'СОКИ · ВОДЫ',x+130,167)}}
  if(s===2||s===3){const cols=s===2?['#c8202a','#2a8a3a','#e8b23a']:['#2a4a8a','#8a2a6a','#2a8a8a'];for(let k=0;k<5;k++){const x=20+k*255;rr(g,x,190,230,140,3,'#8a6a40',3);for(let i=0;i<8;i++){g.fillStyle=i%2?'#f0ece0':cols[k%3];g.beginPath();g.moveTo(x-6+i*30,170);g.lineTo(x+24+i*30,170);g.lineTo(x+20+i*30,200);g.lineTo(x-2+i*30,200);g.closePath();g.fill()}
   if(s===2)for(let i=0;i<14;i++)circ(g,x+20+(i%7)*30,250+(i>6?30:0),12,['#e83a2a','#ff9a2a','#3aa83a','#e8d83a'][(i+k)%4],2);else for(let i=0;i<6;i++){rr(g,x+12+i*36,215,28,90,3,['#3a5a9a','#2a3a6a','#5a7ab8'][i%3],2);g.fillStyle='#c8a050';g.fillRect(x+22+i*36,225,8,3)}}
@@ -1476,7 +1476,7 @@ function rzLevel(i){const L=RZL[i],d=i/(RZL.length-1),C=rzCfg(d);state='menu';
  $ui.innerHTML=`<div class="card"><p class="sub">Разрулить · ${i+1} из ${RZL.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${L.ic} ${L.w.toUpperCase()}</h1><div class="warn" style="border-color:#4a3d48;font-size:17px">${L.tx}<br><small>${C.steps} задания · нужно ${C.need}${C.time?' · ⏱ '+C.time+' с на ответ':''}</small></div><div class="row"><button class="pri" id="rgo">Начать</button><button id="rback">К списку</button></div></div>`;
  document.getElementById('rback').onclick=showRz;
  document.getElementById('rgo').onclick=()=>rzStart(L.w,d,()=>{if(rzMax()<i+2)LS.set('rzl',Math.min(RZL.length,i+2));if(i===RZL.length-1)LS.set('rzdone',1);rzAfter(i,true)},()=>rzAfter(i,false))}
-function rzAfter(i,won){state='menu';const last=i===RZL.length-1;$ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?(last?'ТЫ — РЕШАЛА':'РАЗРУЛИЛ'):'НЕ ВЫШЛО'}</h1><p class="sub">${won?(last?'Даже смотрящий признал: с тобой можно иметь дело.':`Открыт следующий: ${RZL[i+1].w}.`):'Попробуй ещё раз — вопросы будут другие.'}</p>${progLine()}
+function rzAfter(i,won){state='menu';const last=i===RZL.length-1;$ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?(last?'ТЫ — РЕШАЛА':'РАЗРУЛИЛ'):'НЕ ВЫШЛО'}</h1><p class="sub">${won?(last?'Даже дон Анибал признал: с тобой можно иметь дело.':`Открыт следующий: ${RZL[i+1].w}.`):'Попробуй ещё раз — вопросы будут другие.'}</p>${progLine()}
  <div class="row"><button class="pri" id="rn">${won&&!last?RZL[i+1].ic+' '+RZL[i+1].w+' ▶':won?'К списку':'Ещё раз'}</button><button id="rl">К списку</button><button id="rm">Меню</button></div></div>`;
  document.getElementById('rn').onclick=()=>won&&!last?rzLevel(i+1):won?showRz():rzLevel(i);document.getElementById('rl').onclick=showRz;document.getElementById('rm').onclick=showMenu}
 /* ---------- ПЕСО, БАРАХОЛКА, ОБМЕН НА ТАГШИМ ---------- */
@@ -1701,15 +1701,15 @@ function rynStall(next,earned){state='menu';$ui.hidden=false;document.getElement
  document.getElementById('stgo').onclick=()=>{au();RYN.st=next;RYN.carry=1;if(RYN.st>rynMax())LS.set('ryn',RYN.st);RYN.offer=null;G=null;paintBG();start()};
  document.getElementById('stmenu').onclick=()=>{RYN.st=next;if(RYN.st>rynMax())LS.set('ryn',RYN.st);RYN.carry=0;showMenu()}}
 function rynRoute(earned){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
- $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,52px)">РАЗВИЛКА</h1><p class="sub">До кабинета смотрящего два пути. Выбирай.</p>
- <div class="shg" style="grid-template-columns:1fr 1fr"><button class="shb" id="rsk"><span>📦</span><b>Через склад</b><small>Грузчик Вася, падают ящики, 3 волны людей. Зато песо больше в полтора раза.</small></button>
- <button class="shb" id="rkn"><span>🗄</span><b>Через контору</b><small>Решала с охраной и вызванная полиция — 1:30 на всё. Зато людей меньше.</small></button></div></div>`;
+ $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,52px)">РАЗВИЛКА</h1><p class="sub">До кабинета дона два пути. Выбирай.</p>
+ <div class="shg" style="grid-template-columns:1fr 1fr"><button class="shb" id="rsk"><span>📦</span><b>Через склад</b><small>Тио Бруто, падают ящики, 3 волны людей. Зато песо больше в полтора раза.</small></button>
+ <button class="shb" id="rkn"><span>🗄</span><b>Через контору</b><small>Лисенсиадо с охраной и вызванная полиция — 1:30 на всё. Зато людей меньше.</small></button></div></div>`;
  document.getElementById('rsk').onclick=()=>{RYN.route='sklad';LS.set('rroute','sklad');rynStall(5,earned)};document.getElementById('rkn').onclick=()=>{RYN.route='kontora';LS.set('rroute','kontora');rynStall(6,earned)}}
 /* свой рынок: дань и налёты */
 const today=()=>new Date().toISOString().slice(0,10);
 function showMyMarket(msg){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
  const got=LS.get('rtrib','')===today(),raid=LS.get('rraid','')===today();
- $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,52px)">🏪 МОЙ РЫНОК</h1><p class="sub">Смотрящий — ты. Торгаши платят, а чужие пробуют отбить точки.</p>${msg?`<p class="sub" style="color:var(--gold)">${msg}</p>`:''}
+ $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,52px)">🏪 МОЙ РЫНОК</h1><p class="sub">Хозяин рынка — ты. Торговцы платят, а чужие пробуют отбить точки.</p>${msg?`<p class="sub" style="color:var(--gold)">${msg}</p>`:''}
  <div class="warn" style="border-color:#5ad05a;padding:8px;font-size:18px"><b><i class="kp"></i> ${INV.kap}</b> песо</div>
  <div class="shg" style="grid-template-columns:1fr 1fr"><button class="shb" id="mtr" ${got?'disabled':''}><span>💰</span><b>Собрать дань</b><small>${got?'Сегодня уже собрал — приходи завтра':'Раз в день'}</small><i>+150 <i class="kp"></i></i></button>
  <button class="shb" id="mrd"><span>🚨</span><b>Отбить налёт</b><small>3 волны чужих, с тобой двое охранников</small><i>${raid?'+60':'+250 (первый за день)'} <i class="kp"></i></i></button></div>
@@ -1812,7 +1812,7 @@ function helpBody(t){
   <div><b>РЫВОК</b><span>${IS_TOUCH?'🕹 разбег + '+BTN('УДАР','#a01820'):'разбег + '+KEY('F')}</span><small>пробеги полсекунды и ударь — бросок вперёд</small></div></div>
   <p class="sub">Нажимай быстро, без пауз: между ударами меньше секунды.</p>`;
  if(t==='super')return `<p class="sub">Жёлтая шкала под здоровьем копится, когда бьёшь и когда бьют тебя. Полная — ${IS_TOUCH?'жми 💥':'жми '+KEY('R')}.</p><table class="htab">${HEROES.map(h=>`<tr><td><b>${h.name}</b></td><td><b style="color:var(--gold)">${SUPERS[h.id]?SUPERS[h.id].n:''}</b> — ${SUPD[h.id]||''}</td></tr>`).join('')}</table>`;
- return `<table class="htab"><tr><td>▶ Путь наверх</td><td>12 глав сюжета. Между главами — выборы: от них зависит, кто придёт на помощь и какая концовка.</td></tr><tr><td>▶ Рынок</td><td>7 этапов от барыги до смотрящего. Между этапами — лоток, после 4-го — развилка. Победишь — рынок твой.</td></tr><tr><td>🛒 Барахолка</td><td>оружие, шмот и расходники за песо <i class="kp"></i>. Песо дают за бои.</td></tr><tr><td>🗣 Разрулить</td><td>смекалка, напёрстки и разговор вместо драки</td></tr><tr><td>Завод</td><td>прячься от фонарей, бей со спины, унеси ящик</td></tr><tr><td>Видеосалон</td><td>стой в круге у телевизора</td></tr><tr><td>Баррио / Облава</td><td>вид сверху: держи направление — едешь туда</td></tr><tr><td>🚙 Угнать джип</td><td>взломай замок и уйди от уазиков через весь город до гаража</td></tr><tr><td>🌐 Онлайн</td><td>драка до 6 человек или гонка джипов до 4 — по коду комнаты</td></tr></table>`}
+ return `<table class="htab"><tr><td>▶ Путь наверх</td><td>12 глав сюжета. Между главами — выборы: от них зависит, кто придёт на помощь и какая концовка.</td></tr><tr><td>▶ Рынок</td><td>7 этапов от ворот до кабинета дона. Между этапами — лоток, после 4-го — развилка. Победишь — рынок твой.</td></tr><tr><td>🛒 Барахолка</td><td>оружие, шмот и расходники за песо <i class="kp"></i>. Песо дают за бои.</td></tr><tr><td>🗣 Разрулить</td><td>смекалка, напёрстки и разговор вместо драки</td></tr><tr><td>Завод</td><td>прячься от фонарей, бей со спины, унеси ящик</td></tr><tr><td>Видеосалон</td><td>стой в круге у телевизора</td></tr><tr><td>Баррио / Облава</td><td>вид сверху: держи направление — едешь туда</td></tr><tr><td>🚙 Угнать джип</td><td>взломай замок и уйди от уазиков через весь город до гаража</td></tr><tr><td>🌐 Онлайн</td><td>драка до 6 человек или гонка джипов до 4 — по коду комнаты</td></tr></table>`}
 function showHelp(back){const prev=state;state='menu';$ui.hidden=false;document.getElementById('touch').hidden=true;document.getElementById('mb').hidden=true;
  const tabs=[['pc','💻 Компьютер'],['phone','📱 Телефон'],['combo','👊 Комбо'],['super','💥 Супер'],['modes','🗺 Режимы']];
  $ui.innerHTML=`<div class="card"><h1 style="font-size:clamp(30px,6vw,50px)">КАК ИГРАТЬ</h1><div class="row">${tabs.map(([k,n])=>`<button class="stb ${HELPTAB===k?'on':''}" data-ht="${k}">${n}</button>`).join('')}</div><div class="hbody">${helpBody(HELPTAB)}</div><div class="row"><button class="pri" id="hback">${back?'Назад к бою':'Назад'}</button></div></div>`;

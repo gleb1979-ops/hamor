@@ -1563,7 +1563,7 @@ function hostTick(dt){if(!G||matchPhase==='inter')return;const P=G.P;
   boomV=G.BM?{x:G.BM.x,y:G.BM.y,ch:G.BM.ch}:null;if(G.ball){ballV={x:G.ball.x,y:G.ball.y,rot:G.ball.rot};keeperV={y:G.keeper.y,save:G.keeper.save>0,moving:G.keeper.moving};if(G.keeper2){keeperV2={y:G.keeper2.y,save:G.keeper2.save>0,moving:G.keeper2.moving};score22=[G.ga,G.gb]}}
   if(GM()&&GM().apply)GM().apply(GM().state?GM().state():null);
   jailV=G.jail?Object.keys(G.jail):[];teamV=LOC==='train'&&TM==='team'?[G.team,G.goal]:null;
-  tview=G.TC?G.TC.map(T=>({x:T.x,y:T.y,tx:T.x,ty:T.y,a:Math.atan2(T.fy,T.fx),st:T.st,k:T.k})):[];
+  tview=G.TC?G.TC.map(T=>{const v=T._v||(Object.defineProperty(T,'_v',{value:{},enumerable:false}),T._v);v.x=v.tx=T.x;v.y=v.ty=T.y;v.a=Math.atan2(T.fy,T.fx);v.st=T.st;v.k=T.k;return v}):[];
   if(evq.length){for(const e of evq)handleEvHost(e)}
   stAcc+=dt;if(stAcc>=.09||matchPhase==='end'){stAcc=0;
     send({t:'st',ph:matchPhase==='end'?'play':matchPhase,tl:Math.max(0,+timeLeft.toFixed(2)),B:burgers,ev:evq,TC:G.TC?G.TC.map(T=>[Math.round(T.x),Math.round(T.y),+Math.atan2(T.fy,T.fx).toFixed(2),T.st,TKINDS.indexOf(T.k)]):undefined,SB:G.SB?G.SB.map(b=>[b.id,Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),b.mega?1:0]):undefined,ST:G.star?[Math.round(G.star.x),Math.round(G.star.y)]:undefined,BMS:G.BM?[G.BM.x,G.BM.y,Math.round(G.BM.ch*100)]:undefined,MG:G.SB?Object.keys(G.P).filter(id=>G.P[id].mega):undefined,BL:G.ball?[Math.round(G.ball.x),Math.round(G.ball.y),Math.round(G.ball.vx),Math.round(G.ball.vy),Math.round(G.keeper.y),G.keeper.save>0?1:0,G.ball.frozen>0?1:0,G.keeper2?Math.round(G.keeper2.y):0,G.keeper2&&G.keeper2.save>0?1:0,G.ga||0,G.gb||0]:undefined,
@@ -3946,13 +3946,15 @@ GMS.steal={night:true,teamBots:true,paint:paintSteal,maps:['roof'],secs:()=>90,u
 /* ================= Night: Nights in the Forest ================= */
 const NF={x:750,y:520},NF_T=[{x:230,y:300,r:38},{x:520,y:250,r:34},{x:980,y:250,r:34},{x:1270,y:300,r:38},{x:200,y:700,r:38},{x:480,y:780,r:34},{x:1020,y:780,r:34},{x:1300,y:700,r:38},{x:380,y:520,r:30},{x:1120,y:520,r:30}],NF_DAY=12,NF_NIGHT=18,NF_N=3;
 GCONE.shade=0;
-const WOLF=new Image();WOLF.src='img/wolf.webp';const FIRE=new Image();FIRE.src='img/fire.webp';
+const WOLF=new Image();WOLF.src='img/wolf.webp';const WOLF_OY={1:-4,2:16,3:2,4:8};const FIRE=new Image();FIRE.src='img/fire.webp';
 GART.shade=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,run=tv.st!==2,ph=t*10+x*.01;
   if(WOLF.complete&&WOLF.naturalWidth){/* нарисованный волк: 0-3 бег (жёлтые глаза), 4-5 злой (красные), 6 испуган, 7 воет */
-    const q=(t*11+(tv.seed||(tv.seed=1+Math.random()*9)))|0,fr=tv.st===1?4+(((t*8+tv.seed)|0)&1):tv.st===2?6:(t<(tv.hw||(tv.hw=t+.9))?7:q%4),S=.82;
+    /* галоп по пройденному пути: присед → толчок → полёт; кадры сменяются по шагам, а не по таймеру — лапы не скользят */
+    const mv=tv.lx==null?0:Math.hypot(x-tv.lx,y-tv.ly);tv.lx=x;tv.ly=y;if(mv<60)tv.ad=(tv.ad||0)+mv;const ph=((tv.ad||0)/(tv.st===1?120:105))%1;
+    const fr=tv.st===2?6:t<(tv.hw||(tv.hw=t+.9))?7:tv.st===1?(ph<.45?5:4):(ph<.3?3:ph<.55?1:2),S=.82,oy=WOLF_OY[fr]||0;
     g.save();g.translate(x,y);g.fillStyle='rgba(0,0,0,.32)';g.beginPath();g.ellipse(0,2,52,11,0,0,7);g.fill();
     g.scale(fl,1);if(tv.st===2)g.globalAlpha=.8;if(tv.st===2&&!(((t*12)|0)%2))g.translate(0,-3);
-    g.drawImage(WOLF,fr*228,0,228,198,-114*S,-190*S,228*S,198*S);g.restore();return}
+    g.drawImage(WOLF,fr*228,0,228,198,-114*S,(-190+oy)*S,228*S,198*S);g.restore();return}
   g.save();g.translate(x,y);g.scale(fl,1);g.globalAlpha=tv.st===2?.5:1;
   g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,2,46,10,0,0,7);g.fill();
   g.fillStyle='#14102a';for(const [lx,o] of [[-26,0],[-12,1],[14,0],[28,1]]){const s=run?Math.sin(ph+o*3)*6:0;g.fillRect(lx+s-4,-30,8,30)}

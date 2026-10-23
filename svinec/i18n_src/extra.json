@@ -1030,5 +1030,101 @@
 "Веди прицел мышкой и держи кнопку — стреляешь · R — перезарядка · G — граната (3 шт.) · H — аптечка": [
 "Aim with the mouse and hold the button to shoot · R — reload · G — grenade (3) · H — medkit",
 "Apunta con el ratón y mantén el botón para disparar · R — recargar · G — granada (3) · H — botiquín"
+],
+"«Лусия пришла с людьми Калеро. Ты куда её ведёшь, амиго?»": [
+"“Lucía came with Calero's men. Where are you taking her, amigo?”",
+"«Lucía vino con la gente de Calero. ¿Adónde te la llevas, amigo?»"
+],
+"«Она сама решает, с кем уходить. Спроси у неё.»": [
+"“She decides who she leaves with. Ask her.”",
+"«Ella decide con quién se va. Pregúntale a ella.»"
+],
+"«Я её первый пригласил танцевать.»": [
+"“I asked her to dance first.”",
+"«Yo la invité a bailar primero.»"
+],
+"«А ты кто такой, чтобы спрашивать?»": [
+"“And who are you to ask?”",
+"«¿Y tú quién eres para preguntar?»"
+],
+"Лусия берёт тебя под руку: «Я с ним». Старший хмурится.": [
+"Lucía takes your arm: “I'm with him.” The boss frowns.",
+"Lucía te toma del brazo: «Voy con él». El jefe frunce el ceño."
+],
+"«Первый, говоришь?» — люди Калеро смеются.": [
+"“First, you say?” — Calero's men laugh.",
+"«¿Primero, dices?» — se ríe la gente de Calero."
+],
+"«Сейчас узнаешь, кто я». Старший кладёт руку на пояс.": [
+"“You're about to find out.” The boss puts a hand on his belt.",
+"«Ahora vas a saber quién soy». El jefe se lleva la mano al cinturón."
+],
+"«Ты в Сьюдад-Оро никто, чико из баррио. За тебя кто скажет?»": [
+"“You're nobody in Ciudad Oro, barrio kid. Who'll vouch for you?”",
+"«En Ciudad Oro no eres nadie, chico de barrio. ¿Quién responde por ti?»"
+],
+"«Скоро весь город узнает.»": [
+"“The whole city will know soon.”",
+"«Pronto lo sabrá toda la ciudad.»"
+],
+"*промолчать*": [
+"*stay silent*",
+"*callarse*"
+],
+"«Спроси у дона Эрнесто — я его человек.»": [
+"“Ask Don Ernesto — I'm his man.”",
+"«Pregúntale a don Ernesto: soy su hombre.»"
+],
+"«Ну-ну», — не верит старший.": [
+"“Sure, sure,” the boss doesn't buy it.",
+"«Ya, ya», — el jefe no se lo cree."
+],
+"Молчание приняли за страх.": [
+"They took your silence for fear.",
+"Tomaron tu silencio por miedo."
+],
+"Люди Калеро переглядываются: с доном Эрнесто сейчас ссориться не с руки.": [
+"Calero's men exchange looks: crossing Don Ernesto right now is a bad idea.",
+"La gente de Calero se mira: pelearse ahora con don Ernesto no conviene."
+],
+"«А если мы сейчас втроём на одного, прямо тут, у стойки?»": [
+"“What if it's three on one, right here at the bar?”",
+"«¿Y si ahora somos tres contra uno, aquí mismo, en la barra?»"
+],
+"«Давай, попробуй.»": [
+"“Go on, try it.”",
+"«Venga, inténtalo.»"
+],
+"«Втроём на одного при девушке? Вся кантина смотрит — завтра весь порт будет смеяться.»": [
+"“Three on one in front of a lady? The whole cantina is watching — tomorrow the whole port will be laughing.”",
+"«¿Tres contra uno delante de una dama? Toda la cantina mira: mañana se reirá todo el puerto.»"
+],
+"«Я позову полицию.»": [
+"“I'll call the police.”",
+"«Llamaré a la policía.»"
+],
+"«Попробую!» — старший делает шаг вперёд.": [
+"“I will!” — the boss steps forward.",
+"«¡Lo intentaré!» — el jefe da un paso al frente."
+],
+"Старший сплёвывает на пол: «Ладно. Сегодня она твоя».": [
+"The boss spits on the floor: “Fine. Tonight she's yours.”",
+"El jefe escupe al suelo: «Está bien. Esta noche es tuya»."
+],
+"«Полицию? Капитан Риос пьёт с нами по пятницам», — смеются люди Калеро.": [
+"“The police? Captain Ríos drinks with us on Fridays,” Calero's men laugh.",
+"«¿La policía? El capitán Ríos bebe con nosotros los viernes», se ríe la gente de Calero."
+],
+"Станция. Главный у Калеро ждёт на перроне — а скоро нагрянет полиция и будет бить всех подряд.": [
+"The station. Calero's top man waits on the platform — and soon the police will storm in and beat everyone.",
+"La estación. El jefe de Calero espera en el andén, y pronto llegará la policía a repartir golpes a todos."
+],
+"не отставай — полиция!": [
+"keep up — police!",
+"¡no te quedes atrás: la policía!"
+],
+"Свой парень": [
+"Our guy",
+"Uno de los nuestros"
 ]
 }

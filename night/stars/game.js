@@ -241,12 +241,21 @@ function botAI(p,dt){const b=G.ball,tnow=now(),d=p.team?-1:1,ogx=oppGoalX(p),mgx
     if(A.t<=0){A.t=.18+Math.random()*.15+L.rt;const gd=Math.abs(ogx-p.x);
       if(p.sup>=100&&gd<700&&Math.random()<.5*L.acc){doKick(p,1,ogx-p.x,CY-p.y+(Math.random()-.5)*GH*2*(1-L.acc),1);return [0,0]}
       if(gd<520&&Math.random()<.5){const kk=G.K[p.team?0:1],cy2=Math.random()<L.acc?(kk.y>CY?CY-GH+26:CY+GH-26):kk.y+(Math.random()-.5)*120;doKick(p,(.55+Math.random()*.45)*L.pw,ogx-p.x,cy2-p.y,0);return [0,0]}
-      if(near&&nd<95&&Math.random()<.45){const m=mates.filter(q=>q!==p).sort((a,c)=>((c.x-a.x)*d))[0];if(m){doKick(p,0,m.x-p.x,m.y-p.y,0);return [0,0]}}
+      {/* пас: ищем открытого партнёра, лучше — впереди; под давлением пасуем чаще */
+        let bm=null,bsc=-1e9;for(const q of mates){if(q===p)continue;let od=1e9;for(const o of opps)od=Math.min(od,hyp(o.x-q.x,o.y-q.y));
+          let blk=0;for(const o of opps){const vx=q.x-p.x,vy=q.y-p.y,L2=vx*vx+vy*vy||1,u=clamp(((o.x-p.x)*vx+(o.y-p.y)*vy)/L2,0,1),ex=p.x+vx*u-o.x,ey=p.y+vy*u-o.y;if(u>.1&&u<.95&&ex*ex+ey*ey<55*55)blk=1}
+          const ahead=(q.x-p.x)*d,dist=hyp(q.x-p.x,q.y-p.y);if(dist>820||dist<90||blk)continue;
+          const sc=ahead*.9+Math.min(od,260)*1.1-dist*.25+(q.bot?0:120);if(sc>bsc){bsc=sc;bm=q}}
+        const press=near&&nd<150,pr=press?.85:(bsc>240?.55:.22);
+        if(bm&&Math.random()<pr*(.6+.4*L.acc)){const lead=bm.bot?.35:.2;doKick(p,0,bm.x+(bm.vx||0)*lead-p.x,bm.y+(bm.vy||0)*lead-p.y,0);return [0,0]}}
       if(p.cd<tnow&&Math.random()<L.sk){const sk=STARS[p.star].sk;if((sk==='feint'||sk==='dash')&&near&&nd<160)doSkill(p);else if(sk==='cannon'&&gd<650)doSkill(p);else if(sk==='lob'&&gd>350&&gd<650)doSkill(p)}}}
   else{const carrier=b.owner?G.P[b.owner]:null,ours=carrier&&carrier.team===p.team;
-    if(ours){const slot=mates.filter(q=>q!==carrier).indexOf(p);tx=clamp(carrier.x+d*190,FX0+80,FX1-80);ty=clamp(carrier.y+(slot?170:-170),FY0+40,FY1-40)}
+    if(ours){/* без мяча: один убегает вперёд в свободную зону, второй страхует сбоку — чтобы было кому пасовать */
+      const slot=mates.filter(q=>q!==carrier).indexOf(p),wob=Math.sin(tnow/700+p.seed)*40;
+      if(slot===0){tx=clamp(carrier.x+d*320,FX0+90,FX1-150);ty=clamp(carrier.y>CY?CY-170:CY+170,FY0+50,FY1-50)+wob}
+      else{tx=clamp(carrier.x+d*40,FX0+80,FX1-120);ty=clamp(carrier.y+(carrier.y>CY?-260:260),FY0+50,FY1-50)-wob}}
     else{const px=b.x+b.vx*.22,py=b.y+b.vy*.22;let chaser=null,cd2=1e9;for(const q of mates){const dd=hyp(q.x-px,q.y-py)*(q.bot?1:.8);if(dd<cd2){cd2=dd;chaser=q}}
-      if(chaser===p||(b.held<0&&hyp(p.x-px,p.y-py)<(L.rt>.3?60:140))){tx=px;ty=py;if(carrier&&p.cd<tnow&&hyp(carrier.x-p.x,carrier.y-p.y)<110&&Math.random()<dt*2*L.tk){const sk=STARS[p.star].sk;if(sk==='slide'||sk==='magnet'||sk==='dash')doSkill(p)}
+      if(chaser===p||(b.held<0&&hyp(p.x-px,p.y-py)<(L.rt>.3?50:80))){tx=px;ty=py;if(carrier&&p.cd<tnow&&hyp(carrier.x-p.x,carrier.y-p.y)<110&&Math.random()<dt*2*L.tk){const sk=STARS[p.star].sk;if(sk==='slide'||sk==='magnet'||sk==='dash')doSkill(p)}
         if(carrier&&carrier.team!==p.team&&(p.tcd||0)<tnow&&hyp(carrier.x-p.x,carrier.y-p.y)<95&&Math.random()<dt*L.tk)doTackle(p,b.x-p.x,b.y-p.y)}
       else{const slot=mates.filter(q=>q!==chaser).indexOf(p);tx=lerp(mgx,b.x,.5)+d*20;ty=lerp(CY,b.y,.6)+(slot?110:-110);tx=clamp(tx,FX0+70,FX1-70)}}
     if(!b.owner&&b.held<0&&hyp(b.x-p.x,b.y-p.y)<46&&b.z<40&&A.t<=0){A.t=.25+L.rt;if(Math.abs(ogx-p.x)<520&&Math.random()<.5){doKick(p,.8*L.pw,ogx-p.x,CY-p.y,0);return [0,0]}}}
@@ -267,9 +276,9 @@ function hostTick(dt){if(!G)return;const tnow=now();G.pt-=dt;
     for(const id in G.P){const p=G.P[id];if(p.bot){const [dx,dy]=botAI(p,dt);moveP(p,dx,dy,dt)}else if(id===ME.id){}else{if(p.stun>0)p.stun-=dt;const tn=p.anim}}
     const bots=Object.values(G.P).filter(p=>p.bot);for(const a of bots)for(const q of Object.values(G.P)){if(a===q)continue;const dx=a.x-q.x,dy=a.y-q.y,d=hyp(dx,dy);if(d>0&&d<26&&!(G.ball.owner===q.id&&q.team!==a.team)){a.x+=dx/d*(26-d)*.5;a.y+=dy/d*(26-d)*.5}}
     const b=G.ball;
-    if(b.held<0&&b.z<30){let best=null,bd=1e9;for(const id in G.P){const p=G.P[id];if(p.stun>0)continue;if(b.noPick===id&&tnow<b.noPickU)continue;const d=hyp(b.x-p.x,b.y-p.y);if(d<34&&d<bd){bd=d;best=p}}
+    if(b.held<0&&b.z<30){let best=null,bd=1e9;for(const id in G.P){const p=G.P[id];if(p.stun>0)continue;if(b.noPick===id&&tnow<b.noPickU)continue;{const ow=b.owner&&G.P[b.owner];if(ow&&ow.team!==p.team){if((ow.immU||0)>tnow||(p.stlT||0)>tnow)continue;if(hyp(b.x-p.x,b.y-p.y)<34){p.stlT=tnow+450;if(Math.random()>(p.bot?.38:.6))continue}}}const d=hyp(b.x-p.x,b.y-p.y);if(d<34&&d<bd){bd=d;best=p}}
       if(best){const s=hyp(b.vx,b.vy);if(b.fire){best.stun=.7;ev('STN',best.id,.7);b.noPick=best.id;b.noPickU=tnow+300}else if(s>760&&b.lastTeam!==best.team&&Math.random()<.4){b.vx*=-.3;b.vy=(Math.random()-.5)*400;b.noPick=best.id;b.noPickU=tnow+200;ev('DF',best.id)}
-        else{if(b.pass&&b.pass.team===best.team&&b.pass.from!==best.id&&G.P[b.pass.from]){addSup(G.P[b.pass.from],14)}if(b.lastTeam>=0&&b.lastTeam!==best.team&&b.last)ev('INT',best.id);if(b.owner!==best.id){ev('TC',best.id);if(b.owner&&G.P[b.owner]&&G.P[b.owner].team!==best.team){ev('STL',best.id);addSup(best,4)}}
+        else{if(b.pass&&b.pass.team===best.team&&b.pass.from!==best.id&&G.P[b.pass.from]){addSup(G.P[b.pass.from],14)}if(b.lastTeam>=0&&b.lastTeam!==best.team&&b.last)ev('INT',best.id);if(b.owner!==best.id){ev('TC',best.id);best.immU=tnow+650;if(b.owner&&G.P[b.owner]&&G.P[b.owner].team!==best.team){ev('STL',best.id);addSup(best,4)}}
           const pv=hyp(best.vx||0,best.vy||0),tv=Math.max(150,pv*(PK(best.team).ctrl?1.0:1.12)+(PK(best.team).ctrl?60:90))*(best.feintU>tnow?1.15:1),bs=hyp(b.vx,b.vy),cv2=bs>520?Math.random()<.5:1;if(cv2&&pv<70){b.vx*=.08;b.vy*=.08;b.x=lerp(b.x,best.x+best.fx*30,.6);b.y=lerp(b.y,best.y+4+best.fy*12,.6)}else if(cv2){b.vx=best.fx*tv+(Math.random()-.5)*40;b.vy=best.fy*tv+(Math.random()-.5)*40}else{b.vx*=-.35;b.vy=(Math.random()-.5)*300}b.vz=0;b.owner=best.id;b.pass=null;b.fire=0;b.lob=0;b.last=best.id;b.lastTeam=best.team;b.noPick=best.id;b.noPickU=tnow+(cv2?190:120)}}}
     for(const id in G.P){const q=G.P[id];if(q.tkPend&&q.slideU<=tnow){q.tkPend=0;q.stun=.35;ev('STN',q.id,.35)}if(q.slideU>tnow&&b.held<0&&hyp(q.x-b.x,q.y-b.y)<(q.slideW?84:62)){const c=b.owner&&G.P[b.owner];q.tkPend=0;if(c&&c.team!==q.team&&hyp(c.x-q.x,c.y-q.y)<90){const st=q.slideW?1.4:.9;c.stun=st;ev('STN',c.id,st);G.tk=G.tk||{};const n=G.tk[q.id]=(G.tk[q.id]||0)+1;addSup(q,6);if(n%3===0)addSup(q,100);ev('TK',q.id,n)}b.owner=q.id;b.vx=q.fx*420;b.vy=q.fy*420;b.noPick=q.id;b.noPickU=tnow+220;ev('STL',q.id);q.slideU=0;break}}
     ballTick(dt);keeperTick(dt)}
@@ -468,7 +477,7 @@ function renderLobby(){const el=$('#lobby');const mine=LP.get(ME.id),link=locati
   if(isHost)$('#bSt').onclick=()=>{audio();if(solo)startSolo();else hostStart()};$('#bBk').onclick=()=>{leave();showMenu()}}
 function pick(o){if(o.star){PR.star=o.star}if(o.cel)PR.cel=o.cel;saveP();if(isHost){const p=LP.get(ME.id);if(o.team!=null){const n=[...LP.values()].filter(q=>q.team===o.team).length;if(n<3){p.team=o.team;if([...LP.values()].some(q=>q!==p&&q.team===p.team&&q.star===p.star))p.star=freeStar(p.team,p.star)}}if(o.star){p.star=o.star;p.rar=o.rar}if(o.cel)p.cel=o.cel;broadcastLobby()}else send({t:'pick',...o})}
 function buildRoster(){const R=[];for(const p of LP.values())R.push({id:p.id,name:p.name,star:p.star,team:p.team,cel:p.cel,rar:p.rar,bot:0});
-  for(const tm of [0,1]){const n=R.filter(r=>r.team===tm).length;const used=new Set(R.filter(r=>r.team===tm).map(r=>r.star));const free=SIDS.filter(s=>!used.has(s)).sort(()=>Math.random()-.5);for(let i=n;i<3;i++){const s=free.pop();R.push({id:'bot'+tm+i,name:'',star:s,team:tm,cel:CELS[Math.random()*3|0],rar:Math.random()<.25?1:0,bot:1})}}return R}
+  for(const tm of [0,1]){const n=R.filter(r=>r.team===tm).length;const used=new Set(R.map(r=>r.star));/* ботам — только герои, которых ещё нет на поле: соперники не близнецы */const free=SIDS.filter(s=>!used.has(s)).sort(()=>Math.random()-.5);for(let i=n;i<3;i++){const s=free.pop();R.push({id:'bot'+tm+i,name:'',star:s,team:tm,cel:CELS[Math.random()*3|0],rar:Math.random()<.25?1:0,bot:1})}}return R}
 function hostStart(){const R=buildRoster();newMatch(R);for(let i=0;i<3;i++)setTimeout(()=>send({t:'start',roster:R,cl:CL}),i*500);beginGame(R)}
 function soloLobby(){leave();isHost=true;solo=true;room=null;LP=new Map([[ME.id,myLP()]]);try{const c=JSON.parse(localStorage.getItem('tn_cl')||'null');if(c&&CLUBS[c[0]]&&CLUBS[c[1]]&&c[0]!==c[1])setClubs(c[0],c[1])}catch(e){}showLobby()}
 function startSolo(){if(window.R3D&&R3D.loading&&!startSolo.w){startSolo.w=1;big('3D…',8000);const t0=now(),wt=()=>{if(!R3D.loading||now()-t0>8000){big('',1);startSolo()}else setTimeout(wt,150)};wt();return}startSolo.w=0;hostStart()}

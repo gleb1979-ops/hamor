@@ -157,7 +157,7 @@ function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=
   else if(an===4){rot=1.35*face;y=-.05}
   else if(an===5){rot=1.0*face;y=-.1}
   else{sy=1+Math.sin(t*3+o.ph)*.025}
-  let RW=1,RH=1;if(c.sheet){const R=s.userData.run;if(an===1&&R&&R.image&&R.image.width){if(m.map!==R){m.map=R;m.needsUpdate=true}R.offset.x=(Math.floor(ph*.55)%6+6)%6/6;s.center.set(.5,12/360);RH=1.2;RW=(1.2*400/360)/1.4;y=0;rot=0;sx=1;sy=1}else{if(m.map!==c.sheet){m.map=c.sheet;m.needsUpdate=true}s.center.set(.5,.01);c.sheet.offset.x=(an===2?9:0)/10;if(an===2)rot*=.3}}o.fx=o.fx==null?face:(c.sheet?(face<0?-1:1):o.fx+(face-o.fx)*Math.min(1,dt*14));s.scale.set(c.W*sx*o.fx*RW,c.H*sy*RH,1);s.position.y=y;m.rotation=rot}
+  let RW=1,RH=1;if(c.sheet){const R=s.userData.run;if(an===1&&R&&R.image&&R.image.width){if(m.map!==R){m.map=R;m.needsUpdate=true}R.offset.x=(Math.floor(ph*.55)%6+6)%6/6;s.center.set(.5,12/360);RH=1.2;RW=(1.2*400/360)/1.4;y=0;rot=0;sx=1;sy=1}else{if(m.map!==c.sheet){m.map=c.sheet;m.needsUpdate=true}s.center.set(.5,.01);c.sheet.offset.x=(an===2?9:0)/10;if(an===2)rot*=.3}}o.fx=o.fx==null?face:o.fx+(face-o.fx)*Math.min(1,dt*(c.sheet?22:14));s.scale.set(c.W*sx*o.fx*RW,c.H*sy*RH,1);s.position.y=y;m.rotation=rot}
 let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
   const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1),{j:k.j,s:k.s});
@@ -192,7 +192,10 @@ const RS={w:0,h:0,cw:0,ch:0,at:0,dpr:0};let Q=1,fpsN=0,fpsT0=0;R3D.render=functi
     if(o.px!=null){const mx=X-o.px,mz=Z-o.py,d=Math.hypot(mx,mz);o.spd=lerpF(o.spd,Math.min(1.2,d/Math.max(dt,1e-3)/3.6),Math.min(1,dt*10));o.ph+=d*3.3;if(o.spd>.55&&p.anim!==4&&Math.random()<dt*9)dustPuff(X-Math.sin(o.ang)*.3,Z-Math.cos(o.ang)*.3);if(d>.004&&p.anim!==3&&p.anim!==4)o.tang=Math.atan2(mx,mz)}o.px=X;o.py=Z;
     if(p.me&&S.myDir&&(Math.abs(S.myDir[0])+Math.abs(S.myDir[1])>.1))o.tang=Math.atan2(S.myDir[0],S.myDir[1]);if(o.tang==null)o.tang=p.face<0?-Math.PI/2:Math.PI/2;
     let da=o.tang-o.ang;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;o.ang+=da*Math.min(1,dt*12);
-    c.holder.position.set(X,0,Z);const an=p.anim===1&&o.spd<.08?0:p.anim;heroPose(o,c,an,t+(p.seed||0),dt,Math.sin(o.ang)>=-.05?1:-1);
+    /* куда смотрит: по бегу влево-вправо (с запасом, без дёрганья); при ударе/пасе — туда, куда бьёт */
+    {const vxi=o.lx!=null?(X-o.lx)/Math.max(dt,1e-3):0;o.lx=X;o.vxs=lerpF(o.vxs||0,vxi,Math.min(1,dt*8));if(o.fc==null)o.fc=p.face<0?-1:1;
+     if(p.anim===2||p.anim===5||p.anim===7){o.fc=p.face<0?-1:1;o.kt=.35}else if(o.kt>0){o.kt-=dt}else if(p.me&&S.myDir&&Math.abs(S.myDir[0])>.25)o.fc=S.myDir[0]<0?-1:1;else if(Math.abs(o.vxs)>.9)o.fc=o.vxs<0?-1:1}
+    c.holder.position.set(X,0,Z);const an=p.anim===1&&o.spd<.08?0:p.anim;heroPose(o,c,an,t+(p.seed||0),dt,o.fc);
     o.ring.material.opacity=.65+.3*Math.sin(t*6);if(o.arrow){o.arrow.position.y=c.H+.75+Math.abs(Math.sin(t*4))*.25;o.arrow.visible=!S.rf;o.glow.material.opacity=.55+.25*Math.sin(t*5)}if(o.aura)o.aura.material.opacity=.5+.3*Math.sin(t*4);o.fire.visible=p.sup>=100&&!S.rf;o.lab.visible=!S.rf;o.stars.visible=p.anim===4;if(o.stars.visible)o.stars.position.x=Math.sin(t*6)*.25}
   for(const id in PL)if(!seen.has(id)){scene.remove(PL[id].c.holder);delete PL[id]}
   S.K.forEach((k,i)=>{const o=getKeeper(i),c=o.c;c.holder.visible=!k.hide;if(k.hide)return;const X=wx(i?FX1-30:FX0+30),Z=wz(k.y);c.holder.position.set(X,0,Z);const kd=(k.dy||1),sm=c.spr;let rot=0,y=0;if(k.a===2){rot=-kd*1.1*(i?-1:1);y=.2}else if(k.a===4){rot=(i?1:-1)*1.4}else y=Math.abs(Math.sin(t*4+i))*.05;sm.material.rotation=rot;sm.position.y=y;sm.scale.set(c.W*(i?-1:1),c.H,1)});

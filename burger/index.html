@@ -3863,7 +3863,14 @@ GMS.steal={night:true,teamBots:true,paint:paintSteal,maps:['roof'],secs:()=>90,u
 /* ================= Night: Nights in the Forest ================= */
 const NF={x:750,y:520},NF_T=[{x:230,y:300,r:38},{x:520,y:250,r:34},{x:980,y:250,r:34},{x:1270,y:300,r:38},{x:200,y:700,r:38},{x:480,y:780,r:34},{x:1020,y:780,r:34},{x:1300,y:700,r:38},{x:380,y:520,r:30},{x:1120,y:520,r:30}],NF_DAY=12,NF_NIGHT=18,NF_N=3;
 GCONE.shade=0;
-GART.shade=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,run=tv.st!==2,ph=t*10+x*.01;g.save();g.translate(x,y);g.scale(fl,1);g.globalAlpha=tv.st===2?.5:1;
+const WOLF=new Image();WOLF.src='img/wolf.webp';
+GART.shade=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,run=tv.st!==2,ph=t*10+x*.01;
+  if(WOLF.complete&&WOLF.naturalWidth){/* нарисованный волк: 0-3 бег (жёлтые глаза), 4-5 злой (красные), 6 испуган, 7 воет */
+    const q=(t*11+(tv.seed||(tv.seed=1+Math.random()*9)))|0,fr=tv.st===1?4+(((t*8+tv.seed)|0)&1):tv.st===2?6:(t<(tv.hw||(tv.hw=t+.9))?7:q%4),S=.82;
+    g.save();g.translate(x,y);g.fillStyle='rgba(0,0,0,.32)';g.beginPath();g.ellipse(0,2,52,11,0,0,7);g.fill();
+    g.scale(fl,1);if(tv.st===2)g.globalAlpha=.8;if(tv.st===2&&!(((t*12)|0)%2))g.translate(0,-3);
+    g.drawImage(WOLF,fr*228,0,228,198,-114*S,-190*S,228*S,198*S);g.restore();return}
+  g.save();g.translate(x,y);g.scale(fl,1);g.globalAlpha=tv.st===2?.5:1;
   g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,2,46,10,0,0,7);g.fill();
   g.fillStyle='#14102a';for(const [lx,o] of [[-26,0],[-12,1],[14,0],[28,1]]){const s=run?Math.sin(ph+o*3)*6:0;g.fillRect(lx+s-4,-30,8,30)}
   g.beginPath();g.ellipse(0,-42,46,22,0,0,7);g.fill();g.beginPath();g.moveTo(-40,-50);g.quadraticCurveTo(-74,-70,-70,-34);g.quadraticCurveTo(-58,-48,-40,-40);g.fill();
@@ -3871,7 +3878,10 @@ GART.shade=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,run=tv.st!==2
   g.beginPath();g.moveTo(54,-52);g.lineTo(74,-48);g.lineTo(56,-42);g.fill();
   const gl=tv.st===1?'#ff3b3b':'#ffe14d';g.fillStyle=gl;g.shadowColor=gl;g.shadowBlur=12;g.beginPath();g.ellipse(42,-62,4,3,0,0,7);g.ellipse(54,-60,4,3,0,0,7);g.fill();g.shadowBlur=0;
   g.fillStyle='#fff';for(const tx of [58,64])g.fillRect(tx,-48,2,5);g.restore()};
-function paintForest(f){const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#0b1a2a');sk.addColorStop(1,'#1d3a34');f.fillStyle=sk;f.fillRect(0,0,AW,TOP);
+/* нарисованные фоны Night (если картинка ещё грузится — рисуем старый вариант, потом перерисуем) */
+const NBG={};function nbg(k){if(!NBG[k]){const im=new Image();im.onload=()=>{for(const q in floorCaches)delete floorCaches[q]};im.src='img/bg_'+k+'.webp';NBG[k]=im}const im=NBG[k];return im.complete&&im.naturalWidth?im:null}
+['nf_forest','nf_camp'].forEach(nbg);
+function paintForest(f){{const im=nbg('nf_forest');if(im){f.drawImage(im,0,0,AW,AH);return}}const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#0b1a2a');sk.addColorStop(1,'#1d3a34');f.fillStyle=sk;f.fillRect(0,0,AW,TOP);
   for(let x=-30;x<AW;x+=55){f.fillStyle=x%110?'#123322':'#173d2a';f.beginPath();f.moveTo(x,TOP);f.lineTo(x+40,TOP-90-((x*7)%40));f.lineTo(x+80,TOP);f.fill()}
   f.fillStyle='#2f5a2e';f.fillRect(0,TOP-14,AW,AH);let sd=3;const rnd=()=>{sd=(sd*9301+49297)%233280;return sd/233280};for(let i=0;i<90;i++){f.fillStyle=`rgba(20,60,20,${.15+rnd()*.2})`;f.beginPath();f.ellipse(rnd()*AW,TOP+rnd()*(AH-TOP),20+rnd()*50,6+rnd()*12,rnd()*3,0,7);f.fill()}
   f.fillStyle='#6b5a3a';f.beginPath();f.ellipse(NF.x,NF.y,170,95,0,0,7);f.fill();
@@ -3880,7 +3890,7 @@ function paintForest(f){const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorSt
   frameWalls(f,'#1a2a1a')}
 const NF_T2=[{x:260,y:290,r:44},{x:600,y:250,r:30},{x:1240,y:300,r:44},{x:930,y:250,r:30},{x:220,y:720,r:40},{x:520,y:790,r:30},{x:1000,y:790,r:30},{x:1290,y:720,r:44},{x:400,y:520,r:28},{x:1110,y:520,r:28}],NF_C2=['tent','treeS','tent','treeS','treeM','rock','rock','treeM','barrel','barrel'];
 const NFC=()=>mapOf('nights')==='camp',NFT=()=>NFC()?NF_T2:NF_T;
-function paintCamp(f){const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#0a1630');sk.addColorStop(1,'#16304a');f.fillStyle=sk;f.fillRect(0,0,AW,TOP);
+function paintCamp(f){{const im=nbg('nf_camp');if(im){f.drawImage(im,0,0,AW,AH);return}}const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#0a1630');sk.addColorStop(1,'#16304a');f.fillStyle=sk;f.fillRect(0,0,AW,TOP);
   f.fillStyle='#fdf6d8';f.beginPath();f.arc(1180,40,20,0,7);f.fill();const lk=f.createLinearGradient(0,70,0,TOP);lk.addColorStop(0,'#123a5a');lk.addColorStop(1,'#0c2a44');f.fillStyle=lk;f.beginPath();f.moveTo(0,TOP);f.lineTo(0,80);f.quadraticCurveTo(AW/2,52,AW,80);f.lineTo(AW,TOP);f.fill();
   f.fillStyle='rgba(253,246,216,.35)';for(let i=0;i<6;i++){f.fillRect(1150+(i%2)*14,84+i*9,40-i*5,3)}for(let x=-20;x<AW;x+=46){f.fillStyle='#0d2418';f.beginPath();f.moveTo(x,74);f.lineTo(x+22,30-((x*13)%26));f.lineTo(x+44,74);f.fill()}
   if(SUM.ready&&SUM.g.naturalWidth){f.fillStyle=f.createPattern(SUM.g,'repeat');f.fillRect(0,TOP-14,AW,AH)}else{f.fillStyle='#3d7a3a';f.fillRect(0,TOP-14,AW,AH)}f.fillStyle='rgba(10,30,40,.42)';f.fillRect(0,TOP-14,AW,AH);

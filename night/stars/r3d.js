@@ -143,11 +143,11 @@ const PL={},KP=[];
 const HTEX={};function heroTex(c,col,kt){const k=c+col+(kt?kt.j+kt.s:'');if(HTEX[k])return HTEX[k];const cvs=window.HERO_ART.canvas(c,col,kt);const t=new THREE.CanvasTexture(cvs);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return HTEX[k]={t,asp:cvs.width/cvs.height}}
 const blobGeo=new THREE.CircleGeometry(.55,32);
 /* новые нарисованные герои: лист бега 10 кадров (../../burger/img/r_<id>.webp) */
-const NEWH=['banana','burgerdino','cattoaster','shark','dumpling','broccoli','roboduck','cactus','icecream','pizza'],NSH={};
+const NEWH=['banana','burgerdino','cattoaster','shark','dumpling','broccoli','roboduck','cactus','icecream','pizza','keeper'],NSH={};
 const NWK={};function runTex(c){if(!NWK[c]){const t=new THREE.TextureLoader().load('../../burger/img/w_'+c+'.webp');t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;NWK[c]=t}const t=NWK[c].clone();t.repeat.set(1/6,1);return t}
 function sheetTex(c){if(!NSH[c]){const t=new THREE.TextureLoader().load('../../burger/img/r_'+c+'.webp');t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;NSH[c]=t}const t=NSH[c].clone();t.repeat.set(.1,1);t.offset.x=0;return t}
 function heroBody(c,col,H,kt){const holder=new THREE.Group();let spr,W,sheet=null;
-  if(NEWH.includes(c)){sheet=sheetTex(c);H*=1.12;spr=new THREE.Sprite(new THREE.SpriteMaterial({map:sheet,transparent:true,alphaTest:.04}));spr.center.set(.5,.01);W=H*1.4;spr.scale.set(W,H,1);holder.add(spr);spr.userData.run=runTex(c);spr.userData.base=sheet}
+  if(NEWH.includes(c)){sheet=sheetTex(c);H*=1.12;spr=new THREE.Sprite(new THREE.SpriteMaterial({map:sheet,transparent:true,alphaTest:.04}));spr.center.set(.5,.01);W=H*1.4;spr.scale.set(W,H,1);holder.add(spr);if(c!=='keeper')spr.userData.run=runTex(c);spr.userData.base=sheet}
   else{const {t,asp}=heroTex(c,col,kt);spr=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,alphaTest:.04}));spr.center.set(.5,.02);W=H*asp;spr.scale.set(W,H,1);holder.add(spr)}
   const blob=new THREE.Mesh(blobGeo,new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35,depthWrite:false}));blob.rotation.x=-Math.PI/2;blob.position.y=.015;blob.scale.set(1,.55,1);holder.add(blob);return {holder,spr,W,H,sheet}}
 function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=1,sy=1;const ph=o.ph*2.2;
@@ -196,7 +196,11 @@ const RS={w:0,h:0,cw:0,ch:0,at:0,dpr:0};let Q=1,fpsN=0,fpsT0=0;R3D.render=functi
     c.holder.position.set(X,0,Z);const an=p.anim===1&&o.spd<.08?0:p.anim;heroPose(o,c,an,t+(p.seed||0),dt,o.fc);
     o.ring.material.opacity=.65+.3*Math.sin(t*6);if(o.arrow){o.arrow.position.y=c.H+.75+Math.abs(Math.sin(t*4))*.25;o.arrow.visible=!S.rf;o.glow.material.opacity=.55+.25*Math.sin(t*5)}if(o.aura)o.aura.material.opacity=.5+.3*Math.sin(t*4);o.fire.visible=p.sup>=100&&!S.rf;o.lab.visible=!S.rf;o.stars.visible=p.anim===4;if(o.stars.visible)o.stars.position.x=Math.sin(t*6)*.25}
   for(const id in PL)if(!seen.has(id)){scene.remove(PL[id].c.holder);delete PL[id]}
-  S.K.forEach((k,i)=>{const o=getKeeper(i),c=o.c;c.holder.visible=!k.hide;if(k.hide)return;const X=wx(i?FX1-30:FX0+30),Z=wz(k.y);c.holder.position.set(X,0,Z);const kd=(k.dy||1),sm=c.spr;let rot=0,y=0;if(k.a===2){rot=-kd*1.1*(i?-1:1);y=.2}else if(k.a===4){rot=(i?1:-1)*1.4}else y=Math.abs(Math.sin(t*4+i))*.05;sm.material.rotation=rot;sm.position.y=y;sm.scale.set(c.W*(i?-1:1),c.H,1)});
+  S.K.forEach((k,i)=>{const o=getKeeper(i),c=o.c;c.holder.visible=!k.hide;if(k.hide)return;const X=wx(i?FX1-30:FX0+30),Z=wz(k.y);c.holder.position.set(X,0,Z);const kd=(k.dy||1),sm=c.spr;let rot=0,y=0;
+    if(c.sheet){/* осьминог: 0 стойка, 1-2 шаги в сторону, 3 мяч в руках, 5 прыжок, 7 отбил, 8 оглушён */const BB=S.B||{},held=BB.held===i||(Math.abs((BB.x||0)-(i?FX1-52:FX0+52))<10&&Math.abs((BB.y||0)-k.y)<10&&(BB.z||0)>15);let f=0;
+      if(k.a===4)f=8;else if(k.a===2){f=5;rot=(kd<0?.85:-.85)*(i?-1:1);y=.35}else if(held)f=3;else if(k.a===1)f=1+(Math.floor(t*7)%2);else y=Math.abs(Math.sin(t*4+i))*.04;
+      const fl=!!i;c.sheet.repeat.x=fl?-.1:.1;c.sheet.offset.x=(f+(fl?1:0))/10;sm.material.rotation=rot;sm.position.y=y;sm.scale.set(c.W,c.H,1)}
+    else{if(k.a===2){rot=-kd*1.1*(i?-1:1);y=.2}else if(k.a===4){rot=(i?1:-1)*1.4}else y=Math.abs(Math.sin(t*4+i))*.05;sm.material.rotation=rot;sm.position.y=y;sm.scale.set(c.W*(i?-1:1),c.H,1)}});
   const b=S.B,bz=(b.z||0)*U;ball.position.set(wx(b.x),BR+bz,wz(b.y));const vx=b.vx||0,vy=b.vy||0,sp=Math.hypot(vx,vy);if(sp>5){const ax=new THREE.Vector3(vy,0,-vx).normalize();ball.rotateOnWorldAxis(ax,-sp*U*dt/BR)}
   juice(dt,b,sp);
   ballRing.position.set(ball.position.x,.02,ball.position.z);ballRing.visible=!b.owner;ballRing.material.opacity=.45+.35*Math.sin(t*7);

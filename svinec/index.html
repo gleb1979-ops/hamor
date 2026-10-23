@@ -85,7 +85,7 @@ const HEROES=[
  {id:'kaban',name:'Хабали',desc:'Бугай. Кулак сбивает с ног',hp:140,spd:180,pow:1.3,rate:.85,heavyFist:1,price:600,pq:'h_kaban',hand:{i:[41,-93],p:[101,-110],o:[-15,-147]},top:110,sc:1.18,jacket:'#1f2a5a',pants:'#1f2a5a',stripe:'#f2f2f2',hair:'#4a3a2a',skin:'#e0a880'},
  {id:'marinka',name:'Пальома',desc:'Девчонка из баррио. Вёрткая — уворачивается от ударов',hp:85,spd:260,pow:.95,rate:1.3,dodge:.22,price:450,pq:'h_marinka',hand:{i:[28,-93],p:[65,-105],o:[6,-154]},top:110,sc:1.05,noEnemy:1,jacket:'#6a2a9a',pants:'#6a2a9a',stripe:'#f2f2f2',hair:'#7a4a2a',skin:'#f0c4a0'}];
 const TINT=document.createElement('canvas');TINT.width=400;TINT.height=360;const PZMAP=[1,0,2,3],PZTOP0=[60,70,70,58],PZI=[],PZTOP=[];for(let h=0;h<HEROES.length;h++){const i=new Image();i.src=HEROES[h].pq?'img/'+HEROES[h].pq+'.webp':'img/pq'+PZMAP[h]+'.webp';PZI[h]=i;PZTOP[h]=HEROES[h].top!=null?HEROES[h].top:PZTOP0[PZMAP[h]];i.onload=()=>{if(PZI.every(x=>x.complete&&x.naturalWidth)&&typeof state!=='undefined'&&state==='menu')showMenu()}}
-const NSPR={},NTOP={girl:83,major:110,majorb:110,ment:110,druzh:110,ded:110,storozh:110,vasya:115,host:115,brig:116,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115,perro:110,flaco:110,gordo:110,patron:110,toro:110,mg1:115,mg2:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
+const NSPR={},NTOP={girl:83,major:110,majorb:110,ment:110,druzh:110,ded:110,storozh:110,vasya:115,host:115,brig:116,dog:35,g1:20,g2:20,g3:20,baryga:115,naper:115,farc:115,reshala:115,smotr:115,myasnik:115,perro:110,flaco:110,gordo:110,patron:110,toro:110,mg1:115,mg2:115,mg3:115,mg4:115,mg5:115},NSK={guard:'storozh',ded:'ded',druzh:'druzh'};for(const k in NTOP){const i=new Image();i.src='img/n_'+k+'.webp';NSPR[k]=i}
 const UAZI=new Image();UAZI.src='img/uaz.webp';
 const nsOK=k=>k&&NSPR[k]&&NSPR[k].complete&&NSPR[k].naturalWidth;
 /* 6-кадровый цикл ходьбы: ноги переставляются */
@@ -1312,12 +1312,12 @@ const RST=[
  {loc:'Контора рынка',b:'ЭЛЬ ЛИСЕНСИАДО',spr:'reshala',w:'knux',hp:260,sc:1.25,guards:2,tip:'Решала рынка, с охраной. Сначала вырубай охрану.'},
  {loc:'Кабинет дона',b:'ДОН АНИБАЛ',spr:'smotr',kind:'host',w:'bpistol',hp:380,sc:1.36,tip:'Стреляет издалека, на половине здоровья зовёт охрану. Бей вплотную.'}];
 /* свои рядовые враги меркадо (картинки n_mg*.webp) */
-const RGR=[['mg1','Торгаш'],['mg2','Носильщик']];
+const RGR=[['mg1','Торгаш'],['mg3','Карманник',.86],['mg2','Носильщик'],['mg4','Торговка'],['mg5','Охранник рынка',1.08]];
 const RNAMES=['Торгаш','Грузчик','Шнырь','Кидала','Меняла','Носильщик','Сторож','Шестёрка'];
 function rynMax(){return clamp(LS.get('ryn',1),1,7)}
 function castRynok(F){const me=F[0];me.x=180;me.y=540;me.face=1;G0wave(F,1);if(RYN.def){const others=HOTH();for(let i=0;i<2;i++){const a=newFighter(F.length,others[i],true,0);a.ally=true;a.name='Охрана';a.x=120+i*60;a.y=470+i*120;a.face=1;F.push(a)}}}
 function G0wave(F,w){const s=RYN.st,n=Math.min(4,2+Math.floor((s+w-1)/2)),others=[0,1,2,3].filter(h=>h!==myHero);
- for(let i=0;i<n;i++){const e=newFighter(F.length,others[(i+w)%3],true,1);e.name=RNAMES[(i*3+s+w)%RNAMES.length];if(RGR.length){const q=(i+s+w)%RGR.length;e.spr=RGR[q][0];e.name=RGR[q][1]}e.x=1180+i*40+(i%2)*60;e.y=430+((i*97)%220);e.face=-1;
+ for(let i=0;i<n;i++){const e=newFighter(F.length,others[(i+w)%3],true,1);e.name=RNAMES[(i*3+s+w)%RNAMES.length];if(RGR.length){const q=(i+s+w)%RGR.length;e.spr=RGR[q][0];e.name=RGR[q][1];if(RGR[q][2])e.bscale=RGR[q][2];if(RGR[q][0]==='mg4')e.girl=0}e.x=1180+i*40+(i%2)*60;e.y=430+((i*97)%220);e.face=-1;
   if(Math.random()<.25+s*.07){const k=['stick','bottle','bat','chain','knux','nunchaku','knife'][Math.random()*Math.min(7,3+s)|0];e.weapon=k;e.dur=WEAPONS[k].dur}F.push(e)}}
 function rynSpawnBoss(){const s=RYN.st,B=RST[s-1];const b=newFighter(G.F.length,B.hero!=null?B.hero:2,true,1);b.boss=1;b.kind=B.kind||'none';if(B.spr)b.spr=B.spr;b.bscale=B.sc;b.name=B.b;b.hp=b.max=Math.round(B.hp*1.7);b.mPow=1+s*.03;b.weapon=B.w;b.dur=999;b.ammo=99;b.x=1200;b.y=520;b.face=-1;b.sk=3;G.F.push(b);
  if(B.guards)for(let i=0;i<B.guards;i++){const g=newFighter(G.F.length,[1,3][i],true,1);g.name='Охрана';g.weapon=['bat','chain'][i];g.dur=WEAPONS[g.weapon].dur;g.x=1150;g.y=440+i*160;g.face=-1;G.F.push(g)}

@@ -874,5 +874,25 @@
 "7 этапов от ворот до кабинета дона. Между этапами — лоток, после 4-го — развилка. Победишь — рынок твой.": [
 "7 stages from the gate to the Don’s office. Between stages — a stall; after the 4th — a fork. Win and the market is yours.",
 "7 etapas desde la entrada hasta la oficina del Don. Entre etapas, un puesto; después de la 4.ª, una encrucijada. Si ganas, el mercado es tuyo."
+],
+"Карманник": [
+"Pickpocket",
+"Ratero"
+],
+"Торговка": [
+"Fruit seller",
+"Frutera"
+],
+"Охранник рынка": [
+"Market guard",
+"Vigilante del mercado"
+],
+"Носильщик": [
+"Porter",
+"Cargador"
+],
+"Торгаш": [
+"Huckster",
+"Mercachifle"
 ]
 }

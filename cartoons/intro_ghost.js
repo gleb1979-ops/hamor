@@ -6,7 +6,7 @@ const back=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(
 function rnd(i){const s=Math.sin(i*127.1+311.7)*43758.5453;return s-Math.floor(s)}
 const FONT='Rubik, "Noto Color Emoji", Arial Black, sans-serif';
 // --- prerendered hall map
-E.MP.ghost='hall';const map=document.createElement('canvas');map.width=E.AW;map.height=E.AH;E.paintGhostMap(map.getContext('2d'));
+E.MP.ghost='hall';const map=document.createElement('canvas');map.width=E.AW;map.height=E.AH;E.setLoc('ghost');E.drawFloor(map.getContext('2d'));
 // --- scene timing (seconds)
 const T1=5.5,T2=11.5,T3=19,T4=22.5,T5=26.5,TEND=30;
 // candles (world coords) and which friend lights them + when

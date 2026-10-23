@@ -36,7 +36,7 @@ h.counter=(t,items)=>{h.scr();items.forEach((it,i)=>{const n=items.length,x=W/2+
 h.endCard=(t,icon)=>{h.bands(t);const k=h.pop(t,h.T5);h.scr();if(k>.01){g.save();g.translate(W/2,800);g.scale(k,k);icon(t);g.restore()}
   g.save();g.translate(W/2,1010);g.scale(k,k);h.text(TXT.title,0,0,Math.min(98,1500/Math.max(1,TXT.title.length)),'#ffc531',{sc:'#5a2410',max:1000});g.restore();
   const k2=h.pop(t,h.T5+.4);g.save();g.translate(W/2,1160);g.scale(k2,k2);h.text(TXT.cta,0,0,54,'#ffffff',{w:800,max:900});g.restore();
-  if(!TXT.live){const k3=h.pop(t,h.T5+.8);g.save();g.translate(W/2,1370);g.scale(k3,k3);g.fillStyle='#e8412c';g.beginPath();g.roundRect(-330,-70,660,140,70);g.fill();h.text(TXT.url,0,0,60,'#ffffff',{sc:'#7a1a0e'});g.restore()}};
+  if(!TXT.live){const k3=h.pop(t,h.T5+.8);g.save();g.translate(W/2,1370);g.scale(k3,k3);g.fillStyle='#e8412c';g.beginPath();g.roundRect(-330,-70,660,140,70);g.fill();h.text(TXT.url,0,0,60,'#ffffff',{sc:'#7a1a0e'});g.restore()};{const off=TXT.off||(/[֐-׿]/.test(TXT.cta)?'📶 אפשר לשחק גם בלי אינטרנט':/[а-яё]/i.test(TXT.cta)?'📶 Можно играть даже без интернета':'📶 Play even without internet');const k4=h.pop(t,h.T5+1.2);g.save();g.translate(W/2,1540);g.scale(k4,k4);h.text(off,0,0,48,'#9fe3a0',{w:860,max:900});g.restore()}};
 h.next=t=>{if(t<h.T4+2.3)return;const k=h.pop(t,h.T4+2.3);h.scr();g.save();g.translate(W/2,1720);g.scale(k,k);h.text(TXT.next,0,0,52,'#ffe066',{w:800});g.restore()};
 // master renderer: scenes(t) draws scene content; caps = [[a,b,key],...]
 h.render=(t,scenes,caps,icon,cuts)=>{h.scr();g.clearRect(0,0,W,H);if(t<h.T5){h.bands(t);scenes(t)}else h.endCard(t,icon);

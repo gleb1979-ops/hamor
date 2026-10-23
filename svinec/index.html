@@ -1314,13 +1314,15 @@ const RST=[
  {loc:'Кабинет дона',b:'ДОН АНИБАЛ',spr:'smotr',kind:'host',w:'bpistol',hp:380,sc:1.36,tip:'Стреляет издалека, на половине здоровья зовёт охрану. Бей вплотную.'}];
 /* свои рядовые враги меркадо (картинки n_mg*.webp) */
 const RGR=[['mg1','Торгаш'],['mg3','Карманник',.86],['mg2','Носильщик'],['mg4','Торговка'],['mg5','Охранник рынка',1.08]];
+/* сложность меркадо: рядовые и боссы (правится тут) */
+const RYNK={hp:.6,pow:.75,bhp:1.2,bpow:.85};
 const RNAMES=['Торгаш','Грузчик','Шнырь','Кидала','Меняла','Носильщик','Сторож','Шестёрка'];
 function rynMax(){return clamp(LS.get('ryn',1),1,7)}
-function castRynok(F){const me=F[0];me.x=180;me.y=540;me.face=1;G0wave(F,1);if(RYN.def){const others=HOTH();for(let i=0;i<2;i++){const a=newFighter(F.length,others[i],true,0);a.ally=true;a.name='Охрана';a.x=120+i*60;a.y=470+i*120;a.face=1;F.push(a)}}}
-function G0wave(F,w){const s=RYN.st,n=Math.min(4,2+Math.floor((s+w-1)/2)),others=[0,1,2,3].filter(h=>h!==myHero);
+function castRynok(F){const me=F[0];me.x=180;me.y=540;me.face=1;if(!RYN.def){const al=newFighter(F.length,HOTH()[0],true,0);al.ally=true;al.team=0;al.name='Флако';if(nsOK('flaco'))al.spr='flaco';al.x=130;al.y=460;al.face=1;F.push(al)}G0wave(F,1);if(RYN.def){const others=HOTH();for(let i=0;i<2;i++){const a=newFighter(F.length,others[i],true,0);a.ally=true;a.name='Охрана';a.x=120+i*60;a.y=470+i*120;a.face=1;F.push(a)}}}
+function G0wave(F,w){const s=RYN.st,n=RYN.def?Math.min(4,2+Math.floor((s+w-1)/2)):CAMP.on?(s===1||w===1?2:3):Math.min(3,1+Math.ceil((s+w)/3)),others=[0,1,2,3].filter(h=>h!==myHero);
  for(let i=0;i<n;i++){const e=newFighter(F.length,others[(i+w)%3],true,1);e.name=RNAMES[(i*3+s+w)%RNAMES.length];if(RGR.length){const q=(i+s+w)%RGR.length;e.spr=RGR[q][0];e.name=RGR[q][1];if(RGR[q][2])e.bscale=RGR[q][2];if(RGR[q][0]==='mg4')e.girl=0}e.x=1180+i*40+(i%2)*60;e.y=430+((i*97)%220);e.face=-1;
-  if(Math.random()<.25+s*.07){const k=['stick','bottle','bat','chain','knux','nunchaku','knife'][Math.random()*Math.min(7,3+s)|0];e.weapon=k;e.dur=WEAPONS[k].dur}F.push(e)}}
-function rynSpawnBoss(){const s=RYN.st,B=RST[s-1];const b=newFighter(G.F.length,B.hero!=null?B.hero:2,true,1);b.boss=1;b.kind=B.kind||'none';if(B.spr)b.spr=B.spr;b.bscale=B.sc;b.name=B.b;b.hp=b.max=Math.round(B.hp*1.7);b.mPow=1+s*.03;b.weapon=B.w;b.dur=999;b.ammo=99;b.x=1200;b.y=520;b.face=-1;b.sk=3;G.F.push(b);
+  if(!RYN.def){e.hp=e.max=Math.round(e.max*RYNK.hp);e.mPow=RYNK.pow}if(Math.random()<.15+s*.03){const k=['stick','bottle','bat','chain','knux','nunchaku','knife'][Math.random()*Math.min(7,3+s)|0];e.weapon=k;e.dur=WEAPONS[k].dur}F.push(e)}}
+function rynSpawnBoss(){const s=RYN.st,B=RST[s-1];const b=newFighter(G.F.length,B.hero!=null?B.hero:2,true,1);b.boss=1;b.kind=B.kind||'none';if(B.spr)b.spr=B.spr;b.bscale=B.sc;b.name=B.b;b.hp=b.max=Math.round(B.hp*(CAMP.on?RYNK.bhp:1.6));b.mPow=(1+s*.025)*RYNK.bpow;b.weapon=B.w;b.dur=999;b.ammo=99;b.x=1200;b.y=520;b.face=-1;b.sk=3;G.F.push(b);
  if(B.guards)for(let i=0;i<B.guards;i++){const g=newFighter(G.F.length,[1,3][i],true,1);g.name='Охрана';g.weapon=['bat','chain'][i];g.dur=WEAPONS[g.weapon].dur;g.x=1150;g.y=440+i*160;g.face=-1;G.F.push(g)}
  G.msg=B.b;G.sub=B.tip;G.msgT=2.6;SFX.bell();shake=6}
 function rynInit(){G.wave=1;G.waves=2;G.bossOn=0;G.clearT=0;const me=G.F[0];if(RYN.carry){me.hp=Math.min(me.max,Math.round(RYN.hp+me.max*.35))}RYN.carry=0;

@@ -1096,22 +1096,22 @@ function oblInit(){const T=TR,N=T.N,me=G.F[0];G.F.length=1;me.lives=OBL_LIVES;
  oblSpawnCar((me.si+Math.floor(N/2))%N);oblSpawnCar((me.si+Math.floor(N/4))%N)}
 /* следующий круг: новые нычки, больше уазиков, быстрее, меньше времени */
 function oblNextLap(){const O=G.obl,me=G.F[0],T=TR,N=T.N;O.lap++;O.tot+=O.got;O.got=0;O.exitOpen=0;O.S=oblStash(5+O.lap);O.tl=150-10*(O.lap-1);
- for(const c of O.C){const j=(me.si+Math.floor(N*rnd(.3,.7)))%N;c.x=T.x[j];c.y=T.y[j];c.ang=T.a[j];c.si=j;c.mode='patrol';c.spd=0;c.stun=2.5}
+ for(const c of O.C){const j=(me.si+Math.floor(N*rnd(.3,.7)))%N;c.x=T.x[j];c.y=T.y[j];c.ang=T.a[j]+((c.dir||1)<0?Math.PI:0);c.si=j;c.mode='patrol';c.spd=0;c.stun=2.5}
  while(O.C.length<O.lap+1)oblSpawnCar((me.si+Math.floor(N*rnd(.3,.7)))%N);
  me.inv=3;me.hp=Math.min(me.max,me.hp+Math.round(me.max*.3));if(me.lives<OBL_LIVES){me.lives++;G.FX.push({x:me.x,y:me.y-70,t:0,life:1.6,txt:'+1 ЖИЗНЬ',c:'#7cf07c',big:1})}gainXP(40);SFX.bell();
  G.banner=O.lap===OBL_LAPS?'ПОСЛЕДНИЙ КРУГ! ПАТРУЛЕЙ: '+O.C.length:'КРУГ '+O.lap+'/'+OBL_LAPS+' · ЕЩЁ ТАЙНИКИ · ПАТРУЛЕЙ: '+O.C.length;G.bannerT=3}
-function oblSpawnCar(si){const T=TR;G.obl.C.push({x:T.x[si],y:T.y[si],ang:T.a[si],spd:0,stun:1.5,mode:'patrol',si,tx:0,ty:0,lostT:0,searchT:0})}
+function oblSpawnCar(si){const T=TR;G.obl.C.push({dir:G.obl.C.length%2?-1:1,x:T.x[si],y:T.y[si],ang:T.a[si]+(G.obl.C.length%2?Math.PI:0),spd:0,stun:1.5,mode:'patrol',si,tx:0,ty:0,lostT:0,searchT:0})}
 function oblFinish(win,why){if(G.over)return;G.over=1;G.winTeam=win?0:1;G.why=why;SFX.bell()}
 function oblUpdate(dt){const O=G.obl,me=G.F[0],T=TR,N=T.N;if(G.over||G.cd>0)return;if(me.out){oblFinish(0,'разбился — дальше пешком не уйти');return}O.tl-=dt;if(O.tl<=0){oblFinish(0,'рассвело — не успел');return}
  const bush=OBS.some(o=>o.k==='t'&&Math.hypot(o.x-me.x,o.y-me.y)<o.r+58);O.hideT=bush&&me.spd<70&&me.down<=0?O.hideT+dt:0;const hidden=O.hideT>.6;
  if(hidden&&!O.hidden)G.FX.push({x:me.x,y:me.y-50,t:0,life:.9,txt:'СПРЯТАЛСЯ',c:'#7cf07c'});O.hidden=hidden;
  let seenAny=0;
- for(const c of O.C){c.stun-=dt;const d=Math.hypot(me.x-c.x,me.y-c.y),sees=!hidden&&me.down<=0&&!me.out&&d<430;
+ for(const c of O.C){c.stun-=dt;const d=Math.hypot(me.x-c.x,me.y-c.y),sees=!hidden&&me.down<=0&&!me.out&&d<430*(1+.12*(O.lap-1));
   if(sees){if(c.mode!=='chase'&&c.stun<=0)G.FX.push({x:c.x,y:c.y-40,t:0,life:.8,txt:'СТОЯТЬ!',c:'#9fd0ff'});c.mode='chase';c.lostT=0;O.lx=me.x;O.ly=me.y;seenAny=1}
   else if(c.mode==='chase'){c.lostT+=dt;if(c.lostT>.8){c.mode='search';c.tx=O.lx;c.ty=O.ly;c.searchT=5}}
   let tx,ty;if(c.mode==='chase'){tx=me.x+Math.cos(me.ang)*me.spd*.35;ty=me.y+Math.sin(me.ang)*me.spd*.35}
   else if(c.mode==='search'){tx=c.tx;ty=c.ty;c.searchT-=dt;if(c.searchT<=0||Math.hypot(tx-c.x,ty-c.y)<70)c.mode='patrol'}
-  else{const j=(c.si+30)%N;tx=T.x[j];ty=T.y[j]}
+  else{const j=(c.si+30*(c.dir||1)+N)%N;tx=T.x[j];ty=T.y[j]}
   for(const o of OBS){const vx=o.x-c.x,vy=o.y-c.y,ca=Math.cos(c.ang),sa=Math.sin(c.ang),fw=vx*ca+vy*sa,lt=-vx*sa+vy*ca;if(fw>0&&fw<170&&Math.abs(lt)<o.r+40){const sd=lt>0?-1:1;tx=c.x+ca*fw-sa*sd*(o.r+70);ty=c.y+sa*fw+ca*sd*(o.r+70);break}}
   let df=Math.atan2(ty-c.y,tx-c.x)-c.ang;df=Math.atan2(Math.sin(df),Math.cos(df));
   if(c.stun<=0){c.ang+=clamp(df,-UAZ.turn*dt,UAZ.turn*dt);c.spd+=UAZ.acc*dt*(Math.abs(df)>1.4?.2:1)}else c.spd*=Math.pow(.1,dt);

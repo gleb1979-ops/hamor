@@ -44,7 +44,7 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 #touch.side #bC{bottom:calc(54px + var(--A) + var(--sm)*2)}
 #touch.side.lside #stick{left:calc((var(--bar) - min(130px,26vmin))/2)}
 #touch.race #bB{right:max(18px,env(safe-area-inset-right))!important;bottom:calc(36px + min(72px,15vmin) + min(62px,13vmin))!important;width:min(72px,15vmin)!important;height:min(72px,15vmin)!important}#touch.race #bA{width:min(84px,18vmin)!important;height:min(84px,18vmin)!important}.pcards{display:flex;gap:8px;justify-content:center;margin:6px 0 10px;flex-wrap:wrap}.pcard{width:62px;height:88px;border-radius:8px;background:#f6f1e6;border:2px solid #1a1418;box-shadow:2px 3px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 24px system-ui}.pcard i{font-style:normal;font-size:28px;line-height:1}.pcard.back{background:repeating-linear-gradient(45deg,#7a1a22 0 6px,#5a1218 6px 12px)}</style></head><body>
-<div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Улица"></canvas></div>
+<div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Свинец"></canvas></div>
 <div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bK" hidden>🤝<small>друг</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
@@ -135,7 +135,7 @@ function paintBG(){const g=bg.getContext('2d');BGK=bgKind();g.clearRect(0,0,W,H)
   for(let yy=y+18;yy<y+h-30;yy+=32)for(let xx=x+14;xx<x+w-24;xx+=34){const lit=Math.random()<.32;g.fillStyle=lit?(Math.random()<.5?'#e8c76a':'#d99a4a'):'#15131b';g.fillRect(xx,yy,20,16);if(lit){g.fillStyle='rgba(0,0,0,.25)';g.fillRect(xx+9,yy,2,16)}}}
  // garages row
  g.fillStyle='#3a3530';g.fillRect(0,250,W,82);for(let x=0;x<W;x+=128){g.fillStyle=['#4a5a4a','#5a4a3a','#4a4a5a','#5a3a3a'][(x/128)%4];g.fillRect(x+8,262,112,70);g.strokeStyle='#2a2522';g.lineWidth=3;g.strokeRect(x+8,262,112,70);g.beginPath();g.moveTo(x+64,262);g.lineTo(x+64,332);g.stroke();g.fillStyle='rgba(0,0,0,.25)';for(let k=0;k<6;k++)g.fillRect(x+10,268+k*10,108,2)}
- g.fillStyle='#d8d0c0';g.font='bold 18px Impact,sans-serif';g.save();g.translate(330,300);g.rotate(-.05);g.fillText('УЛИЦА — СИЛА',0,0);g.restore();
+ g.fillStyle='#d8d0c0';g.font='bold 18px Impact,sans-serif';g.save();g.translate(330,300);g.rotate(-.05);g.fillText('¡VIVA EL BARRIO!',0,0);g.restore();
  g.fillStyle='#c8202a';g.font='bold 22px Impact,sans-serif';g.fillText('КИНО',905,300);g.fillStyle='#e8e0c0';g.font='bold 15px sans-serif';g.fillText('Цой жив',1150,305);
  // ground
  const gr=g.createLinearGradient(0,FLOOR0,0,H);gr.addColorStop(0,'#3d3a36');gr.addColorStop(1,'#2a2724');g.fillStyle=gr;g.fillRect(0,FLOOR0,W,H-FLOOR0);
@@ -147,7 +147,7 @@ function paintBG(){const g=bg.getContext('2d');BGK=bgKind();g.clearRect(0,0,W,H)
  const vg=g.createRadialGradient(W/2,H*.65,200,W/2,H*.6,900);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.6)');g.fillStyle=vg;g.fillRect(0,0,W,H)}
 function drawRamp(g,r){g.save();g.fillStyle='rgba(0,0,0,.35)';g.fillRect(r.x+6,r.y+r.h-6,r.w,12);g.fillStyle='#6a5a48';g.beginPath();g.moveTo(r.x,r.y+r.h);g.lineTo(r.x+r.w,r.y+r.h);g.lineTo(r.x+r.w,r.y+6);g.closePath();g.fill();g.fillStyle='#8a7860';g.beginPath();g.moveTo(r.x,r.y+r.h);g.lineTo(r.x+r.w,r.y+6);g.lineTo(r.x+r.w,r.y+16);g.lineTo(r.x+8,r.y+r.h);g.closePath();g.fill();g.strokeStyle='#2a2018';g.lineWidth=3;g.strokeRect(r.x+r.w-6,r.y+6,6,r.h-6);g.fillStyle='#e8b23a';g.font='bold 12px sans-serif';g.fillText('▲',r.x+r.w-22,r.y+r.h-6);g.restore()}
 function drawHole(g,h){g.save();g.fillStyle='#0a0a0c';g.beginPath();g.ellipse(h.x,h.y,h.r,h.r*.45,0,0,TAU);g.fill();g.strokeStyle='#4a4a4a';g.lineWidth=4;g.stroke();g.fillStyle='#3a3a3e';g.beginPath();g.ellipse(h.x+h.r+18,h.y+4,h.r*.9,h.r*.38,.2,0,TAU);g.fill();g.strokeStyle='#222';g.lineWidth=2;g.stroke();g.restore()}
-function drawBoard(g,f,z){g.save();g.translate(0,-z);g.rotate(f.air>0?-.25:0);g.fillStyle='#c8202a';g.strokeStyle='#0d0b10';g.lineWidth=3;g.beginPath();g.roundRect?g.roundRect(-32,-8,64,9,4):g.rect(-32,-8,64,9);g.fill();g.stroke();g.fillStyle='#e8e0c0';g.font='bold 7px sans-serif';g.fillText('УЛИЦА',-16,-1);g.fillStyle='#222';for(const wx of[-20,20]){g.beginPath();g.arc(wx,3,5,0,TAU);g.fill()}g.restore()}
+function drawBoard(g,f,z){g.save();g.translate(0,-z);g.rotate(f.air>0?-.25:0);g.fillStyle='#c8202a';g.strokeStyle='#0d0b10';g.lineWidth=3;g.beginPath();g.roundRect?g.roundRect(-32,-8,64,9,4):g.rect(-32,-8,64,9);g.fill();g.stroke();g.fillStyle='#e8e0c0';g.font='bold 7px sans-serif';g.fillText('BARRIO',-16,-1);g.fillStyle='#222';for(const wx of[-20,20]){g.beginPath();g.arc(wx,3,5,0,TAU);g.fill()}g.restore()}
 function drawBike(g,f,z,t){g.save();g.translate(0,-z);if(f.air>0)g.rotate(-.2*(f.face||1));const sp=t*14;g.strokeStyle='#0d0b10';g.lineWidth=4;
  for(const wx of[-30,30]){g.beginPath();g.arc(wx,-14,16,0,TAU);g.stroke();g.strokeStyle='#777';g.lineWidth=1.5;for(let k=0;k<3;k++){const a=sp+k*2.1;g.beginPath();g.moveTo(wx,-14);g.lineTo(wx+Math.cos(a)*15,-14+Math.sin(a)*15);g.stroke()}g.strokeStyle='#0d0b10';g.lineWidth=4}
  g.strokeStyle='#b02020';g.lineWidth=5;g.beginPath();g.moveTo(-30,-14);g.lineTo(-6,-40);g.lineTo(22,-40);g.lineTo(30,-14);g.moveTo(-6,-40);g.lineTo(2,-14);g.lineTo(-30,-14);g.moveTo(22,-40);g.lineTo(26,-54);g.stroke();
@@ -390,7 +390,7 @@ function initObj(){G.tl=mode==='zavod'?100:110;G.obj=0;
  else{G.cap=0;G.zs=2;G.reserve=G.round;G.rfT=8;spawnDrop('bat');spawnDrop(null)}}
 function objIntro(){G.msgT=3.4;if(mode==='zavod'){G.msg='РАУНД '+G.round+' · '+ZNAMES[LOC];G.sub=ZSUB[LOC]}else{G.msg='РАУНД '+G.round+' · '+SNAMES[LOC];G.sub=SSUB[LOC]}}
 function objMsg(win,dead){if(mode==='zavod')return win?'ИЗУМРУДЫ ВЫНЕСЛИ!':dead?'ПОВЯЗАЛИ':'РАССВЕЛО — НЕ УСПЕЛИ';return win?'САЛОН ТЕПЕРЬ НАШ!':dead?'ВЫКИНУЛИ НА УЛИЦУ':'НЕ ОТЖАЛИ — ВРЕМЯ ВЫШЛО'}
-function endTitle(won){if(mode==='kpz')return won?'УШЁЛ ИЗ МЕНТОВКИ':'ОСТАЛСЯ НА НАРАХ';if(mode==='train')return won?'ЭЛЕКТРИЧКА НАША':'ВЫКИНУЛИ НА ХОДУ';if(mode==='boss')return won?'БОСС ПОВЕРЖЕН':'БОСС СИЛЬНЕЕ';if(mode==='disko')return won?'КАНТИНА НАША':G&&G.doutL?GIRLA.toUpperCase()+' УВЕЛИ':'ВЫКИНУЛИ С ТАНЦПОЛА';if(mode==='zavod')return won?'ЗАВОД ОБНЕСЛИ':'ПОВЯЗАЛИ';if(mode==='salon')return won?'САЛОН ТВОЙ':'ВЫГНАЛИ';return won?'УЛИЦА ТВОЯ':'ОТШИЛИ'}
+function endTitle(won){if(mode==='kpz')return won?'УШЁЛ ИЗ МЕНТОВКИ':'ОСТАЛСЯ НА НАРАХ';if(mode==='train')return won?'ЭЛЕКТРИЧКА НАША':'ВЫКИНУЛИ НА ХОДУ';if(mode==='boss')return won?'БОСС ПОВЕРЖЕН':'БОСС СИЛЬНЕЕ';if(mode==='disko')return won?'КАНТИНА НАША':G&&G.doutL?GIRLA.toUpperCase()+' УВЕЛИ':'ВЫКИНУЛИ С ТАНЦПОЛА';if(mode==='zavod')return won?'ЗАВОД ОБНЕСЛИ':'ПОВЯЗАЛИ';if(mode==='salon')return won?'САЛОН ТВОЙ':'ВЫГНАЛИ';return won?'БАРРИО ТВОЁ':'ТЕБЯ УЛОЖИЛИ'}
 
 /* ----- AI helpers ----- */
 function goTo(f,x,y){const dx=x-f.x,dy=y-f.y,d=Math.hypot(dx,dy);if(d<12)return[0,0];if(Math.abs(dx)>6)f.face=dx>0?1:-1;return[dx/d,clamp(dy/d*1.6,-1,1)]}
@@ -1638,7 +1638,7 @@ function nMatchCheck(){const w=NETU.W;let best=null;for(const k in w){const need
  const winF=G.F.find(f=>sideOf(f)===best),txt=mode==='train'?(best===0?'Доехали! Поезд ваш':'Люди Калеро скинули вас с поезда'):mode==='kpz'?(best===0?'Вырвались из комисарии на волю':'Вас снова закрыли в камере'):NETU.m==='team'?(best===0?'Вместе забрали улицу':'Боты отбили улицу'):mode==='team'?(best===0?'Синие':'Красные')+' забрали улицу':(winF?winF.name:'?')+' — хозяин улицы';
  nSend({t:'end',txt,win:mode==='ffa'&&winF?winF.rid||(winF===G.F[0]?NETU.id:''):'',wteam:mode!=='ffa'?best:null});nEnd(txt,best===sideOf(G.F[0]));return true}
 function nEnd(txt,won){state='end';NETU.phase='lobby';if(won)gainXP(100);gainKap(won?40:10);document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
- $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'УЛИЦА ТВОЯ':'НЕ В ЭТОТ РАЗ'}</h1><p class="sub">${txt}</p><div class="pbox">${(NETU.P||[]).map(p=>`<div>${p.name} · ${HEROES[p.hero]?HEROES[p.hero].name:''}</div>`).join('')}</div>${progLine()}<div class="row"><button class="pri" id="nlb">В комнату</button><button id="nmn">Выйти в меню</button></div></div>`;
+ $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'БАРРИО ТВОЁ':'НЕ В ЭТОТ РАЗ'}</h1><p class="sub">${txt}</p><div class="pbox">${(NETU.P||[]).map(p=>`<div>${p.name} · ${HEROES[p.hero]?HEROES[p.hero].name:''}</div>`).join('')}</div>${progLine()}<div class="row"><button class="pri" id="nlb">В комнату</button><button id="nmn">Выйти в меню</button></div></div>`;
  document.getElementById('nlb').onclick=()=>{G=null;showOnline()};document.getElementById('nmn').onclick=()=>{nLeave();G=null;showMenu()}}
 /* ---------- КОМБО И СУПЕР-УДАРЫ ---------- */
 const SUPERS={star:{n:'УШАНКА-ТАРАН',k:'dash',d:330,dmg:26},shust:{n:'ВИХРЬ',k:'multi',hits:5,dmg:9,r:130},zdor:{n:'ЗЕМЛЕТРЯСЕНИЕ',k:'ring',r:240,dmg:24},skor:{n:'ПОД НОГИ!',k:'dash',d:280,dmg:16,low:1},
@@ -2489,7 +2489,7 @@ function update(dt){if(RMODE())return rUpdate(dt);if(G.hs>0){G.hs-=dt;return}G.t
  if(!G.over){const sides=new Set(alive().map(sideOf));const OB=OBJM(),meDead=me.state==='ko'&&!NETU.host&&(mode==='ffa'||OB||mode==='rynok');
   const fin=mode==='bike'&&G.t>=BIKE_T;if((sides.size<=1&&!OB&&mode!=='rynok')||meDead||fin||(OB&&G.obj)){G.over=1;G.overT=0;let winSide=sides.size===1?[...sides][0]:null;if(fin&&sides.size>1){const lead=alive().sort((a,b)=>b.x-a.x)[0];winSide=sideOf(lead);G.FX.push({x:lead.x,y:lead.y-180,t:0,life:2,txt:'ПЕРВЫЙ!',c:'#e8b23a',big:1})}
    if(NETU.on&&NETU.host){G.win=winSide===sideOf(me);nRoundOver(winSide)}else{G.win=OB?(G.obj>0&&!meDead):(winSide!=null&&winSide===sideOf(me));gainXP(G.win?(OB?60:40):10);G.wins[G.win?'me':'them']=(G.wins[G.win?'me':'them']||0)+1;
-   G.msg=OB?objMsg(G.win,meDead):G.win?'УЛИЦА ЗА ТОБОЙ':'ТЕБЯ ОТШИЛИ';G.sub='';G.msgT=99;SFX.bell()}}}
+   G.msg=OB?objMsg(G.win,meDead):G.win?'БАРРИО ЗА ТОБОЙ':'ТЕБЯ УЛОЖИЛИ';G.sub='';G.msgT=99;SFX.bell()}}}
  else{G.overT+=dt;if(G.overT>2.6)roundEnd()}}
 
 /* ---------- render ---------- */

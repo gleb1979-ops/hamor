@@ -1259,6 +1259,7 @@ const CH=[
  {t:'Свои люди',m:'team',ic:'🤝',tx:'Дон Эрнесто ищет крепких ребят. Проверка простая: двое на двое во дворе за лавкой. Прикроешь своего — возьмут в дело.'},
  {t:'Груз',m:'krz',ic:'🚙',tx:'Первое настоящее дело: угнать джип с изумрудами прямо от ворот меркадо и уйти от полиции через весь город до гаража. Сначала вскрой замок.'},
  {t:'Порт',m:'zavod',ic:'⚓',tx:'Ночь. Склад в порту. Ящик с изумрудами надо вынести мимо охраны и собак. Тихо — или громко, как сам решишь.'},
+ {t:'Меркадо',m:'rynok',ic:'🍍',tx:'Джип с изумрудами мы угнали прямо от ворот меркадо. Хозяин рынка, дон Анибал, считает, что теперь мы ему должны, и его люди трясут наших торговцев. Пройди через рынок до его кабинета: ворота, мясной павильон, сам дон.'},
  {t:'Погоня',m:'chase',ic:'🔫',tx:'Изумруды в джипе, но люди Калеро сели на хвост. Машину ведёт Флако, ты — на заднем сиденье с пистолетом. Город, порт, шоссе у моря, серпантин — отстреливайся до самых гор.'},
  {t:'Кантина',m:'disko',ic:'🎸',tx:'Кантина «Эль Тигре». Люди из картеля Калеро пришли выяснить, чей теперь порт. Пока играет музыка — не дерись.'},
  {t:'Облава',m:'oblava',ic:'🚨',tx:'После порта на ушах вся полиция. Тайники с деньгами раскиданы по баррио — собери и уйди, пока не рассвело.'},
@@ -1274,7 +1275,7 @@ function showCamp(){state='menu';CAMP.on=0;$ui.hidden=false;document.getElementB
  $ui.querySelectorAll('.ch').forEach(b=>b.onclick=()=>showChapter(+b.dataset.c));document.getElementById('back').onclick=showMenu}
 function showChapter(i){if(CCH[i]&&cChoices()[i]==null)return showChoice(i,()=>showChapter(i));const c=CH[i];$ui.innerHTML=`<div class="card"><p class="sub">Глава ${i+1} из ${CH.length}</p><h1 style="font-size:clamp(34px,7vw,64px)">${c.ic} ${c.t.toUpperCase()}</h1>${comicHTML(i)}<div class="warn" style="border-color:#4a3d48;text-align:left;font-size:17px">${c.tx}</div>
  <div class="row"><button class="pri" id="cgo">Начать главу</button>${c.rz?'<p class="sub" style="font-size:13px;color:var(--gold)">🗣 В этой главе можно попробовать договориться по законам улицы</p>':''}<button id="cback">К главам</button></div></div>`;
- document.getElementById('cgo').onclick=()=>{au();CAMP.on=1;CAMP.ch=i;mode=c.m;G=null;LOC=0;paintBG();start()};document.getElementById('cback').onclick=showCamp}
+ document.getElementById('cgo').onclick=()=>{au();CAMP.on=1;CAMP.ch=i;mode=c.m;if(c.m==='rynok'){RYN.st=1;RYN.def=0;RYN.carry=0;RYN.route='';RYN.offer=null}G=null;LOC=0;paintBG();start()};document.getElementById('cback').onclick=showCamp}
 const RZCH=[];
 /* разрулить внутри сюжета: в отдельных главах посреди боя появляется возможность договориться */
 function campRzWin(){const i=CAMP.ch,c=CH[i];state='end';document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
@@ -1329,13 +1330,13 @@ function rynUpdate(dt){if(G.over)return;rynHaz(dt);if(G.over)return;const en=G.F
  else if(RYN.def&&!G.bossOn){G.over=1;G.overT=0;G.win=true;G.msg='НАЛЁТ ОТБИТ';G.sub='';G.msgT=99;SFX.bell()}
  else if(!G.bossOn){G.bossOn=1;const s=RYN.st,B=RST[s-1];if(![2,4,6].includes(s)){rynSpawnBoss();return}rzOffer(B.b,(s-1)/6,B.tip,rynSpawnBoss,()=>{G.FX.push({x:640,y:300,t:0,life:1.6,txt:'РАЗРУЛИЛ!',c:'#e8b23a',big:1})})}
  else{G.over=1;G.overT=0;G.win=true;G.msg=RYN.st<7?'ЭТАП ПРОЙДЕН':'РЫНОК ТВОЙ!';G.sub='';G.msgT=99;SFX.bell();gainXP(60)}}
-function rynokEnd(){const me=G.F[0];if(RYN.def)return rynDefEnd();if(G.win&&RYN.st<7){RYN.hp=me.hp;let e=MKAP-(RYN.k0||0);if(RYN.st===5&&RYN.route==='sklad'){const b=Math.round(e*.5)+30;gainKap(b);e+=b}const nx=rynNext(RYN.st);if(!nx)return rynRoute(e);if(nx>rynMax())LS.set('ryn',nx);return rynStall(nx,e)}
- state='end';document.getElementById('mb').hidden=true;$ui.hidden=false;document.getElementById('touch').hidden=true;const won=G.win;if(won){gainXP(200);LS.set('ryndone',1)}
+function rynokEnd(){const me=G.F[0];if(RYN.def)return rynDefEnd();if(G.win&&RYN.st<7){RYN.hp=me.hp;let e=MKAP-(RYN.k0||0);if(RYN.st===5&&RYN.route==='sklad'){const b=Math.round(e*.5)+30;gainKap(b);e+=b}const nx=rynNext(RYN.st);if(!nx)return rynRoute(e);if(nx>rynMax()&&!CAMP.on)LS.set('ryn',nx);return rynStall(nx,e)}
+ state='end';document.getElementById('mb').hidden=true;$ui.hidden=false;document.getElementById('touch').hidden=true;const won=G.win;if(won&&!CAMP.on){gainXP(200);LS.set('ryndone',1)}
  $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?'РЫНОК ТВОЙ':'ВЫКИНУЛИ С РЫНКА'}</h1><p class="sub">${won?'Дон Анибал повержен. Теперь рынок держишь ты.':'Этап '+RYN.st+': '+RST[RYN.st-1].loc+'. Можно начать с этого этапа заново.'}</p>${progLine()}
  <div class="row"><button class="pri" id="again">${won?'Сначала':'Ещё раз с этапа '+RYN.st}</button><button id="menu">Меню</button></div></div>`;
- document.getElementById('again').onclick=()=>{if(won)RYN.st=1;RYN.carry=0;G=null;start()};document.getElementById('menu').onclick=showMenu}
+ document.getElementById('again').onclick=()=>{if(won)RYN.st=1;RYN.carry=0;G=null;start()};document.getElementById('menu').onclick=showMenu;campAfter(won);if(CAMP.on&&won){const ag=document.getElementById('again');if(ag)ag.remove()}}
 function rynHUD(){if(G.F.some(f=>f.boss&&f.state!=='ko'))return bossHUD();ctx.save();ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-250,12,500,52);ctx.textAlign='center';ctx.font='900 20px Impact,sans-serif';ctx.fillStyle='#e8b23a';
- ctx.fillText(RYN.def?'🏪 НАЛЁТ НА ТВОЙ РЫНОК':`РЫНОК · ЭТАП ${RYN.st}/7 · ${RST[RYN.st-1].loc.toUpperCase()}`,W/2,36);ctx.font='bold 14px system-ui';ctx.fillStyle='#f3e9dc';ctx.fillText(RYN.def?`волна ${G.wave}/${G.waves}`:G.bossOn?'Босс!':`волна ${G.wave}/${G.waves} · дальше — ${RST[RYN.st-1].b.toLowerCase()}`,W/2,56);ctx.restore()}
+ ctx.fillText(RYN.def?'🏪 НАЛЁТ НА ТВОЙ РЫНОК':`РЫНОК · ЭТАП ${rynLbl()} · ${RST[RYN.st-1].loc.toUpperCase()}`,W/2,36);ctx.font='bold 14px system-ui';ctx.fillStyle='#f3e9dc';ctx.fillText(RYN.def?`волна ${G.wave}/${G.waves}`:G.bossOn?'Босс!':`волна ${G.wave}/${G.waves} · дальше — ${RST[RYN.st-1].b.toLowerCase()}`,W/2,56);ctx.restore()}
 /* background */
 function paintRynok(g,s){const out=s<=3||s===5;
  if(out){const sk=g.createLinearGradient(0,0,0,300);sk.addColorStop(0,s===5?'#0a0c1a':'#1a2a4a');sk.addColorStop(1,s===5?'#2a2030':'#e8a060');g.fillStyle=sk;g.fillRect(0,0,W,H);
@@ -1670,7 +1671,8 @@ function comboFX(f,txt){G.FX.push({x:f.x+f.face*30,y:f.y-185,t:0,life:.8,txt,c:'
 WEAPONS.melon={name:'Арбуз',dmg:15,range:700,cd:.5,knock:300,ammo:1,col:'#3a8a3a',throw:1};
 RYN.route=LS.get('rroute','');RYN.def=0;RYN.weap='';RYN.run=0;
 const RHAZ={2:'На прилавках арбузы — подбирай и кидай!',4:'Пол в павильоне скользкий — от ударов улетаешь дальше.',5:'Со штабелей падают ящики — следи за тенью!',6:'Кто-то вызвал полицию: успей за 1:30!'};
-function rynNext(st){return st===4?0:(st===5||st===6)?7:st+1}
+function rynLbl(){return CAMP.on?([1,4,7].indexOf(RYN.st)+1)+'/3':RYN.st+'/7'}
+function rynNext(st){if(CAMP.on)return st===1?4:st===4?7:0;return st===4?0:(st===5||st===6)?7:st+1}
 function rynHazInit(){const s=RYN.st;G.tl=0;G.crT=3;G.crates=[];G.melT=0;
  if(RYN.def){G.waves=3;G.msg='НАЛЁТ НА ТВОЙ РЫНОК';G.sub='Отбейся вместе с охраной — 3 волны.';G.msgT=3;return}
  if(s===2)for(let i=0;i<3;i++)spawnDrop('melon');
@@ -1693,7 +1695,7 @@ const RSTALL=[['stick',15],['bottle',20],['chain',40],['bat',50],['knux',50],['d
 function rynStall(next,earned){state='menu';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;
  if(!RYN.offer||RYN.offer.n!==next){const o=shuf(RSTALL).slice(0,3);RYN.offer={n:next,w:o}}
  const maxHp=(()=>{const P=PROG.h[myHero];return Math.round(HEROES[myHero].hp*HPM*(1+P.up.hp*.08))})(),hp=Math.round(RYN.hp);
- $ui.innerHTML=`<div class="card"><p class="sub">Этап пройден${earned?` · <i class="kp"></i> +${earned}`:''}</p><h1 style="font-size:clamp(30px,6vw,52px)">ЛОТОК У ПРОХОДА</h1><p class="sub">Перед этапом ${next}: ${RST[next-1].loc}. Здоровье: <b>${hp}/${maxHp}</b> (+35% само по себе)</p>
+ $ui.innerHTML=`<div class="card"><p class="sub">Этап пройден${earned?` · <i class="kp"></i> +${earned}`:''}</p><h1 style="font-size:clamp(30px,6vw,52px)">ЛОТОК У ПРОХОДА</h1><p class="sub">Перед этапом ${CAMP.on?[1,4,7].indexOf(next)+1:next}: ${RST[next-1].loc}. Здоровье: <b>${hp}/${maxHp}</b> (+35% само по себе)</p>
  <div class="warn" style="border-color:#5ad05a;padding:8px;font-size:18px"><b><i class="kp"></i> ${INV.kap}</b> песо</div>
  <div class="shg"><button class="shb" id="stk" ${INV.kap<25||hp>=maxHp?'disabled':''}><img src="img/w_kefir.webp" style="height:34px"><b>Молоко сейчас</b><small>+40 здоровья</small><i>25 <i class="kp"></i></i></button>
  ${RYN.offer.w.map(([k,p])=>`<button class="shb ${RYN.weap===k?'on':''}" data-rw="${k}" ${INV.kap<p&&RYN.weap!==k?'disabled':''}><img src="img/w_${k}.webp" style="height:34px;max-width:120px;object-fit:contain"><b>${WEAPONS[k].name}</b><small>в руках на следующем этапе</small><i>${RYN.weap===k?'✔ взято':p+' <i class="kp"></i>'}</i></button>`).join('')}</div>
@@ -1725,8 +1727,8 @@ function rynDefEnd(){const won=G.win;RYN.def=0;RYN.st=rynMax();state='end';docum
  document.getElementById('again').onclick=()=>{RYN.def=1;RYN.st=1+(Math.random()*3|0);G=null;paintBG();start()};document.getElementById('menu').onclick=()=>showMyMarket()}
 /* ---------- СЮЖЕТ: выборы, уважение, концовки, комикс-вставки ---------- */
 const CCH={2:{q:'На выезде из квартала — полицейский блокпост. Капитан Риос смотрит на тебя и потирает пальцы: «Проезд стоит денег, амиго».',a:['💰 СЕРЕБРО — дать 150 песо','good','Капитан Риос теперь твой. В финале его люди прикроют.',-150],b:['🔫 СВИНЕЦ — прорваться силой','bad','Прорвался. Песо целы, но жара растёт: дальше враги злее.']},
- 5:{q:'Таможенник в порту держит твои изумруды: «Бумаги не в порядке. Хотя… бумаги можно поправить».',a:['💰 СЕРЕБРО — дать 250 песо','good','Таможня теперь работает на тебя. В финале таможенник поможет.',-250],b:['🔫 СВИНЕЦ — забрать изумруды силой','bad','Изумруды твои. Но о стрельбе в порту узнал весь город — жара растёт.']},
- 7:{q:'Судья Мендоса может выписать ордер на твой арест — а может и потерять его. «Всё зависит от вашей щедрости, сеньор».',a:['💰 СЕРЕБРО — дать 400 песо','good','Ордер потерялся. Судья в финале замолвит за тебя слово.',-400],b:['🔫 СВИНЕЦ — припугнуть судью','bad','Судья напуган. Но теперь на тебя охотятся все. Жара на пределе.']}};
+ 6:{q:'Таможенник в порту держит твои изумруды: «Бумаги не в порядке. Хотя… бумаги можно поправить».',a:['💰 СЕРЕБРО — дать 250 песо','good','Таможня теперь работает на тебя. В финале таможенник поможет.',-250],b:['🔫 СВИНЕЦ — забрать изумруды силой','bad','Изумруды твои. Но о стрельбе в порту узнал весь город — жара растёт.']},
+ 8:{q:'Судья Мендоса может выписать ордер на твой арест — а может и потерять его. «Всё зависит от вашей щедрости, сеньор».',a:['💰 СЕРЕБРО — дать 400 песо','good','Ордер потерялся. Судья в финале замолвит за тебя слово.',-400],b:['🔫 СВИНЕЦ — припугнуть судью','bad','Судья напуган. Но теперь на тебя охотятся все. Жара на пределе.']}};
 const CAL={2:'Капитан Риос',5:'Таможенник',7:'Человек судьи'};
 function cChoices(){return LS.get('cch',{})}
 function cRespect(){const c=cChoices();return Object.values(c).filter(v=>v==='good').length}
@@ -1782,7 +1784,7 @@ function korTick(dt){if(!G||!G.F)return;const me=G.F[0];for(let i=G.F.length-1;i
   if(f.korT<=0||me.state==='ko'||f.kills>0){G.FX.push({x:f.x,y:f.y-170,t:0,life:1.4,txt:f.kills>0?'ВЫРУБИЛ — И УШЁЛ':'КОРЕШ УШЁЛ',c:'#7cf07c',big:1});G.F.splice(i,1)}}
  korBtn()}
 /* союзники в финале */
-function campAllies(F){if(!(CAMP.on&&CAMP.ch===CH.length-1))return;const c=cChoices();let k=0;for(const i of [2,5,7])if(c[i]==='good'){const a=newFighter(F.length,[3,6,9][k%3],true,0);a.ally=true;a.name=CAL[i];a.x=120+k*50;a.y=470+k*80;a.face=1;F.push(a);k++}
+function campAllies(F){if(!(CAMP.on&&CAMP.ch===CH.length-1))return;const c=cChoices();let k=0;for(const i of [2,6,8])if(c[i]==='good'){const a=newFighter(F.length,[3,6,9][k%3],true,0);a.ally=true;a.name=CAL[i];a.x=120+k*50;a.y=470+k*80;a.face=1;F.push(a);k++}
  if(k)setTimeout(()=>{if(G){G.FX.push({x:300,y:300,t:0,life:2,txt:k===3?'ВЕСЬ РАЙОН ЗА ТЕБЯ!':'СВОИ ПРИШЛИ!',c:'#7cf07c',big:1})}},400)}
 function campEnding(){const r=cRespect();return r>=2?{t:'Серебро. Город твой — ты новый Дон.',s:'Полиция, таможня и суд работают на тебя. Ни одного выстрела лишнего. В Сьюдад-Оро всё решают деньги — и теперь это твои деньги.'}:r===1?{t:'Ты взял город. Но спишь с пистолетом под подушкой.',s:'Половину купил, половину запугал. Купленные молчат, запуганные ждут момента.'}:{t:'Свинец. Город в крови — и он твой. Пока.',s:'Ты никому не платил — ты стрелял. Теперь за тобой охотятся все. Сколько ты продержишься?'}}
 /* комикс перед главой: 3 кадра из фонов и спрайтов */
@@ -1791,12 +1793,13 @@ const CMX=[
  [['donyard','n:host',0,'— Мне нужны крепкие ребята. Покажи себя.','me',0],['donyard','zdor',7,'Проверка — двое на двое.'],['donyard','me',3,'Своих не бросают.']],
  [['kr:cmx1','',0,'Джип с изумрудами у ворот меркадо.'],['rynok1','me',1,'Двадцать пять секунд на замок.','n:storozh',0],['street','me',0,'Дальше — газ в пол.']],
  [['zavod0','me',1,'Порт. Ночь. Склад №7.'],['zavod1','n:storozh',0,'Охрана с фонарями…'],['zavod0','n:ded',3,'…и собаки.']],
+ [['rynok1','n:baryga',0,'Меркадо Сан-Хасинто. Здесь продаётся всё.'],['rynok4','n:myasnik',0,'Люди дона Анибала трясут наших торговцев.','me',0],['rynok7','n:smotr',7,'Дон ждёт в кабинете. С пистолетом.']],
  [['zavod0','me',1,'Изумруды в джипе. Газ!'],['barrio','n:flaco',0,'Люди Калеро сели на хвост.'],['street','me',0,'Отстреливайся!']],
  [['disko','n:g2',0,'Кантина «Эль Тигре». Музыка.'],['disko','karate',0,'— Это наш порт, гринго.','me',0],['disko','dembel',7,'Музыка сейчас кончится.']],
  [['street','n:druzh',0,'Полиция перекрыла баррио.'],['dvor','me',1,'Тайники с деньгами — по всему пустырю.'],['dvor','me',0,'Успеть до рассвета.']],
  [['train3','me',1,'Ночной поезд на юг.'],['train0','karate',0,'— Калеро передаёт привет.','kaban',7],['train1','me',3,'До станции — четыре вагона.','boxer',0]],
  [['blokpost','n:brig',0,'Полковник Варгас. Все блокпосты — его.'],['blokpost','n:brig',7,'Он не торгуется с теми, кого не уважает.'],['stroika','me',0,'Значит, придётся заслужить.']],
- [['rynok7','n:host',0,'Дон Эрнесто. Он тебя поднял — он решил тебя опустить.'],['rynok7','n:host',3,'С ним охрана. И ствол.'],['rynok1','me',0,'Дон — только начало.']],
+ [['donyard','n:host',0,'Дон Эрнесто. Он тебя поднял — он решил тебя опустить.'],['donyard','n:host',3,'С ним охрана. И ствол.'],['rynok1','me',0,'Дон — только начало.']],
  [['villa','n:patron',0,'Эль Патрон. Хозяин всего побережья.'],['villa','n:patron',3,'— Работать на меня. Или вместо меня?','me',0],['rynok1','me',0,'Свинец или серебро?']]];
 function cmxSprite(k,fr,right){if(!k)return '';const me=k==='me';const src=me?(HEROES[myHero].pq||'h_star'):k.startsWith('n:')?'n_'+k.slice(2):'h_'+k;
  return `<div class="cxs" style="${right?'right:-16%;transform:scaleX(-1)':'left:-14%'};background-image:url(img/${src}.webp);background-position:${fr/7*100}% 0"></div>`}
@@ -2510,7 +2513,7 @@ function render(t){if(RMODE())return rRender(t);ctx.save();if(shake>0)ctx.transl
  ctx.font='bold 14px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(me.carry?'Ящик':me.weapon?(WEAPONS[me.weapon].name+(WEAPONS[me.weapon].gun?' ×'+me.ammo:'')):(HH(me).belt?'Ремень':HH(me).sling?'Рогатка':'Кулаки'),236,57);if(!RMODE()&&(INV.c.kefir||INV.c.tarhun||INV.c.gum)){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(16,74,190,24);ctx.font='bold 14px system-ui';ctx.fillStyle='#f3e9dc';ctx.textAlign='left';ctx.fillText(pocketTxt()+' · Q / 🎒',24,91)}
  if(mode==='skate'){for(let i=0;i<3;i++){ctx.globalAlpha=i<me.lives?1:.25;ctx.save();ctx.translate(46+i*58,90);drawBoard(ctx,{air:0},0);ctx.restore();ctx.globalAlpha=1}}
  if(mode==='bike'){const k=Math.min(1,G.t/BIKE_T);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W/2-200,18,400,22);ctx.fillStyle='#e8b23a';ctx.fillRect(W/2-196,22,392*k,14);ctx.fillStyle='#f3e9dc';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('до гаражей '+Math.max(0,Math.ceil(BIKE_T-G.t))+' с · не отставай — милиция!',W/2,58)}
- ctx.textAlign='right';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W-216,14,200,40);ctx.fillStyle='#f3e9dc';ctx.font='900 20px Impact,sans-serif';ctx.fillText(mode==='rynok'?`ЭТАП ${RYN.st}/7`:NETU.on?`РАУНД ${G.round} · ОНЛАЙН`:`РАУНД ${G.round} · ${G.wins.me||0}:${G.wins.them||0}`,W-28,42);
+ ctx.textAlign='right';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W-216,14,200,40);ctx.fillStyle='#f3e9dc';ctx.font='900 20px Impact,sans-serif';ctx.fillText(mode==='rynok'?`ЭТАП ${rynLbl()}`:NETU.on?`РАУНД ${G.round} · ОНЛАЙН`:`РАУНД ${G.round} · ${G.wins.me||0}:${G.wins.them||0}`,W-28,42);
  if(NETU.on&&NETU.phase==='game'){const rows=mode==='team'?[['Синие',0],['Красные',1]]:G.F.filter(f=>!f.bot||true).map(f=>[f.name,f.idx]);ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(W-216,58,200,8+rows.length*18);ctx.font='bold 13px system-ui';rows.forEach(([n,k],i)=>{ctx.fillStyle=k===(mode==='team'?G.F[0].team:G.F[0].idx)?'#7cf07c':'#f3e9dc';ctx.fillText(`${n}  ${'★'.repeat(NETU.W[k]||0)}`,W-28,76+i*18)})}
  drawHints();if(OBJM())drawObjHUD(t);if(mode==='disko')diskoHUD(t);if(mode==='dout')doutHUD();if(mode==='boss')bossHUD();if(mode==='rynok'){rynHUD();rynHazDraw()}if(mode==='kpz'&&G.kp){ctx.save();ctx.textAlign='center';ctx.font='900 18px Impact,sans-serif';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W/2-180,58,360,26);ctx.fillStyle='#6aa8ff';ctx.fillText('🚔 '+(G.kp.L+1)+'/3 · '+KPN[G.kp.L]+' · проиграно: '+(G.wins.them||0)+'/2',W/2,77);ctx.restore()}if(mode==='train'){trainDraw();if(G.tr){ctx.save();ctx.textAlign='center';ctx.font='900 18px Impact,sans-serif';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(W/2-170,58,340,26);ctx.fillStyle='#ffd23f';ctx.fillText('🚆 '+(G.tr.L+1)+'/4 · '+TRN[G.tr.L]+' · проиграно: '+(G.wins.them||0)+'/2',W/2,77);ctx.restore()}}
  if(G.msgT>0&&G.msg){ctx.textAlign='center';ctx.font='900 46px Impact,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(G.msg,W/2,120);ctx.fillStyle=G.over?(G.win?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(G.msg,W/2,120);if(G.sub&&!G.over){ctx.font='bold 20px system-ui';ctx.lineWidth=5;ctx.strokeText(G.sub,W/2,158);ctx.fillStyle='#f3e9dc';ctx.fillText(G.sub,W/2,158)}}}

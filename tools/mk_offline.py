@@ -4,7 +4,7 @@ import os,re,json
 R=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIPD={'src','video','download','i18n_src','server','.git','tools','node_modules','privacy','cartoons','models_src'}
 SKIPE=('.py','.md','.zip','.mp4','.mov','.psd','.txt','.toml','.jsonc','.sh')
-HIDDEN={'svinec'}   # скрытые игры: у них своя кнопка, в общий список не попадают
+HIDDEN=set()   # скрытые игры (своя кнопка, не в общем списке) — сейчас нет
 def is_game(d): return os.path.isfile(os.path.join(R,d,'index.html'))
 def files_of(d,stop_games=True):
     out=[]

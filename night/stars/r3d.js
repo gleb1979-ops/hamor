@@ -157,7 +157,7 @@ function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=
   else if(an===4){rot=1.35*face;y=-.05}
   else if(an===5){rot=1.0*face;y=-.1}
   else{sy=1+Math.sin(t*3+o.ph)*.025}
-  let RW=1,RH=1;if(c.sheet){const R=s.userData.run;if(an===1&&R&&R.image&&R.image.width){if(m.map!==R){m.map=R;m.needsUpdate=true}R.offset.x=(Math.floor(ph*.55)%6+6)%6/6;s.center.set(.5,12/360);RH=1.2;RW=(1.2*400/360)/1.4;y=0;rot=0;sx=1;sy=1}else{if(m.map!==c.sheet){m.map=c.sheet;m.needsUpdate=true}s.center.set(.5,.01);c.sheet.offset.x=(an===2?9:0)/10;if(an===2)rot*=.3}}o.fx=o.fx==null?face:o.fx+(face-o.fx)*Math.min(1,dt*(c.sheet?22:14));s.scale.set(c.W*sx*o.fx*RW,c.H*sy*RH,1);s.position.y=y;m.rotation=rot}
+  let RW=1,RH=1;if(c.sheet){const R=s.userData.run;if(an===1&&R&&R.image&&R.image.width){if(m.map!==R){m.map=R;m.needsUpdate=true}o.rt=(o.rt||0)+dt*13*Math.min(1.25,Math.max(.55,o.spd/.7));R.offset.x=(Math.floor(o.rt)%6)/6;s.center.set(.5,12/360);RH=1.2;RW=(1.2*400/360)/1.4;y=0;rot=0;sx=1;sy=1}else{if(m.map!==c.sheet){m.map=c.sheet;m.needsUpdate=true}s.center.set(.5,.01);c.sheet.offset.x=(an===2?9:0)/10;if(an===2)rot*=.3}}o.fx=o.fx==null?face:o.fx+(face-o.fx)*Math.min(1,dt*(c.sheet?22:14));s.scale.set(c.W*sx*o.fx*RW,c.H*sy*RH,1);s.position.y=y;m.rotation=rot}
 let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
   const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1),{j:k.j,s:k.s});

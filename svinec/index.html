@@ -2740,7 +2740,7 @@ async function svOffline(ask){if(!window.caches){alert('Этот браузер 
  if(SVOFF){return}let list;try{list=await (await fetch('/svinec/files.json?t='+Date.now(),{cache:'no-store'})).json()}catch(e){if(ask)alert('Нужен интернет, чтобы скачать игру. Потом она будет работать без сети.');return}
  SVOFF=1;const c=await caches.open('tagshim-v2');let n=0,bad=0;
  for(let i=0;i<list.length;i+=6){await Promise.all(list.slice(i,i+6).map(async u=>{try{if(!(await c.match(u,{ignoreSearch:true}))){const r=await fetch(u,{cache:'no-cache'});if(r.ok)await c.put(u,r);else bad++}}catch(e){bad++}n++}));if(ask)svOffLbl(Math.round(n/list.length*100)+'%')}
- SVOFF=null;if(!bad){LS.set('offline',1);if(ask){svOffLbl('✔');alert('Готово! Игра сохранена в телефоне и работает без интернета — в самолёте, на корабле, где угодно.\n\nЧтобы открывать её как приложение: в Safari нажми «Поделиться», затем «На экран Домой». В Chrome открой меню и выбери «Установить приложение».\n\nОнлайн-бои с друзьями работают только с интернетом.')}}
+ SVOFF=null;if(!bad){LS.set('offline',1);if(ask){svOffLbl('✔');alert('Готово! Игра сохранена в телефоне и работает без интернета — в самолёте, на корабле, где угодно.\n\nВАЖНО для айфона: у иконки на экране «Домой» своя память, отдельно от Safari. Если играешь через иконку — открой иконку с интернетом и нажми ОФЛАЙН там. Проверь в авиарежиме именно так, как будешь открывать в самолёте.\n\nОнлайн-бои с друзьями работают только с интернетом.')}}
  else if(ask){svOffLbl('ОФЛАЙН');alert('Скачалось не всё ('+bad+' файлов). Проверь интернет и нажми ещё раз.')}}
 window.svOffline=svOffline;
 setInterval(()=>{if(LS.get('offline',0)){const e=document.querySelector('#offb .ot');if(e&&e.textContent==='ОФЛАЙН')e.textContent='✔'}},1000);

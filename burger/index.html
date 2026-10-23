@@ -3863,7 +3863,7 @@ GMS.steal={night:true,teamBots:true,paint:paintSteal,maps:['roof'],secs:()=>90,u
 /* ================= Night: Nights in the Forest ================= */
 const NF={x:750,y:520},NF_T=[{x:230,y:300,r:38},{x:520,y:250,r:34},{x:980,y:250,r:34},{x:1270,y:300,r:38},{x:200,y:700,r:38},{x:480,y:780,r:34},{x:1020,y:780,r:34},{x:1300,y:700,r:38},{x:380,y:520,r:30},{x:1120,y:520,r:30}],NF_DAY=12,NF_NIGHT=18,NF_N=3;
 GCONE.shade=0;
-const WOLF=new Image();WOLF.src='img/wolf.webp';
+const WOLF=new Image();WOLF.src='img/wolf.webp';const FIRE=new Image();FIRE.src='img/fire.webp';
 GART.shade=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,run=tv.st!==2,ph=t*10+x*.01;
   if(WOLF.complete&&WOLF.naturalWidth){/* нарисованный волк: 0-3 бег (жёлтые глаза), 4-5 злой (красные), 6 испуган, 7 воет */
     const q=(t*11+(tv.seed||(tv.seed=1+Math.random()*9)))|0,fr=tv.st===1?4+(((t*8+tv.seed)|0)&1):tv.st===2?6:(t<(tv.hw||(tv.hw=t+.9))?7:q%4),S=.82;
@@ -3931,7 +3931,11 @@ GMS.nights={night:true,paint:f=>NFC()?paintCamp(f):paintForest(f),maps:['forest'
     else{if(brain.react<=0||!G.B.includes(brain.it)){brain.react=.5;let best=null,bd=1e9;for(const it of G.B){const d=Math.hypot(it.x-b.x,it.y-b.y)+Math.random()*80;if(d<bd){bd=d;best=it}}brain.it=best}if(brain.it){tx=brain.it.x;ty=brain.it.y}else{tx=NF.x;ty=NF.y}}
     let dx=tx-b.x,dy=ty-b.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;[dx,dy]=steer(b,dx,dy);const m=Math.hypot(dx,dy)||1;const sl=TM==='ffa'?.44:.52;return l<12?[0,0]:[dx/m*sl,dy/m*sl]},
   drawItem(g,b,t,bob){const x=b[1],y=b[2]+bob*.3;g.save();g.translate(x,y);g.rotate(-.3);g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(4,8,30,8,0,0,7);g.fill();rr(g,-30,-10,60,20,9);sh(g,'#8a5a32',3);g.beginPath();g.ellipse(30,0,7,10,0,0,7);sh(g,'#d9b48a',2.5);g.restore()},
-  under(g,t){const fu=gmV?gmV.f:60,k=fu/100,fl=Math.sin(t*14)*3;g.fillStyle='#555';for(let i=0;i<10;i++){const a=i/10*6.283;g.beginPath();g.ellipse(NF.x+Math.cos(a)*58,NF.y+Math.sin(a)*30,14,9,0,0,7);g.fill()}
+  under(g,t){const fu=gmV?gmV.f:60,k=fu/100,fl=Math.sin(t*14)*3;if(FIRE.complete&&FIRE.naturalWidth){/* нарисованный костёр: 6 кадров; пламя ниже/выше по количеству дров */
+      const fr=((t*9)|0)%6,sx=fr*180,S=1.05,X=NF.x-90*S,Y=NF.y-190*S;
+      g.fillStyle=`rgba(255,150,40,${.10+k*.22})`;g.beginPath();g.ellipse(NF.x,NF.y,150+k*40,70+k*20,0,0,7);g.fill();
+      if(fu>0){const hk=.35+k*.8,h=145*hk*S;g.drawImage(FIRE,sx,0,180,145,X,Y+145*S-h,180*S,h)}
+      g.drawImage(FIRE,sx,145,180,100,X,Y+145*S,180*S,100*S);return}g.fillStyle='#555';for(let i=0;i<10;i++){const a=i/10*6.283;g.beginPath();g.ellipse(NF.x+Math.cos(a)*58,NF.y+Math.sin(a)*30,14,9,0,0,7);g.fill()}
     for(const [dx,dy] of [[-30,-6],[30,-6],[0,8]]){rr(g,NF.x+dx-24,NF.y+dy-8,48,14,6);sh(g,'#6b4423',2)}
     if(fu>0){const h=40+k*90;for(const [c,w,hh] of [['#ff6a1a',38,h],['#ffb02e',26,h*.7],['#fff3a0',12,h*.4]]){g.fillStyle=c;g.beginPath();g.moveTo(NF.x-w,NF.y);g.quadraticCurveTo(NF.x-w*.6+fl,NF.y-hh*.6,NF.x+fl*.5,NF.y-hh);g.quadraticCurveTo(NF.x+w*.6-fl,NF.y-hh*.6,NF.x+w,NF.y);g.closePath();g.fill()}}},
   drawPlayer(g,v,t){drawHero(g,v,t+v.x*.01);if(v.bag){g.save();g.translate(v.x+(v.face||1)*30,v.y-66);g.rotate(-.4);rr(g,-24,-8,48,16,7);sh(g,'#8a5a32',2.5);g.restore()}},

@@ -961,7 +961,7 @@ function rNew(){if(mode==='oblava'&&(!G||!G.obl)){const n=LS.get('oblmap',0)+1;L
  for(let k=0;k<5;k++)rDrop();if(mode==='oblava'){oblInit();G.HZ=G.HZ.filter(h=>h.k!=='manhole')}}
 function rDrop(){const T=TR,si=Math.floor(Math.random()*T.N),o=rnd(-50,50),a=T.a[si];G.P.push({k:['bat','chain','stick','knux','kefir','kefir','spike','nunchaku','rebar'][Math.random()*9|0],x:T.x[si]-Math.sin(a)*o,y:T.y[si]+Math.cos(a)*o,t:0})}
 function rProg(f){return f.lap*TR.N+f.si}
-function rBail(f,why){if(f.down>0||f.out)return;f.down=1.8;f.lives--;f.spd*=.3;f.air=0;SFX.heavy();shake=Math.max(shake,f===G.F[0]?10:4);G.FX.push({x:f.x,y:f.y-40,t:0,life:1,txt:why,c:'#ff7a3a'});for(let i=0;i<8;i++)G.FX.push({x:f.x,y:f.y,vx:rnd(-160,160),vy:rnd(-160,160),life:.6,t:0,c:BLOOD&&i%2?'#a00e18':'#c8c0b0',s:rnd(2,5),td:1});
+function rBail(f,why){if(f.down>0||f.out)return;const free=G&&G.obl&&why!=='ПРИНЯЛИ!';f.down=free?1.0:1.8;if(!free)f.lives--;f.spd*=.3;f.air=0;SFX.heavy();shake=Math.max(shake,f===G.F[0]?10:4);G.FX.push({x:f.x,y:f.y-40,t:0,life:1,txt:why,c:'#ff7a3a'});for(let i=0;i<8;i++)G.FX.push({x:f.x,y:f.y,vx:rnd(-160,160),vy:rnd(-160,160),life:.6,t:0,c:BLOOD&&i%2?'#a00e18':'#c8c0b0',s:rnd(2,5),td:1});
  if(f.lives<=0){f.out=1;G.FX.push({x:f.x,y:f.y-60,t:0,life:1.6,txt:'ВЫБЫЛ',c:'#ffffff',big:1})}}
 function rHit(f,kk){if(!G||G.cd>0||G.over||f.cd>0||f.down>0||f.out||f.air>0)return;f.cd=kk?1:.42;f.atkT=.25;SFX.whoosh();if(G.obl){f.atkSide=1;oblHitCar(f,kk);return}
  let best=null,bd=1e9;const reach=kk?74:(f.w?96:74);for(const o of G.F){if(o.team===f.team||o.down>0||o.out||o.air>0||o.inv>0)continue;const d=Math.hypot(o.x-f.x,o.y-f.y);if(d<reach&&d<bd){bd=d;best=o}}
@@ -1090,14 +1090,15 @@ function oblStash(n){const T=TR,N=T.N,me=G.F[0];const S=[];let tries=0;
   if(Math.random()<.5&&IMGMAP&&RMAP>=1){x=(RMAP===3?rnd(290,1390):rnd(420,1250))*RK;y=(RMAP===3?rnd(230,690):rnd(270,600))*RK;if(!inField(x,y)||OBS.some(o=>Math.hypot(o.x-x,o.y-y)<o.r+40))continue}
   else{const si=Math.random()*N|0,o=rnd(-RW/2+20,RW/2-20),a=T.a[si];x=T.x[si]-Math.sin(a)*o;y=T.y[si]+Math.cos(a)*o}
   if(Math.hypot(x-me.x,y-me.y)<520||S.some(s=>Math.hypot(s.x-x,s.y-y)<360))continue;S.push({x,y,got:0})}return S}
-function oblInit(){const T=TR,N=T.N,me=G.F[0];G.F.length=1;me.lives=3;
+const OBL_LIVES=6;
+function oblInit(){const T=TR,N=T.N,me=G.F[0];G.F.length=1;me.lives=OBL_LIVES;
  G.obl={C:[],S:oblStash(6),got:0,tot:0,lap:1,tl:150,exitOpen:0,hideT:0,seen:0,hidden:0,lx:me.x,ly:me.y,sirT:0};
  oblSpawnCar((me.si+Math.floor(N/2))%N);oblSpawnCar((me.si+Math.floor(N/4))%N)}
 /* следующий круг: новые нычки, больше уазиков, быстрее, меньше времени */
 function oblNextLap(){const O=G.obl,me=G.F[0],T=TR,N=T.N;O.lap++;O.tot+=O.got;O.got=0;O.exitOpen=0;O.S=oblStash(5+O.lap);O.tl=150-10*(O.lap-1);
  for(const c of O.C){const j=(me.si+Math.floor(N*rnd(.3,.7)))%N;c.x=T.x[j];c.y=T.y[j];c.ang=T.a[j];c.si=j;c.mode='patrol';c.spd=0;c.stun=2.5}
  while(O.C.length<O.lap+1)oblSpawnCar((me.si+Math.floor(N*rnd(.3,.7)))%N);
- me.inv=3;me.hp=Math.min(me.max,me.hp+Math.round(me.max*.3));gainXP(40);SFX.bell();
+ me.inv=3;me.hp=Math.min(me.max,me.hp+Math.round(me.max*.3));if(me.lives<OBL_LIVES){me.lives++;G.FX.push({x:me.x,y:me.y-70,t:0,life:1.6,txt:'+1 ЖИЗНЬ',c:'#7cf07c',big:1})}gainXP(40);SFX.bell();
  G.banner=O.lap===OBL_LAPS?'ПОСЛЕДНИЙ КРУГ! ПАТРУЛЕЙ: '+O.C.length:'КРУГ '+O.lap+'/'+OBL_LAPS+' · ЕЩЁ ТАЙНИКИ · ПАТРУЛЕЙ: '+O.C.length;G.bannerT=3}
 function oblSpawnCar(si){const T=TR;G.obl.C.push({x:T.x[si],y:T.y[si],ang:T.a[si],spd:0,stun:1.5,mode:'patrol',si,tx:0,ty:0,lostT:0,searchT:0})}
 function oblFinish(win,why){if(G.over)return;G.over=1;G.winTeam=win?0:1;G.why=why;SFX.bell()}

@@ -5,6 +5,7 @@
   var BASES = (LOCAL && qp) ? [qp] : (location.protocol === 'file:' ? [] : ['wss://rooms.tagshim.com', 'wss://shorties-rooms.gleb1979.workers.dev']);
   window.SHORTIES_WS = BASES[0] || null;
   window.roomClient = function (topic, mqttUrl, mqttOpts) {
+    if (window.LAN_CL && window.LAN) return window.LAN.wrap(topic);
     var h = {}, mode = 'ws', bi = 0, ws = null, mq = null, opened = false, closed = false, tries = 0, q = [];
     var api = {
       on: function (ev, f) { h[ev] = f; return api; },
@@ -50,7 +51,7 @@
   var GAMES=[['byd-burger/v1/','/burger/?room='],['tagshim/rifts/v1/','/rifts/?room='],['tagshim-night/stars/v1/','/night/stars/?room='],['byd-hamor/v1/','/donkey/?room='],['tagshim/ulica/v1/','/ulica/?room=']];
   window.TAGSHIM_GAMES=GAMES;
   window.findRoom=function(code,opts){opts=opts||{};return new Promise(function(res){
-    if(!window.roomClient){res(null);return}
+    if(!window.roomClient||window.LAN_CL){res(null);return}
     var done=false,cl=[];function fin(v){if(done)return;done=true;cl.forEach(function(x){try{x.end()}catch(e){}});res(v)}
     GAMES.forEach(function(g){if(opts.skip&&opts.skip===g[0])return;var tp=g[0]+code;try{var x=window.roomClient(tp,'wss://broker.emqx.io:8084/mqtt',{clientId:'find_'+Math.random().toString(36).slice(2,10),clean:true,connectTimeout:8000});cl.push(x);
       x.on('connect',function(){x.subscribe(tp,{qos:0},function(){})});x.on('message',function(t,buf){var m;try{m=JSON.parse(buf.toString())}catch(e){return}if(m&&m.t&&m.t!=='hi'&&m.t!=='bye'&&m.t!=='in'&&m.t!=='pick')fin(g[1]+code)})}catch(e){}});

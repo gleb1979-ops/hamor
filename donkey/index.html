@@ -74,7 +74,7 @@ input{font:inherit;padding:13px 18px;border-radius:999px;border:2px solid var(--
 <body>
 <div id="app"></div>
 <canvas id="fx"></canvas>
-<script src="../net.js"></script>
+<script src="/shared/lan/lan.js"></script><script src="../net.js"></script>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script>
 // Medals: Kenney Medals pack (CC0)
@@ -235,7 +235,7 @@ function broadcastLobby(){send({t:'lobby',players:[...players].map(([id,p])=>({i
 addEventListener('pagehide',()=>{try{send({t:'bye'})}catch(e){}});
 
 /* ---------- screens ---------- */
-let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);;window.LAN_JOIN=c=>{joinCode=c;const g=document.getElementById('go');if(g)g.click()};setTimeout(()=>{if(window.LAN)LAN.button('#go')},600);
 function home(){redraw=home;if(!navNm){navNm=true;if(NAV.get('nm'))me.name=NAV.get('nm').slice(0,14)}lb.hidden=false;hb.hidden=false;app.innerHTML=`<div class="big">🫏</div><h1>${T('title')}</h1>
   <p>${joinCode?T('homeJoin'):T('homeNew')}</p>
   ${joinCode?`<div class="code">${esc(joinCode)}</div>`:''}

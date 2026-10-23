@@ -48,7 +48,7 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 <div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bK" hidden>🤝<small>кореш</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
-<script src="/update.js"></script><script src="/net.js"></script>
+<script src="/update.js"></script><script src="/shared/lan/lan.js"></script><script src="/net.js"></script>
 <script>
 (()=>{
 'use strict';
@@ -1501,6 +1501,7 @@ function nConnect(code,host){nLeave(true);if(!window.roomClient){alert('Онла
  const cl=NETU.cl=window.roomClient(NTOPIC(code),'wss://broker.emqx.io:8084/mqtt',{clientId:'ul_'+NETU.id+'_'+Math.random().toString(36).slice(2,6),clean:true,reconnectPeriod:2000,connectTimeout:8000});
  cl.on('connect',()=>{cl.subscribe(NTOPIC(code),{qos:0},()=>{});if(cl.bridge)cl.bridge();nHello()});cl.on('message',(t,b)=>{let m;try{m=JSON.parse(b.toString())}catch(e){return}nOnMsg(m)});
  if(host)NETU.P=[{id:NETU.id,name:nName(),hero:myHero,slot:0}];return true}
+window.LAN_JOIN=c=>{if(nConnect(c,0))showOnline()};setTimeout(()=>{if(window.LAN)LAN.button('#ncr')},600);
 function nName(){return (NETU.name||HEROES[myHero].name).slice(0,12)}
 function nLeave(silent){if(NETU.cl){if(!silent)nSend({t:'bye',id:NETU.id});try{NETU.cl.end()}catch(e){}}NETU.cl=null;NETU.on=NETU.host=NETU.cli=0;NETU.phase=''}
 function nHello(){if(NETU.host)nSend({t:'lobby',p:NETU.P,m:NETU.m,ph:NETU.phase});else nSend({t:'hi',id:NETU.id,name:nName(),hero:myHero,ph:NETU.phase})}

@@ -103,7 +103,7 @@ body.touch #wrap{width:100%;height:100%;max-width:none;aspect-ratio:auto;border-
 </div>
 
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
-<script src="../net.js"></script>
+<script src="/shared/lan/lan.js"></script><script src="../net.js"></script>
 <script>
 "use strict";
 // ================= Core setup =================
@@ -2200,6 +2200,7 @@ function guestJoin(code){if(window.findRoom)findRoom(code).then(u=>{if(u&&u.inde
  showUI(`<h2>Комната <span style="color:#fde68a">${esc(code)}</span></h2><p class="sub">Подключаемся…</p><button class="big" id="lBack">Выйти</button>`);bind('lBack',()=>{netLeave();showMode()});
  netConnect(code,()=>{const hi=()=>nsend({t:'hi',name:myName(),hero:MY_HERO,up:{w:WAL.w,a:WAL.a,s:WAL.sel,ta:myTeamUp('armor')},tm:myTeam()});hi();NET.hiTimer=setInterval(()=>{if(!NET.joined)hi()},1200)});
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}}
+window.LAN_JOIN=c=>guestJoin(c);setTimeout(()=>{if(window.LAN)LAN.button('#mHost')},600);
 function heroCard(h){const H=HEROES[h]||HEROES[0],pip=(n,c)=>[0,1,2,3,4].map(i=>`<i style="display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:3px;background:${i<n?c:'#2a2640'}"></i>`).join('');
  return `<div style="display:flex;gap:12px;align-items:center;margin:10px 0;padding:10px;border-radius:14px;background:#120f24;box-shadow:inset 0 0 0 2px ${H.col}55">
  <img src="img/h${h}_i.webp?v=${h===2?2:1}" alt="" style="width:96px;height:96px;object-fit:contain;flex:none">

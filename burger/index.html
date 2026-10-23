@@ -129,7 +129,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:non
   <div id="zone"></div><div id="ctrl"><div id="stick"><div id="knob"></div></div><button id="low" hidden>🥚<br><span id="lowL"></span></button><button id="push">💥<br><span id="pushL"></span></button></div>
 </div>
 <canvas id="fx"></canvas>
-<script src="../net.js"></script>
+<script src="/shared/lan/lan.js"></script><script src="../net.js"></script>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script>
 (()=>{
@@ -912,7 +912,7 @@ function broadcastLobby(){send({t:'lobby',vm:VM,tm:TM,sm:SM,bx:BXM,mx:TMIX,cm:CM
 
 /* ================= screens ================= */
 function show(which){document.getElementById('game').hidden=which!=='game';app.hidden=which!=='app';lb.hidden=which==='game';hb.hidden=which==='game'}
-let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+let joinCode=(params.get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);;window.LAN_JOIN=c=>{joinCode=c;const g=document.getElementById('go');if(g)g.click()};setTimeout(()=>{if(window.LAN)LAN.button('#go')},600);
 /* invited in the browser but the Tagshim app is installed -> offer to open the app */
 const IS_APP=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 async function appBanner(){const el=document.getElementById('appb');if(!el||IS_APP||!joinCode)return;const ua=navigator.userAgent,and=/Android/i.test(ua),ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);

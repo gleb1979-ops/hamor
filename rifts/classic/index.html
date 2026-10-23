@@ -102,7 +102,7 @@ body.touch #wrap{width:100%;height:100%;max-width:none;aspect-ratio:auto;border-
 </div>
 
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
-<script src="../../net.js"></script>
+<script src="/shared/lan/lan.js"></script><script src="../../net.js"></script>
 <script>
 "use strict";
 // ================= Core setup =================
@@ -958,6 +958,7 @@ function guestJoin(code){netLeave();Object.assign(NET,{on:true,guest:true});NET.
  showUI(`<h2>Комната <span style="color:#fde68a">${esc(code)}</span></h2><p class="sub">Подключаемся…</p><button class="big" id="lBack">Выйти</button>`);bind('lBack',()=>{netLeave();showMode()});
  netConnect(code,()=>{const hi=()=>nsend({t:'hi',name:myName(),hero:MY_HERO});hi();NET.hiTimer=setInterval(()=>{if(!NET.joined)hi()},1200)});
  try{history.replaceState(null,'',location.pathname+'?room='+code)}catch(e){}}
+window.LAN_JOIN=c=>guestJoin(c);setTimeout(()=>{if(window.LAN)LAN.button('#mHost')},600);
 function renderLobby(){
  const list=[...NET.peers.values()].sort((a,b)=>a.slot-b.slot),me=NET.peers.get(ME_ID),link=location.origin+location.pathname+'?room='+NET.room;
  const rows=[0,1,2,3].map(s=>{const p=list.find(q=>q.slot===s);if(!p)return `<div class="pl free"><span>Игрок ${s+1}</span><span>свободно</span></div>`;const Hh=HEROES[p.hero]||HEROES[0];return `<div class="pl"><span>${s===0?'👑 ':''}${esc(p.name)}${p.id===ME_ID?' (ты)':''}</span><b style="color:${Hh.col}">${Hh.name}</b></div>`}).join('');

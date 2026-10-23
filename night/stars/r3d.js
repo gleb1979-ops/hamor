@@ -142,8 +142,13 @@ const ringGeo=new THREE.RingGeometry(.36,.45,40);
 const PL={},KP=[];
 const HTEX={};function heroTex(c,col,kt){const k=c+col+(kt?kt.j+kt.s:'');if(HTEX[k])return HTEX[k];const cvs=window.HERO_ART.canvas(c,col,kt);const t=new THREE.CanvasTexture(cvs);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return HTEX[k]={t,asp:cvs.width/cvs.height}}
 const blobGeo=new THREE.CircleGeometry(.55,32);
-function heroBody(c,col,H,kt){const holder=new THREE.Group();const {t,asp}=heroTex(c,col,kt);const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,alphaTest:.04}));spr.center.set(.5,.02);spr.scale.set(H*asp,H,1);holder.add(spr);
-  const blob=new THREE.Mesh(blobGeo,new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35,depthWrite:false}));blob.rotation.x=-Math.PI/2;blob.position.y=.015;blob.scale.set(1,.55,1);holder.add(blob);return {holder,spr,W:H*asp,H}}
+/* новые нарисованные герои: лист бега 10 кадров (../../burger/img/r_<id>.webp) */
+const NEWH=['banana','burgerdino','cattoaster','shark','dumpling','broccoli','roboduck','cactus','icecream','pizza'],NSH={};
+function sheetTex(c){if(!NSH[c]){const t=new THREE.TextureLoader().load('../../burger/img/r_'+c+'.webp');t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;NSH[c]=t}const t=NSH[c].clone();t.repeat.set(.1,1);t.offset.x=0;return t}
+function heroBody(c,col,H,kt){const holder=new THREE.Group();let spr,W,sheet=null;
+  if(NEWH.includes(c)){sheet=sheetTex(c);H*=1.12;spr=new THREE.Sprite(new THREE.SpriteMaterial({map:sheet,transparent:true,alphaTest:.04}));spr.center.set(.5,.01);W=H*1.4;spr.scale.set(W,H,1);holder.add(spr)}
+  else{const {t,asp}=heroTex(c,col,kt);spr=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,alphaTest:.04}));spr.center.set(.5,.02);W=H*asp;spr.scale.set(W,H,1);holder.add(spr)}
+  const blob=new THREE.Mesh(blobGeo,new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35,depthWrite:false}));blob.rotation.x=-Math.PI/2;blob.position.y=.015;blob.scale.set(1,.55,1);holder.add(blob);return {holder,spr,W,H,sheet}}
 function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=1,sy=1;const ph=o.ph*2.2;
   if(an===1){y=Math.abs(Math.sin(ph))*.16;rot=Math.sin(ph)*.07;sy=1-Math.abs(Math.cos(ph))*.06;sx=1+Math.abs(Math.cos(ph))*.04}
   else if(an===2){rot=-.38*face;sx=1.08;sy=.94}
@@ -151,7 +156,7 @@ function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=
   else if(an===4){rot=1.35*face;y=-.05}
   else if(an===5){rot=1.0*face;y=-.1}
   else{sy=1+Math.sin(t*3+o.ph)*.025}
-  o.fx=o.fx==null?face:o.fx+(face-o.fx)*Math.min(1,dt*14);s.scale.set(c.W*sx*o.fx,c.H*sy,1);s.position.y=y;m.rotation=rot}
+  if(c.sheet){const fr=an===1?2+(Math.floor(ph*1.6)%6+6)%6:an===2?9:0;c.sheet.offset.x=fr/10;if(an===1){y*=.35;rot*=.3}else if(an===2)rot*=.3}o.fx=o.fx==null?face:(c.sheet?(face<0?-1:1):o.fx+(face-o.fx)*Math.min(1,dt*14));s.scale.set(c.W*sx*o.fx,c.H*sy,1);s.position.y=y;m.rotation=rot}
 let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
   const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1),{j:k.j,s:k.s});

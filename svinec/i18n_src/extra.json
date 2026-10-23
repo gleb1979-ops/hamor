@@ -1158,5 +1158,37 @@
 "Угнать джип · погоня с перестрелкой": [
 "Steal the jeep · chase & shootout",
 "Roba el jeep · persecución y tiroteo"
+],
+"📡 Без интернета": [
+"📡 Without internet",
+"📡 Sin internet"
+],
+"Без интернета": [
+"Without internet",
+"Sin internet"
+],
+"Один телефон включает точку доступа Wi‑Fi, второй к ней подключается. Связь — через QR-коды.": [
+"One phone turns on a Wi‑Fi hotspot, the other joins it. Pairing is done with QR codes.",
+"Un teléfono activa un punto de acceso Wi‑Fi y el otro se conecta. Se emparejan con códigos QR."
+],
+"📡 Создать без интернета": [
+"📡 Host without internet",
+"📡 Crear sin internet"
+],
+"📷 Подключиться без интернета": [
+"📷 Join without internet",
+"📷 Unirse sin internet"
+],
+"Игра без интернета": [
+"Game without internet",
+"Juego sin internet"
+],
+"➕ Подключить ещё игрока": [
+"➕ Add another player",
+"➕ Añadir otro jugador"
+],
+"Онлайн недоступен без интернета. Попробуй «Без интернета» — через Wi‑Fi точку доступа.": [
+"Online needs internet. Try “Without internet” — via a Wi‑Fi hotspot.",
+"El modo online necesita internet. Prueba «Sin internet», con un punto de acceso Wi‑Fi."
 ]
 }

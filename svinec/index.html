@@ -50,7 +50,7 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 <div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bF" hidden>🔫<small>огонь</small></div><div class="tb" id="bK" hidden>🤝<small>друг</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
-<script src="/update.js"></script><script src="/net.js"></script>
+<script src="/update.js"></script><script src="../shared/lan/lan.js"></script><script src="/net.js"></script>
 <script src="i18n.js"></script>
 <script>
 (()=>{
@@ -1558,9 +1558,9 @@ const NETU={on:0,host:0,cli:0,code:'',id:(()=>{try{let v=localStorage.getItem('r
 const NMAX=6,NTOPIC=c=>'tagshim/svinec/v1/'+c;
 function nSend(o){try{if(NETU.cl)NETU.cl.publish(NTOPIC(NETU.code),JSON.stringify(o),{qos:0})}catch(e){}}
 function nCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++)s+=A[Math.random()*A.length|0];return s}
-function nConnect(code,host){nLeave(true);if(!window.roomClient){alert('Онлайн недоступен без интернета');return false}
+function nConnect(code,host,lan){nLeave(true);if(!lan&&!window.roomClient){alert('Онлайн недоступен без интернета. Попробуй «Без интернета» — через Wi‑Fi точку доступа.');return false}
  Object.assign(NETU,{on:1,host:host?1:0,cli:host?0:1,code,P:[],inp:{},seen:{},W:{},phase:'lobby',lastRx:Date.now()});
- const cl=NETU.cl=window.roomClient(NTOPIC(code),'wss://broker.emqx.io:8084/mqtt',{clientId:'ul_'+NETU.id+'_'+Math.random().toString(36).slice(2,6),clean:true,reconnectPeriod:2000,connectTimeout:8000});
+ const cl=NETU.cl=lan?lan:window.roomClient(NTOPIC(code),'wss://broker.emqx.io:8084/mqtt',{clientId:'ul_'+NETU.id+'_'+Math.random().toString(36).slice(2,6),clean:true,reconnectPeriod:2000,connectTimeout:8000});
  cl.on('connect',()=>{cl.subscribe(NTOPIC(code),{qos:0},()=>{});if(cl.bridge)cl.bridge();nHello()});cl.on('message',(t,b)=>{let m;try{m=JSON.parse(b.toString())}catch(e){return}nOnMsg(m)});
  if(host)NETU.P=[{id:NETU.id,name:nName(),hero:myHero,slot:0}];return true}
 function nName(){return (NETU.name||HEROES[myHero].name).slice(0,12)}
@@ -1587,18 +1587,23 @@ function showOnline(msg){state='menu';$ui.hidden=false;document.getElementById('
  if(!NETU.on){$ui.innerHTML=`<div class="card"><h1>ОНЛАЙН</h1><p class="sub">До ${NMAX} бойцов в одной драке. Один создаёт комнату — остальные заходят по коду или ссылке.</p>${msg?`<p class="sub" style="color:var(--gold)">${msg}</p>`:''}
   <div class="row"><input id="nnm" maxlength="12" placeholder="Твоё имя" value="${(NETU.name||'').replace(/"/g,'')}" style="font:700 18px system-ui;padding:10px 14px;border-radius:10px;border:2px solid #4a3d48;background:#1a151c;color:#f3e9dc;width:220px"></div>
   <div class="row"><button class="pri" id="ncr">➕ Создать комнату</button></div>
+  <div class="pbox" style="margin:10px auto;max-width:440px"><b>📡 Без интернета</b><br><small>Один телефон включает точку доступа Wi‑Fi, второй к ней подключается. Связь — через QR-коды.</small><div class="row"><button id="nlh">📡 Создать без интернета</button><button id="nlj">📷 Подключиться без интернета</button></div></div>
   <div class="row"><input id="ncode" maxlength="4" placeholder="КОД" style="font:900 22px system-ui;letter-spacing:4px;text-transform:uppercase;padding:10px;border-radius:10px;border:2px solid #4a3d48;background:#1a151c;color:#f3e9dc;width:120px;text-align:center"><button id="njn">Войти</button></div>
   <p class="sub" style="font-size:13px">Герой — тот, что выбран в меню: ${HEROES[myHero].name}.</p><div class="row"><button id="nback">Назад</button></div></div>`;
   const sv=()=>{NETU.name=document.getElementById('nnm').value.trim().slice(0,12);LS.set('nname',NETU.name)};
   document.getElementById('ncr').onclick=()=>{au();sv();if(nConnect(nCode(),1))showOnline()};
   document.getElementById('njn').onclick=()=>{au();sv();const c=document.getElementById('ncode').value.trim().toUpperCase();if(c.length!==4)return showOnline('Код — 4 буквы');if(nConnect(c,0))showOnline()};
-  document.getElementById('nback').onclick=showMenu;return}
+  document.getElementById('nback').onclick=showMenu;
+  const nmv=()=>{const v=document.getElementById('nnm');if(v){NETU.name=v.value.trim().slice(0,12);LS.set('nname',NETU.name)}};
+  document.getElementById('nlh').onclick=()=>{nmv();au();LAN.host(cl=>{if(nConnect('LAN',1,cl))showOnline()})};
+  document.getElementById('nlj').onclick=()=>{nmv();au();LAN.join(cl=>{if(nConnect('LAN',0,cl))showOnline()})};return}
  const link=location.origin+location.pathname+'?room='+NETU.code;
- $ui.innerHTML=`<div class="card"><p class="sub">Комната</p><h1 style="letter-spacing:8px">${NETU.code}</h1><p class="sub" style="font-size:13px">${link}</p><div class="row"><button id="ncp">📋 Скопировать ссылку</button></div>
+ const LANM=NETU.cl&&NETU.cl.lan;
+ $ui.innerHTML=`<div class="card">${LANM?`<p class="sub">Игра без интернета</p><h1>📡 Wi‑Fi</h1>${NETU.host?'<div class="row"><button id="nlm">➕ Подключить ещё игрока</button></div>':''}`:`<p class="sub">Комната</p><h1 style="letter-spacing:8px">${NETU.code}</h1><p class="sub" style="font-size:13px">${link}</p><div class="row"><button id="ncp">📋 Скопировать ссылку</button></div>`}
   <div class="pbox">${NETU.P.length?NETU.P.map((p,i)=>`<div style="padding:3px 0">${i===0?'👑 ':''}<b>${p.name||'…'}</b> · ${HEROES[p.hero]?HEROES[p.hero].name:''}${p.id===NETU.id?' (ты)':''}</div>`).join(''):'<small>Подключаемся…</small>'}<small>Игроков: ${NETU.P.length}/${NMAX}</small></div>
   ${NETU.host?`<div class="row"><button class="mm ${NETU.m==='team'?'on':''}" data-nm="team">🤝 Все вместе против ботов</button><button class="mm ${NETU.m==='train'?'on':''}" data-nm="train">🚆 Поезд вместе</button><button class="mm ${NETU.m==='kpz'?'on':''}" data-nm="kpz">🚔 Комисария вместе</button><button class="mm ${NETU.m==='diskoffa'?'on':''}" data-nm="diskoffa">💃 Кантина: каждый сам</button></div><div class="row"><button class="mm ${NETU.m==='ffa'?'on':''}" data-nm="ffa">Каждый сам</button><button class="mm ${NETU.m==='pvp'?'on':''}" data-nm="pvp">⚔ Люди на людей</button><button class="mm ${NETU.m==='krz'?'on':''}" data-nm="krz">🚙 Угнать джип</button></div><div class="row"><button class="pri" id="ngo" ${NETU.P.length<2||(NETU.m==='krz'&&NETU.P.length>KRNMAX)?'disabled':''}>${NETU.m==='krz'?'▶ Угнать!':'▶ Начать драку'}</button></div><p class="sub" style="font-size:13px">${NETU.P.length<2?'Ждём хотя бы одного бойца…':NETU.m==='krz'?(NETU.P.length>KRNMAX?'В гонке джипов максимум '+KRNMAX+' игрока':'Каждому свой джип: чёрный, белый, вишнёвый, серебристый. Чем больше вас — тем больше уазиков.'):NETU.m==='diskoffa'?'Каждый сам на танцполе (в болеро не драться!). Кто первым возьмёт 2 раунда — уводит Лусию, остальные на улице пытаются её отбить.':NETU.m==='team'?'Все игроки в одной команде, против вас — боты. Их на одного больше, чем вас.':NETU.m==='train'?'Вместе через 4 вагона: вагон, купе, платформа, перрон. Чем больше вас — тем больше людей Калеро.':NETU.m==='kpz'?'Вместе из комисарии: камера, коридор, дежурка с комиссаром. Чем больше вас — тем больше полиции.':NETU.m==='pvp'?'Люди делятся на две команды, недостающих добавят боты.':'Можно начинать. Не хватает людей — добавятся боты.'}</p>`:`<p class="sub">Режим: <b>${NMODEN[NETU.m]||'Каждый сам'}</b>. Ждём, когда хост начнёт…</p>`}
   <div class="row"><button id="nlv">Выйти</button></div></div>`;
- document.getElementById('ncp').onclick=()=>{try{navigator.clipboard.writeText(link);showOnline()}catch(e){}};
+ {const b=document.getElementById('ncp');if(b)b.onclick=()=>{try{navigator.clipboard.writeText(link);showOnline()}catch(e){}}}{const b=document.getElementById('nlm');if(b)b.onclick=()=>NETU.cl.more()}
  document.getElementById('nlv').onclick=()=>{nLeave();showOnline()};
  $ui.querySelectorAll('[data-nm]').forEach(b=>b.onclick=()=>{NETU.m=b.dataset.nm;nHello();showOnline()});
  const g=document.getElementById('ngo');if(g)g.onclick=()=>{au();nHostStart()}}

@@ -43,9 +43,11 @@ button.on{border-color:var(--gold);background:#3a2a1a}
 #touch.side #bD{bottom:calc(44px + var(--A) + var(--sm))}
 #touch.side #bC{bottom:calc(54px + var(--A) + var(--sm)*2)}
 #touch.side.lside #stick{left:calc((var(--bar) - min(130px,26vmin))/2)}
-#touch.race #bB{right:max(18px,env(safe-area-inset-right))!important;bottom:calc(36px + min(72px,15vmin) + min(62px,13vmin))!important;width:min(72px,15vmin)!important;height:min(72px,15vmin)!important}#touch.race #bA{width:min(84px,18vmin)!important;height:min(84px,18vmin)!important}.pcards{display:flex;gap:8px;justify-content:center;margin:6px 0 10px;flex-wrap:wrap}.pcard{width:62px;height:88px;border-radius:8px;background:#f6f1e6;border:2px solid #1a1418;box-shadow:2px 3px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 24px system-ui}.pcard i{font-style:normal;font-size:28px;line-height:1}.pcard.back{background:repeating-linear-gradient(45deg,#7a1a22 0 6px,#5a1218 6px 12px)}</style></head><body>
+#touch.race #bB{right:max(18px,env(safe-area-inset-right))!important;bottom:calc(36px + min(72px,15vmin) + min(62px,13vmin))!important;width:min(72px,15vmin)!important;height:min(72px,15vmin)!important}#touch.race #bA{width:min(84px,18vmin)!important;height:min(84px,18vmin)!important}
+#touch.race #bF{right:calc(var(--sr) + min(84px,18vmin) + 22px)!important;bottom:14px!important;width:min(96px,21vmin)!important;height:min(96px,21vmin)!important;background:rgba(220,40,40,.6)!important;font-size:30px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#bF small{font-size:12px}.pcards{display:flex;gap:8px;justify-content:center;margin:6px 0 10px;flex-wrap:wrap}.pcard{width:62px;height:88px;border-radius:8px;background:#f6f1e6;border:2px solid #1a1418;box-shadow:2px 3px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 24px system-ui}.pcard i{font-style:normal;font-size:28px;line-height:1}.pcard.back{background:repeating-linear-gradient(45deg,#7a1a22 0 6px,#5a1218 6px 12px)}</style></head><body>
 <div id="wrap"><canvas id="c" width="1280" height="720" aria-label="Свинец"></canvas></div>
-<div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bK" hidden>🤝<small>друг</small></div></div>
+<div id="touch" hidden><div id="stick"><div id="knob"></div></div><div class="tb" id="bA">УДАР</div><div class="tb" id="bB">ПИНОК</div><div class="tb" id="bC"><img src="img/w_kefir.webp" alt="" style="width:34px;height:34px;object-fit:contain;transform:rotate(-80deg);pointer-events:none"><small>карман</small></div><div class="tb" id="bE">💥<small>супер</small></div><div class="tb" id="bD">🔄<small>сменить</small></div><div class="tb" id="bF" hidden>🔫<small>огонь</small></div><div class="tb" id="bK" hidden>🤝<small>друг</small></div></div>
 <button id="mb" hidden>☰ Меню</button><div id="ui"></div>
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="/update.js"></script><script src="/net.js"></script>
@@ -1859,7 +1861,7 @@ function krGen(){const O=[];let y=KRH-760,n=0;
   y-=rnd(270,430)}
  for(const p of [.45,.78]){const yy=KRH-260-(KRH-530)*p,[c,h]=krRoad(yy);O.push({k:'uaz',x:c+(Math.random()<.5?-1:1)*h*.42,y:yy,vy:0,hit:0,block:1})}
  O.forEach((o,i)=>o.id=i);return O}
-function krCop(y,x){return {x,y,v:KR.CRUISE,stun:0,wob:Math.random()*6,hitT:0}}
+function krCop(y,x){return {x,y,v:KR.CRUISE,stun:0,wob:Math.random()*6,hitT:0,hp:100,fT:1.6+Math.random()*1.6,id:Math.random()}}
 function krzBegin(){au();state='krzlock';$ui.hidden=false;document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;krzLock(res=>krzRace(res))}
 /* ---- взлом ---- */
 function krzLock(done,o){o=o||{};KL={o,pin:0,ph:0,dir:1,t:25,noise:0,guard:0,res:null,resT:0,shk:0,flash:0,ok:[],done,zc:[0,1,2,3].map(()=>rnd(.22,.78))};
@@ -1890,7 +1892,7 @@ function krLockTick(dt){const L=KL;if(!L)return;const c=document.getElementById(
  g.restore()}
 /* ---- гонка (1 игрок или онлайн до 4: хост считает, остальные шлют руль) ---- */
 const KRNMAX=4;
-function krNewCar(x,y,col,name,rid,nitro){return {x,y,v:0,steer:0,hp:100,inv:0,oilT:0,oilD:0,ramT:0,ramD:0,ramCd:0,nitro,boostT:0,slowT:0,ang:0,col,name,rid,out:0,fin:0,stillT:0,rams:0,why:''}}
+function krNewCar(x,y,col,name,rid,nitro){return {x,y,v:0,steer:0,hp:100,mag:8,rel:0,fcd:0,kills:0,inv:0,oilT:0,oilD:0,ramT:0,ramD:0,ramCd:0,nitro,boostT:0,slowT:0,ang:0,col,name,rid,out:0,fin:0,stillT:0,rams:0,why:''}}
 function krActive(){return K.cars.filter(c=>!c.out&&!c.fin)}
 const KRT_UI=(()=>{const d=document.createElement('div');d.id='krt';d.hidden=true;d.style.cssText='position:fixed;inset:0;z-index:5;pointer-events:none';
  const B=(id,txt,css,bg)=>`<div id="${id}" style="position:absolute;${css};display:grid;place-items:center;border-radius:50%;background:${bg};border:3px solid rgba(255,255,255,.35);color:#fff;font:900 clamp(14px,3.6vmin,20px) system-ui;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none">${txt}</div>`;
@@ -1905,13 +1907,31 @@ const KRT_UI=(()=>{const d=document.createElement('div');d.id='krt';d.hidden=tru
  d.querySelector('#kN').addEventListener('pointerdown',e=>{e.preventDefault();au();krNitro()});d.querySelector('#kT').addEventListener('pointerdown',e=>{e.preventDefault();au();krRam()});
  return d})();
 function krUI(){rotTryLock();state='krz';$ui.hidden=true;document.getElementById('mb').hidden=false;document.getElementById('touch').hidden=!IS_TOUCH;document.getElementById('touch').classList.add('race');pad.mx=0;pad.my=0;
- const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='НИТРО';bB.textContent='ТАРАН';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display='none'}
+ const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='НИТРО';bB.textContent='ТАРАН';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display='none';document.getElementById('bF').hidden=false}
 function krzRace(res,net){const y=KRH-260,[c]=krRoad(y),P=net||[{id:'',name:''}],n=P.length;
  const cars=P.map((p,i)=>krNewCar(c+(i-(n-1)/2)*62,y+(i%2)*80,net?KRCOLS[i%KRCOLS.length][0]:(CAMP.on?'black':KRCOL),p.name||'',p.id||'',res==='clean'?1:0));
- K={t:0,cd:3.2,res,host:net?1:0,cli:0,cars,c:cars[0],cops:[],O:krGen(),fx:[],msg:'',msgT:0,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:n};
- const back=res==='clean'?760:res==='noisy'?420:230;for(let i=0;i<(n>1?n:1);i++)K.cops.push(krCop(y+back+i*130+(i%2)*60,c+(i%2?30:-30)));
+ K={t:0,cd:3.2,res,host:net?1:0,cli:0,cars,c:cars[0],cops:[],O:krGen(),fx:[],BL:[],W:[],respT:0,msg:'',msgT:0,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:n};
+ const back=res==='clean'?760:res==='noisy'?420:230;for(let i=0;i<(n>1?n:2);i++)K.cops.push(krCop(y+back+i*130+(i%2)*60,c+(i%2?30:-30)));
  krUI();K.msg=net?'УГОН! '+n+' ДЖИПА — ПАТРУЛЕЙ '+K.cops.length:res==='alarm'?'СИГНАЛКА! ПАТРУЛИ НА ХВОСТЕ':res==='clean'?'ТИХО УШЁЛ — ЕСТЬ ФОРА':'НАШУМЕЛ — ПАТРУЛИ БЛИЗКО';K.msgT=2.6}
-function krRestoreUI(){document.getElementById('touch').classList.remove('race');const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='УДАР';bB.textContent='ПИНОК';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display=''}
+function krRestoreUI(){document.getElementById('touch').classList.remove('race');const bA=document.getElementById('bA'),bB=document.getElementById('bB');bA.textContent='УДАР';bB.textContent='ПИНОК';for(const id of ['bC','bD','bE'])document.getElementById(id).style.display='';document.getElementById('bF').hidden=true}
+/* ---- перестрелка с бобиками ---- */
+function krShoot(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.s=(NETU.s||0)+1;return}krShootCar(K.c)}
+function krShootCar(c){if(c.out||c.fin||c.fcd>0)return;if(c.rel>0){if(c===K.c&&c.rel>.2){K.msg='ПЕРЕЗАРЯДКА';K.msgT=.4}return}
+ let best=null,bd=1e9;for(const p of K.cops){if(p.hp<=0||p.y-c.y>(H/KR.SC)*.42||p.y-c.y<-(H/KR.SC)*.6)continue;const d=Math.hypot(p.x-c.x,p.y-c.y);if(d<560&&d<bd){bd=d;best=p}}
+ let ax,ay;if(best){const tt=bd/980;ax=best.x-c.x;ay=(best.y-best.v*tt)-c.y}else{ax=0;ay=1}const l=Math.hypot(ax,ay)||1,sp=980,e=rnd(-.04,.04),cs=Math.cos(e),sn=Math.sin(e);ax/=l;ay/=l;[ax,ay]=[ax*cs-ay*sn,ax*sn+ay*cs];
+ K.BL.push({x:c.x+ax*30,y:c.y+ay*30,vx:ax*sp,vy:ay*sp,life:.65,own:1,c});c.fcd=.24;c.mag--;if(c.mag<=0){c.rel=1.4;c.mag=0}
+ K.fx.push({x:c.x+ax*34,y:c.y+ay*34,vx:0,vy:0,t:0,life:.08,c:'#fff2a0',s:9});if(c===K.c){SFX.shot?SFX.shot():SFX.metal&&SFX.metal()}}
+function krCopShoot(p,c){const d=Math.hypot(c.x-p.x,c.y-p.y),tt=d/700;let ax=c.x+Math.sin(c.a||0)*c.v*tt*.7-p.x,ay=c.y-Math.cos(c.a||0)*c.v*tt*.7-p.y;const l=Math.hypot(ax,ay)||1,e=rnd(-.07,.07),cs=Math.cos(e),sn=Math.sin(e);ax/=l;ay/=l;[ax,ay]=[ax*cs-ay*sn,ax*sn+ay*cs];
+ K.BL.push({x:p.x+ax*40,y:p.y+ay*40,vx:ax*700,vy:ay*700,life:.9,own:0});K.fx.push({x:p.x+ax*44,y:p.y+ay*44,vx:0,vy:0,t:0,life:.09,c:'#ffd27a',s:10});if(Math.hypot(p.x-K.c.x,p.y-K.c.y)<600)(SFX.shot||SFX.metal)()}
+function krBullets(dt,act){for(let i=K.BL.length-1;i>=0;i--){const b=K.BL[i];b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;let hit=0;
+  if(b.own){for(const p of K.cops){if(p.hp>0&&krBox(b.x,b.y,8,8,p.x,p.y,KR.UW*1.1,KR.UL*.9)){hit=1;p.hp-=11;p.v*=.93;K.fx.push({x:b.x,y:b.y,vx:rnd(-80,80),vy:rnd(-80,80),t:0,life:.3,c:'#ffe08a',s:5});
+     if(p.hp<=0)krCopDie(p,b.c);else if(b.c===K.c)krTxt(p,'−11','#ffe08a');break}}}
+  else{for(const c of act){if(krBox(b.x,b.y,8,8,c.x,c.y,KR.CW*.9,KR.CL*.85)){hit=1;c.hp=Math.max(0,c.hp-4);krTxt(c,'ПУЛЯ −4','#ff6a5a');if(c===K.c){K.shk=Math.max(K.shk,5);SFX.metal&&SFX.metal()}break}}}
+  if(!hit)for(const o of K.O)if(o.hit!==2&&KOT[o.k].solid&&krBox(b.x,b.y,6,6,o.x,o.y,...krObSize(o).map(v=>v*.6))){hit=1;break}
+  if(hit||b.life<=0)K.BL.splice(i,1)}}
+function krCopDie(p,by){p.hp=0;K.cops.splice(K.cops.indexOf(p),1);K.W.push({x:p.x,y:p.y,t:0,a:krSlope(p.y)});K.respT=4.5;if(by){by.kills=(by.kills||0)+1}K.shk=Math.max(K.shk,14);(SFX.boom||SFX.heavy)();
+ for(let i=0;i<26;i++)K.fx.push({x:p.x+rnd(-20,20),y:p.y+rnd(-30,30),vx:rnd(-260,260),vy:rnd(-260,200),t:0,life:rnd(.5,1.1),c:['#ffd23f','#ff7a1a','#e0303a','#333'][i%4],s:rnd(5,11)});
+ krTxt(p,'БОБИК ГОТОВ!','#ffd23f');if(by===K.c){K.msg='БОБИК ПОДБИТ!';K.msgT=1.2}}
 function krNitro(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.a++;return}krNitroCar(K.c)}
 function krRam(){if(!K||K.over||K.cd>0)return;if(K.cli){NETU.k++;return}krRamCar(K.c)}
 function krNitroCar(c){if(c.out||c.fin||c.nitro<=0||c.boostT>0)return;c.nitro--;c.boostT=3.4;SFX.whoosh();if(c===K.c){K.msg='НИТРО!';K.msgT=.9}}
@@ -1926,7 +1946,7 @@ function krBox(ax,ay,aw,ah,bx,by,bw,bh){return Math.abs(ax-bx)<(aw+bw)/2&&Math.a
 function krJoy(jx,jy){const l=Math.hypot(jx,jy);if(l<.3)return {ta:null,brk:false};if(jy>.55&&Math.abs(jx)<.45)return {ta:null,brk:true};return {ta:clamp(Math.atan2(jx,Math.max(-jy,.25)),-1.25,1.25),brk:false}}
 function krInput(c){if(c===K.c){const kx=((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0),ky=((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0);
   if(kx||ky)return {ta:kx?kx*.7:ky<0?0:null,brk:ky>0&&!kx,key:1};return krJoy(pad.mx,pad.my)}
- const I=NETU.inp[c.rid]||{};if(I.a!==undefined&&I.a!==c._a){if(c._a!==undefined)krNitroCar(c);c._a=I.a}if(I.k!==undefined&&I.k!==c._k){if(c._k!==undefined)krRamCar(c);c._k=I.k}
+ const I=NETU.inp[c.rid]||{};if(I.a!==undefined&&I.a!==c._a){if(c._a!==undefined)krNitroCar(c);c._a=I.a}if(I.k!==undefined&&I.k!==c._k){if(c._k!==undefined)krRamCar(c);c._k=I.k}if(I.s!==undefined&&I.s!==c._s){if(c._s!==undefined)krShootCar(c);c._s=I.s}
  return krJoy(clamp(+I.mx||0,-1,1),clamp(+I.my||0,-1,1))}
 function krCarTick(c,dt){const I=krInput(c);const me=c===K.c;if(c.a==null)c.a=0;
  let tv=c.boostT>0?KR.NITRO:I.brk?KR.BRAKE:KR.GAS;if(c.slowT>0){tv*=.55;c.slowT-=dt}
@@ -1936,7 +1956,7 @@ function krCarTick(c,dt){const I=krInput(c);const me=c===K.c;if(c.a==null)c.a=0;
  else if(I.ta!=null){let da=I.ta-c.a;c.a+=clamp(da,-3.7*dt,3.7*dt)}
  else{c.a+=(road-c.a)*Math.min(1,dt*.9)}
  c.a=clamp(c.a,-1.35,1.35);c.steer=clamp((c.a-road)*1.4,-1,1);c.ang=0;
- let lat=0;if(c.ramT>0){c.ramT-=dt;lat=c.ramD*480}c.ramCd-=dt;
+ let lat=0;if(c.ramT>0){c.ramT-=dt;lat=c.ramD*480}c.ramCd-=dt;c.fcd-=dt;if(c.rel>0){c.rel-=dt;if(c.rel<=0)c.mag=8}
  c.x+=Math.sin(c.a)*c.v*dt+lat*dt;c.y-=Math.cos(c.a)*Math.max(c.v,30)*dt;if(c.inv>0)c.inv-=dt;
  const wall=krClampRoad(c,KR.CW*.5+4);c.off=!!wall;
  if(wall){const into=Math.sign(c.a-road)===wall;c.v*=Math.pow(into?.4:.75,dt);if(into)c.a+=(road-c.a)*Math.min(1,dt*6);if(c.ramT>0)c.ramT=0;if(c.oilT>0)c.oilT=0;if(Math.random()<dt*14)K.fx.push({x:c.x+wall*KR.CW*.5,y:c.y+rnd(-30,30),vx:-wall*rnd(20,90),vy:rnd(-40,60),t:0,life:.35,c:'#ffd27a',s:rnd(2,4)});
@@ -1949,6 +1969,7 @@ function krCarTick(c,dt){const I=krInput(c);const me=c===K.c;if(c.a==null)c.a=0;
   if(T.bump){if(!(o.bumped||(o.bumped=[])).includes(c)){o.bumped.push(c);krDmg(c,T.dmg,'ТРЯХНУЛО');c.v*=.62;if(me)K.shk=8}continue}
   if(T.solid&&c.inv<=0){krDmg(c,Math.round(T.dmg*.7*(.6+c.v/KR.GAS*.5)),o.k==='uaz'?'В ПАТРУЛЬ!':'БАХ!');c.v*=.3;c.slowT=.6;if(me)K.shk=12;SFX.heavy();c.x+=(c.x>o.x?1:-1)*24;
    if(T.br){o.hit=2;for(let i=0;i<10;i++)K.fx.push({x:o.x,y:o.y,vx:rnd(-160,160),vy:rnd(-160,60),t:0,life:.7,c:o.k==='barrel'?'#6a4422':o.k==='crates'?'#9a6a3a':'#d8d0c0',s:rnd(4,8)})}}}
+ for(const w of K.W)if(c.inv<=0&&krBox(c.x,c.y,KR.CW*.72,KR.CL*.78,w.x,w.y,KR.UW*.7,KR.UL*.6)){krDmg(c,9,'В ОБЛОМКИ!');c.v*=.4;c.slowT=.5;c.x+=(c.x>w.x?1:-1)*24;if(me)K.shk=10;SFX.heavy()}
  const boxed=K.cops.some(p=>p.stun<=0&&Math.hypot(p.x-c.x,p.y-c.y)<90);if(boxed&&c.v<45)c.stillT+=dt;else c.stillT=Math.max(0,c.stillT-dt*2);
  if(c.stillT>1.5)krCarOut(c,'зажали уазиками — не вырвался');
  else if(c.hp<=0)krCarOut(c,'джип заглох — дальше пешком не уйти');
@@ -1965,8 +1986,9 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
  const live=act.length?act:K.cars,lowY=Math.max(...live.map(c=>c.y)),lead=live.reduce((a,b)=>a.y<b.y?a:b);
  K.O=K.O.filter(o=>o.y<lowY+900&&o.y>-200);
  // патрули: больше игроков — больше уазиков
- const prog=clamp((KRH-260-lead.y)/(KRH-530),0,1),want=(K.nP>1?K.nP:1)+(prog>.4)+(prog>.75);
- if(act.length)while(K.cops.length<want){const yy=lowY+380,[cc]=krRoad(yy);K.cops.push(krCop(yy,cc+rnd(-30,30)));K.msg='ЕЩЁ ОДИН ПАТРУЛЬ!';K.msgT=1.5}
+ const prog=clamp((KRH-260-lead.y)/(KRH-530),0,1),want=(K.nP>1?K.nP:2)+(prog>.4)+(prog>.75);
+ K.respT-=dt;krBullets(dt,act);for(const w of K.W)w.t+=dt;K.W=K.W.filter(w=>w.y<lowY+900);
+ if(act.length&&K.respT<=0)while(K.cops.length<want){const yy=lowY+380,[cc]=krRoad(yy);K.cops.push(krCop(yy,cc+rnd(-30,30)));K.msg='ЕЩЁ ОДИН ПАТРУЛЬ!';K.msgT=1.5}
  let near=0;
  for(const p of K.cops){p.wob+=dt;p.hitT-=dt;const [pc,ph]=krRoad(p.y),poff=false;
   let tg=null,bd=1e9;for(const c of act){const d=Math.hypot(c.x-p.x,(c.y-p.y)*.7);if(d<bd){bd=d;tg=c}}
@@ -1975,6 +1997,8 @@ function krTick(dt){K.t+=dt;K.shk=Math.max(0,K.shk-dt*20);
   else{let tv=dy>90?Math.min(KR.GAS*1.3,c.v+34+dy*.05):dy<-160?KR.GAS*.65:c.v+(dy>0?16:-8);if(poff)tv=Math.min(tv,KR.OFF+8);if(!tg)tv=KR.CRUISE*.5;p.v+=(tv-p.v)*Math.min(1,dt*1.6);
    const tx=Math.abs(dy)<110?c.x:pc+Math.sin(p.wob)*ph*.3;p.x+=clamp(tx-p.x,-1,1)*Math.min(Math.abs(tx-p.x),(Math.abs(dy)<110?112:88))*dt*1.4}
   krFollow(p,p.v*dt);krClampRoad(p,KR.UW*.5+2);if(Math.hypot(p.x-K.c.x,p.y-K.c.y)<260)near=1;
+  p.fT-=dt;if(tg&&p.stun<=0&&p.fT<=0){const d=Math.hypot(tg.x-p.x,tg.y-p.y);if(d<400&&d>70&&p.y-tg.y<(H/KR.SC)*.36&&p.y-tg.y>-(H/KR.SC)*.55){krCopShoot(p,tg);p.fT=rnd(1.7,2.7)}else p.fT=.4}
+  for(const w of K.W)if(p.stun<=0&&krBox(p.x,p.y,KR.UW*.8,KR.UL*.8,w.x,w.y,KR.UW*.7,KR.UL*.6)){p.stun=1.6;p.v*=.3;p.hp-=25;SFX.metal();krTxt(p,'ВРЕЗАЛСЯ!','#ffd23f');if(p.hp<=0){krCopDie(p,null);break}}
   if(tg&&p.y>lowY+700){const yy=lowY+420,[cc]=krRoad(yy);p.y=yy;p.x=cc;p.v=c.v}
   for(const o of K.O)if(o.hit!==2&&KOT[o.k].solid&&!o.block&&krBox(p.x,p.y,KR.UW*.8,KR.UL*.8,o.x,o.y,...krObSize(o).map(v=>v*.7))&&p.stun<=0){p.stun=1.4;p.v*=.3;SFX.metal();if(KOT[o.k].br)o.hit=2}
   for(const c2 of act)if(krBox(c2.x,c2.y,KR.CW,KR.CL*.9,p.x,p.y,KR.UW,KR.UL*.9)){
@@ -1998,9 +2022,9 @@ function krEnd(){const c=K.c,ts=Math.round(K.t),multi=K.nP>1,won=multi?!!c.fin:K
  if(K.host)nSend({t:'kend',R:krResults(),ts});
  krShowEnd(won,c.fin,c.why||K.why,Math.round(c.hp),c.rams,ts,multi?krResults():null)}
 function krShowEnd(won,fin,why,hp,rams,ts,R){const net=!!R;state='end';krRestoreUI();document.getElementById('mb').hidden=true;document.getElementById('touch').hidden=true;$ui.hidden=false;
- let kap=won?(fin===1&&net?180:120)+hp+rams*15:15;gainKap(kap);gainXP(won?90:20);if(net)NETU.phase='lobby';
+ let kap=(won?(fin===1&&net?180:120)+hp+rams*15:15)+((K&&K.c&&K.c.kills)||0)*25;gainKap(kap);gainXP(won?90:20);if(net)NETU.phase='lobby';
  const tbl=R?`<div class="pbox">${R.map((r,i)=>`<div style="padding:2px 0">${r.f?'🏁 '+r.f+'.':'🚨'} <b>${r.n}</b> <small>· ${KRCOLS.find(k=>k[0]===r.col)?KRCOLS.find(k=>k[0]===r.col)[1].toLowerCase():''} · ${r.f?'цел на '+r.hp+'%':r.why} · таранов ${r.r}</small></div>`).join('')}</div>`:'';
- $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?(net&&fin===1?'ПЕРВЫЙ В ГАРАЖЕ':'ДЖИП В ГАРАЖЕ'):'ПРИНЯЛИ'}</h1><p class="sub">${why}</p>${tbl}<p class="sub">Время ${ts/60|0}:${String(ts%60).padStart(2,'0')} · джип цел на ${hp}% · таранов: ${rams} · <i class="kp"></i> +${kap}</p>${progLine()}<div class="row">${net?`<button class="pri" id="nlb">В комнату</button><button id="nmn">Выйти в меню</button>`:`<button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button>`}</div></div>`;
+ $ui.innerHTML=`<div class="card"><h1 style="text-shadow:4px 4px 0 ${won?'#e8b23a':'#c8202a'}">${won?(net&&fin===1?'ПЕРВЫЙ В ГАРАЖЕ':'ДЖИП В ГАРАЖЕ'):'ПРИНЯЛИ'}</h1><p class="sub">${why}</p>${tbl}<p class="sub">Время ${ts/60|0}:${String(ts%60).padStart(2,'0')} · джип цел на ${hp}% · таранов: ${rams} · бобиков подбито: ${K&&K.c?K.c.kills||0:0} · <i class="kp"></i> +${kap}</p>${progLine()}<div class="row">${net?`<button class="pri" id="nlb">В комнату</button><button id="nmn">Выйти в меню</button>`:`<button class="pri" id="again">Ещё раз</button><button id="menu">Меню</button>`}</div></div>`;
  if(net){document.getElementById('nlb').onclick=()=>{K=null;G=null;showOnline()};document.getElementById('nmn').onclick=()=>{K=null;nLeave();G=null;showMenu()};return}
  document.getElementById('again').onclick=()=>{K=null;krzBegin()};document.getElementById('menu').onclick=()=>{K=null;showMenu()};campAfter(won)}
 function krPause(){if(!K||state!=='krz')return;
@@ -2016,60 +2040,70 @@ function krDrawCar(c,S,t){const [sx,sy]=S(c.x,c.y),SC=KR.SC;if(sy<-300||sy>H+300
  const fr=c.hp>66?0:c.hp>33?1:2,KC=KRCARS[c.col]||KRCARS.black;if(KC.complete&&KC.naturalWidth){const fw=KC.naturalWidth/3;ctx.drawImage(KC,fr*fw,0,fw,KC.naturalHeight,-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}else{ctx.fillStyle='#111';ctx.fillRect(-KR.CW*SC/2,-KR.CL*SC/2,KR.CW*SC,KR.CL*SC)}
  if(c.boostT>0){ctx.fillStyle='rgba(124,240,255,.55)';ctx.beginPath();ctx.moveTo(-14,KR.CL*SC/2);ctx.lineTo(0,KR.CL*SC/2+40+Math.random()*30);ctx.lineTo(14,KR.CL*SC/2);ctx.fill()}ctx.restore();
  if(K.nP>1){const me=c===K.c;ctx.font='900 17px Impact,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='#000';const lab=(me?'▼ ТЫ':c.name||'?')+(c.fin?' 🏁'+c.fin:c.out?' 🚨':'');ctx.strokeText(lab,sx,sy-KR.CL*SC/2-10);ctx.fillStyle=me?'#7cf07c':'#f3e9dc';ctx.fillText(lab,sx,sy-KR.CL*SC/2-10)}}
-function krDraw(t){const cam=krCam(),SC=KR.SC,VW=W/SC,VH=H/SC;const camX=clamp(cam.x-VW/2,0,KRW-VW),camY=clamp(cam.y-VH*.7,0,KRH-VH);
+function krDraw(t){const cam=krCam(),SC=KR.SC,VW=W/SC,VH=H/SC;const camX=clamp(cam.x-VW/2,0,KRW-VW),camY=clamp(cam.y-VH*.6,0,KRH-VH);
  const S=(x,y)=>[(x-camX)*SC,(y-camY)*SC];ctx.save();if(K.shk>0)ctx.translate(rnd(-K.shk,K.shk),rnd(-K.shk,K.shk));
  ctx.fillStyle='#0a0a0e';ctx.fillRect(0,0,W,H);
  for(let i=0;i<4;i++){const ty0=i*KRT_H,ty1=ty0+KRT_H,ys=Math.max(camY,ty0),ye=Math.min(camY+VH,ty1);if(ye>ys&&KRT[i].complete&&KRT[i].naturalWidth)ctx.drawImage(KRT[i],camX,ys-ty0,VW,ye-ys,0,(ys-camY)*SC,W,(ye-ys)*SC)}
  for(const o of K.O){if(o.hit===2)continue;const [sx,sy]=S(o.x,o.y);if(sy<-200||sy>H+200)continue;const [ow,oh]=krObSize(o);
   if(o.k==='uaz'){ctx.save();ctx.translate(sx,sy);if(UAZI.complete&&UAZI.naturalWidth)ctx.drawImage(UAZI,-ow*SC/2,-oh*SC/2,ow*SC,oh*SC);krSiren(sx,sy,t,.8);ctx.restore();continue}
   const im=KROB[o.k];if(!im||!im.naturalWidth)continue;ctx.save();ctx.translate(sx,sy);if(KOT[o.k].flip)ctx.rotate(Math.PI);if(KOT[o.k].pick){const b=1+.08*Math.sin(t*6);ctx.scale(b,b)}ctx.drawImage(im,-ow*SC/2,-oh*SC/2,ow*SC,oh*SC);ctx.restore()}
- for(const p of K.cops){const [sx,sy]=S(p.x,p.y);if(sy<-300||sy>H+300)continue;ctx.save();ctx.translate(sx,sy);ctx.rotate(-Math.PI/2+krSlope(p.y)+(p.stun>0?Math.sin(p.wob*9)*.5:0));
+ for(const w of K.W){const [sx,sy]=S(w.x,w.y);if(sy<-300||sy>H+300)continue;ctx.save();ctx.translate(sx,sy);ctx.rotate(-Math.PI/2+w.a+.5);ctx.filter='brightness(.35) saturate(.4)';if(UAZI.complete&&UAZI.naturalWidth)ctx.drawImage(UAZI,-KR.UL*SC/2,-KR.UW*SC/2,KR.UL*SC,KR.UW*SC);ctx.filter='none';ctx.restore();
+  ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<4;i++){const k=(t*2.2+i*.25)%1,fx=sx+Math.sin(t*7+i*2)*14,fy=sy-k*90;const gr=ctx.createRadialGradient(fx,fy,2,fx,fy,40*(1-k)+10);gr.addColorStop(0,`rgba(255,${180-k*120|0},40,${.8*(1-k)})`);gr.addColorStop(1,'rgba(255,60,0,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(fx,fy,50,0,TAU);ctx.fill()}ctx.restore();
+  for(let i=0;i<3;i++){const k=(t*.8+i*.33)%1;ctx.fillStyle=`rgba(40,40,40,${.45*(1-k)})`;ctx.beginPath();ctx.arc(sx+Math.sin(i*3+t)*20+k*30,sy-60-k*160,18+k*34,0,TAU);ctx.fill()}}
+ for(const p of K.cops){const [sx,sy]=S(p.x,p.y);if(sy<-300||sy>H+300)continue;
+  if(p.hp<60){for(let i=0;i<2;i++){const k=(t*1.3+i*.5+p.wob)%1;ctx.fillStyle=`rgba(${p.hp<30?60:110},${p.hp<30?50:110},${p.hp<30?50:110},${.5*(1-k)})`;ctx.beginPath();ctx.arc(sx+k*20,sy-30-k*110,12+k*26,0,TAU);ctx.fill()}}
+  if(p.hp<100){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(sx-40,sy-78,80,9);ctx.fillStyle=p.hp>50?'#e8b23a':'#e0303a';ctx.fillRect(sx-39,sy-77,78*Math.max(0,p.hp)/100,7)}
+  ctx.save();ctx.translate(sx,sy);ctx.rotate(-Math.PI/2+krSlope(p.y)+(p.stun>0?Math.sin(p.wob*9)*.5:0));
   {const sg=ctx.createRadialGradient(8,8,10,8,8,KR.UL*SC*.55);sg.addColorStop(0,'rgba(0,0,0,.5)');sg.addColorStop(1,'rgba(0,0,0,0)');ctx.save();ctx.scale(1,.6);ctx.fillStyle=sg;ctx.beginPath();ctx.arc(8,8/.6,KR.UL*SC*.55,0,TAU);ctx.fill();ctx.restore()}if(UAZI.complete&&UAZI.naturalWidth)ctx.drawImage(UAZI,-KR.UL*SC/2,-KR.UW*SC/2,KR.UL*SC,KR.UW*SC);ctx.restore();krSiren(sx,sy,t,1)}
  for(const c of K.cars)if(c!==K.c)krDrawCar(c,S,t);krDrawCar(K.c,S,t);
+ ctx.lineCap='round';for(const b of K.BL){const [sx,sy]=S(b.x,b.y);const l=Math.hypot(b.vx,b.vy)||1;ctx.strokeStyle=b.own?'#fff2a0':'#ff8a5a';ctx.lineWidth=b.own?5:5;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx-b.vx/l*34,sy-b.vy/l*34);ctx.stroke()}ctx.lineCap='butt';
  for(const f of K.fx){const [sx,sy]=S(f.x,f.y),a=1-f.t/f.life;if(f.txt){ctx.globalAlpha=Math.max(0,a);ctx.font='900 26px Impact,sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(f.txt,sx,sy);ctx.fillStyle=f.c;ctx.fillText(f.txt,sx,sy);ctx.globalAlpha=1}else{ctx.fillStyle=f.c;ctx.globalAlpha=Math.max(0,a);ctx.fillRect(sx,sy,f.s*SC*.6,f.s*SC*.6);ctx.globalAlpha=1}}
+ for(const p of K.cops){const [sx,sy]=S(p.x,p.y);if(sy>H-10&&sy<H+700){const k=.6+.4*Math.sin(t*10);ctx.fillStyle=`rgba(255,50,50,${k})`;ctx.beginPath();ctx.moveTo(sx,H-14);ctx.lineTo(sx-16,H-40);ctx.lineTo(sx+16,H-40);ctx.closePath();ctx.fill();ctx.font='20px serif';ctx.textAlign='center';ctx.fillText('🚓',sx,H-46)}}
  ctx.restore();krHUD(t)}
 function krSiren(sx,sy,t,k){const on=((t*4)|0)%2;ctx.save();ctx.globalCompositeOperation='lighter';const gr=ctx.createRadialGradient(sx,sy,4,sx,sy,120*k);gr.addColorStop(0,on?'rgba(60,110,255,.55)':'rgba(255,40,40,.55)');gr.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=gr;ctx.fillRect(sx-130,sy-130,260,260);ctx.restore()}
 function krHUD(t){const c=K.c,ts=Math.floor(K.t);
  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(16,14,330,72);ctx.font='900 20px Impact,sans-serif';ctx.textAlign='left';ctx.fillStyle='#f3e9dc';ctx.fillText('ДЖИП  '+'🔥'.repeat(c.nitro)+(c.nitro?'':'· нитро нет'),28,38);
  ctx.fillStyle='#331';ctx.fillRect(28,48,220,14);ctx.fillStyle=c.hp>50?'#5ad05a':c.hp>25?'#e8b23a':'#e0303a';ctx.fillRect(28,48,220*c.hp/100,14);ctx.font='bold 13px system-ui';ctx.fillStyle='#e8b23a';ctx.fillText(Math.round(c.hp)+'%',256,60);
  ctx.fillStyle='#9fd0ff';ctx.fillText(c.out?'ПРИНЯЛИ — смотришь за своими':c.fin?'В ГАРАЖЕ · '+c.fin+'-й':((c.v|0)+(c.off?' · У БОРТА!':'')),28,78);
- ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-200,12,400,40);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`${ts/60|0}:${String(ts%60).padStart(2,'0')} · ПАТРУЛЕЙ ${K.cops.length} · ТАРАНОВ ${c.rams}`,W/2,40);
+ ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(W/2-200,12,400,40);ctx.textAlign='center';ctx.font='900 22px Impact,sans-serif';ctx.fillStyle='#f3e9dc';ctx.fillText(`${ts/60|0}:${String(ts%60).padStart(2,'0')} · ПАТРУЛЕЙ ${K.cops.length} · ПОДБИТО ${c.kills||0}`,W/2,40);
+ ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(16,92,200,30);ctx.textAlign='left';ctx.font='900 18px Impact,sans-serif';ctx.fillStyle=c.rel>0?'#ff8a5a':'#fff2a0';ctx.fillText(c.rel>0?'🔫 ПЕРЕЗАРЯДКА…':'🔫 '+'▮'.repeat(c.mag||0)+'▯'.repeat(8-(c.mag||0)),24,114);
  if(K.nP>1){ctx.textAlign='left';ctx.font='bold 14px system-ui';K.cars.forEach((q,i)=>{const y=104+i*20;ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(16,y-15,200,19);ctx.fillStyle=q===c?'#7cf07c':'#f3e9dc';ctx.fillText((q.fin?'🏁'+q.fin+' ':q.out?'🚨 ':'🚙 ')+(q===c?'Ты':q.name)+' · '+Math.round(q.hp)+'%',22,y)})}
  const bx=W-34,by0=70,by1=H-110;ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(bx-8,by0-10,16,by1-by0+20);const P=y=>by0+(by1-by0)*clamp((y-270)/(KRH-530),0,1);
  ctx.fillStyle='#7cf07c';ctx.fillRect(bx-10,by0-14,20,8);for(const p of K.cops){ctx.fillStyle=((t*3)|0)%2?'#ff3030':'#4a7aff';ctx.beginPath();ctx.arc(bx,P(p.y),5,0,TAU);ctx.fill()}
  for(const q of K.cars){if(q===c||q.out)continue;ctx.fillStyle='#f3e9dc';ctx.beginPath();ctx.arc(bx,P(q.y),5,0,TAU);ctx.fill()}ctx.fillStyle='#e8b23a';ctx.beginPath();ctx.arc(bx,P(c.y),7,0,TAU);ctx.fill();
  if(K.cd>0||K.msgT>0){const txt=K.cd>0?(K.cd>1.2?String(Math.ceil(K.cd-1.2)):'ГАЗУ!'):K.msg;ctx.textAlign='center';ctx.font='900 54px Impact,sans-serif';ctx.lineWidth=9;ctx.strokeStyle='#000';ctx.strokeText(txt,W/2,250);ctx.fillStyle=K.over?(K.win?'#e8b23a':'#e0303a'):'#f3e9dc';ctx.fillText(txt,W/2,250)}
- if(K.t<6&&!K.over&&K.cd<=0){ctx.textAlign='center';ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.9)';ctx.fillText(IS_TOUCH?'Газ сам · джойстик — куда ехать · вниз — тормоз · НИТРО — рывок · ТАРАН — бок в уазик':'Газ сам · ← → руль · ↓ тормоз · F нитро · G таран',W/2,84)}}
+ if(K.t<6&&!K.over&&K.cd<=0){ctx.textAlign='center';ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(243,233,220,.9)';ctx.fillText(IS_TOUCH?'Газ сам · джойстик — руль · ОГОНЬ — по бобикам · НИТРО — рывок · ТАРАН — бок в уазик':'Газ сам · ← → руль · ↓ тормоз · E/Enter огонь · F нитро · G таран',W/2,84)}}
 /* ---- онлайн ---- */
 function krHostStart(){NETU.phase='game';mode='krz';CAMP.on=0;G=null;const P=NETU.P.slice(0,KRNMAX).map(p=>({id:p.id,name:p.name}));krzRace('noisy',P);
  nSend({t:'go',m:'krz',p:NETU.P,O:K.O.map(o=>[o.k,Math.round(o.x),Math.round(o.y),o.block?1:0]),C:K.cars.map(c=>[c.rid,c.name,c.col,Math.round(c.x),Math.round(c.y)])})}
 function krSnap(){
  nSend({t:'ks',T:+K.t.toFixed(2),cd:+K.cd.toFixed(2),o:K.over?1:0,msg:K.msgT>0?K.msg:'',
   C:K.cars.map(c=>[c.rid,Math.round(c.x),Math.round(c.y),Math.round(c.v),+c.steer.toFixed(2),Math.round(c.hp),c.boostT>0?1:0,+(c.a||0).toFixed(2),c.inv>0?1:0,c.out,c.fin,c.nitro,c.rams,c.off?1:0,c.why]),
-  P:K.cops.map(p=>[Math.round(p.x),Math.round(p.y),p.stun>0?1:0,+p.wob.toFixed(1)]),
+  P:K.cops.map(p=>[Math.round(p.x),Math.round(p.y),p.stun>0?1:0,+p.wob.toFixed(1),Math.round(p.hp)]),B:K.BL.map(b=>[Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),b.own]),W:K.W.map(w=>[Math.round(w.x),Math.round(w.y),+w.a.toFixed(2)]),A:K.cars.map(c=>[c.mag,c.rel>0?1:0,c.kills||0]),
   H:K.O.filter(o=>o.hit===2).map(o=>o.id),M:K.O.filter(o=>o.vy).map(o=>[o.id,Math.round(o.x),Math.round(o.y)]),
   X:K.fx.filter(f=>f.txt&&!f._s).map(f=>(f._s=1,[Math.round(f.x),Math.round(f.y),f.txt,f.c]))})}
 function krClientStart(m){NETU.phase='game';mode='krz';CAMP.on=0;G=null;
  const O=m.O.map((a,i)=>({k:a[0],x:a[1],y:a[2],vy:0,hit:0,block:a[3],id:i}));
  const cars=m.C.map(a=>Object.assign(krNewCar(a[3],a[4],a[2],a[1],a[0],0),{tx:a[3],ty:a[4]}));
- K={t:0,cd:3.2,res:'noisy',host:0,cli:1,cars,c:cars.find(c=>c.rid===NETU.id)||cars[0],cops:[],O,fx:[],msg:'УГОН!',msgT:2,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:cars.length,inT:0};
+ K={t:0,cd:3.2,res:'noisy',host:0,cli:1,cars,c:cars.find(c=>c.rid===NETU.id)||cars[0],cops:[],O,fx:[],BL:[],W:[],respT:0,msg:'УГОН!',msgT:2,shk:0,sirT:0,over:0,overT:0,win:0,why:'',place:0,snapT:0,nP:cars.length,inT:0};
  krUI()}
 function krApply(m){if(!K||!K.cli)return;K.t=m.T;K.cd=m.cd;if(m.msg){K.msg=m.msg;K.msgT=.3}
  for(const a of m.C){const c=K.cars.find(q=>q.rid===a[0]);if(!c)continue;const was=c.hp;
   Object.assign(c,{tx:a[1],ty:a[2],v:a[3],steer:a[4],hp:a[5],boostT:a[6]?1:0,a:a[7],ang:0,inv:a[8]?.2:0,out:a[9],fin:a[10],nitro:a[11],rams:a[12],off:!!a[13],why:a[14]});
   if(Math.hypot(c.tx-c.x,c.ty-c.y)>200){c.x=c.tx;c.y=c.ty}if(c===K.c&&c.hp<was-3)K.shk=8}
  while(K.cops.length<m.P.length)K.cops.push(krCop(m.P[K.cops.length][1],m.P[K.cops.length][0]));K.cops.length=m.P.length;
- m.P.forEach((a,i)=>{const p=K.cops[i];p.tx=a[0];p.ty=a[1];p.stun=a[2];p.wob=a[3];if(Math.hypot(p.tx-p.x,p.ty-p.y)>250){p.x=p.tx;p.y=p.ty}});
+ if(m.B)K.BL=m.B.map(a=>({x:a[0],y:a[1],vx:a[2],vy:a[3],own:a[4],life:1}));if(m.W){if(m.W.length>K.W.length){K.shk=10;(SFX.boom||SFX.heavy)()}K.W=m.W.map(a=>({x:a[0],y:a[1],a:a[2],t:0}))}if(m.A)m.A.forEach((a,i)=>{const c=K.cars[i];if(c){c.mag=a[0];c.rel=a[1]?.5:0;c.kills=a[2]}});
+ m.P.forEach((a,i)=>{const p=K.cops[i];p.tx=a[0];p.ty=a[1];p.stun=a[2];p.wob=a[3];if(a[4]!=null)p.hp=a[4];if(Math.hypot(p.tx-p.x,p.ty-p.y)>250){p.x=p.tx;p.y=p.ty}});
  for(const i of m.H){const o=K.O.find(q=>q.id===i);if(o)o.hit=2}
  for(const a of m.M){const o=K.O.find(q=>q.id===a[0]);if(o){o.x=a[1];o.y=a[2]}}
  for(const x of m.X)K.fx.push({x:x[0],y:x[1],vx:0,vy:-40,t:0,life:1,txt:x[2],c:x[3]});
  if(m.o&&!K.over){K.over=1;K.msg=K.c.fin===1?'ПЕРВЫЙ!':K.c.fin?'УШЁЛ!':'ПРИНЯЛИ';K.msgT=9;K.win=!!K.c.fin}}
-function krClientTick(dt){K.inT-=dt;if(K.inT<=0){K.inT=.05;const mx=clamp(((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,-1,1),my=clamp(((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my,-1,1);nSend({t:'in',id:NETU.id,mx,my,a:NETU.a,k:NETU.k})}
+function krClientTick(dt){K.inT-=dt;if(K.inT<=0){K.inT=.05;const mx=clamp(((keys.ArrowLeft||keys.KeyA)?-1:0)+((keys.ArrowRight||keys.KeyD)?1:0)+pad.mx,-1,1),my=clamp(((keys.ArrowUp||keys.KeyW)?-1:0)+((keys.ArrowDown||keys.KeyS)?1:0)+pad.my,-1,1);nSend({t:'in',id:NETU.id,mx,my,a:NETU.a,k:NETU.k,s:NETU.s||0})}
  const k=Math.min(1,dt*12);for(const c of K.cars){if(c.tx!=null){c.x+=(c.tx-c.x)*k;c.y+=(c.ty-c.y)*k}}for(const p of K.cops){if(p.tx!=null){p.x+=(p.tx-p.x)*k;p.y+=(p.ty-p.y)*k}}
- for(const f of K.fx){f.t+=dt;f.y+=(f.vy||0)*dt}K.fx=K.fx.filter(f=>f.t<f.life);if(K.msgT>0)K.msgT-=dt;K.shk=Math.max(0,K.shk-dt*20);
+ for(const f of K.fx){f.t+=dt;f.y+=(f.vy||0)*dt}K.fx=K.fx.filter(f=>f.t<f.life);if(K.msgT>0)K.msgT-=dt;K.shk=Math.max(0,K.shk-dt*20);for(const b of K.BL){b.x+=b.vx*dt;b.y+=b.vy*dt}
  let near=K.cops.some(p=>Math.hypot(p.x-K.c.x,p.y-K.c.y)<260);if(near){K.sirT-=dt;if(K.sirT<=0){SFX.siren&&SFX.siren();K.sirT=1.6}}}
 function krzLoop(dt,t){if(state==='krzlock')return krLockTick(dt);if(state==='krz'&&K){if(K.cli)krClientTick(dt);else krTick(dt);if(K)krDraw(t)}else if(K)krDraw(t)}
-addEventListener('keydown',e=>{if(state==='krzlock'&&(e.code==='Space'||e.code==='KeyF')&&!e.repeat){e.preventDefault();krLockTry();return}if(state!=='krz')return;if((e.code==='KeyF'||e.code==='Space')&&!e.repeat){e.preventDefault();krNitro()}if(e.code==='KeyG'&&!e.repeat)krRam();if(e.code==='Escape')krPause()});
+addEventListener('keydown',e=>{if(state==='krzlock'&&(e.code==='Space'||e.code==='KeyF')&&!e.repeat){e.preventDefault();krLockTry();return}if(state!=='krz')return;if((e.code==='KeyF'||e.code==='Space')&&!e.repeat){e.preventDefault();krNitro()}if(e.code==='KeyG'&&!e.repeat)krRam();if((e.code==='KeyE'||e.code==='Enter')&&!e.repeat)krShoot();if(e.code==='Escape')krPause()});
 document.getElementById('bA').addEventListener('pointerdown',()=>{if(state==='krz')krNitro()});document.getElementById('bB').addEventListener('pointerdown',()=>{if(state==='krz')krRam()});
 cv.addEventListener('mousedown',e=>{if(state!=='krz')return;if(e.button===0)krNitro();else if(e.button===2)krRam()});
 
@@ -2564,7 +2598,7 @@ cv.addEventListener('mousedown',e=>e.preventDefault());cv.addEventListener('touc
  const mv=e=>{if(e.pointerId!==id)return;let dx=e.clientX-cx,dy=e.clientY-cy;const d=Math.hypot(dx,dy),m=60;if(d>m){dx=dx/d*m;dy=dy/d*m}kn.style.transform=`translate(${dx}px,${dy}px)`;pad.mx=Math.abs(dx)>12?dx/m:0;pad.my=Math.abs(dy)>12?dy/m:0};
  st.addEventListener('pointermove',mv);const up=e=>{if(e.pointerId!==id)return;id=null;pad.mx=pad.my=0;kn.style.transform=''};st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
  document.getElementById('bA').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state==='play')attack(G.F[0])});
- document.getElementById('bB').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state==='play')kick(G.F[0])});document.getElementById('bC').addEventListener('pointerdown',e=>{e.preventDefault();au();useItem()});document.getElementById('bD').addEventListener('pointerdown',e=>{e.preventDefault();au();swapKey()});document.getElementById('bK').addEventListener('pointerdown',e=>{e.preventDefault();au();korCall()});document.getElementById('bE').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state!=='play'||!G)return;if(G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])})}
+ document.getElementById('bB').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state==='play')kick(G.F[0])});document.getElementById('bC').addEventListener('pointerdown',e=>{e.preventDefault();au();useItem()});document.getElementById('bD').addEventListener('pointerdown',e=>{e.preventDefault();au();swapKey()});document.getElementById('bK').addEventListener('pointerdown',e=>{e.preventDefault();au();korCall()});document.getElementById('bF').addEventListener('pointerdown',e=>{e.preventDefault();au();krShoot()});document.getElementById('bE').addEventListener('pointerdown',e=>{e.preventDefault();au();if(state!=='play'||!G)return;if(G.net)NETU.s=(NETU.s||0)+1;else useSuper(G.F[0])})}
 
 /* кнопки прозрачнеют, когда за ними кто-то стоит */
 let TFT=0;const TFB=['stick','bA','bB','bC','bD','bE'].map(i=>document.getElementById(i));

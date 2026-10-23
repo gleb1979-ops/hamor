@@ -934,5 +934,73 @@
 "Готово! Игра сохранена в телефоне и работает без интернета — в самолёте, на корабле, где угодно.\\n\\nВАЖНО для айфона: у иконки на экране «Домой» своя память, отдельно от Safari. Если играешь через иконку — открой иконку с интернетом и нажми ОФЛАЙН там. Проверь в авиарежиме именно так, как будешь открывать в самолёте.\\n\\nОнлайн-бои с друзьями работают только с интернетом.": [
 "Done! The game is saved on your phone and works without internet — on a plane, on a ship, anywhere.\\n\\nIMPORTANT on iPhone: a Home Screen icon has its own storage, separate from Safari. If you play from the icon, open the icon online and tap OFFLINE there. Test in airplane mode exactly the way you will open it.\\n\\nOnline fights with friends need internet.",
 "¡Listo! El juego está guardado en tu teléfono y funciona sin internet: en el avión, en el barco, donde sea.\\n\\nIMPORTANTE en iPhone: el icono de la pantalla de inicio tiene su propia memoria, separada de Safari. Si juegas desde el icono, ábrelo con internet y toca OFFLINE allí.\\n\\nLas peleas online con amigos necesitan internet."
+],
+"ПЕРЕЗАРЯДКА…": [
+"RELOADING…",
+"RECARGANDO…"
+],
+"БОБИК ПОДБИТ!": [
+"COP CAR DOWN!",
+"¡PATRULLA DERRIBADA!"
+],
+"БОБИК ГОТОВ!": [
+"COP CAR WRECKED!",
+"¡PATRULLA DESTROZADA!"
+],
+"ПУЛЯ −4": [
+"BULLET −4",
+"BALA −4"
+],
+"ПУЛЯ": [
+"BULLET",
+"BALA"
+],
+"ВРЕЗАЛСЯ!": [
+"CRASHED!",
+"¡SE ESTRELLÓ!"
+],
+"В ОБЛОМКИ!": [
+"INTO THE WRECK!",
+"¡CONTRA LOS RESTOS!"
+],
+"В ОБЛОМКИ": [
+"INTO THE WRECK",
+"CONTRA LOS RESTOS"
+],
+"огонь": [
+"fire",
+"fuego"
+],
+"ПОДБИТО": [
+"DOWNED",
+"DERRIBADAS"
+],
+"бобиков подбито": [
+"cop cars downed",
+"patrullas derribadas"
+],
+"Газ сам": [
+"Auto gas",
+"Gas automático"
+],
+"джойстик — руль": [
+"joystick — steer",
+"joystick — volante"
+],
+"ОГОНЬ — по бобикам": [
+"FIRE — shoot the cop cars",
+"FUEGO — dispara a las patrullas"
+],
+"НИТРО — рывок": [
+"NITRO — boost",
+"NITRO — acelerón"
+],
+"ТАРАН — бок в уазик": [
+"RAM — side-hit the cop car",
+"EMBESTIR — golpe lateral a la patrulla"
+],
+"E/Enter огонь": [
+"E/Enter fire",
+"E/Enter fuego"
 ]
 }

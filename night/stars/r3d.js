@@ -192,9 +192,7 @@ const RS={w:0,h:0,cw:0,ch:0,at:0,dpr:0};let Q=1,fpsN=0,fpsT0=0;R3D.render=functi
     if(o.px!=null){const mx=X-o.px,mz=Z-o.py,d=Math.hypot(mx,mz);o.spd=lerpF(o.spd,Math.min(1.2,d/Math.max(dt,1e-3)/3.6),Math.min(1,dt*10));o.ph+=d*3.3;if(o.spd>.55&&p.anim!==4&&Math.random()<dt*9)dustPuff(X-Math.sin(o.ang)*.3,Z-Math.cos(o.ang)*.3);if(d>.004&&p.anim!==3&&p.anim!==4)o.tang=Math.atan2(mx,mz)}o.px=X;o.py=Z;
     if(p.me&&S.myDir&&(Math.abs(S.myDir[0])+Math.abs(S.myDir[1])>.1))o.tang=Math.atan2(S.myDir[0],S.myDir[1]);if(o.tang==null)o.tang=p.face<0?-Math.PI/2:Math.PI/2;
     let da=o.tang-o.ang;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;o.ang+=da*Math.min(1,dt*12);
-    /* куда смотрит: по бегу влево-вправо (с запасом, без дёрганья); при ударе/пасе — туда, куда бьёт */
-    {const vxi=o.lx!=null?(X-o.lx)/Math.max(dt,1e-3):0;o.lx=X;o.vxs=lerpF(o.vxs||0,vxi,Math.min(1,dt*8));if(o.fc==null)o.fc=p.face<0?-1:1;
-     if(p.anim===2||p.anim===5||p.anim===7){o.fc=p.face<0?-1:1;o.kt=.35}else if(o.kt>0){o.kt-=dt}else if(p.me&&S.myDir&&Math.abs(S.myDir[0])>.25)o.fc=S.myDir[0]<0?-1:1;else if(Math.abs(o.vxs)>.9)o.fc=o.vxs<0?-1:1}
+    /* куда смотрит: как в игре — по направлению бега, при ударе — в сторону удара */o.fc=p.face<0?-1:1;
     c.holder.position.set(X,0,Z);const an=p.anim===1&&o.spd<.08?0:p.anim;heroPose(o,c,an,t+(p.seed||0),dt,o.fc);
     o.ring.material.opacity=.65+.3*Math.sin(t*6);if(o.arrow){o.arrow.position.y=c.H+.75+Math.abs(Math.sin(t*4))*.25;o.arrow.visible=!S.rf;o.glow.material.opacity=.55+.25*Math.sin(t*5)}if(o.aura)o.aura.material.opacity=.5+.3*Math.sin(t*4);o.fire.visible=p.sup>=100&&!S.rf;o.lab.visible=!S.rf;o.stars.visible=p.anim===4;if(o.stars.visible)o.stars.position.x=Math.sin(t*6)*.25}
   for(const id in PL)if(!seen.has(id)){scene.remove(PL[id].c.holder);delete PL[id]}

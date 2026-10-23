@@ -3337,13 +3337,13 @@ function paintNight(g,c,f,stun){const walk=f>0,ph=walk?(f-1)/6*Math.PI*2:0;g.sav
 
 
 /* ================= Night: Fireball (deflect the ball) ================= */
-const FBC={x:750,y:520},FB_R=330;
+const FBC={x:750,y:483},FB_R=480;
 function paintNightRoof(f,title){const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#05061a');sk.addColorStop(1,'#1b1440');f.fillStyle=sk;f.fillRect(0,0,AW,TOP);
   let sd=7;const rnd=()=>{sd=(sd*9301+49297)%233280;return sd/233280};for(let i=0;i<70;i++){f.fillStyle=`rgba(255,255,255,${.3+rnd()*.6})`;f.fillRect(rnd()*AW,rnd()*TOP*.7,2,2)}
   for(let x=0;x<AW;){const w=60+rnd()*90,h=40+rnd()*90;f.fillStyle='#0d0b22';f.fillRect(x,TOP-h-10,w,h+10);for(let y=TOP-h;y<TOP-14;y+=16)for(let xx=x+8;xx<x+w-8;xx+=14)if(rnd()<.35){f.fillStyle=rnd()<.5?'#ffd76a':'#7fe8ff';f.fillRect(xx,y,6,8)}x+=w+4}
   f.fillStyle='#24203a';f.fillRect(0,TOP-14,AW,AH);for(let y=TOP;y<AH;y+=60)for(let x=((y/60)%2)*60;x<AW;x+=120){f.fillStyle='#2a2545';f.fillRect(x,y,60,60)}
   frameWalls(f,'#ff3d8b')}
-function paintBlade(f){paintNightRoof(f);for(const [r,c,w] of [[FB_R+18,'rgba(255,61,139,.25)',26],[FB_R,'#ff3d8b',6],[FB_R-60,'rgba(34,227,255,.6)',3],[90,'rgba(255,197,49,.5)',4]]){f.strokeStyle=c;f.lineWidth=w;f.beginPath();f.ellipse(FBC.x,FBC.y,r,r*.62,0,0,7);f.stroke()}}
+function paintBlade(f){{const im=nbg('nt_blade');if(im){f.drawImage(im,0,0,AW,AH);return}}paintNightRoof(f);for(const [r,c,w] of [[FB_R+18,'rgba(255,61,139,.25)',26],[FB_R,'#ff3d8b',6],[FB_R-60,'rgba(34,227,255,.6)',3],[90,'rgba(255,197,49,.5)',4]]){f.strokeStyle=c;f.lineWidth=w;f.beginPath();f.ellipse(FBC.x,FBC.y,r,r*.62,0,0,7);f.stroke()}}
 function ringSpawn(i,n){const a=Math.PI+i/n*6.283;return [FBC.x+Math.cos(a)*270,FBC.y+Math.sin(a)*165]}
 function ringPlace(r){r.forEach((x,i)=>{const v=view[x[0]];if(!v)return;const [px,py]=ringSpawn(i,r.length);v.x=v.tx=px;v.y=v.ty=py;v.face=px<FBC.x?1:-1});if(mine&&view[me.id]){mine.x=view[me.id].x;mine.y=view[me.id].y}}
 function fbAlive(){return Object.values(G.P).filter(b=>b.score>0)}
@@ -3433,7 +3433,7 @@ const FBV={b:{}};
 const SHK={a:0,t:0};function shake(a){const now=performance.now(),k=Math.max(0,1-(now-SHK.t)/380);SHK.a=Math.max(SHK.a*k,a);SHK.t=now}
 function shakeOff(){const k=1-(performance.now()-SHK.t)/380;if(k<=0||!SHK.a)return [0,0];const a=SHK.a*k*k;return [(Math.random()-.5)*2*a,(Math.random()-.5)*2*a]}
 /* Арена «Крыша»: край крыши — выбил за него = нокаут; люки с паром и лазер-прожектор */
-const AR_E={x:750,y:520,a:560,b:300},AR_V=[[520,410],[980,410],[520,640],[980,640]];
+const AR_E={x:750,y:499,a:539,b:267},AR_V=[[520,410],[980,410],[520,640],[980,640]];
 function arK(x,y){return ((x-AR_E.x)/AR_E.a)**2+((y-AR_E.y)/AR_E.b)**2}
 function arKO(B,by,how){const now=performance.now();trainHit(B.id,99);evq.push([how||'AK',B.id,Math.round(B.x),Math.round(B.y),by?by.id:null]);if(!by||by===B)return;by.kos=(by.kos||0)+1;
   by.kst=now-(by.koT||0)<6000?(by.kst||1)+1:1;by.koT=now;if(by.kst>=2)evq.push(['AM',by.id,by.kst]);if(!G.fko){G.fko=1;evq.push(['AF',by.id])}}
@@ -3448,7 +3448,7 @@ function arHaz(dt){if(ABOSS())return;const P=G.P,now=performance.now(),al=Object
     for(const B of al){if(L.hit[B.id]||(B.jpU||0)>now)continue;const along=L.o?B.y-40:B.x,acr=L.o?B.x:B.y-40;if(along>L.a&&along<L.a+L.len&&Math.abs(acr-L.p)<34){L.hit[B.id]=1;evq.push(['ALZ',B.id,Math.round(B.x),Math.round(B.y)]);arHurt(B,14,L.o?L.dir*750:0,L.o?0:750,.45,null)}}
     if(end){L.ph=0;L.t=7+Math.random()*4}}}
 const AR_HP=150,AR_SUP={banana:'tele',burgerdino:'bite',cattoaster:'toast',shark:'dash',dumpling:'shield',broccoli:'wave',roboduck:'jump',cactus:'spikes',icecream:'puddle',pizza:'roll'};
-function paintArena(f){paintNightRoof(f);const cx=750,cy=520;f.fillStyle='rgba(124,58,237,.18)';f.beginPath();f.ellipse(cx,cy,560,300,0,0,7);f.fill();
+function paintArena(f){{const im=nbg('nt_arena');if(im){f.drawImage(im,0,0,AW,AH);return}}paintNightRoof(f);const cx=750,cy=520;f.fillStyle='rgba(124,58,237,.18)';f.beginPath();f.ellipse(cx,cy,560,300,0,0,7);f.fill();
   f.strokeStyle='#22e3ff';f.lineWidth=6;f.beginPath();f.ellipse(cx,cy,560,300,0,0,7);f.stroke();f.strokeStyle='rgba(255,197,49,.5)';f.lineWidth=3;f.beginPath();f.ellipse(cx,cy,120,64,0,0,7);f.stroke();
   for(const [x,y] of [[230,300],[1270,300],[230,760],[1270,760]]){f.fillStyle='#3a2f5a';f.beginPath();f.arc(x,y,26,0,7);f.fill();f.strokeStyle='#ff3d8b';f.lineWidth=4;f.stroke()}}
 function arSide(b){return ABOSS()?0:TM==='team'?(b.bot?1:0):b.id}
@@ -3887,12 +3887,12 @@ GMS.rifts3={rejoin(b){b.hp=60;b.dn=0},paint:f=>{f.drawImage(r3Paint(0),0,0)},map
 window.__r3=()=>({G,hit:r3HitEnemy,gag:r3Gag,boss:r3SpawnBoss,lob:r3BossLob,al:r3Alive});
 
 /* ================= Night: Steal a Hero ================= */
-const SR_VAL=[1,3,6,12],SR_COL=['#cfd6e0','#4fa3ff','#b65cff','#ffc531'],SR_CEN={x:750,y:520};
+const SR_VAL=[1,3,6,12],SR_COL=['#cfd6e0','#4fa3ff','#b65cff','#ffc531'],SR_CEN={x:750,y:490};
 function stCode(c,r){return NIGHT.indexOf(c)*4+r}function stDec(k){return [NIGHT[Math.floor(k/4)]||'banana',k%4]}
 function stRoll(){const x=Math.random();return x<.55?0:x<.83?1:x<.96?2:3}
 function stBaseKey(b){return TM==='team'?(b.bot?'B':'A'):b.id}
-function stBasePos(key){if(TM==='team')return key==='A'?[200,520]:[1300,520];const b=G?G.P[key]:null;const v=b||view[key];if(!v)return [750,520];const s=SPAWN[sk(v.c)];return [s[0]<750?350:1150,s[1]<500?300:735]}
-function paintSteal(f){paintNightRoof(f);f.strokeStyle='rgba(255,197,49,.6)';f.lineWidth=5;f.setLineDash([16,12]);f.beginPath();f.ellipse(SR_CEN.x,SR_CEN.y,150,90,0,0,7);f.stroke();f.setLineDash([]);
+function stBasePos(key){if(TM==='team')return key==='A'?[200,520]:[1300,520];const b=G?G.P[key]:null;const v=b||view[key];if(!v)return [750,520];const s=SPAWN[sk(v.c)];return [s[0]<750?(s[1]<500?263:340):(s[1]<500?1244:1150),s[1]<500?242:740]}
+function paintSteal(f){{const im=nbg('nt_steal');if(im){f.drawImage(im,0,0,AW,AH);return}}paintNightRoof(f);f.strokeStyle='rgba(255,197,49,.6)';f.lineWidth=5;f.setLineDash([16,12]);f.beginPath();f.ellipse(SR_CEN.x,SR_CEN.y,150,90,0,0,7);f.stroke();f.setLineDash([]);
   f.fillStyle='#3a2f5a';f.beginPath();f.ellipse(SR_CEN.x,SR_CEN.y,110,60,0,0,7);f.fill();f.strokeStyle='#22e3ff';f.lineWidth=4;f.stroke()}
 function stSpawn(){const r=stRoll(),a=Math.random()*6.283,d=Math.random()*90;G.B.push({id:G.nextId++,x:SR_CEN.x+Math.cos(a)*d,y:SR_CEN.y+Math.sin(a)*d*.6,ty:stCode(NIGHT[Math.random()*10|0],r)})}
 function stScore(){for(const id in G.P){const b=G.P[id];const L=G.BS[stBaseKey(b)]||[];b.score=TM==='team'?0:L.reduce((s,k)=>s+SR_VAL[k%4],0)}if(TM==='team'){G.ts=['A','B'].map(k=>(G.BS[k]||[]).reduce((s,x)=>s+SR_VAL[x%4],0))}}
@@ -3965,7 +3965,7 @@ GART.shade=(g,tv,t)=>{const x=tv.x,y=tv.y,fl=Math.cos(tv.a)<0?-1:1,run=tv.st!==2
   g.fillStyle='#fff';for(const tx of [58,64])g.fillRect(tx,-48,2,5);g.restore()};
 /* нарисованные фоны Night (если картинка ещё грузится — рисуем старый вариант, потом перерисуем) */
 const NBG={};function nbg(k){if(!NBG[k]){const im=new Image();im.onload=()=>{for(const q in floorCaches)delete floorCaches[q]};im.src='img/bg_'+k+'.webp';NBG[k]=im}const im=NBG[k];return im.complete&&im.naturalWidth?im:null}
-['nf_forest','nf_camp'].forEach(nbg);
+['nf_forest','nf_camp','nt_arena','nt_blade','nt_steal'].forEach(nbg);
 function paintForest(f){{const im=nbg('nf_forest');if(im){f.drawImage(im,0,0,AW,AH);return}}const sk=f.createLinearGradient(0,0,0,TOP);sk.addColorStop(0,'#0b1a2a');sk.addColorStop(1,'#1d3a34');f.fillStyle=sk;f.fillRect(0,0,AW,TOP);
   for(let x=-30;x<AW;x+=55){f.fillStyle=x%110?'#123322':'#173d2a';f.beginPath();f.moveTo(x,TOP);f.lineTo(x+40,TOP-90-((x*7)%40));f.lineTo(x+80,TOP);f.fill()}
   f.fillStyle='#2f5a2e';f.fillRect(0,TOP-14,AW,AH);let sd=3;const rnd=()=>{sd=(sd*9301+49297)%233280;return sd/233280};for(let i=0;i<90;i++){f.fillStyle=`rgba(20,60,20,${.15+rnd()*.2})`;f.beginPath();f.ellipse(rnd()*AW,TOP+rnd()*(AH-TOP),20+rnd()*50,6+rnd()*12,rnd()*3,0,7);f.fill()}

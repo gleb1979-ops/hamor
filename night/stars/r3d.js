@@ -156,7 +156,7 @@ function heroPose(o,c,an,t,dt,face){const s=c.spr,m=s.material;let y=0,rot=0,sx=
   else if(an===4){rot=1.35*face;y=-.05}
   else if(an===5){rot=1.0*face;y=-.1}
   else{sy=1+Math.sin(t*3+o.ph)*.025}
-  if(c.sheet){const fr=an===1?2+(Math.floor(ph*1.6)%6+6)%6:an===2?9:0;c.sheet.offset.x=fr/10;if(an===1){y*=.35;rot*=.3}else if(an===2)rot*=.3}o.fx=o.fx==null?face:(c.sheet?(face<0?-1:1):o.fx+(face-o.fx)*Math.min(1,dt*14));s.scale.set(c.W*sx*o.fx,c.H*sy,1);s.position.y=y;m.rotation=rot}
+  if(c.sheet){const fr=an===1?5:an===2?9:0;c.sheet.offset.x=fr/10;if(an===1){y=Math.abs(Math.sin(ph))*.12;rot=Math.sin(ph)*.05;sy=1+Math.cos(ph*2)*.03}else if(an===2)rot*=.3}o.fx=o.fx==null?face:(c.sheet?(face<0?-1:1):o.fx+(face-o.fx)*Math.min(1,dt*14));s.scale.set(c.W*sx*o.fx,c.H*sy,1);s.position.y=y;m.rotation=rot}
 let KITS=KIT;function getPlayer(p){const KIT=KITS;let o=PL[p.id];const key=p.star+p.team+p.rar+KIT[p.team].j;if(o&&o.key===key)return o;if(o)scene.remove(o.c.holder);
   const model=MODEL[p.star]||'cappy',k=KIT[p.team],cols={kJ:k.j,kS:k.s,kSo:k.so,kB:BOOT[p.rar||0],kSk:SKIN[model],kFa:SKIN[model],kHa:SKIN[model]};
   const c=heroBody(p.star,k.j,2.05*(p.star==='shark'?1.08:p.star==='dumpling'?.9:1),{j:k.j,s:k.s});

@@ -249,7 +249,7 @@ function playAnthem(id){
 
 /* ---------- commentator ---------- */
 const COMM_LINES=['r1','r2','r3','fight','h_kakoy','h_diplo','h_tupik','h_bolno','combo','b_otlichny','s_super','low_grani','firstblood','missile','sanctions','timeup','ko','winner','champ'];
-const COMM_TEXT={r1:'Round one!',r2:'Round two!',r3:'Final round!',fight:'Fight!',h_kakoy:'What a hit!',h_diplo:'Now that is diplomacy!',h_tupik:'Negotiations have failed!',h_bolno:'Ooh, that hurt!',combo:'Combo!',b_otlichny:'Great block!',s_super:'Super move!',low_grani:'He is on the edge!',firstblood:'First blood!',missile:'Missile launched!',sanctions:'Sanctions imposed!',timeup:'Time!',ko:'Knockout!',winner:'Winner!',champ:'Flag raised! Champion of the summit!',intro_usa:'Mister USA! Big, loud, and he brought his own freedom. Never stand between him and a burger!',intro_isr:'Mister Israel! Small country, fast hands. He probably has a startup for that punch!',intro_rus:'Mister Russia! Black belt, cold winters, and he throws people like firewood!',intro_tur:'Mister Turkey! The tallest man at the summit. His reach is longer than his coffee break!',intro_ukr:'Mister Ukraine! Quick feet, sunflower power, and he never gives up!',intro_irn:'Mister Iran! Wise, patient, and his flying carpet has no speed limit!',intro_qat:'Mister Qatar! Small country, deep pockets. That golden watch costs more than this arena!',intro_eu:'Madame EU! Twenty seven opinions, one fist. Sanctions are coming!',intro_chn:'Mister China! Kung fu master in a tunic suit. He made everything in this hall, probably even the floor!',intro_nk:'Mister North Korea! Short, heavy, and armed with a missile. Nobody knows what he will do next!',versus:'Versus!'};
+const COMM_TEXT={r1:'Round one!',r2:'Round two!',r3:'Final round!',fight:'Fight!',h_kakoy:'What a hit!',h_diplo:'Now that is diplomacy!',h_tupik:'Negotiations have failed!',h_bolno:'Ooh, that hurt!',combo:'Combo!',b_otlichny:'Great block!',s_super:'Super move!',low_grani:'He is on the edge!',firstblood:'First blood!',missile:'Missile launched!',sanctions:'Sanctions imposed!',timeup:'Time!',ko:'Knockout!',winner:'Winner!',champ:'Flag raised! Champion of the summit!',finish:'Finish it!',banzai:'Banzai!',fatal:'Diplomatic immunity... revoked!',intro_usa:'Mister USA! Big, loud, and he brought his own freedom. Never stand between him and a burger!',intro_isr:'Mister Israel! Small country, fast hands. He probably has a startup for that punch!',intro_rus:'Mister Russia! Black belt, cold winters, and he throws people like firewood!',intro_tur:'Mister Turkey! The tallest man at the summit. His reach is longer than his coffee break!',intro_ukr:'Mister Ukraine! Quick feet, sunflower power, and he never gives up!',intro_irn:'Mister Iran! Wise, patient, and his flying carpet has no speed limit!',intro_qat:'Mister Qatar! Small country, deep pockets. That golden watch costs more than this arena!',intro_eu:'Madame EU! Twenty seven opinions, one fist. Sanctions are coming!',intro_chn:'Mister China! Kung fu master in a tunic suit. He made everything in this hall, probably even the floor!',intro_nk:'Mister North Korea! Short, heavy, and armed with a missile. Nobody knows what he will do next!',versus:'Versus!'};
 const COMM_CLIPS=window.COMM_CLIPS||{};
 const COMM={on:true,busyUntil:0,hitCount:0,nextAt:3,lastHit:0,first:false,low:{},buf:{},
  init(){if(!AC)return;for(const k in COMM_CLIPS){if(this.buf[k])continue;try{const bin=atob(COMM_CLIPS[k]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);this.buf[k]='loading';AC.decodeAudioData(u.buffer,b=>this.buf[k]=b,()=>delete this.buf[k])}catch(e){}}},
@@ -381,10 +381,10 @@ function finishThrow(f){
  f.landed=true;f.comboN=(f.comboT>0?f.comboN:0)+1;f.comboT=80;if(f.nameNext){f.comboName=f.nameNext;f.nameNext=''}else if(f.comboN<2)f.comboName='THROW';
  f.meter=Math.min(100,f.meter+12);v.meter=Math.min(100,v.meter+8);
  COMM.hit(f,v,dmg,true);
- v.hp-=dmg;if(v.hp<=0&&game.phase==='fight'){v.hp=0;v.state='ko';v.koT=0;v.vy=-5;v.vx=-f.facing*4;endRound(f)}
+ v.hp-=dmg;if(v.hp<=0&&game.phase==='fight'){v.hp=0;if(startFinish(f,v))return;v.state='ko';v.koT=0;v.vy=-5;v.vx=-f.facing*4;endRound(f)}
 }
 function clr(i){i.punch=i.kick=i.sup=i.throw=0;i.upTap=0}
-function tryHit(f,o,A){const dx=(o.x-f.x)*f.facing;if(dx>0&&dx<A.range&&Math.abs(o.y-f.y)<80&&!['ko','thrown'].includes(o.state)&&o.inv<=0&&!(o.state==='down'&&o.t>4)){f.hitDone=true;applyHit(f,o,A,f.x)}}
+function tryHit(f,o,A){const dx=(o.x-f.x)*f.facing,dy=o.y-f.y;if(dx>0&&dx<A.range&&(A.air?(dy>-50&&dy<175):Math.abs(dy)<80)&&!['ko','thrown'].includes(o.state)&&o.inv<=0&&!(o.state==='down'&&o.t>4)){f.hitDone=true;applyHit(f,o,A,f.x)}}
 function applyHit(att,def,A,fromX){
  let dmg=A.dmg,kb=A.kb,heavy=!!A.heavy;
  const dir=Math.sign(def.x-fromX)||att.facing;
@@ -410,7 +410,7 @@ function applyHit(att,def,A,fromX){
  }
  att.meter=Math.min(100,att.meter);def.meter=Math.min(100,def.meter);
  def.hp-=dmg;
- if(def.hp<=0){def.hp=0;def.state='ko';def.koT=0;def.vy=-7;def.vx=dir*5;game.shake=14;blood(def.x,def.y-100,dir,30);endRound(att)}
+ if(def.hp<=0){def.hp=0;if(startFinish(att,def))return;def.state='ko';def.koT=0;def.vy=-7;def.vx=dir*5;game.shake=14;blood(def.x,def.y-100,dir,30);endRound(att)}
 }
 function blood(x,y,dir,dmg){const n=Math.min(70,8+dmg*2.4);for(let i=0;i<n;i++)parts.push({k:'b',x,y:y+(Math.random()-.5)*14,vx:dir*(.8+Math.random()*5.5)+(Math.random()-.5)*2,vy:-Math.random()*5.5-1,r:1.2+Math.random()*2.6,life:120})}
 function spark(x,y){for(let i=0;i<10;i++)parts.push({k:'s',x,y,vx:(Math.random()-.5)*7,vy:(Math.random()-.5)*7,r:2,life:12})}
@@ -443,6 +443,36 @@ function cpu(f,o,inp){
  else if(dist<96){if(r<P.aggr*.6)inp.kick=1;else if(r<P.aggr*.75){inp.down=1;inp.kick=1}else c.act='in'}
  else{c.act='in';if(r<.05){inp.up=1;inp[tw]=1}}
 }
+
+function startFinish(att,def){
+ if(game.phase!=='fight'||att.wins+1<2)return false;
+ game.phase='finish';game.finT=0;game.fin=att;game.finStarted=false;
+ def.state='dizzy';def.t=0;def.vx=0;def.vy=0;def.y=GROUND;def.victim=null;att.victim=null;
+ if(att.state==='throw')att.state='idle';att.vx=0;projs=[];
+ game.msg='';COMM.say('finish',true);FX.pop={txt:'FINISH IT!',t:0,big:1};FX.popN=(FX.popN||0)+1;sfx('bell');return true;
+}
+function stepFinish(){
+ const a=game.fin,v=a===P1?P2:P1,inp=a===P1?inp1:inp2;game.finT++;
+ for(const f of[P1,P2])f.inv=0;
+ if(!game.finStarted){
+  v.t++;
+  if(inp.sup||inp.punch&&inp.kick||(a.cpu&&game.finT>75)){game.finStarted=true;a.state='finisher';a.t=0;a.facing=v.x>a.x?1:-1;sfx('super');COMM.say('banzai',true);FX.zoomT=1.18;FX.zxT=(a.x+v.x)/2;FX.zyT=GROUND-150}
+  else if(game.finT>300){v.state='ko';v.koT=0;v.vy=-5;v.vx=a.facing*4;game.phase='fight';endRound(a)}
+  else{const d=(inp.right?1:0)-(inp.left?1:0);a.vx=d*a.ch.speed*.6;a.state=d?'walk':'idle';if(d)a.walkT++;a.facing=v.x>a.x?1:-1;physics(a)}
+  clr(inp1);clr(inp2);return}
+ a.t++;
+ if(a.t<12){a.vx=a.facing*6;physics(a)}else a.vx=0;
+ if(a.t===12){v.state='launched';v.t=0;v.vy=-24;v.vx=a.facing*1.2;game.shake=16;FX.flash=.6;sfx('heavy');blood(v.x,v.y-90,a.facing,25);for(let i=0;i<18;i++)parts.push({k:'s',x:v.x,y:v.y-80,vx:(Math.random()-.5)*9,vy:-Math.random()*9,r:3,life:24});FX.zoomT=1;FX.zxT=400;FX.zyT=225}
+ if(v.state==='launched'){v.t++;v.vy+=.55;v.y+=v.vy;v.x=Math.max(50,Math.min(W-50,v.x+v.vx));
+  if(v.vy>-1&&v.vy<0)game.slow=40;
+  if(v.y>=GROUND&&v.vy>0){v.y=GROUND;v.state='ko';v.koT=20;v.vy=-3;v.vx=a.facing*2;
+   game.shake=34;FX.flash=1;FX.rings.push({x:v.x,y:GROUND,t:0,life:30},{x:v.x,y:GROUND,t:-5,life:36},{x:v.x,y:GROUND,t:-10,life:42});
+   for(let i=0;i<70;i++){const an=Math.random()*Math.PI;parts.push({k:'d',x:v.x+(Math.random()-.5)*90,y:GROUND-4,vx:Math.cos(an)*(2+Math.random()*8)*(Math.random()<.5?-1:1),vy:-Math.random()*6,r:5+Math.random()*10,life:55})}
+   blood(v.x,GROUND-40,a.facing,40);sfx('heavy');setTimeout(()=>sfx('heavy'),110);setTimeout(()=>sfx('heavy'),230);
+   FX.pop={txt:'BANZAI!',t:0,big:1};FX.popN=(FX.popN||0)+1;setTimeout(()=>COMM.say('fatal',true),700);
+   a.state='win';game.phase='fight';endRound(a)}}
+ clr(inp1);clr(inp2);
+}
 function endRound(w){
  if(game.phase!=='fight')return;
  game.phase='roundEnd';game.frame=0;
@@ -465,7 +495,7 @@ function tick(){
  if(game.slow>0){game.slow--;if(game.slow%3!==0)return}
  game.frame++;
  if(game.phase==='intro'){const L=game.introLen||0;
- if(L){const q=game.introQ;if(game.frame===6){game.msg=P1.ch.name;COMM.say('intro_'+P1.ch.id,true)}if(game.frame===q[0]){game.msg='VS';COMM.say('versus',true)}if(game.frame===q[1]){game.msg=P2.ch.name;COMM.say('intro_'+P2.ch.id,true)}}
+ if(L){const q=game.introQ;if(game.frame===5&&!COMM.buf['intro_'+P1.ch.id]&&(game.introWait=(game.introWait||0)+1)<120){game.frame--}if(game.frame===6){game.msg=P1.ch.name;COMM.say('intro_'+P1.ch.id,true)}if(game.frame===q[0]){game.msg='VS';COMM.say('versus',true)}if(game.frame===q[1]){game.msg=P2.ch.name;COMM.say('intro_'+P2.ch.id,true)}}
  if(game.frame===L+8){game.msg=game.msg==='Final round'?'Final round':'Round '+game.round;COMM.say(game.msg==='Final round'?'r3':game.round===1?'r1':'r2',true)}if(game.frame===L+60){game.msg='Fight!';sfx('bell');COMM.say('fight',true)}if(game.frame>=(game.introLen||0)+90){game.phase='fight';game.msg='';game.introLen=0}}
  if(game.phase==='fight'){game.time--;if(game.time<=0){game.time=0;const a=P1.hp/P1.max,b=P2.hp/P2.max;endRound(a>b?P1:b>a?P2:null)}}
  if(game.phase==='roundEnd'){
@@ -474,6 +504,7 @@ function tick(){
      if((P1.wins>=2||P2.wins>=2)&&P1.wins!==P2.wins||game.round>=5)finish();else{game.round++;newRound()}
    }
  }
+ if(game.phase==='finish'){stepFinish();updParts();if(game.shake>0)game.shake*=.85;return}
  cpu(P2,P1,inp2);if(P1.cpu)cpu(P1,P2,inp1);
  step(P1,P2,inp1);step(P2,P1,inp2);
  const dx=P2.x-P1.x;if(Math.abs(dx)<46&&Math.abs(P1.y-P2.y)<60&&P1.state!=='ko'&&P2.state!=='ko'){const push=(46-Math.abs(dx))/2*Math.sign(dx||1);P1.x-=push;P2.x+=push;P1.x=Math.max(40,Math.min(W-40,P1.x));P2.x=Math.max(40,Math.min(W-40,P2.x))}
@@ -523,6 +554,9 @@ function sprFrame(f,time,M){
   case 'down':{if(M.getup&&f.t>26)return at(M.getup,Math.min(M.getup.length-1,1+Math.floor((f.t-26)*(M.getup.length-1)/20)));if(f.t>36)return M.jump[0];return at(M.ko,f.t<6?0:f.t<12?1:L('ko')-1)}
   case 'ko':return at(M.ko,Math.min(3,Math.floor(f.koT/7)));
   case 'super':{const n=L('super');if(f.ch.sup.type==='proj')return at(M.super,Math.floor(f.t/6));const p=f.t<5?0:f.t<10?1:f.t<26?2+Math.floor((f.t-10)/6)%Math.max(1,n-3):n-1;return at(M.super,p)}
+  case 'dizzy':ROT=Math.sin(time*.08)*.12;return at(M.hit,0);
+  case 'launched':ROT=f.t*.32*(f.vx>=0?1:-1);return at(M.hit,1);
+  case 'finisher':{const n=L('super');return at(M.super,Math.min(n-1,Math.floor(f.t/4)))}
   case 'win':return M.win[Math.floor(time/14)%M.win.length];
  }
  return M.idle[0];
@@ -854,15 +888,18 @@ function render(){
  if(bg)c.drawImage(bg,0,0,W,H);else{c.fillStyle='#16141d';c.fillRect(0,0,W,H)}
  for(const s of stains){c.fillStyle=`rgba(110,6,12,${s.a})`;c.beginPath();c.ellipse(s.x,s.y,s.r*1.6,s.r*.7,0,0,7);c.fill()}
  drawVictoryFlag(c);
+ if(P1)for(const f of[P1,P2])if(f.state==='dizzy'){const S=SPRITES[f.ch.id],k=S?S.scale:.8,t=performance.now()/180;for(let i=0;i<3;i++){const a=t+i*2.1;c.fillStyle='#ffe066';star(c,f.x+Math.cos(a)*26,f.y-185*k+Math.sin(a)*8,6)}}
  if(P1){const order=P1.state==='ko'?[P1,P2]:[P2,P1];for(const f of order)drawFighter(c,f,performance.now()/16);drawGrip(c,P1);drawGrip(c,P2)}
  for(const p of projs)drawProj(c,p);
  for(const r of FX.rings){if(r.t<0)continue;const q=r.t/r.life;c.save();c.globalAlpha=(1-q)*.85;c.strokeStyle='#fff3c8';c.lineWidth=6*(1-q)+1;c.beginPath();c.ellipse(r.x,r.y,20+q*170,6+q*34,0,0,7);c.stroke();c.restore()}
  for(const p of parts){if(p.k==='d'){c.fillStyle=`rgba(210,200,185,${Math.max(0,p.life/40)*.55})`}else c.fillStyle=p.k==='b'?'#b3121b':p.k==='c'?p.col:'#fff6d0';c.beginPath();c.arc(p.x,p.y,p.r,0,7);c.fill()}
  c.restore();
  if(FX.flash>0){c.fillStyle=`rgba(255,250,235,${Math.max(0,FX.flash)*.55})`;c.fillRect(0,0,W,H)}
- if(FX.pop){const t=FX.pop.t,sc=t<8?.4+t*.1:1.2-Math.min(.2,(t-8)*.01),a=t>50?1-(t-50)/20:1;c.save();c.globalAlpha=Math.max(0,a);c.translate(400,170);c.rotate(-.06);c.scale(sc,sc);c.font='46px "Russo One", sans-serif';c.textAlign='center';c.lineWidth=8;c.strokeStyle='#1a0a0c';c.strokeText(FX.pop.txt,0,0);const g=c.createLinearGradient(0,-36,0,8);g.addColorStop(0,'#fff2a0');g.addColorStop(1,'#e8851a');c.fillStyle=g;c.fillText(FX.pop.txt,0,0);c.restore()}
+ if(game.phase==='finish'&&!game.finStarted&&FX.pop&&FX.pop.t>50)FX.pop.t=40;
+ if(FX.pop){const t=FX.pop.t,big=FX.pop.big?1.35+Math.sin(performance.now()/120)*.06:1,sc=(t<8?.4+t*.1:1.2-Math.min(.2,(t-8)*.01))*big,a=t>50?1-(t-50)/20:1;c.save();c.globalAlpha=Math.max(0,a);c.translate(400,170);c.rotate(-.06);c.scale(sc,sc);c.font='46px "Russo One", sans-serif';c.textAlign='center';c.lineWidth=8;c.strokeStyle='#1a0a0c';c.strokeText(FX.pop.txt,0,0);const g=c.createLinearGradient(0,-36,0,8);g.addColorStop(0,'#fff2a0');g.addColorStop(1,'#e8851a');c.fillStyle=g;c.fillText(FX.pop.txt,0,0);c.restore()}
  if(P1)hud(c);
- document.getElementById('bS').classList.toggle('ready',!!P1&&P1.meter>=100);
+ if(game.phase==='finish'&&!game.finStarted&&game.fin&&!game.fin.cpu){c.save();c.font='14px "Russo One", sans-serif';c.textAlign='center';c.fillStyle='#fff';c.shadowColor='#000';c.shadowBlur=4;c.fillText('Press SUPER to finish',400,215);c.restore()}
+ document.getElementById('bS').classList.toggle('ready',!!P1&&(P1.meter>=100||game.phase==='finish'&&game.fin===P1&&!game.finStarted));
 }
 
 /* ---------- loop ---------- */
@@ -1041,6 +1078,20 @@ function applySnap(sn){
  addEventListener('keydown',e=>{const k=KEYS[e.code];if(!k||e.repeat)return;if(['punch','kick','sup','throw'].includes(k))NET.cnt[k]++;if(k==='up')NET.cnt.upTap++});
 })();
 
+
+function showRec(blob,name,type){
+ let box=document.getElementById('recBox');if(box)box.remove();
+ box=document.createElement('div');box.id='recBox';
+ box.style.cssText='position:fixed;inset:0;z-index:20;background:rgba(8,6,12,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;touch-action:auto';
+ const u=URL.createObjectURL(blob);const mb=(blob.size/1048576).toFixed(1);
+ box.innerHTML='<b style="font:18px var(--display);color:#e3b23c">Your fight video</b><video id="recVid" controls playsinline style="max-width:min(92vw,720px);max-height:52vh;border-radius:8px;background:#000"></video><div style="color:#cfc8bb;font-size:13px;text-align:center;max-width:440px">'+mb+' MB. On iPhone choose “Save Video”; on Android it goes to Downloads (Files app → Downloads).</div><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="btn" id="recShare" type="button">Save / Share</button><button class="btn ghost" id="recDl" type="button">Download file</button><button class="btn ghost" id="recClose" type="button">Close</button></div><div id="recMsg" style="color:#ffb3b3;font-size:13px"></div>';
+ document.body.appendChild(box);document.getElementById('recVid').src=u;
+ const file=new File([blob],name,{type});
+ const can=navigator.canShare&&navigator.canShare({files:[file]});if(!can)document.getElementById('recShare').hidden=true;
+ document.getElementById('recShare').onclick=()=>{navigator.share({files:[file],title:'Presidents Brawl'}).catch(e=>{if(e&&e.name!=='AbortError')document.getElementById('recMsg').textContent='Could not share: try Download file.'})};
+ document.getElementById('recDl').onclick=()=>{const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove()};
+ document.getElementById('recClose').onclick=()=>{box.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+}
 /* ---------- screen recording ---------- */
 (function(){
  const btn=document.getElementById('recBtn');let rec=null,chunks=[],t0=0,timer=null,dl=null;
@@ -1054,7 +1105,7 @@ function applySnap(sn){
   const type=r.mimeType||'video/webm',ext=type.includes('mp4')?'mp4':'webm';
   const blob=new Blob(chunks,{type});chunks=[];
   const name='presidents-brawl-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.'+ext;
-  if(!dl){try{const file=new File([blob],name,{type});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Presidents Brawl'});btn.textContent='Saved ✓'}else{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);btn.textContent='Saved ✓'}}catch(e){btn.textContent='Not saved'}setTimeout(()=>{if(!rec)btn.textContent='● REC'},2500);return}
+  if(!dl){btn.textContent='● REC';showRec(blob,name,type);return}
   try{await dl.save({filename:name,data:blob});btn.textContent='Saved ✓';}
   catch(e){btn.textContent=e&&e.code==='declined'?'Not saved':'Save failed'}
   setTimeout(()=>{if(!rec)btn.textContent='● REC'},2500);

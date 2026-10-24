@@ -117,6 +117,7 @@ h1 em{font-style:normal;color:var(--blood);-webkit-text-stroke:1px #ff4d55}
         <button class="seg" data-d="hard" type="button">Hard</button>
       </div>
       <div class="row"><span class="lbl">Arena</span><span id="arenaBtns" class="row"></span></div>
+      <div class="row"><span class="lbl">Music</span><button class="seg sel" id="musBtn" type="button">On</button></div>
       <div class="row"><span class="lbl">Commentator</span><button class="seg sel" id="commBtn" type="button">On</button></div>
       <div class="net" id="netBox">
         <div class="lbl" style="margin-bottom:6px">Two phones</div>
@@ -132,6 +133,7 @@ h1 em{font-style:normal;color:var(--blood);-webkit-text-stroke:1px #ff4d55}
       <div class="keys"><b>Controls.</b> Joystick or <kbd>A</kbd><kbd>D</kbd> move · up / <kbd>W</kbd> jump · down / <kbd>S</kbd> crouch · <b>hold back to block</b> (down-back blocks low) · <kbd>J</kbd> Punch · <kbd>K</kbd> Kick · <kbd>L</kbd> Throw · <kbd>I</kbd> Super</div>
       <div class="keys"><b>Moves for every fighter.</b> Forward + Punch: heavy punch · Down + Punch: low punch · Down + Kick: sweep (knocks down, block it crouching) · Punch or Kick in the air: jump attack (block it standing) · Throw up close: can't be blocked · Forward, forward: dash</div>
       <div class="keys"><b>Combos.</b> Punch, Punch, Punch: <i>Triple Strike</i> · Punch, Punch, Kick: <i>Diplomatic Finish</i> (knockdown) · Kick, Kick: <i>Double Trouble</i> · any hit, then Super: <i>No Deal!</i> · Down, down-forward, forward + Punch: <i>Special</i> (costs half the super meter)</div>
+      <div class="keys" style="opacity:.75"><b>Credits.</b> Music: “Daydream of a Deity” by Fablefly Music (CC BY 4.0) · “Fightwave” by Aila Scott (CC BY 4.0) · “Against the Odds” by SunixMuz, licensed under CC BY 4.0 (youtube.com/@SunixMuz) · Combat Pack Vol. 1 by darthdeus / LogLogGames · “Fight Theme” by Whitefoxgaming. Sounds: Kenney (CC0). Commentator voice: Kokoro TTS.</div>
     </div>
     <div id="endBox" hidden>
       <div class="kicker" id="endKick">Summit result</div>
@@ -906,11 +908,29 @@ function render(){
  document.getElementById('bS').classList.toggle('ready',!!P1&&(P1.meter>=100||game.phase==='finish'&&game.fin===P1&&!game.finStarted));
 }
 
+
+/* ---------- arena music ---------- */
+const MUS={on:true,cur:null,src:null,gain:null,bufs:{},want:null,vol:.42,duck:1,
+ load(k,cb){if(this.bufs[k]){cb&&cb(this.bufs[k]);return}if(this.bufs[k+'_l'])return;this.bufs[k+'_l']=1;fetch('music/'+k+'.mp3').then(r=>r.ok?r.arrayBuffer():null).then(ab=>{if(!ab||!AC)return;AC.decodeAudioData(ab,b=>{this.bufs[k]=b;if(this.want===k)this.start(k)},()=>{})}).catch(()=>{})},
+ play(k){if(!AC)return;this.want=k;if(!this.on){this.stop();return}if(this.cur===k&&this.src)return;const b=this.bufs[k];if(b)this.start(k);else this.load(k)},
+ start(k){if(this.want!==k||!this.on)return;this.stop(true);const b=this.bufs[k];if(!b)return;
+  const g=AC.createGain();g.gain.setValueAtTime(0.0001,AC.currentTime);g.gain.linearRampToValueAtTime(this.vol*this.duck,AC.currentTime+1.2);g.connect(OUT());
+  const s=AC.createBufferSource();s.buffer=b;s.loop=true;s.connect(g);s.start();this.src=s;this.gain=g;this.cur=k},
+ stop(fast){if(this.src){const s=this.src,g=this.gain,t=AC.currentTime;try{g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0.0001,t+(fast?.4:1));s.stop(t+(fast?.45:1.05))}catch(e){}}this.src=null;this.gain=null;this.cur=null},
+ setDuck(d){this.duck=d;if(this.gain){const t=AC.currentTime;try{this.gain.gain.cancelScheduledValues(t);this.gain.gain.setValueAtTime(this.gain.gain.value,t);this.gain.gain.linearRampToValueAtTime(this.vol*d,t+.5)}catch(e){}}}
+};
+function musicUpdate(){
+ if(!AC||!P1)return;
+ if(game.phase==='menu'||game.phase==='over'){if(MUS.cur)MUS.stop();MUS.want=null;return}
+ const fin=(P1.wins===1&&P2.wins===1)||game.round>=3;
+ MUS.play(fin?'final':curArena);
+ const d=game.phase==='roundEnd'?.25:game.phase==='intro'&&COMM.src?.6:1;if(d!==MUS.duck)MUS.setDuck(d);
+}
 /* ---------- loop ---------- */
 let last=performance.now(),acc=0;
-function loop(now){acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){tick();acc-=1000/60}if(NET.mode)netSend();render();requestAnimationFrame(loop)}
+function loop(now){acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){tick();acc-=1000/60}if(NET.mode)netSend();musicUpdate();render();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
-window.__dbg=()=>({P1,P2,game,COMM,SFXB});
+window.__dbg=()=>({P1,P2,game,COMM,SFXB,MUS});
 addEventListener('pointerdown',()=>{try{ensureAudio()}catch(e){}},{capture:true});
 
 /* ---------- sizing ---------- */
@@ -969,6 +989,7 @@ function startMatch(){
  lastOpp=oi;
  P1=mkF(CH[pick],240,1,false);P2=mkF(CH[oi],560,-1,true);
  curArena=arenaPick==='random'?ARENAS[Math.floor(Math.random()*ARENAS.length)].id:arenaPick;
+ if(AC){MUS.load(curArena);MUS.load('final')}
  bg=buildBg(P1.ch,P2.ch);
  if(NET.mode==='host'&&NET.active)P2.cpu=null;
  game.round=1;COMM.first=false;newRound();if(COMM.on){const d=k=>{const b=COMM.buf[k];return b&&b.duration?b.duration:(COMM_TEXT[k]||'').length*.075};const a=6+Math.ceil(d('intro_'+P1.ch.id)*60)+12,bq=a+Math.ceil(d('versus')*60)+8,end=bq+Math.ceil(d('intro_'+P2.ch.id)*60)+10;game.introQ=[a,bq];game.introLen=end}else game.introLen=0;if(game.introLen)game.msg=P1.ch.name;menu.hidden=true;
@@ -1135,6 +1156,7 @@ function showRec(blob,name,type){game.paused=true;
 document.getElementById('clipsBtn').onclick=showClips;document.getElementById('clipsMenu').onclick=showClips;
 document.getElementById('go').onclick=()=>{if(NET.mode==='guest')return;if(NET.mode==='host'&&!NET.active){NET.mode=null;if(NET.room)NET.room.leave().catch(()=>{});NET.room=null;netStatus('Two-phone game closed.');document.getElementById('netStart').hidden=true}startMatch()};
 document.getElementById('demo').onclick=()=>{if(NET.mode)return;startMatch();P1.cpu={wait:30,hold:0,act:null,last:-1}};
+document.getElementById('musBtn').onclick=e=>{MUS.on=!MUS.on;e.target.textContent=MUS.on?'On':'Off';e.target.classList.toggle('sel',MUS.on);if(!MUS.on)MUS.stop()};
 document.getElementById('commBtn').onclick=e=>{COMM.on=!COMM.on;e.target.textContent=COMM.on?'On':'Off';e.target.classList.toggle('sel',COMM.on)};
 document.getElementById('again').onclick=()=>{oppPick=oppPick<0?-1:oppPick;const keep=oppPick;oppPick=lastOpp;startMatch();oppPick=keep};
 document.getElementById('change').onclick=()=>{document.getElementById('endBox').hidden=true;document.getElementById('startBox').hidden=false;drawOpp()};

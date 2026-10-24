@@ -25,6 +25,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidde
 #cv{display:block;background:#000;border-radius:6px}
 #menuBtn{position:absolute;bottom:8px;right:max(10px,env(safe-area-inset-right,0px));font:13px var(--display);color:var(--fg);background:rgba(0,0,0,.55);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}
 #recBtn{position:absolute;bottom:8px;right:calc(max(10px,env(safe-area-inset-right,0px)) + 64px);font:13px var(--display);color:#ff6b72;background:rgba(0,0,0,.55);border:1px solid #6b1d22;border-radius:6px;padding:6px 10px;cursor:pointer}
+#clipsBtn{position:absolute;bottom:8px;right:calc(max(10px,env(safe-area-inset-right,0px)) + 132px);font:13px var(--display);color:#ffe39a;background:rgba(0,0,0,.6);border:1px solid #8a6a20;border-radius:6px;padding:6px 10px;cursor:pointer}
+@media (orientation:landscape) and (max-height:520px){#clipsBtn{bottom:max(8px,env(safe-area-inset-bottom,0px))!important;right:calc(50% + 72px)!important}}
 #recBtn.on{background:#b3121b;color:#fff;border-color:#ff6b72;animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:.6}}
 @media (prefers-reduced-motion:reduce){#recBtn.on{animation:none}}
@@ -83,6 +85,7 @@ h1 em{font-style:normal;color:var(--blood);-webkit-text-stroke:1px #ff4d55}
     <canvas id="cv" width="1600" height="900" aria-label="Fight arena"></canvas>
     <button id="menuBtn" type="button">Menu</button>
     <button id="recBtn" type="button" aria-label="Record video">● REC</button>
+    <button id="clipsBtn" type="button" hidden>🎬 0</button>
   </div>
   <div id="pad">
     <div id="joy" aria-label="Joystick: move, jump, crouch; hold back to block"><div id="knob"></div></div>
@@ -125,7 +128,7 @@ h1 em{font-style:normal;color:var(--blood);-webkit-text-stroke:1px #ff4d55}
         <div class="keys" id="netStatus">Play a friend on another phone. One of you taps Create game and tells the other the 4-letter code. Both phones need the internet.</div>
         <button class="btn" id="netStart" type="button" hidden>Start 2-player fight</button>
       </div>
-      <div class="row"><button class="btn" id="go" type="button">Fight</button><button class="btn ghost" id="demo" type="button">Watch bots</button></div>
+      <div class="row"><button class="btn" id="go" type="button">Fight</button><button class="btn ghost" id="demo" type="button">Watch bots</button><button class="btn ghost" id="clipsMenu" type="button" hidden>🎬 Your videos</button></div>
       <div class="keys"><b>Controls.</b> Joystick or <kbd>A</kbd><kbd>D</kbd> move · up / <kbd>W</kbd> jump · down / <kbd>S</kbd> crouch · <b>hold back to block</b> (down-back blocks low) · <kbd>J</kbd> Punch · <kbd>K</kbd> Kick · <kbd>L</kbd> Throw · <kbd>I</kbd> Super</div>
       <div class="keys"><b>Moves for every fighter.</b> Forward + Punch: heavy punch · Down + Punch: low punch · Down + Kick: sweep (knocks down, block it crouching) · Punch or Kick in the air: jump attack (block it standing) · Throw up close: can't be blocked · Forward, forward: dash</div>
       <div class="keys"><b>Combos.</b> Punch, Punch, Punch: <i>Triple Strike</i> · Punch, Punch, Kick: <i>Diplomatic Finish</i> (knockdown) · Kick, Kick: <i>Double Trouble</i> · any hit, then Super: <i>No Deal!</i> · Down, down-forward, forward + Punch: <i>Special</i> (costs half the super meter)</div>
@@ -488,6 +491,7 @@ const FX={rings:[],pop:null,flash:0,zoom:1,zoomT:1,zx:400,zy:300,zxT:400,zyT:300
 function fxStep(){FX.zoom+=(FX.zoomT-FX.zoom)*.12;FX.zx+=(FX.zxT-FX.zx)*.15;FX.zy+=(FX.zyT-FX.zy)*.15;if(FX.zoomHold>0&&--FX.zoomHold===0){FX.zoomT=1;FX.zxT=400;FX.zyT=300}
  if(FX.flash>0)FX.flash-=.08;for(let i=FX.rings.length-1;i>=0;i--){const r=FX.rings[i];r.t++;if(r.t>r.life)FX.rings.splice(i,1)}if(FX.pop){FX.pop.t++;if(FX.pop.t>70)FX.pop=null}}
 function tick(){
+ if(game.paused)return;
  fxStep();
  if(NET.mode==='guest'){if(game.shake>0)game.shake*=.85;updParts();return}
  if(NET.mode==='host'&&NET.active)netReadGuest();
@@ -1079,7 +1083,11 @@ function applySnap(sn){
 })();
 
 
-function showRec(blob,name,type){
+const CLIPS=[];
+function clipsUpdate(){const b=document.getElementById('clipsBtn');b.hidden=!CLIPS.length;b.textContent='🎬 '+CLIPS.length;const m=document.getElementById('clipsMenu');if(m){m.hidden=!CLIPS.length;m.textContent='🎬 Your videos ('+CLIPS.length+') · save'}}
+function addClip(blob,name,type){CLIPS.push({blob,name,type});if(CLIPS.length>6)CLIPS.shift();clipsUpdate();const b=document.getElementById('clipsBtn');b.animate&&b.animate([{transform:'scale(1.3)'},{transform:'scale(1)'}],{duration:400})}
+function showClips(){if(!CLIPS.length)return;const c=CLIPS[CLIPS.length-1];showRec(c.blob,c.name,c.type)}
+function showRec(blob,name,type){game.paused=true;
  let box=document.getElementById('recBox');if(box)box.remove();
  box=document.createElement('div');box.id='recBox';
  box.style.cssText='position:fixed;inset:0;z-index:20;background:rgba(8,6,12,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;touch-action:auto';
@@ -1090,7 +1098,8 @@ function showRec(blob,name,type){
  const can=navigator.canShare&&navigator.canShare({files:[file]});if(!can)document.getElementById('recShare').hidden=true;
  document.getElementById('recShare').onclick=()=>{navigator.share({files:[file],title:'Presidents Brawl'}).catch(e=>{if(e&&e.name!=='AbortError')document.getElementById('recMsg').textContent='Could not share: try Download file.'})};
  document.getElementById('recDl').onclick=()=>{const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove()};
- document.getElementById('recClose').onclick=()=>{box.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+ document.getElementById('recClose').onclick=()=>{box.remove();game.paused=false;setTimeout(()=>URL.revokeObjectURL(u),1000)};
+ const list=document.createElement('div');list.style.cssText='display:flex;gap:6px;flex-wrap:wrap;justify-content:center';CLIPS.forEach((c,i)=>{const b=document.createElement('button');b.className='seg'+(c.blob===blob?' sel':'');b.type='button';b.textContent='Clip '+(i+1);b.onclick=()=>{box.remove();showRec(c.blob,c.name,c.type)};list.appendChild(b)});if(CLIPS.length>1)box.insertBefore(list,box.children[2]);
 }
 /* ---------- screen recording ---------- */
 (function(){
@@ -1105,7 +1114,7 @@ function showRec(blob,name,type){
   const type=r.mimeType||'video/webm',ext=type.includes('mp4')?'mp4':'webm';
   const blob=new Blob(chunks,{type});chunks=[];
   const name='presidents-brawl-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.'+ext;
-  if(!dl){btn.textContent='● REC';showRec(blob,name,type);return}
+  if(!dl){btn.textContent='● REC';addClip(blob,name,type);return}
   try{await dl.save({filename:name,data:blob});btn.textContent='Saved ✓';}
   catch(e){btn.textContent=e&&e.code==='declined'?'Not saved':'Save failed'}
   setTimeout(()=>{if(!rec)btn.textContent='● REC'},2500);
@@ -1123,6 +1132,7 @@ function showRec(blob,name,type){
   }catch(e){rec=null;btn.textContent='REC failed';setTimeout(()=>btn.textContent='● REC',2500)}
  };
 })();
+document.getElementById('clipsBtn').onclick=showClips;document.getElementById('clipsMenu').onclick=showClips;
 document.getElementById('go').onclick=()=>{if(NET.mode==='guest')return;if(NET.mode==='host'&&!NET.active){NET.mode=null;if(NET.room)NET.room.leave().catch(()=>{});NET.room=null;netStatus('Two-phone game closed.');document.getElementById('netStart').hidden=true}startMatch()};
 document.getElementById('demo').onclick=()=>{if(NET.mode)return;startMatch();P1.cpu={wait:30,hold:0,act:null,last:-1}};
 document.getElementById('commBtn').onclick=e=>{COMM.on=!COMM.on;e.target.textContent=COMM.on?'On':'Off';e.target.classList.toggle('sel',COMM.on)};

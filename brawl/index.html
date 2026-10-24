@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en"><head><script src="../shared/mute.js"></script><script src="../shared/offline.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><script src="../shared/mute.js"></script><script src="../shared/offline.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Presidents Brawl 🥊 · Tagshim</title>
 <meta property="og:type" content="website"><meta property="og:title" content="Presidents Brawl 🥊 · Tagshim"><meta property="og:description" content="Ten country mascots settle it at the summit. 1-on-1 fighting with combos, throws and super moves. Play a bot or a friend on another phone.">
 <meta property="og:url" content="https://games.tagshim.com/brawl/"><meta property="og:image" content="https://games.tagshim.com/brawl/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://games.tagshim.com/brawl/og.png">
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script><script src="../net.js"></script>
-<style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}html,body{overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-text-size-adjust:100%}body{position:fixed;inset:0;width:100%}#app,#stage,#pad,#cv,#pad *{touch-action:none}#menu{touch-action:pan-y}@media (orientation:landscape) and (max-height:520px){#menuBtn{bottom:max(8px,env(safe-area-inset-bottom,0px))!important;right:auto!important;left:calc(50% + 4px)!important}#recBtn{bottom:max(8px,env(safe-area-inset-bottom,0px))!important;right:calc(50% + 4px)!important}#pad{padding-left:max(84px,env(safe-area-inset-left,0px))!important}}</style>
 </head><body>
 
 
@@ -142,6 +142,17 @@ h1 em{font-style:normal;color:var(--blood);-webkit-text-stroke:1px #ff4d55}
   </div>
 </div>
 
+<script>
+/* keep the screen still: no pinch, double-tap or gesture zoom, no page scroll */
+(function(){
+ const stop=e=>{e.preventDefault()};
+ ['gesturestart','gesturechange','gestureend'].forEach(n=>document.addEventListener(n,stop,{passive:false}));
+ document.addEventListener('dblclick',stop,{passive:false});
+ let lastT=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lastT<350&&!e.target.closest('#menu input'))e.preventDefault();lastT=n},{passive:false});
+ document.addEventListener('touchmove',e=>{if(e.touches.length>1||!e.target.closest('#menu'))e.preventDefault()},{passive:false});
+ const fix=()=>{if(window.scrollX||window.scrollY)window.scrollTo(0,0)};addEventListener('scroll',fix,{passive:true});addEventListener('resize',fix);
+})();
+</script>
 <script>
 (()=>{
 const W=800,H=450,GROUND=392;
@@ -823,7 +834,7 @@ function hud(c){
  c.save();c.fillStyle='rgba(12,8,16,.9)';c.beginPath();c.moveTo(372,10);c.lineTo(428,10);c.lineTo(436,30);c.lineTo(428,52);c.lineTo(372,52);c.lineTo(364,30);c.closePath();c.fill();c.lineWidth=2;c.strokeStyle='#e3b23c';c.stroke();c.restore();
  c.textAlign='center';c.font='26px "Russo One", sans-serif';c.fillStyle=game.time<600&&game.phase==='fight'?'#ff6b72':'#fff';
  c.fillText(String(Math.ceil(game.time/60)),400,41);
- if(game.msg){c.font='15px "Russo One", sans-serif';const tw=c.measureText(game.msg).width;c.fillStyle='rgba(15,14,20,.75)';c.fillRect(400-tw/2-10,94,tw+20,24);c.fillStyle='#e3b23c';c.fillText(game.msg,400,111)}
+ if(game.msg){c.font='15px "Russo One", sans-serif';const tw=c.measureText(game.msg).width;c.fillStyle='rgba(15,14,20,.8)';c.fillRect(400-tw/2-10,128,tw+20,24);c.fillStyle='#e3b23c';c.fillText(game.msg,400,145)}
 }
 function render(){
  const c=ctx;c.save();

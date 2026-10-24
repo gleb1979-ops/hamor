@@ -193,11 +193,22 @@ function mkF(ch,x,facing,cpu){return{ch,x,y:GROUND,vx:0,vy:0,facing,hp:ch.hp*1.7
 
 /* ---------- audio ---------- */
 let AC=null;
+const AUD_EMBED=null;
+const SFXB={};let AUD_LOADED=false;
+function audLoad(path,b64,cb){if(!AC)return;const go=ab=>{try{AC.decodeAudioData(ab,cb,()=>{})}catch(e){}};
+ if(b64){const bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);go(u.buffer)}
+ else fetch(path).then(r=>r.ok?r.arrayBuffer():null).then(ab=>{if(ab)go(ab)}).catch(()=>{})}
+function audInit(){if(AUD_LOADED||!AC)return;AUD_LOADED=true;
+ for(const k of ["punch0", "punch1", "punch2", "hpunch0", "hpunch1", "hpunch2", "kick", "whoosh", "ko", "go", "bump"])audLoad(BASE_SFX+k+'.mp3',AUD_EMBED&&AUD_EMBED.sfx[k],b=>SFXB[k]=b);
+ for(const k in COMM_TEXT)audLoad('vo/'+k+'.mp3',AUD_EMBED&&AUD_EMBED.vo[k],b=>COMM.buf[k]=b)}
+function playBuf(b,vol,rate){try{const s=AC.createBufferSource();s.buffer=b;if(rate)s.playbackRate.value=rate;const g=AC.createGain();g.gain.value=vol;s.connect(g);g.connect(OUT());s.start();return s}catch(e){}}
+const SFXMAP={hit:['punch0','punch1','punch2'],heavy:['hpunch0','hpunch1','hpunch2','kick'],swing:['whoosh'],block:['bump'],bell:['go']};
+const BASE_SFX='../sfx/';
 let MASTER=null;function OUT(){if(!MASTER){MASTER=AC.createGain();MASTER.gain.value=1;MASTER.connect(AC.destination)}return MASTER}
-function ensureAudio(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();if(AC&&typeof COMM!=='undefined')COMM.init()}
+function ensureAudio(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();if(AC)audInit()}
 function noise(dur,freq,vol){const n=Math.floor(AC.sampleRate*dur),b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);const s=AC.createBufferSource();s.buffer=b;const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=freq;const g=AC.createGain();g.gain.value=vol;s.connect(f);f.connect(g);g.connect(OUT());s.start()}
 function tone(type,f0,f1,dur,vol){const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(OUT());o.start();o.stop(t+dur)}
-function sfx(k,_f){if(!AC)return;try{
+function sfx(k,_f){if(!AC)return;{const m=SFXMAP[k];if(m){const b=SFXB[m[Math.floor(Math.random()*m.length)]];if(b){playBuf(b,k==='swing'?.35:k==='block'?.8:1,.92+Math.random()*.16);if(k!=='bell')return}}}try{
  if(k==='hit'){noise(.12,1300,.7);tone('sine',160,60,.12,.5)}
  else if(k==='heavy'){noise(.25,700,.9);tone('sine',110,35,.3,.8)}
  else if(k==='block'){noise(.06,4000,.35)}
@@ -229,7 +240,7 @@ function drum(t,v){const n=Math.floor(AC.sampleRate*.12),b=AC.createBuffer(1,n,A
 function playAnthem(id){
  if(!AC)return;const A=ANTHEM[id];if(!A)return;
  try{const beat=60/A.bpm;let t=AC.currentTime+.05;const t0=t;
-  for(const [n,d] of A.m){note(A.lead,mtof(A.base+n),t,d*beat*.95,.07);note('triangle',mtof(A.base+n+12),t,d*beat*.9,.03);t+=d*beat}
+  for(const [n,d] of A.m){note(A.lead,mtof(A.base+n),t,d*beat*.95,.045);note('triangle',mtof(A.base+n+12),t,d*beat*.9,.03);t+=d*beat}
   const total=t-t0,bar=total/A.ch.length;
   A.ch.forEach((r,i)=>{note('triangle',mtof(A.base-12+r),t0+i*bar,bar*.95,.13);note('sine',mtof(A.base-24+r),t0+i*bar,bar*.95,.1)});
   for(let x=0;x<total;x+=beat){drum(t0+x,x%(beat*2)<.01?.45:.25);tone('sine',90,40,.12,.18)}
@@ -247,7 +258,7 @@ const COMM={on:true,busyUntil:0,hitCount:0,nextAt:3,lastHit:0,first:false,low:{}
   if(!prio&&now<this.busyUntil)return;
   if(prio){try{speechSynthesis.cancel()}catch(e){}if(this.src){try{this.src.stop()}catch(e){}}}
   const b=this.buf[key];
-  if(b&&b!=='loading'&&AC){const s=AC.createBufferSource();s.buffer=b;const g=AC.createGain();g.gain.value=1.4;s.connect(g);g.connect(OUT());s.start();this.src=s;this.busyUntil=now+b.duration*1000+350;return}
+  if(b&&b!=='loading'&&AC){const s=playBuf(b,1.5);this.src=s;this.busyUntil=now+b.duration*1000+350;return}
   let txt=COMM_TEXT[key];
   if(!txt)return;
   try{const u=new SpeechSynthesisUtterance(txt);u.lang='en-US';u.rate=1.1;u.pitch=1;u.volume=1;const v=speechSynthesis.getVoices().find(v=>/^en/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u);this.busyUntil=now+txt.length*75+400}catch(e){}
@@ -454,7 +465,7 @@ function tick(){
  if(game.slow>0){game.slow--;if(game.slow%3!==0)return}
  game.frame++;
  if(game.phase==='intro'){const L=game.introLen||0;
- if(L){if(game.frame===6){game.msg=P1.ch.name;COMM.say('intro_'+P1.ch.id,true)}if(game.frame===Math.floor(L*.5)-20){game.msg='VS';COMM.say('versus',true)}if(game.frame===Math.floor(L*.5)){game.msg=P2.ch.name;COMM.say('intro_'+P2.ch.id,true)}}
+ if(L){const q=game.introQ;if(game.frame===6){game.msg=P1.ch.name;COMM.say('intro_'+P1.ch.id,true)}if(game.frame===q[0]){game.msg='VS';COMM.say('versus',true)}if(game.frame===q[1]){game.msg=P2.ch.name;COMM.say('intro_'+P2.ch.id,true)}}
  if(game.frame===L+8){game.msg=game.msg==='Final round'?'Final round':'Round '+game.round;COMM.say(game.msg==='Final round'?'r3':game.round===1?'r1':'r2',true)}if(game.frame===L+60){game.msg='Fight!';sfx('bell');COMM.say('fight',true)}if(game.frame>=(game.introLen||0)+90){game.phase='fight';game.msg='';game.introLen=0}}
  if(game.phase==='fight'){game.time--;if(game.time<=0){game.time=0;const a=P1.hp/P1.max,b=P2.hp/P2.max;endRound(a>b?P1:b>a?P2:null)}}
  if(game.phase==='roundEnd'){
@@ -858,7 +869,8 @@ function render(){
 let last=performance.now(),acc=0;
 function loop(now){acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){tick();acc-=1000/60}if(NET.mode)netSend();render();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
-window.__dbg=()=>({P1,P2,game});
+window.__dbg=()=>({P1,P2,game,COMM,SFXB});
+addEventListener('pointerdown',()=>{try{ensureAudio()}catch(e){}},{capture:true});
 
 /* ---------- sizing ---------- */
 const stage=document.getElementById('stage');
@@ -918,7 +930,7 @@ function startMatch(){
  curArena=arenaPick==='random'?ARENAS[Math.floor(Math.random()*ARENAS.length)].id:arenaPick;
  bg=buildBg(P1.ch,P2.ch);
  if(NET.mode==='host'&&NET.active)P2.cpu=null;
- game.round=1;COMM.first=false;newRound();game.introLen=COMM.on?600:0;if(game.introLen)game.msg=P1.ch.name;menu.hidden=true;
+ game.round=1;COMM.first=false;newRound();if(COMM.on){const d=k=>{const b=COMM.buf[k];return b&&b.duration?b.duration:(COMM_TEXT[k]||'').length*.075};const a=6+Math.ceil(d('intro_'+P1.ch.id)*60)+12,bq=a+Math.ceil(d('versus')*60)+8,end=bq+Math.ceil(d('intro_'+P2.ch.id)*60)+10;game.introQ=[a,bq];game.introLen=end}else game.introLen=0;if(game.introLen)game.msg=P1.ch.name;menu.hidden=true;
 }
 function finish(){
  game.phase='over';COMM.say('champ',true);
